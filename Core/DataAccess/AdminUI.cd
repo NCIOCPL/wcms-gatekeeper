@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.DataAccess.Request.RequestDataAdapter">
+    <Position X="1" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>Request\RequestDataAdapter.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAEAAAABABAAAAAEA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.Security.UserManager">
+    <Position X="0.5" Y="4" Width="11.5" />
+    <TypeIdentifier>
+      <FileName>Security\UserManager.cs</FileName>
+      <HashCode>AQQAAAAAAQAEgAiMEYAEAAAQAQIAABICHAEBAAkAAAQ=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.Security.UserRoleManager">
+    <Position X="5.25" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <FileName>Security\UserRoleManager.cs</FileName>
+      <HashCode>QAAEEAAwAAAEAAAAAAAABAAAAAAAAAIAAAAFAAEQAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+</ClassDiagram>

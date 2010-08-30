@@ -1,0 +1,298 @@
+<Protocol id="CDR0000065504" LegacyPDQID="12578">
+<ProtocolIDs>
+<PrimaryID>
+<IDString>MSKCC-97007</IDString>
+</PrimaryID>
+<OtherID>
+<IDType>NCI alternate</IDType>
+<IDString>NCI-G97-1232</IDString>
+</OtherID>
+<OtherID>
+<IDType>ClinicalTrials.gov ID</IDType>
+<IDString>NCT00002981</IDString>
+</OtherID>
+</ProtocolIDs>
+<FundingInfo>
+<NIHGrantContract>
+<NIHGrantContractType>P30</NIHGrantContractType>
+<GrantContractNo>CA08748</GrantContractNo>
+</NIHGrantContract>
+</FundingInfo>
+<ProtocolSponsor>NCI</ProtocolSponsor>
+<PDQProtocolTitle Audience="Professional">Phase II/III Diagnostic Study of C11-Methionine and 2-F18-Fluoro-2-deoxy-D-Glucose (FDG) Positron Emission Tomography (PET) Imaging in Patients With Progressive Prostate Cancer </PDQProtocolTitle>
+<PDQProtocolTitle Audience="Patient">PET Scan in Treating Patients With Metastatic Prostate Cancer</PDQProtocolTitle>
+<OfficialProtocolTitle>11C-Methionine and 2-18F-Fluoro-2-Deoxy-D-Glucose PET Imaging in Patients with Progressive Prostate Cancer</OfficialProtocolTitle>
+<ProtocolAbstract>
+<Professional>
+<Objectives>
+<OrderedList id="_1" Style="URoman">
+<ListItem>
+Measure the pharmacokinetics, whole body retention of isotope, and biodistribution of C11-methionine and FDG by PET imaging and serial sampling of blood in men with progressive prostate cancer.
+</ListItem>
+<ListItem>
+Explore metabolism of each PET scan by comparing the sensitivity of C11-methionine or FDG by PET scanning in androgen independent prostate cancer metastases with the sensitivity of C11-methionine or FDG in androgen dependent metastases on a site by site basis.
+</ListItem>
+<ListItem>
+Compare C11-methionine and FDG PET scanning to standard of care diagnostic studies which include the Tc 99m bone scan, computed tomography, and magnetic resonance imaging.
+</ListItem>
+</OrderedList>
+</Objectives>
+<Outcome OutcomeType="Primary" Safety="No">Pharmacokinetics</Outcome>
+<Outcome OutcomeType="Primary" Safety="No">Metabolism</Outcome>
+<Outcome OutcomeType="Primary" Safety="No">Comparison of the sensitivity of PET imaging with FDG with standard of care diagnostic methods</Outcome>
+<Outline>
+<Para id="_2">
+Two cohorts of patients are evaluated:  those with tumors that are
+proliferating despite castrate levels of testosterone (androgen independent)
+and those that are proliferating in the setting of noncastrate testosterone
+levels (hormone naive or intermittent therapy).
+</Para>
+<Para id="_3">
+Patients fast for 6 hours prior to PET imaging with the exception of
+liberal water intake which is encouraged. A two way catheter is placed in the
+urinary bladder, and continuous isotonic saline irrigation is performed
+throughout scan acquisition to reduce the interference in imaging lesions in
+the pelvic lymph nodes and adjacent pelvic bones caused by radiation excreted
+in urine held in the bladder.
+</Para>
+<Para id="_4">
+Each patient receives C11-methionine intravenously.  PET imaging begins
+immediately after injection for approximately 60 minutes total using standard
+imaging procedures.  Immediately following the completion of imaging after
+C11-methionine administration, each patient receives FDG intravenously.  PET
+imaging begins approximately 45 minutes thereafter for approximately 60
+minutes using standard imaging procedures.
+</Para>
+</Outline>
+<EntryCriteria>
+<DiseaseCharacteristics>
+<ItemizedList Compact="No" id="_24" Style="bullet">
+<ListItem>
+Histologically confirmed prostate adenocarcinoma
+</ListItem>
+<ListItem>
+Must have an at least 50% increase in PSA which is sustained for a
+minimum of 3 observations obtained at least 1 week apart
+</ListItem>
+<ListItem>
+Must have development of new lesions on bone scintigraphy or greater
+than 50% increase in measurable disease on CT or MRI scan
+</ListItem>
+<ListItem>
+Metastatic disease
+</ListItem>
+</ItemizedList>
+</DiseaseCharacteristics>
+<PatientCharacteristics>
+<ItemizedList id="_9" Style="bullet">
+<ListTitle>Age:</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_10" Style="bullet">
+<ListTitle>Performance status:</ListTitle>
+<ListItem>Karnofsky greater than 60%</ListItem>
+</ItemizedList>
+<ItemizedList id="_11" Style="bullet">
+<ListTitle>Hematopoietic:</ListTitle>
+<ListItem>
+ANC greater than 1,000/mm<Superscript>3</Superscript>
+</ListItem>
+<ListItem>
+Platelet count greater than 100,000/mm<Superscript>3</Superscript>
+</ListItem>
+</ItemizedList>
+<ItemizedList id="_12" Style="bullet">
+<ListTitle>Hepatic:</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_13" Style="bullet">
+<ListTitle>Renal:</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_14" Style="bullet">
+<ListTitle>Cardiovascular:</ListTitle>
+<ListItem>No clinically significant cardiac disease</ListItem>
+</ItemizedList>
+<ItemizedList id="_15" Style="bullet">
+<ListTitle>Pulmonary:</ListTitle>
+<ListItem>No clinically significant pulmonary disease</ListItem>
+</ItemizedList>
+<ItemizedList id="_16" Style="bullet">
+<ListTitle>Other:</ListTitle>
+<ListItem>No active infection not controlled by antibiotics</ListItem>
+</ItemizedList>
+</PatientCharacteristics>
+<PriorConcurrentTherapy>
+<ItemizedList id="_28" Style="bullet">
+<ListTitle>Biologic therapy</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_29" Style="bullet">
+<ListTitle>Chemotherapy</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_30" Style="bullet">
+<ListTitle>Endocrine therapy</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_31" Style="bullet">
+<ListTitle>Radiotherapy</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+<ItemizedList id="_32" Style="bullet">
+<ListTitle>Surgery</ListTitle>
+<ListItem>Not specified</ListItem>
+</ItemizedList>
+</PriorConcurrentTherapy>
+</EntryCriteria>
+<ProjectedAccrual>
+<Para id="_18">Approximately 100 will be accrued.</Para>
+</ProjectedAccrual>
+<ProfessionalDisclaimer>
+<Para id="_ProtHPDisclaimer_5">
+<Strong>Note:</Strong> The purpose of most clinical trials listed in this database is to test new cancer treatments, or new methods of diagnosing, screening, or preventing cancer.  Because all potentially harmful side effects are not known before a trial is conducted, dose and schedule modifications may be required for participants if they develop side effects from the treatment or test.  The therapy or test described in this clinical trial is intended for use by clinical oncologists in carefully structured settings, and may not prove to be more effective than standard treatment.  A responsible investigator associated with this clinical trial should be consulted before using this protocol.
+</Para>
+</ProfessionalDisclaimer>
+</Professional>
+<Patient>
+<Rationale>
+<Para id="_20">
+New <GlossaryTermRef href="CDR0000045720">imaging procedures</GlossaryTermRef>, such as <GlossaryTermRef href="CDR0000046140">PET scan</GlossaryTermRef>, may improve the ability to detect new or <GlossaryTermRef href="CDR0000045862">recurrent</GlossaryTermRef> prostate cancer.
+</Para>
+</Rationale>
+<Purpose>
+<Para id="_21">
+This <GlossaryTermRef href="CDR0000045834">phase II/III trial</GlossaryTermRef> is studying how well PET scans work in detecting cancerous changes  in  patients with <GlossaryTermRef href="CDR0000045389">metastatic</GlossaryTermRef> prostate cancer.
+</Para>
+</Purpose>
+<EligibilityText>
+<Para id="_33">
+<GlossaryTermRef href="CDR0000346518">Eligibility criteria</GlossaryTermRef> include the following:
+</Para>
+<ItemizedList id="_22" Style="bullet">
+<ListItem>
+Elevated <GlossaryTermRef href="CDR0000045618">PSA</GlossaryTermRef> level
+</ListItem>
+<ListItem>No heart or lung disease</ListItem>
+<ListItem>
+For more information about the eligibility criteria for this trial, refer to the <ExternalRef xref="http://www.cancer.gov/clinicaltrials/MSKCC-97007#EntryCriteria_CDR0000065504">Health Professional version.</ExternalRef>
+</ListItem>
+</ItemizedList>
+<Para id="_EligibilityDisclaimer_3">Final eligibility for a clinical trial is determined by the health professionals conducting the trial.</Para>
+</EligibilityText>
+<TreatmentIntervention>
+<Para id="_23">
+Patients will fast for 6 hours then receive an intravenous <GlossaryTermRef href="CDR0000045738">infusion</GlossaryTermRef> of a <GlossaryTermRef href="CDR0000045857">radiolabeled</GlossaryTermRef> amino acid followed by PET scans for 1 hour. Patients will next receive an intravenous infusion of a sugar molecule followed by PET scans for 1 hour.
+</Para>
+</TreatmentIntervention>
+<PatientDisclaimer>
+<Para id="_ProtPatientDisclaimer_4">
+<Strong>Important:</Strong>
+</Para>
+<Para id="_ProtPatientDisclaimer_5">
+For more details about this trial, refer to the <ExternalRef xref="http://www.cancer.gov/clinicaltrials/MSKCC-97007">Health Professional version</ExternalRef> of the trial summary.
+</Para>
+<Para id="_ProtPatientDisclaimer_2">
+If you are interested in participating in a clinical trial, contact your doctor for a referral or call a trial contact person listed below. You may see the same contact person listed at more than one site, however, if you call the number listed you can ask to speak to the study coordinator or person involved with the specific trial you are interested in. If you have questions about cancer or clinical trials, call the Cancer Information Service at 1-800-4-CANCER (1-800-422-6237). General information about clinical trials, including risks, benefits, and costs, can be found on
+
+<ExternalRef xref="http://cancer.gov/clinicaltrials">NCI's Web site</ExternalRef>.
+</Para>
+</PatientDisclaimer>
+</Patient>
+</ProtocolAbstract>
+<ProtocolDetail>
+<StudyType>Clinical trial</StudyType>
+<StudyCategory>
+<StudyCategoryName>Diagnostic</StudyCategoryName>
+<Intervention>
+<InterventionType ref="CDR0000042768">diagnostic procedure</InterventionType>
+<InterventionTypeParent ref="CDR0000256087">Intervention or procedure</InterventionTypeParent>
+<InterventionNameLink ref="CDR0000042609">fludeoxyglucose F 18</InterventionNameLink>
+<InterventionNameLink ref="CDR0000042650">methionine C 11</InterventionNameLink>
+<InterventionNameLink ref="CDR0000042784">positron emission tomography</InterventionNameLink>
+</Intervention>
+</StudyCategory>
+</ProtocolDetail>
+<Eligibility>
+<LowAge>0</LowAge>
+<HighAge>120</HighAge>
+<AgeText>Not specified</AgeText>
+<Gender>Male</Gender>
+<Diagnosis>
+<SpecificDiagnosis ref="CDR0000040281">adenocarcinoma of the prostate</SpecificDiagnosis>
+<DiagnosisParent ref="CDR0000038782">prostate cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000039801">male reproductive cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040460">adult solid tumor</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040461">solid tumor</DiagnosisParent>
+</Diagnosis>
+<Diagnosis>
+<SpecificDiagnosis ref="CDR0000038786">stage IV prostate cancer</SpecificDiagnosis>
+<DiagnosisParent ref="CDR0000038782">prostate cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000039801">male reproductive cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040460">adult solid tumor</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040461">solid tumor</DiagnosisParent>
+</Diagnosis>
+<Diagnosis>
+<SpecificDiagnosis ref="CDR0000038787">recurrent prostate cancer</SpecificDiagnosis>
+<DiagnosisParent ref="CDR0000038782">prostate cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000039801">male reproductive cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040460">adult solid tumor</DiagnosisParent>
+<DiagnosisParent ref="CDR0000040461">solid tumor</DiagnosisParent>
+</Diagnosis>
+</Eligibility>
+<ProtocolPhase>Phase II</ProtocolPhase>
+<ProtocolPhase>Phase III</ProtocolPhase>
+<ExpectedEnrollment>100</ExpectedEnrollment>
+<ProtocolAdminInfo>
+<StartDate DateType="Actual">1997-01-30</StartDate>
+<CurrentProtocolStatus>Closed</CurrentProtocolStatus>
+<ProtocolLeadOrg>
+<LeadOrgName ref="CDR0000033492">Memorial Sloan-Kettering Cancer Center</LeadOrgName>
+<LeadOrgRole>Primary</LeadOrgRole>
+<LeadOrgProtocolID>MSKCC-97007</LeadOrgProtocolID>
+<LeadOrgProtocolStatus>
+<StatusName>Closed</StatusName>
+<StatusDate>2007-04-10</StatusDate>
+</LeadOrgProtocolStatus>
+<LeadOrgPersonnel>
+<ProtPerson ref="CDR0000000714#F1">
+<PersonNameInformation>
+<GivenName>Steven M.</GivenName>
+<SurName>Larson</SurName>
+<ProfessionalSuffix>MD</ProfessionalSuffix>
+</PersonNameInformation>
+<PersonRole>Protocol chair</PersonRole>
+<Contact>
+<ContactDetail>
+<OrganizationName>Memorial Sloan-Kettering Cancer Center</OrganizationName>
+<PostalAddress>
+<Street>Department of Medical Imaging</Street>
+<Street>1275 York Avenue</Street>
+<City>New York</City>
+<PoliticalSubUnitName ref="CDR0000043889">New York</PoliticalSubUnitName>
+<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+<PostalCode_ZIP>10021</PostalCode_ZIP>
+<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+</PostalAddress>
+<Phone>212-639-7373</Phone>
+<TollFreePhone>800-525-2225</TollFreePhone>
+</ContactDetail>
+</Contact>
+</ProtPerson>
+</LeadOrgPersonnel>
+</ProtocolLeadOrg>
+</ProtocolAdminInfo>
+<RegistryInfo>
+<ProtocolTitle Type="Official">11C-Methionine and 2-18F-Fluoro-2-Deoxy-D-Glucose PET Imaging in Patients with Progressive Prostate Cancer</ProtocolTitle>
+<DateSubmittedtoPDQ>1997-04-08</DateSubmittedtoPDQ>
+<ClinicalTrialsGovID xref="http://clinicaltrials.gov/ct/show/NCT00002981">NCT00002981</ClinicalTrialsGovID>
+</RegistryInfo>
+<DateLastModified>2007-04-30</DateLastModified>
+<DateLastVerified>2007-04-29</DateLastVerified>
+</Protocol>

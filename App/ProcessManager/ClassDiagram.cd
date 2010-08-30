@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.ProcessManager.ProcessManager">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>ProcessManager.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAAIEAGIAAACAAAAAAAAAEACAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ProcessManager.ProcessHandler">
+    <Position X="0.5" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>ProcessHandler.cs</FileName>
+      <HashCode>AAAAEAAAAAAAEAAAAQEAAAAABAAAAAIAAAIIAAAAAAQ=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ProcessManager.ProcessMgrLogBuilder">
+    <Position X="3.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>ProcessMgrLogBuilder.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.Common.LogBuilder">
+    <Position X="3.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.ProcessManager.Program">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Program.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ProcessManager.ProjectInstaller">
+    <Position X="6.5" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>ProjectInstaller.cs</FileName>
+      <HashCode>gAAAAAAAACAAAAAAAACAAAACAAAAAAAAAAAAAAAAIAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

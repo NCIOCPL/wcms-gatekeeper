@@ -1,0 +1,162 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BB780523-A6AA-466F-9D35-986D60AEB82D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GateKeeper.DocumentObjects</RootNamespace>
+    <AssemblyName>DocumentObjects</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\GateKeeper.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/DocumentObjects/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DocumentObjects.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AudienceType.cs" />
+    <Compile Include="Country\CountryDocument.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
+    <Compile Include="PreviewTypes.cs" />
+    <Compile Include="Protocol\OrganizationRoleType.cs" />
+    <Compile Include="Protocol\ProtocolContactInfo.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="DocumentType.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="Media\MediaLink.cs" />
+    <Compile Include="Protocol\AlternateProtocolID.cs" />
+    <Compile Include="Protocol\ProtocolDrug.cs" />
+    <Compile Include="DrugInfoSummary\DrugInfoSummaryDocument.cs" />
+    <Compile Include="Protocol\ProtocolPhase.cs" />
+    <Compile Include="Protocol\ProtocolTitle.cs" />
+    <Compile Include="Protocol\TypeOfCancer.cs" />
+    <Compile Include="GeneticsProfessional\FamilyCancerSyndrome.cs" />
+    <Compile Include="GeneticsProfessional\GeneticsProfessionalDocument.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermTranslation.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermDocument.cs" />
+    <Compile Include="Media\MediaDocument.cs" />
+    <Compile Include="DocumentHelper.cs" />
+    <Compile Include="Terminology\TerminologyMenu.cs" />
+    <Compile Include="Protocol\ProtocolModality.cs" />
+    <Compile Include="Organization\OrganizationDocument.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="PoliticalSubUnit\PoliticalSubUnitDocument.cs" />
+    <Compile Include="GeneticsProfessional\PracticeLocation.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\ProtocolDocument.cs" />
+    <Compile Include="Protocol\ProtocolSection.cs" />
+    <Compile Include="Protocol\ProtocolType.cs" />
+    <Compile Include="Summary\SummaryDocument.cs" />
+    <Compile Include="Summary\SummaryRelation.cs" />
+    <Compile Include="Summary\SummaryRelationType.cs" />
+    <Compile Include="Summary\SummarySection.cs" />
+    <Compile Include="Summary\SummarySectionType.cs" />
+    <Compile Include="Summary\SummaryType.cs" />
+    <Compile Include="Terminology\TerminologyDocument.cs" />
+    <Compile Include="Terminology\TerminologyOtherName.cs" />
+    <Compile Include="Terminology\TerminologyType.cs" />
+    <Compile Include="Terminology\TermSemanticType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GateKeeper.snk">
+      <Link>GateKeeper.snk</Link>
+    </None>
+    <None Include="GlossaryTerm\GlossaryTermDocument.cd" />
+    <None Include="Document.cd">
+      <SubType>
+      </SubType>
+    </None>
+    <None Include="Protocol\Protocol.cd" />
+    <None Include="Summary\Summary.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

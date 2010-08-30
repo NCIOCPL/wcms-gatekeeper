@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GKManagers.RequestManager">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>RequestManager.cs</FileName>
+      <HashCode>AAIEAAAGgMVIAgElBAwSAKgLGUCACEAAABAAIMCCAAk=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.DataAccess.RequestMapper">
+    <Position X="4.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>DataAccess\RequestMapper.cs</FileName>
+      <HashCode>AAAIAAASAAAAAAABAAAQAgAAAQAAAEIAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.DataAccess.RequestQuery">
+    <Position X="4.25" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>DataAccess\RequestQuery.cs</FileName>
+      <HashCode>AAIAgAAGEMRIggEBBAwSAKAJmQAACEAAABBAIECAAAg=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.DataAccess.StoredProcNames">
+    <Position X="8" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>DataAccess\Stored_Proc_consts.cs</FileName>
+      <HashCode>IVgIFQQEQViMgBABxMABnpMzmhAgAQAAsNgEFLSQAgg=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

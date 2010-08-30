@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.cancer.gov/webservices/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.cancer.gov/webservices/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.cancer.gov/webservices/">
+      <s:element name="Request">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="source" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="requestID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="message">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RequestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RequestResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RequestStatus">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="source" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="requestID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="statusType" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RequestStatusResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RequestStatusResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RequestSoapIn">
+    <wsdl:part name="parameters" element="tns:Request" />
+  </wsdl:message>
+  <wsdl:message name="RequestSoapOut">
+    <wsdl:part name="parameters" element="tns:RequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="RequestStatusSoapIn">
+    <wsdl:part name="parameters" element="tns:RequestStatus" />
+  </wsdl:message>
+  <wsdl:message name="RequestStatusSoapOut">
+    <wsdl:part name="parameters" element="tns:RequestStatusResponse" />
+  </wsdl:message>
+  <wsdl:portType name="GateKeeperSoap">
+    <wsdl:operation name="Request">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Request Processor</wsdl:documentation>
+      <wsdl:input message="tns:RequestSoapIn" />
+      <wsdl:output message="tns:RequestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RequestStatus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Request Status Report</wsdl:documentation>
+      <wsdl:input message="tns:RequestStatusSoapIn" />
+      <wsdl:output message="tns:RequestStatusSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GateKeeperSoap" type="tns:GateKeeperSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Request">
+      <soap:operation soapAction="http://www.cancer.gov/webservices/Request" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RequestStatus">
+      <soap:operation soapAction="http://www.cancer.gov/webservices/RequestStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GateKeeperSoap12" type="tns:GateKeeperSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Request">
+      <soap12:operation soapAction="http://www.cancer.gov/webservices/Request" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RequestStatus">
+      <soap12:operation soapAction="http://www.cancer.gov/webservices/RequestStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GateKeeper">
+    <wsdl:port name="GateKeeperSoap" binding="tns:GateKeeperSoap">
+      <soap:address location="http://localhost/GateKeeperWS/GateKeeper.asmx" />
+    </wsdl:port>
+    <wsdl:port name="GateKeeperSoap12" binding="tns:GateKeeperSoap12">
+      <soap12:address location="http://localhost/GateKeeperWS/GateKeeper.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

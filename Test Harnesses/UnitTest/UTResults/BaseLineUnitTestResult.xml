@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="GateKeeper" total="26" failures="2" not-run="0" date="2006-11-16" time="09:54:53">
+  <environment nunit-version="2.2.8.0" clr-version="2.0.50727.42" os-version="Microsoft Windows NT 5.2.3790 Service Pack 1" platform="Win32NT" cwd="C:\Documents and Settings\cirollae\My Documents\Visual Studio 2005\Projects\Projects\GateKeeper\Redesign\UnitTest\UTResults" machine-name="6116OTSACIROLLE" user="cirollae" user-domain="NIH" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite name="GateKeeper" success="False" time="8.266" asserts="0">
+    <results>
+      <test-suite name="GateKeeper.UnitTest" success="False" time="8.266" asserts="0">
+        <results>
+          <test-suite name="GateKeeper.UnitTest.DrugInfoSummary" success="True" time="0.406" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.DrugInfoSummary.DrugInfoSummaryTestFixture" success="True" time="0.391" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.DrugInfoSummary.DrugInfoSummaryTestFixture.TestExtract" executed="True" success="True" time="0.359" asserts="7" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.GeneticsProfessional" success="True" time="0.047" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.GeneticsProfessional.GenProfTestFixture" success="True" time="0.047" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.GeneticsProfessional.GenProfTestFixture.TestExtract" executed="True" success="True" time="0.031" asserts="7" />
+                  <test-case name="GateKeeper.UnitTest.GeneticsProfessional.GenProfTestFixture.TestExtract2" executed="True" success="True" time="0.000" asserts="7" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.GlossaryTerm" success="True" time="0.125" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.GlossaryTerm.GlossaryTermExtractorTest" success="True" time="0.125" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.GlossaryTerm.GlossaryTermExtractorTest.TestGlossaryTerm" executed="True" success="True" time="0.063" asserts="6" />
+                  <test-case name="GateKeeper.UnitTest.GlossaryTerm.GlossaryTermExtractorTest.TestGlossaryTermWithMediaLink" executed="True" success="True" time="0.047" asserts="8" />
+                  <test-case name="GateKeeper.UnitTest.GlossaryTerm.GlossaryTermExtractorTest.TestGlossaryTermWithPronounciation" executed="True" success="True" time="0.016" asserts="6" />
+                  <test-case name="GateKeeper.UnitTest.GlossaryTerm.GlossaryTermExtractorTest.TestGlossaryTermWithSpanish" executed="True" success="True" time="0.000" asserts="10" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Logging" success="True" time="0.453" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Logging.LoggingTestFixture" success="True" time="0.438" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Logging.LoggingTestFixture.TestWriteLogMessage" executed="True" success="True" time="0.438" asserts="0" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Media" success="True" time="0.359" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Media.MediaTestFixture" success="True" time="0.359" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Media.MediaTestFixture.TestExtract" executed="True" success="True" time="0.359" asserts="3" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Organization" success="True" time="0.031" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Organization.OrganizationTestFixture" success="True" time="0.016" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Organization.OrganizationTestFixture.TestExtract" executed="True" success="True" time="0.016" asserts="5" />
+                  <test-case name="GateKeeper.UnitTest.Organization.OrganizationTestFixture.TestExtract2" executed="True" success="True" time="0.000" asserts="6" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.PoliticalSubUnit" success="True" time="0.000" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.PoliticalSubUnit.PoliticalSubUnitTestFixture" success="True" time="0.000" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.PoliticalSubUnit.PoliticalSubUnitTestFixture.TestExtract" executed="True" success="True" time="0.000" asserts="4" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Protocol" success="False" time="0.328" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest" success="True" time="0.297" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest.TestExtractCTGovWithOverallContact" executed="True" success="True" time="0.063" asserts="18" />
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest.TestExtractCTGovWithOverallOfficial" executed="True" success="True" time="0.016" asserts="18" />
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest.TestExtractProtocol" executed="True" success="True" time="0.094" asserts="18" />
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest.TestExtractProtocolSpecialCategory" executed="True" success="True" time="0.031" asserts="18" />
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolExtractorTest.TestExtractProtocolStudyCondition" executed="True" success="True" time="0.063" asserts="18" />
+                </results>
+              </test-suite>
+              <test-suite name="GateKeeper.UnitTest.Protocol.ProtocolRendererTestFixture" success="False" time="0.016" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Protocol.ProtocolRendererTestFixture.TestRender" executed="True" success="False" time="0.016" asserts="0">
+                    <failure>
+                      <message><![CDATA[Un-implemented UT...]]></message>
+                      <stack-trace><![CDATA[   at GateKeeper.UnitTest.Protocol.ProtocolRendererTestFixture.TestRender() in C:\Documents and Settings\cirollae\My Documents\Visual Studio 2005\Projects\Projects\GateKeeper\Redesign\UnitTest\Protocol\ProtocolRendererTestFixture.cs:line 83
+]]></stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Summary" success="False" time="6.438" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Summary.SummaryAdapterTestFixture" success="False" time="0.969" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryAdapterTestFixture.TestGetDocument" executed="True" success="False" time="0.969" asserts="0">
+                    <failure>
+                      <message><![CDATA[Test failed: Encountered GetSummary(int documentID): Encountered a SQL exception during DB retrieve calling usp_GetSummaryDocument;DocumentID = 299612;Details = SqlException details: EXECUTE permission denied on object 'usp_GetSummaryDocument', database 'CDRStaging', owner 'dbo'.;Index #0
+Message: EXECUTE permission denied on object 'usp_GetSummaryDocument', database 'CDRStaging', owner 'dbo'.
+LineNumber: 10
+Source: .Net SqlClient Data Provider
+Procedure: usp_GetSummaryDocument
+ exception.]]></message>
+                      <stack-trace><![CDATA[   at GateKeeper.UnitTest.Summary.SummaryAdapterTestFixture.TestGetDocument() in C:\Documents and Settings\cirollae\My Documents\Visual Studio 2005\Projects\Projects\GateKeeper\Redesign\UnitTest\Summary\SummaryAdapterTestFixture.cs:line 123
+]]></stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite name="GateKeeper.UnitTest.Summary.SummaryExtractorTest" success="True" time="0.297" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryExtractorTest.TestExtractSummary" executed="True" success="True" time="0.125" asserts="9" />
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryExtractorTest.TestSummaryExtractWithTables" executed="True" success="True" time="0.172" asserts="7" />
+                </results>
+              </test-suite>
+              <test-suite name="GateKeeper.UnitTest.Summary.SummaryRendererTestFixture" success="True" time="5.156" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryRendererTestFixture.TestRender" executed="True" success="True" time="2.453" asserts="0" />
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryRendererTestFixture.TestRender2" executed="True" success="True" time="0.938" asserts="0" />
+                  <test-case name="GateKeeper.UnitTest.Summary.SummaryRendererTestFixture.TestRenderLevel4Sections" executed="True" success="True" time="1.766" asserts="0" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite name="GateKeeper.UnitTest.Terminology" success="True" time="0.063" asserts="0">
+            <results>
+              <test-suite name="GateKeeper.UnitTest.Terminology.TerminologyTestFixture" success="True" time="0.047" asserts="0">
+                <results>
+                  <test-case name="GateKeeper.UnitTest.Terminology.TerminologyTestFixture.TestExtract" executed="True" success="True" time="0.000" asserts="9" />
+                  <test-case name="GateKeeper.UnitTest.Terminology.TerminologyTestFixture.TestExtractMenu" executed="True" success="True" time="0.016" asserts="8" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

@@ -1,0 +1,404 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{23031B4A-982B-4CBE-BC15-320A463719B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GateKeeper.UnitTest</RootNamespace>
+    <AssemblyName>UnitTest</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/UnitTest/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NCILibrary.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b68440c3db501d2b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\NCILibrary\NCILibrary.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DrugInfoSummary\DrugInfoSummaryDeleteTest.cs" />
+    <Compile Include="DrugInfoSummary\DrugInfoSummaryPushTest.cs" />
+    <Compile Include="DrugInfoSummary\DrugInfoSummarySaveTest.cs" />
+    <Compile Include="Gatekeeper\BatchTestFixture.cs" />
+    <Compile Include="Gatekeeper\ImportExportTest.cs" />
+    <Compile Include="Gatekeeper\IntegrationTestFixture.cs" />
+    <Compile Include="Gatekeeper\RequestTestFixture.cs" />
+    <Compile Include="Gatekeeper\WebServiceTestFixture.cs" />
+    <Compile Include="GeneticsProfessional\GenProfDeleteTest.cs" />
+    <Compile Include="GeneticsProfessional\GenProfPushTest.cs" />
+    <Compile Include="GlossaryTerm\GlossaryDeleteTest.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermSaveTest.cs" />
+    <Compile Include="GeneticsProfessional\GenProfSaveTest.cs" />
+    <Compile Include="GlossaryTerm\GlossaryPushTest.cs" />
+    <Compile Include="HiPerfTimer.cs" />
+    <Compile Include="Logging\LoggingTestFixture.cs" />
+    <Compile Include="Media\MediaDeleteTest.cs" />
+    <Compile Include="Media\MediaPushTest.cs" />
+    <Compile Include="Media\MediaSaveTest.cs" />
+    <Compile Include="Messaging\MessagingTest.cs" />
+    <Compile Include="Organization\OrganizationDeleteTest.cs" />
+    <Compile Include="Organization\OrganizationPushTest.cs" />
+    <Compile Include="Organization\OrganizationSaveTest.cs" />
+    <Compile Include="PoliticalSubUnit\PoliticalSubUnitDeleteTest.cs" />
+    <Compile Include="PoliticalSubUnit\PoliticalSubUnitPushTest.cs" />
+    <Compile Include="PoliticalSubUnit\PoliticalSubUnitSaveTest.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Protocol\ProtocolSaveTest.cs" />
+    <Compile Include="Protocol\ProtocolPushTest.cs" />
+    <Compile Include="Protocol\ProtocolDeleteTest.cs" />
+    <Compile Include="Summary\SummaryPushTest.cs" />
+    <Compile Include="Summary\SummarySaveTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Summary\SummaryDeleteTest.cs" />
+    <Compile Include="Terminology\TerminologyDeleteTest.cs" />
+    <Compile Include="Terminology\TerminologyPushTest.cs" />
+    <Compile Include="Terminology\TerminologySaveTest.cs" />
+    <Compile Include="UTHelper.cs" />
+    <Compile Include="Web References\GateKeeperWS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="UnitTest.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Web References\GateKeeperWS\GateKeeper.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\BatchManager\BatchManager.csproj">
+      <Project>{817A5A3A-9088-483E-A591-AF0A7B41374A}</Project>
+      <Name>BatchManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Common\Common.csproj">
+      <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\ContentRendering\ContentRendering.csproj">
+      <Project>{93A2AFCF-1683-464A-8208-590E7FA7EC09}</Project>
+      <Name>ContentRendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\DataAccess\DataAccess.csproj">
+      <Project>{FEE52BA5-C1CA-4D42-B905-1C42B933E9DF}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\DocumentManager\DocumentManager.csproj">
+      <Project>{FE716DD2-A9A1-4253-AB75-7F27D9CC2C51}</Project>
+      <Name>DocumentManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\DocumentObjects\DocumentObjects.csproj">
+      <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
+      <Name>DocumentObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Logging\Logging.csproj">
+      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\RequestManager\RequestManager.csproj">
+      <Project>{899D3B57-B535-4899-8ED5-2BD900065555}</Project>
+      <Name>RequestManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UTResults\BaseLineUnitTestResult.xml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\GateKeeperWS\GateKeeper.disco" />
+    <None Include="Web References\GateKeeperWS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="XMLData\CTGov363918.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\CTGovOverallOfficial363917.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\CTGovWithOverallContact360607.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\DrugInfoSummary487488.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\DrugInfoSummary487511.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\DrugInfoSummary495323.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\DrugInfoSummary502187.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GeneticsProfessional.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GeneticsProfessional2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GenProf30010007.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GenProf30010173.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GenProf30010249.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GenProf30010355.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTerm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTermWithMedia.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTermWithMediaAndMutiLang.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTermWithPronounciation.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTermWithSpanish.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Media.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Media415499.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Media415511.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Media466541.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Organization27218.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Organization27271.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Organization346204.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Organization346415.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Organization34983.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PoliticalSubUnit43856.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PoliticalSubUnit43870.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PoliticalSubUnit43920.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PostXSL\CTGovOverallOfficial363917_PostXSL.xml" />
+    <Content Include="XMLData\PostXSL\CTGovWithOverallContact360607_PostXSL.xml" />
+    <Content Include="XMLData\PostXSL\ProtocolWithMultipleProtPerson271939_PostXSL_HP.xml" />
+    <Content Include="XMLData\PostXSL\SummaryAcupuncture445441_PostXSL.xml" />
+    <Content Include="XMLData\PostXSL\SummaryPatientVersionPostXSL.xml" />
+    <Content Include="XMLData\PostXSL\SummarySectionReference_PostXSL.xml" />
+    <Content Include="XMLData\PostXSL\SummaryWithL4_PostXSL.xml" />
+    <Content Include="XMLData\PostXSL\SummaryWithTable299612_PostXSL.xml" />
+    <Content Include="XMLData\Protocol517312.xml" />
+    <Content Include="XMLData\ProtocolClosed65755.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolCTGovWithOverallContact360607.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolCTGovWithOverallOfficial363917.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolCTGovWithSpecialChar460115.xml" />
+    <Content Include="XMLData\ProtocolCTGovWtihMultipleSites467954.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithDuplicateContactNullPerson446178.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithMultipleLeadOrg64184.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithMultiplePersonsInOneSite65504.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithMultipleProtPerson271939.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithMultipleSites491296.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithSpecialCategory347393.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithSpecialCategory67377.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\ProtocolWithStudyCondition349374.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryAcupuncture445441.xml" />
+    <Content Include="XMLData\SummaryEnglishHPWithReference62787.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryHPSpanish256668.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryPatientSpanish256762.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryPatientVersion258017.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryPatientWithMeida62955.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummarySectionReference257999.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummarySummaryRefLink62863.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\SummaryWithTable299612.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Terminology.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyDefinition43236.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyDic37779.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyMenu.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyMenu41919.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyMenuChild39069.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyMenuGrandpa39347.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\TerminologyMenuParent37900.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost/GateKeeperWS/GateKeeper.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\GateKeeperWS\</RelPath>
+      <UpdateFromURL>http://localhost/GateKeeperWS/GateKeeper.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>UnitTest_GateKeeperWS_GateKeeper</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

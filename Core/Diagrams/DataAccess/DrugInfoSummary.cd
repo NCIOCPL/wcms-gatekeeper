@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Comment CommentText="Business object representation; &#xD;&#xA;This class represents a document object and is used by extract/rendering/persistence classes.">
+    <Position X="4.896" Y="0.552" Height="0.6" Width="2.648" />
+  </Comment>
+  <Comment CommentText="Extraction class; &#xD;&#xA;Class to extract a business object from input XML.">
+    <Position X="8.651" Y="2.889" Height="0.622" Width="1.785" />
+  </Comment>
+  <Comment CommentText="Persistence class; &#xD;&#xA;Class that contains calls to document specific stored procedures.">
+    <Position X="8.26" Y="6.888" Height="0.569" Width="2.108" />
+  </Comment>
+  <Comment CommentText="Rendering class; Render class supplies the Xsl to the base class and also overrides the default render functionality if necessary.">
+    <Position X="2.25" Y="7.5" Height="0.694" Width="1.934" />
+  </Comment>
+  <Comment CommentText="Workflow class; &#xD;&#xA;This class is used by the workflow manager (constructed via a factory) to delegate the workflow/processing functions.">
+    <Position X="2.137" Y="12.64" Height="0.788" Width="2.337" />
+  </Comment>
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="1.75" Y="0.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument">
+    <Position X="2" Y="4.5" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.DrugInfoSummaryRenderer">
+    <Position X="2" Y="11" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.DocumentRenderer">
+    <Position X="1.5" Y="8.5" Width="3.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DocumentQuery">
+    <Position X="7.25" Y="7.75" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CancerGov.DrugInfoSummaryQuery">
+    <Position X="7.25" Y="12.75" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.DrugInfoSummaryExtractor">
+    <Position X="7.5" Y="3.75" Width="5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DataAccessManager">
+    <Position X="1.5" Y="13.75" Width="3.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+</ClassDiagram>

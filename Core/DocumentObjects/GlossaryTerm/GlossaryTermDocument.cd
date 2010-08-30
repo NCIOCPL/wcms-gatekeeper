@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>GlossaryTerm\GlossaryTermDocument.cs</FileName>
+      <HashCode>AAAAAAAAAAAIAAAEAAAAAAAIAAAAAAAggAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="GlossaryTermTranslationMap" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="GlossaryTermTranslationMap" Type="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermTranslation">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.954" Y="0.091" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermTranslation">
+    <Position X="6" Y="0.75" Width="3.25" />
+    <TypeIdentifier>
+      <FileName>GlossaryTerm\GlossaryTermTranslation.cs</FileName>
+      <HashCode>AAAAQQBACAAAAAAWAAAAAAABAAABBABUAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="DefinitionList" />
+    </ShowAsCollectionAssociation>
+    <AssociationLine Name="DefinitionList" Type="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDefinition">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.162" Y="0.675" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDefinition">
+    <Position X="6" Y="5" Width="3.5" />
+    <TypeIdentifier>
+      <FileName>GlossaryTerm\GlossaryTermDefinition.cs</FileName>
+      <NewMemberFileName>GlossaryTermDefinition.cs</NewMemberFileName>
+      <HashCode>AAAAAABAAAAAAAAEAAAAAAAAAAAIBAAYAAAACAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="14.5" Y="0.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Document.cs</FileName>
+      <HashCode>IAAACAAABAgIAAQMIAAACAAEAAAhBAAAIQAAAAgAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DocumentType" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Country">
+    <Position X="0.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>Country.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAIAAAAKAAAAAAAEAAIABAACAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.DocumentPathMap">
+    <Position X="4" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>DocumentPathMap.cs</FileName>
+      <HashCode>AAQAAAAAAAAAAAAACAAAAAAABABAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Terminology.TerminologyDocument">
+    <Position X="3" Y="4" Width="3" />
+    <TypeIdentifier>
+      <FileName>Terminology\TerminologyDocument.cs</FileName>
+      <HashCode>AgAIAIIQCBAAAAA0AAAAIQAAAAAAABAAoAAAAyAAAAI=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GeneticsProfessional.GeneticsProfessionalDocument">
+    <Position X="6.75" Y="4" Width="3.5" />
+    <TypeIdentifier>
+      <FileName>GeneticsProfessional\GeneticsProfessionalDocument.cs</FileName>
+      <HashCode>QAAAAEAAAABAAAAsQAAAIAAAAAIAAIACICCACAAgAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolDocument">
+    <Position X="11" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolDocument.cs</FileName>
+      <HashCode>JIQDggGM04IBSdBEMsRAABKAAIAAgKAAAEAhAABBAYA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Summary.SummaryDocument">
+    <Position X="1" Y="10.25" Width="3.75" />
+    <TypeIdentifier>
+      <FileName>Summary\SummaryDocument.cs</FileName>
+      <HashCode>IAIIIAAA2CAgUNwkMBAQABAAAAABUAggAQAAACACABA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="RelationList" />
+      <Property Name="SectionList" />
+      <Property Name="Level4SectionList" />
+      <Property Name="Level5SectionList" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Media.MediaDocument">
+    <Position X="6.5" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Media\MediaDocument.cs</FileName>
+      <HashCode>AAACAAAADABAACwEQAAkAEAAEAAAABAACAAAAAgAAgA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.PoliticalSubUnit.PoliticalSubUnitDocument">
+    <Position X="8.75" Y="10.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>PoliticalSubUnit\PoliticalSubUnitDocument.cs</FileName>
+      <HashCode>IAAAACAAAAAAAIAEAACAAAAAAAAAAIAAAACAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument">
+    <Position X="11" Y="10.25" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>GlossaryTerm\GlossaryTermDocument.cs</FileName>
+      <HashCode>AAAAAABAABAAABAUAAAAAAAQAAAAAAAAAEAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TermNameTranslationList" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Organization.OrganizationDocument">
+    <Position X="14.5" Y="10.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Organization\OrganizationDocument.cs</FileName>
+      <HashCode>AgAAABAAAAAAAAAFAAAAAQAAAAAAAAAAEAAABAIAAAQ=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Person">
+    <Position X="16.75" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Person.cs</FileName>
+      <HashCode>AAACAIAAAgAAAAAAAAAEAAAABAAAAAAAAAAAAAAAAAI=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument">
+    <Position X="14.25" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>DrugInfoSummary\DrugInfoSummaryDocument.cs</FileName>
+      <HashCode>AAIAAAAAwAAgAcAEIAAAAAAAAAAAAQAAAAAAAAACAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Summary.SummaryRelation">
+    <Position X="6.75" Y="14.75" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>Summary\SummaryRelation.cs</FileName>
+      <HashCode>AAAAAAAAAAEAQAAEAEAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RelationType" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermNameTranslation">
+    <Position X="11.5" Y="13" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>GlossaryTerm\GlossaryTermNameTranslation.cs</FileName>
+      <HashCode>AAAAAAAACAAAAAgEAAEAAAABAAABAAAAAQAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Summary.SummarySection">
+    <Position X="6.75" Y="17" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>Summary\SummarySection.cs</FileName>
+      <HashCode>AAAASEAAQExIAEAEAAAAAAgchAEAFIAJABAgCAAQJAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Enum Name="GateKeeper.DocumentObjects.DocumentType">
+    <Position X="11.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DocumentType.cs</FileName>
+      <HashCode>AICABAAAAAAAAAAAIAAAAABAAAIAAAgAAQAAAAAAIAQ=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GateKeeper.DocumentObjects.AudienceType">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>AudienceType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAACAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GateKeeper.DocumentObjects.Summary.SummaryRelationType">
+    <Position X="10.5" Y="15.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Summary\SummaryRelationType.cs</FileName>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>

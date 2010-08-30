@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GKManagers.DocumentPromoterFactory">
+    <Position X="3.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>DocumentPromoterFactory.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.DocumentManager">
+    <Position X="0.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>DocumentManager.cs</FileName>
+      <HashCode>AAAAAAABAABABAQBQAAgAAAgAAEAAAAAAAAEAAAAAgQ=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="GKManagers.DocumentManager.VersionComparer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DocumentManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GKManagers.DocumentManager.ExistenceCheck" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DocumentManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GKManagers.DocumentManager.GroupLocation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DocumentManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+  </Class>
+  <Class Name="GKManagers.PromotionWorker">
+    <Position X="5.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>PromotionWorker.cs</FileName>
+      <HashCode>AAAAAAAAAACAAAAACAAAJAAAAAAAAQEAACMAigAAAgA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="GKManagers.PromotionWorker.VersionUpdater" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>PromotionWorker.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+  </Class>
+  <Class Name="GKManagers.DocMgrLogBuilder">
+    <Position X="0.75" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>DocMgrLogBuilder.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.Common.LogBuilder">
+    <Position X="0.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GKManagers.DocumentTypeTracker">
+    <Position X="4.25" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>DocumentCacheSupervisor.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAAAAQAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GKManagers.DocumentTypeFlag">
+    <Position X="6.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>DocumentCacheSupervisor.cs</FileName>
+      <HashCode>AACCgAAAAAAAAAAAIAICAABAAAAAAggAEAAABAAAIgQ=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>
