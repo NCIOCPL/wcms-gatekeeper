@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CMSManager</RootNamespace>
+    <AssemblyName>CMSManager</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CMSManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\RxWebServices\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="PercussionWSDL\rhythmyx.wsdl" />
+    <None Include="Service References\RxWebServices\assembly.wsdl" />
+    <None Include="Service References\RxWebServices\assembly.xsd" />
+    <None Include="Service References\RxWebServices\assemblyServices.xsd" />
+    <None Include="Service References\RxWebServices\BasicObjects.xsd" />
+    <None Include="Service References\RxWebServices\common.xsd" />
+    <None Include="Service References\RxWebServices\content.wsdl" />
+    <None Include="Service References\RxWebServices\content.xsd" />
+    <None Include="Service References\RxWebServices\ContentEditorLocalDef.xsd" />
+    <None Include="Service References\RxWebServices\ContentEditorSharedDef.xsd" />
+    <None Include="Service References\RxWebServices\ContentEditorSystemDef.xsd" />
+    <None Include="Service References\RxWebServices\contentServices.xsd" />
+    <None Include="Service References\RxWebServices\faults.xsd" />
+    <None Include="Service References\RxWebServices\rhythmyx.wsdl" />
+    <None Include="Service References\RxWebServices\security.wsdl" />
+    <None Include="Service References\RxWebServices\security.xsd" />
+    <None Include="Service References\RxWebServices\securityServices.xsd" />
+    <None Include="Service References\RxWebServices\system.wsdl" />
+    <None Include="Service References\RxWebServices\system.xsd" />
+    <None Include="Service References\RxWebServices\systemServices.xsd" />
+    <None Include="Service References\RxWebServices\ui.wsdl" />
+    <None Include="Service References\RxWebServices\ui.xsd" />
+    <None Include="Service References\RxWebServices\uiServices.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\RxWebServices\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RxWebServices\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RxWebServices\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.AddFolderResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.CreateRelationshipResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.FilterByRuntimeVisibilityResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.FindDependentsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.FindFolderPathResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.FindOwnersResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.FindPathIdsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.GetAllowedTransitionsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.GetAssemblyUrlsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.LoginResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSAaRelationship.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSAction.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSAssemblyTemplate.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSAuditTrail.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSAutoTranslation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSChildEntry.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSCommunity.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSContentTypeSummary.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSDisplayFormat.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSItem.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSItemStatus.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSItemSummary.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSKeyword.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSLocale.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSRelationship.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSRevisions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSRole.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSSearchDef.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSSearchResults.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSTemplateSlot.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSViewDef.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.PSWorkflow.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.RelationshipConfigSummary.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.SaveFoldersResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.SaveItemsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\CMSManager.RxWebServices.TransitionItemsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RxWebServices\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
