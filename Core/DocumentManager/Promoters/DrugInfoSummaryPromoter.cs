@@ -60,6 +60,7 @@ namespace GKManagers
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
                     drugQuery.SaveDocument(drugInfoSummary, UserName);
+                    //call store(doctype object);
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
