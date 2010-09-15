@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="CMSManager_PercussionWebSvc_assembly" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://localhost:9992/Rhythmyx/webservices/assemblySOAP</Value>
+      <Value Profile="(Default)">http://156.40.134.66:9922/Rhythmyx/webservices/assemblySOAP</Value>
     </Setting>
   </Settings>
 </SettingsFile>
