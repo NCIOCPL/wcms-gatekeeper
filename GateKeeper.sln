@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Test Harnesses\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMSManager", "Core\CMSManager\CMSManager.csproj", "{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromotionTester", "Test Harnesses\PromotionTester\PromotionTester.csproj", "{5371F37C-AE84-4FF2-8844-A016EE30F0F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -251,6 +253,16 @@ Global
 		{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Release|.NET.ActiveCfg = Release|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +287,7 @@ Global
 		{4DB13B0B-22BE-4135-A165-6E40F9C1A3AB} = {8CC5D9FB-A50D-4CE7-870A-58539149C0EA}
 		{F6E770E0-C1D5-42D9-AD23-B55156F80BB7} = {8CC5D9FB-A50D-4CE7-870A-58539149C0EA}
 		{23031B4A-982B-4CBE-BC15-320A463719B2} = {8CC5D9FB-A50D-4CE7-870A-58539149C0EA}
+		{5371F37C-AE84-4FF2-8844-A016EE30F0F1} = {8CC5D9FB-A50D-4CE7-870A-58539149C0EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
