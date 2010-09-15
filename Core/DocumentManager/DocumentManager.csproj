@@ -103,6 +103,10 @@
       <Project>{817A5A3A-9088-483E-A591-AF0A7B41374A}</Project>
       <Name>BatchManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CMSManager\CMSManager.csproj">
+      <Project>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</Project>
+      <Name>CMSManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
       <Name>Common</Name>

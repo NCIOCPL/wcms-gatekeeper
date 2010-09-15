@@ -11,7 +11,7 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.ContentRendering;
 using GKManagers.BusinessObjects;
-
+using GKManagers.CMS;
 namespace GKManagers
 {
     /// <summary>
@@ -59,8 +59,10 @@ namespace GKManagers
                 // Save drug info summary data into database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
-                    drugQuery.SaveDocument(drugInfoSummary, UserName);
-                    //call store(doctype object);
+                    //drugQuery.SaveDocument(drugInfoSummary, UserName);
+                    //Call cms manager store methos to push document to precussion.
+                    CMSManager cmsMgr = new CMSManager();
+                    cmsMgr.Store(drugInfoSummary);
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
