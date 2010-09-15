@@ -9,7 +9,7 @@ using GKManagers.BusinessObjects;
 
 namespace GKManagers
 {
-    class DocumentPromoterFactory
+    public class DocumentPromoterFactory
     {
         /// <summary>
         /// 

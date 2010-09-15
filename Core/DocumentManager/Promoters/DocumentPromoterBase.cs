@@ -10,7 +10,7 @@ using GKManagers.BusinessObjects;
 
 namespace GKManagers
 {
-    abstract class DocumentPromoterBase
+    public abstract class DocumentPromoterBase
     {
         private RequestData _dataBlock;     // Document to promote.
         private int _batchID;               // What batch is this promotion for.
