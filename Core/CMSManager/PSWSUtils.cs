@@ -88,5 +88,83 @@ namespace GKManagers.CMS
             logoutReq.SessionId = rxSession;
             securitySvc.Logout(logoutReq);
         }
+
+        public static PSFolder[] AddFolderTree(contentSOAP contentSvc,
+            string folderPath)
+        {
+            AddFolderTreeRequest req = new AddFolderTreeRequest();
+            req.Path = folderPath;
+            return contentSvc.AddFolderTree(req);
+        }
+
+        public static PSItemSummary[] FindFolderChildren(contentSOAP contentSvc,
+            string folderPath)
+        {
+            FindFolderChildrenRequest req = new FindFolderChildrenRequest();
+            req.Folder = new FolderRef();
+            req.Folder.Path = folderPath;
+            return contentSvc.FindFolderChildren(req);
+        }
+
+        public static PSItem CreateItem(contentSOAP contentSvc, string contentType)
+        {
+            CreateItemsRequest request = new CreateItemsRequest();
+            request.ContentType = contentType;
+            request.Count = 1;
+            PSItem[] items = contentSvc.CreateItems(request);
+            return items[0];
+        }
+
+        public static void CheckinItem(contentSOAP contentSvc, long id)
+        {
+            CheckinItemsRequest req = new CheckinItemsRequest();
+            req.Id = new long[] { id };
+            contentSvc.CheckinItems(req);
+        }
+
+        public static void TransitionItem(systemSOAP systemSvc, long id,
+            string trigger)
+        {
+            TransitionItemsRequest req = new TransitionItemsRequest();
+            req.Id = new long[] { id };
+            req.Transition = trigger;
+            systemSvc.TransitionItems(req);
+        }
+        public static void AddFolderChildren(contentSOAP contentSvc,
+            string folderPath, long[] childIds)
+        {
+            AddFolderChildrenRequest req = new AddFolderChildrenRequest();
+            req.ChildIds = childIds;
+            req.Parent = new FolderRef();
+            req.Parent.Path = folderPath;
+            contentSvc.AddFolderChildren(req);
+        }
+        public static long SaveItem(contentSOAP contentSvc, PSItem item)
+        {
+            SaveItemsRequest req = new SaveItemsRequest();
+            req.PSItem = new PSItem[] { item };
+            SaveItemsResponse response = contentSvc.SaveItems(req);
+
+            return response.Ids[0];
+        }
+        public static PSItemStatus PrepareForEdit(contentSOAP contentSvc, long id)
+        {
+            return contentSvc.PrepareForEdit(new long[] { id })[0];
+        }
+
+        public static PSItem LoadItem(contentSOAP contentSvc, long id)
+        {
+            LoadItemsRequest req = new LoadItemsRequest();
+            req.Id = new long[] { id };
+            req.IncludeBinary = true;
+            PSItem[] items = contentSvc.LoadItems(req);
+            return items[0];
+        }
+        public static void ReleaseFromEdit(contentSOAP contentSvc, PSItemStatus status)
+        {
+            ReleaseFromEditRequest req = new ReleaseFromEditRequest();
+            req.PSItemStatus = new PSItemStatus[] { status };
+            contentSvc.ReleaseFromEdit(req);
+        }
     }
 }

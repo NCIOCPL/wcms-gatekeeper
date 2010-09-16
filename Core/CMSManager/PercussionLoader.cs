@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GKManagers.CMS.PercussionWebSvc;
+using System.Configuration;
 namespace GKManagers.CMS
 {
     public class PercussionLoader
@@ -92,16 +93,19 @@ namespace GKManagers.CMS
         {            
             // Load the connection information
             Dictionary<string, string> props = new Dictionary<string, string>();
-
             props.Add(PercussionLoader.PROTOCOL, "http");
             props.Add(PercussionLoader.HOST, "156.40.134.66");
-            props.Add(PercussionLoader.PORT, "9922");
+            props.Add(PercussionLoader.PORT, "9921");
             
             // Load the login credentail
-            props.Add(PercussionLoader.USER_NAME, "prasadbk");
+            props.Add(PercussionLoader.USER_NAME, "rmungara");
             props.Add(PercussionLoader.PASSWORD, "password");
             props.Add(PercussionLoader.COMMUNITY, "CancerGov");
+            props.Add(PercussionLoader.TARGET_FOLDER, "//Sites/CancerGov/cancertopics/druginfo/methotrexate");
+            props.Add(PercussionLoader.CONTENT_TYPE, "cgvTestType");
+
             m_props = props;
+
         }
 
        public void Login()
@@ -124,5 +128,93 @@ namespace GKManagers.CMS
        {
            PSWSUtils.Logout(m_secService, m_rxSession);
        }
+
+
+      public void CreateTargetFolder(string targetFolder)
+       {
+           PSFolder[] folders = PSWSUtils.AddFolderTree(m_contService,
+               "//Sites/CancerGov/" + targetFolder);
+
+       }
+
+
+      public void UploadDrungInfoContentItem(List<Dictionary<string, string>> m_itemData)
+      {
+          // get the items in the target folder
+          PSItemSummary[] curItems = PSWSUtils.FindFolderChildren(m_contService,
+              m_props[TARGET_FOLDER]);
+
+          foreach (Dictionary<string, string> itemFields in m_itemData)
+          {
+              {
+                  CreateItem(itemFields);
+              }
+          }
+
+      }
+
+      PSItemSummary GetItem(PSItemSummary[] curItems, String sysTitle)
+      {
+          foreach (PSItemSummary item in curItems)
+          {
+              if (item.name.ToLower() == sysTitle.ToLower())
+                  return item;
+          }
+          return null;
+
+      }
+
+      private void UpdateItem(long id, Dictionary<string, string> fields)
+      {
+          PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
+
+          PSItem item = PSWSUtils.LoadItem(m_contService, id);
+          SetItemFields(item, fields);
+          PSWSUtils.SaveItem(m_contService, item);
+
+          PSWSUtils.ReleaseFromEdit(m_contService, status);
+
+      }
+
+      private void SetItemFields(PSItem item, Dictionary<string, string> fields)
+      {
+          foreach (PSField srcField in item.Fields)
+          {
+              string nameValue;
+              if (fields.TryGetValue(srcField.name, out nameValue))
+              {
+                  PSFieldValue value = new PSFieldValue();
+                  value.RawData = nameValue;
+                  srcField.PSFieldValue = new PSFieldValue[] { value };
+              }
+          }
+      }
+
+      private void CreateItem(Dictionary<string, string> fields)
+      {
+          PSItem item = PSWSUtils.CreateItem(m_contService, m_props[CONTENT_TYPE]);
+
+          SetItemFields(item, fields);
+
+          long id = PSWSUtils.SaveItem(m_contService, item);
+          PSWSUtils.CheckinItem(m_contService, id);
+          //uncomment after fixing the save bug
+          //PSWSUtils.TransitionItem(m_sysService, id, "DirecttoPublic");
+
+          // Attach the Content Item to the Target folder
+          String path = m_props[TARGET_FOLDER];
+          PSWSUtils.AddFolderChildren(m_contService, path, new long[] { id });
+
+      }
+
+      public static void TransitionItem(systemSOAP systemSvc, long id,
+          string trigger)
+      {
+          TransitionItemsRequest req = new TransitionItemsRequest();
+          req.Id = new long[] { id };
+          req.Transition = trigger;
+          systemSvc.TransitionItems(req);
+      }
+
     }
 }
