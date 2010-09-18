@@ -33,10 +33,13 @@ namespace GKManagers.CMSManager.DocumentProcessor
 
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
-
             /// All the nifty document processing code starts here.
             throw new NotImplementedException();
 
+            // Get content item (Create new, or load existing)
+            // Convert properties to CMS fields.
+            // Map Relationships.
+            // Store content item.
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
