@@ -6,7 +6,7 @@ using System.Configuration;
 using System.Xml;
 using System.Collections;
 
-namespace GKManagers.CMS.Configuration
+namespace GKManagers.CMSManager.Configuration
 {
     public class PercussionConfig : ConfigurationSection
     {

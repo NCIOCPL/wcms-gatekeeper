@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Web.Services.Protocols;
-using GKManagers.CMS.PercussionWebSvc;
-namespace GKManagers.CMS
+using GKManagers.CMSManager.PercussionWebSvc;
+
+namespace GKManagers.CMSManager
 {
     public class PSWSUtils
     {

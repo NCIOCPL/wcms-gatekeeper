@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GKManagers.CMS.Properties {
+namespace GKManagers.CMSManager.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -26,7 +26,7 @@ namespace GKManagers.CMS.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://156.40.134.66:9922/Rhythmyx/webservices/assemblySOAP")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:9992/Rhythmyx/webservices/assemblySOAP")]
         public string CMSManager_PercussionWebSvc_assembly {
             get {
                 return ((string)(this["CMSManager_PercussionWebSvc_assembly"]));

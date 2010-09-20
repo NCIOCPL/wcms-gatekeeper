@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using GKManagers.CMSManager;
 
 namespace GKManagers.CMSManager.CMS
 {
@@ -26,7 +25,7 @@ namespace GKManagers.CMSManager.CMS
         // when the CMSController is created. Login occurs when the CMSController constructor
         // is run.  This instance is used by all CMSController methods which need to communicate
         // with the Percussion system.
-        private readonly PercussionLoader percCMS = new PercussionLoader();
+        private readonly PercussionSvc percCMS = new PercussionSvc();
 
         #endregion
 
