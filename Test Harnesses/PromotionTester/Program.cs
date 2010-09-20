@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 
 using GKManagers;
 using GKManagers.BusinessObjects;
+using GKManagers.CMSManager.CMS;
 using GateKeeper.Common;
 using GateKeeper.DataAccess.GateKeeper;
 
@@ -29,6 +30,7 @@ where:
         {
             if (args.Length == 2)
             {
+                CMSController cmsController = new CMSController();
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
 
@@ -37,7 +39,7 @@ where:
                 // Instantiate a promoter and go to town.
                 DocumentPromoterBase promoter =
                     DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                promoter.Promote(xPathManager);
+                promoter.Promote(xPathManager, cmsController);
 
             }
             else
