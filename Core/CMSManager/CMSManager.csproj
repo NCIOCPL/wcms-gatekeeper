@@ -63,7 +63,7 @@
     <Compile Include="DocumentProcessor\IDocumentProcessor.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />
-    <Compile Include="CMS\Percussion.cs" />
+    <Compile Include="CMS\PercussionSvc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
