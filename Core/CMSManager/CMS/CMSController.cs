@@ -7,6 +7,10 @@ using GKManagers.CMSManager;
 
 namespace GKManagers.CMSManager.CMS
 {
+    /// <summary>
+    /// This class is the sole means by which any code in the GateKeeper system may interact with Percussion.
+    /// It manages the single login session used for all interations, and performs all needed operations.
+    /// </summary>
     public class CMSController
     {
         // TODO: The PercussionLoader class needs to move to the CMS namespace.
@@ -28,14 +32,16 @@ namespace GKManagers.CMSManager.CMS
         public CMSController()
         {
             // Percussion system login and any other needed intitialization goes here.
+            // The login ID and password must be loaded from the application's configuration file.
         }
 
 
         /// A few methods which are definitely needed:
-        ///     CreateContentItem (based on a string containing the Content Type).
-        ///     LoadContentItem (Does this need to be a content ID? Can it be a path?)
-        ///     ContentItemExists (Boolean -- true if an item exists, false otherwise).
+        ///     CreateContentItem - Creates a blank content item. Based on a string containing the Content Type.
+        ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
+        ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect
+        ///                         based on a path and pretty_url_name field. Otherwise, we need to keep this information
+        ///                         in a GateKeeper-owned database.
         ///     CreatePath (Based on a string containing the path. Is a site name needed?)
-        ///     
     }
 }
