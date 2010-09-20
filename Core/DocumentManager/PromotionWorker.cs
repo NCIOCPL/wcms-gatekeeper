@@ -5,6 +5,7 @@ using System.Threading;
 
 using GateKeeper.DataAccess.GateKeeper;
 using GKManagers.BusinessObjects;
+using GKManagers.CMSManager.CMS;
 
 namespace GKManagers
 {
@@ -23,6 +24,7 @@ namespace GKManagers
         private bool _validationNeeded;
         private string _userName;
         private DocumentXPathManager _xPathManager;
+        private CMSController _cmsController;
         private DocumentVersionMap _locationMap;
         private DocumentStatusMap _statusMap;
 
@@ -56,7 +58,8 @@ namespace GKManagers
             ProcessActionType action,
             bool mustValidate,
             string userName, 
-            DocumentXPathManager xPathManager, 
+            DocumentXPathManager xPathManager,
+            CMSController cmsController,
             DocumentVersionMap locationMap, 
             DocumentStatusMap statusMap )
         {
@@ -72,6 +75,7 @@ namespace GKManagers
             _statusMap = statusMap;
             _userName = userName;
             _xPathManager = xPathManager;
+            _cmsController = cmsController;
         }
 
         public void PromotionCallback(Object threadContext)
@@ -91,7 +95,7 @@ namespace GKManagers
                 {
                     DocumentPromoterBase documentPromoter =
                         DocumentPromoterFactory.Create(docData, _batchID, _action, _userName);
-                    documentPromoter.Promote(_xPathManager);
+                    documentPromoter.Promote(_xPathManager, _cmsController);
                     _promotionSucceeded = documentPromoter.PromotionWasSuccessful;
                     documentPromoter = null;
                 }
