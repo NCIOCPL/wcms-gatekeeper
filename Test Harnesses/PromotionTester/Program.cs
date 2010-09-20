@@ -30,7 +30,6 @@ where:
         {
             if (args.Length == 2)
             {
-                CMSController cmsController = new CMSController();
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
 
@@ -39,7 +38,7 @@ where:
                 // Instantiate a promoter and go to town.
                 DocumentPromoterBase promoter =
                     DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                promoter.Promote(xPathManager, cmsController);
+                promoter.Promote(xPathManager);
 
             }
             else

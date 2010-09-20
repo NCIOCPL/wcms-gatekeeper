@@ -5,7 +5,6 @@ using System.Xml;
 
 using GateKeeper.Common;
 using GateKeeper.DataAccess.GateKeeper;
-using GKManagers.CMSManager.CMS;
 
 using GKManagers.BusinessObjects;
 
@@ -52,8 +51,6 @@ namespace GKManagers
             get { return _userName; }
         }
 
-        protected CMSController CMSController { get; private set; }
-
         #endregion
 
         /* The PromoteToxxxxxxxx methods must be implemented in the individual document
@@ -70,15 +67,10 @@ namespace GKManagers
                                 HistoryEntryWriter warningWriter,
                                 HistoryEntryWriter informationWriter);
 
-        public void Promote(DocumentXPathManager xPathManager, CMSController cmsController)
+        public void Promote(DocumentXPathManager xPathManager)
         {
             try
             {
-                // Make the CMSController instance available to subclasses which need it.
-                // Yeah, this is kind of ugly, but the alternative is to modify (and retest!)
-                // The entire suite of document type promotion objects.
-                CMSController = cmsController;
-
                 VerifyDocumentType(_dataBlock);
                 DispatchAndPromote(xPathManager);
                 /// Was promotion successful?

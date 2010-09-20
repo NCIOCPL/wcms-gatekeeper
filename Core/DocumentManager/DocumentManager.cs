@@ -9,7 +9,6 @@ using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
 using GKManagers.BusinessObjects;
-using GKManagers.CMSManager.CMS;
 using GKManagers.DataAccess;
 
 namespace GKManagers
@@ -73,9 +72,6 @@ namespace GKManagers
 
             DocumentXPathManager xPathManager = new DocumentXPathManager();
             bool promotionWasSuccessful = true;
-
-            // CMS control object, required for Summary and DrugInfoSummary.
-            CMSController cmsController = new CMSController();
 
             DocumentVersionMap locationMap = null;
             DocumentStatusMap statusMap = null;
@@ -147,7 +143,7 @@ namespace GKManagers
                             synchronizer[docIndex].Reset();
                             workerThreads[docIndex] = new PromotionWorker(synchronizer[docIndex], 
                                 batchID, action, validationRequired, currentBatch.UserName, xPathManager,
-                                cmsController, locationMap, statusMap);
+                                locationMap, statusMap);
 
                             // Promotion to staging is multi-threaded. Everything else is multi-threaded.
                             if (action == ProcessActionType.PromoteToStaging)

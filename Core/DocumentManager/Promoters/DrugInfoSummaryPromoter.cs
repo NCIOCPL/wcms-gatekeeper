@@ -23,12 +23,15 @@ namespace GKManagers
     /// </summary>
     class DrugInfoSummaryPromoter: DocumentPromoterBase
     {
+        private CMSController CMSController { get; set; }
+
         #region Public methods
         public DrugInfoSummaryPromoter(RequestData dataBlock, int batchID,
             ProcessActionType action, string userName)
             :
             base(dataBlock, batchID, action, userName)
         {
+            CMSController = new CMSController();
         }
         #endregion
 
@@ -63,7 +66,7 @@ namespace GKManagers
                 // Save drug info summary data into database
                 //CMSManager.CMSManager cmsMgr = new CMSManager.CMSManager();
                 //cmsMgr.Store(drugInfoSummary);
-                DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(CMSController, warningWriter, informationWriter);
+                DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter);
                 processor.ProcessDocument(drugInfoSummary);
 
 
