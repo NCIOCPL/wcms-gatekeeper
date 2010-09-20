@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace GKManagers.CMS.PercussionWebSvc {
+namespace GKManagers.CMSManager.PercussionWebSvc {
     using System.Diagnostics;
     using System.Web.Services;
     using System.ComponentModel;
@@ -64,7 +64,7 @@ namespace GKManagers.CMS.PercussionWebSvc {
         
         /// <remarks/>
         public assemblySOAP() {
-            this.Url = global::GKManagers.CMS.Properties.Settings.Default.CMSManager_PercussionWebSvc_assembly;
+            this.Url = global::GKManagers.CMSManager.Properties.Settings.Default.CMSManager_PercussionWebSvc_assembly;
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;
