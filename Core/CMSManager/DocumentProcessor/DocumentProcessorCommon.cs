@@ -19,7 +19,7 @@ namespace GKManagers.CMSManager
 
         // Percussion control object, shared among all Document Processor types
         // derived from DocumentProcessorCommon
-        protected CMSController CMSController { get; private set; }
+        protected readonly CMSController CMSController = new CMSController();
 
         /// <summary>
         /// Delegate for writing warnings about potential problems encountered during document processing.
@@ -43,11 +43,8 @@ namespace GKManagers.CMSManager
         /// </summary>
         /// <param name="percLoader">The instance of PercussionLoader which will be used by
         /// the concrete DocumentProcessor to manipulate the Percussion CMS.</param>
-        public DocumentProcessorCommon(CMSController cmsController,
-                HistoryEntryWriter warningWriter,
-                HistoryEntryWriter informationWriter)
+        public DocumentProcessorCommon(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
-            CMSController = cmsController;
             WarningWriter = warningWriter;
             InformationWriter = informationWriter;
         }

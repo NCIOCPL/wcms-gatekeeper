@@ -12,10 +12,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
 {
     public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor
     {
-        public CancerInfoSummaryProcessor(CMSController cmsController,
-            HistoryEntryWriter warningWriter,
-            HistoryEntryWriter informationWriter)
-            : base(cmsController, warningWriter, informationWriter)
+        public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
+            : base(warningWriter, informationWriter)
         {
         }
 
