@@ -76,6 +76,17 @@ namespace GKManagers.CMSManager.Configuration
             set
             { this["community"] = value; }
         }
+
+        [ConfigurationProperty("appendtargetfolder")]
+        public AppendTargetFolderElement AppendTargetFolder
+        {
+            get
+            {
+                return (AppendTargetFolderElement)this["appendtargetfolder"];
+            }
+            set
+            { this["appendtargetfolder"] = value; }
+        }
     }
 
 
@@ -171,6 +182,24 @@ namespace GKManagers.CMSManager.Configuration
 
 
     public class CommunityElement : ConfigurationElement
+    {
+        [ConfigurationProperty("value", IsRequired = true)]
+        public String Value
+        {
+            get
+            {
+                return (String)this["value"];
+            }
+            set
+            {
+                this["value"] = value;
+            }
+        }
+
+    }
+
+
+    public class AppendTargetFolderElement : ConfigurationElement
     {
         [ConfigurationProperty("value", IsRequired = true)]
         public String Value

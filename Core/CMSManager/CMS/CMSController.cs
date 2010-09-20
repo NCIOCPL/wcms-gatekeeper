@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-
+using GKManagers.CMSManager.Configuration;
+using System.Web.Services.Protocols;
 namespace GKManagers.CMSManager.CMS
 {
     /// <summary>
@@ -12,13 +12,8 @@ namespace GKManagers.CMSManager.CMS
     /// </summary>
     public class CMSController
     {
-        // TODO: The PercussionLoader class needs to move to the CMS namespace.
 
-        // TODO: PercussionLoader is not a good name. This is the interface to Percussion.
-        //       (It does much more than just load content items.)
-        //       PercussionController would be confusing vs. CMSController.
-        //       Renaming to simply Percussion is probably the best way to go for now.
-
+        
         #region Fields
 
         // This is the one and only instance of the interface to Percussion.  It gets created
@@ -33,13 +28,46 @@ namespace GKManagers.CMSManager.CMS
         {
             // Percussion system login and any other needed intitialization goes here.
             // The login ID and password must be loaded from the application's configuration file.
+            percCMS.Login();
 
+            
+        }
 
+        //Set Content Item
+        public void SetContentType(string contentType)
+        {
+            percCMS.m_props.Add(PercussionSvc.CONTENT_TYPE, "pdqDrugInfoSummary");
+
+        }
+
+        //Create Target Directory
+        public void CreateTargetDirectory(string targetFolder)
+        {
+            percCMS.m_props.Add(PercussionSvc.TARGET_FOLDER, percCMS.m_props["AppendTargetFolder"].ToString() + targetFolder);
+            percCMS.CreateTargetFolder(percCMS.m_props["TargetFolder"].ToString());
+            
         }
 
 
         /// A few methods which are definitely needed:
         ///     CreateContentItem - Creates a blank content item. Based on a string containing the Content Type.
+
+        public void CreateContentItem(List<Dictionary<string, string>> m_itemData)
+        {
+            try
+            {
+                percCMS.UploadContentItem(m_itemData);
+            }
+            catch (SoapException e)
+            {
+
+            }
+        }
+        
+        
+        
+        
+        
         ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
         ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect
         ///                         based on a path and pretty_url_name field. Otherwise, we need to keep this information

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GKManagers.CMSManager.PercussionWebSvc;
 using System.Configuration;
-
+using GKManagers.CMSManager.Configuration;
 namespace GKManagers.CMSManager.CMS
 {
     internal class PercussionSvc
@@ -36,7 +36,7 @@ namespace GKManagers.CMSManager.CMS
         /**
          * The loader properties, read from the file 'Loader.xml'.
          */
-        private Dictionary<string, string> m_props;
+        public Dictionary<string, string> m_props;
 
         /**
  * The Content Item data to be uploaded; read from the file 'DataFile.xml' 
@@ -85,6 +85,9 @@ namespace GKManagers.CMSManager.CMS
          */
 
         public static String TARGET_FOLDER = "TargetFolder";
+
+        public static String APPEND_TARGET_FOLDER = "AppendTargetFolder";
+
         /**
          * The property name of the name of the data file.
          */
@@ -94,16 +97,20 @@ namespace GKManagers.CMSManager.CMS
         {            
             // Load the connection information
             Dictionary<string, string> props = new Dictionary<string, string>();
-            props.Add(PercussionSvc.PROTOCOL, "http");
-            props.Add(PercussionSvc.HOST, "156.40.134.66");
-            props.Add(PercussionSvc.PORT, "9921");
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
             
-            // Load the login credentail
-            props.Add(PercussionSvc.USER_NAME, "rmungara");
-            props.Add(PercussionSvc.PASSWORD, "password");
-            props.Add(PercussionSvc.COMMUNITY, "CancerGov");
-            props.Add(PercussionSvc.TARGET_FOLDER, "//Sites/CancerGov/cancertopics/druginfo/methotrexate");
-            props.Add(PercussionSvc.CONTENT_TYPE, "pdqDrugInfoSummary");
+            
+            props.Add(PercussionSvc.PROTOCOL, percussionConfig.Protocol.Value);
+            props.Add(PercussionSvc.HOST, percussionConfig.Host.Value);
+            props.Add(PercussionSvc.PORT, percussionConfig.Port.Value);
+            
+            props.Add(PercussionSvc.USER_NAME, percussionConfig.UserName.Value);
+            props.Add(PercussionSvc.PASSWORD, percussionConfig.Password.Value);
+            props.Add(PercussionSvc.COMMUNITY, percussionConfig.Community.Value);
+            props.Add(PercussionSvc.APPEND_TARGET_FOLDER, percussionConfig.AppendTargetFolder.Value);
+
+
+            //props.Add(PercussionSvc.CONTENT_TYPE, "pdqDrugInfoSummary");
 
             m_props = props;
 
@@ -133,8 +140,7 @@ namespace GKManagers.CMSManager.CMS
 
       public void CreateTargetFolder(string targetFolder)
        {
-           PSFolder[] folders = PSWSUtils.AddFolderTree(m_contService,
-               "//Sites/CancerGov/" + targetFolder);
+           PSFolder[] folders = PSWSUtils.AddFolderTree(m_contService,targetFolder);
 
        }
 

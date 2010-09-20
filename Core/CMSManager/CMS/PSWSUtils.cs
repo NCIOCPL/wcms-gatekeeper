@@ -6,7 +6,7 @@ using System.Net;
 using System.Web.Services.Protocols;
 using GKManagers.CMSManager.PercussionWebSvc;
 
-namespace GKManagers.CMSManager
+namespace GKManagers.CMSManager.CMS
 {
     public class PSWSUtils
     {
