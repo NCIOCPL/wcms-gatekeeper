@@ -5,6 +5,9 @@ using System.Text;
 using System.Web.Services.Protocols;
 using GateKeeper.DocumentObjects;
 using GKManagers.CMS.PercussionWebSvc;
+using GKManagers.CMS.Configuration;
+using System.Configuration;
+using System.Collections;
 namespace GKManagers.CMS
 {
     public class CMSManager
@@ -14,19 +17,19 @@ namespace GKManagers.CMS
             PercussionLoader percussionLoader = new PercussionLoader();
             try
             {
+                GKManagers.CMS.Configuration.PercussionConfig cfg = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
                 //Login to Percussion.
                 percussionLoader.Login();
                 //Create Target Directory
                 percussionLoader.CreateTargetFolder(DocType.PrettyURL);
                 //Upload Content Item
-                percussionLoader.UploadDrungInfoContentItem(GetFields(DocType));
+                percussionLoader.UploadContentItem(GetFields(DocType));
 
                 //Logout of percussion
                 percussionLoader.Logout();
             }
             catch (SoapException ex)
             {
-
             }
 
             
@@ -36,9 +39,12 @@ namespace GKManagers.CMS
         {
             List<Dictionary<string, string>> itemFields = new List<Dictionary<string, string>>();
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            fields.Add("sys_title", "5559");
-            fields.Add("pretty_url_name", "learnblair");
-            fields.Add("field2", "45599");
+            fields.Add("sys_title", "1");
+            fields.Add("pretty_url_name", "first");
+            fields.Add("long_title", "firstLong");
+            fields.Add("short_title", "FirstShort");
+            fields.Add("cdrid", "1");
+
             itemFields.Add(fields);
             return itemFields;
         }

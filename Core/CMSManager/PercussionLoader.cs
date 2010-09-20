@@ -102,7 +102,7 @@ namespace GKManagers.CMS
             props.Add(PercussionLoader.PASSWORD, "password");
             props.Add(PercussionLoader.COMMUNITY, "CancerGov");
             props.Add(PercussionLoader.TARGET_FOLDER, "//Sites/CancerGov/cancertopics/druginfo/methotrexate");
-            props.Add(PercussionLoader.CONTENT_TYPE, "cgvTestType");
+            props.Add(PercussionLoader.CONTENT_TYPE, "pdqDrugInfoSummary");
 
             m_props = props;
 
@@ -138,7 +138,7 @@ namespace GKManagers.CMS
        }
 
 
-      public void UploadDrungInfoContentItem(List<Dictionary<string, string>> m_itemData)
+      public void UploadContentItem(List<Dictionary<string, string>> m_itemData)
       {
           // get the items in the target folder
           PSItemSummary[] curItems = PSWSUtils.FindFolderChildren(m_contService,
