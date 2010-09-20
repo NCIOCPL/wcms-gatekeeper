@@ -6,7 +6,7 @@ using GKManagers.CMS.PercussionWebSvc;
 using System.Configuration;
 namespace GKManagers.CMS
 {
-    public class PercussionLoader
+    public class Percussion
     {
         /**
  * The Rhythmyx session, initialized by login()}. 
@@ -89,20 +89,20 @@ namespace GKManagers.CMS
          */
         public static String DATA_FILE = "DataFile";
 
-        public PercussionLoader()
+        public Percussion()
         {            
             // Load the connection information
             Dictionary<string, string> props = new Dictionary<string, string>();
-            props.Add(PercussionLoader.PROTOCOL, "http");
-            props.Add(PercussionLoader.HOST, "156.40.134.66");
-            props.Add(PercussionLoader.PORT, "9921");
+            props.Add(Percussion.PROTOCOL, "http");
+            props.Add(Percussion.HOST, "156.40.134.66");
+            props.Add(Percussion.PORT, "9921");
             
             // Load the login credentail
-            props.Add(PercussionLoader.USER_NAME, "rmungara");
-            props.Add(PercussionLoader.PASSWORD, "password");
-            props.Add(PercussionLoader.COMMUNITY, "CancerGov");
-            props.Add(PercussionLoader.TARGET_FOLDER, "//Sites/CancerGov/cancertopics/druginfo/methotrexate");
-            props.Add(PercussionLoader.CONTENT_TYPE, "pdqDrugInfoSummary");
+            props.Add(Percussion.USER_NAME, "rmungara");
+            props.Add(Percussion.PASSWORD, "password");
+            props.Add(Percussion.COMMUNITY, "CancerGov");
+            props.Add(Percussion.TARGET_FOLDER, "//Sites/CancerGov/cancertopics/druginfo/methotrexate");
+            props.Add(Percussion.CONTENT_TYPE, "pdqDrugInfoSummary");
 
             m_props = props;
 

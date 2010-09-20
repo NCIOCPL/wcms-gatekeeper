@@ -14,6 +14,7 @@ namespace GKManagers.CMSManager.CMS
     public class CMSController
     {
         // TODO: The PercussionLoader class needs to move to the CMS namespace.
+
         // TODO: PercussionLoader is not a good name. This is the interface to Percussion.
         //       (It does much more than just load content items.)
         //       PercussionController would be confusing vs. CMSController.
@@ -33,6 +34,8 @@ namespace GKManagers.CMSManager.CMS
         {
             // Percussion system login and any other needed intitialization goes here.
             // The login ID and password must be loaded from the application's configuration file.
+
+
         }
 
 

@@ -14,7 +14,7 @@ namespace GKManagers.CMS
     {
         public void Store(GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument DocType)
         {
-            PercussionLoader percussionLoader = new PercussionLoader();
+            Percussion percussionLoader = new Percussion();
             try
             {
                 GKManagers.CMS.Configuration.PercussionConfig cfg = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
