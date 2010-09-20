@@ -5,6 +5,7 @@ using System.Text;
 
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
+using GKManagers.CMSManager.CMS;
 
 namespace GKManagers.CMSManager
 {
@@ -12,13 +13,13 @@ namespace GKManagers.CMSManager
     /// Abstract base class to implement the functionality shared between
     /// all DocumentProcessors.
     /// </summary>
-    abstract class DocumentProcessorCommon
+    public abstract class DocumentProcessorCommon
     {
         #region Properties
 
         // Percussion control object, shared among all Document Processor types
         // derived from DocumentProcessorCommon
-        protected PercussionLoader PercLoader { get; private set; }
+        protected CMSController CMSController { get; private set; }
 
         /// <summary>
         /// Delegate for writing warnings about potential problems encountered during document processing.
@@ -42,11 +43,11 @@ namespace GKManagers.CMSManager
         /// </summary>
         /// <param name="percLoader">The instance of PercussionLoader which will be used by
         /// the concrete DocumentProcessor to manipulate the Percussion CMS.</param>
-        public DocumentProcessorCommon(PercussionLoader percLoader,
+        public DocumentProcessorCommon(CMSController cmsController,
                 HistoryEntryWriter warningWriter,
                 HistoryEntryWriter informationWriter)
         {
-            PercLoader = percLoader;
+            CMSController = cmsController;
             WarningWriter = warningWriter;
             InformationWriter = informationWriter;
         }

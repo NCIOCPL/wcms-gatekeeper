@@ -6,15 +6,16 @@ using System.Text;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
+using GKManagers.CMSManager.CMS;
 
-namespace GKManagers.CMSManager.DocumentProcessor
+namespace GKManagers.CMSManager.DocumentProcessing
 {
-    class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor
+    public class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor
     {
-        public DrugInfoSummaryProcessor(PercussionLoader percLoader,
+        public DrugInfoSummaryProcessor(CMSController cmsController,
             HistoryEntryWriter warningWriter,
             HistoryEntryWriter informationWriter)
-            : base(percLoader, warningWriter, informationWriter)
+            : base(cmsController, warningWriter, informationWriter)
         {
         }
 
