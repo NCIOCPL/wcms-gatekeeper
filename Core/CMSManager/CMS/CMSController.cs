@@ -52,6 +52,7 @@ namespace GKManagers.CMSManager.CMS
         // the state of content items (or similar entities) between calls to
         // the controller's public methods.
 
+        private string siteRootPath = string.Empty;
         private WorkflowMapper m_workflowMap;
 
         #endregion
@@ -63,6 +64,9 @@ namespace GKManagers.CMSManager.CMS
             // The login ID and password are loaded from the application's configuration file.
             Login();
             InitializeWorkflowController();
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
+            siteRootPath = percussionConfig.SiteRootPath.Value;
+
         }
 
         /// <summary>
@@ -86,60 +90,36 @@ namespace GKManagers.CMSManager.CMS
         }
 
 
-        ////Set Content Item
-        //public void SetContentType(string contentType)
-        //{
-        //    percCMS.m_props.Add(PercussionSvc.CONTENT_TYPE, "pdqDrugInfoSummary");
-
-        //}
-        
-        //Create Target Directory
-        //public void CreateTargetDirectory(string targetFolder)
-        //{
-        //    percCMS.m_props.Add(PercussionSvc.TARGET_FOLDER, percCMS.m_props["AppendTargetFolder"].ToString() + targetFolder);
-        //    percCMS.CreateTargetFolder(percCMS.m_props["TargetFolder"].ToString());
-            
-        //}
-
-        // A few methods which are definitely needed:
-        //     CreateContentItem - Creates a blank content item. Based on a string containing the Content Type.
 
         public void CreateContentItem(string contentType,
             List<Dictionary<string, string>> fieldCollections,
             string targetFolder)
         {
-            try
-            {
-                // get the items in the target folder
-                PSItemSummary[] curItems = PSWSUtils.FindFolderChildren(m_contService, targetFolder);
-
                 foreach (Dictionary<string, string> itemFields in fieldCollections)
                 {
                     {
                         CreateItem(contentType, itemFields, targetFolder);
                     }
                 }
-            }
-            catch (SoapException e)
-            {
-
-            }
         }
 
         private void CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
         {
             PSItem item = PSWSUtils.CreateItem(m_contService, contentType);
 
+            //Attach to a folder
+
+            PSItemFolders psf = new PSItemFolders();
+
+            psf.path = siteRootPath + targetFolder;
+
+            item.Folders = new PSItemFolders[] { psf };
+
+
             SetItemFields(item, fields);
 
             long id = PSWSUtils.SaveItem(m_contService, item);
             PSWSUtils.CheckinItem(m_contService, id);
-            //uncomment after fixing the save bug
-            //PSWSUtils.TransitionItem(m_sysService, id, "DirecttoPublic");
-
-            // Attach the Content Item to the Target folder
-            String path = contentType;
-            PSWSUtils.AddFolderChildren(m_contService, path, new long[] { id });
 
         }
 

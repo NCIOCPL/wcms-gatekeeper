@@ -35,11 +35,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
             /// All the nifty document processing code starts here.
             //throw new NotImplementedException();
 
-            //Create Target Folder
-            //CMSController.CreateTargetDirectory(GetTargetFolder(document.PrettyURL));
-
-            // Get content item (Create new, or load existing) and Convert properties to CMS fields.
-            //CMSController.SetContentType("pdqDrugInfoSummary");
 
             CMSController.CreateContentItem("pdqDrugInfoSummary", GetFields(document), GetTargetFolder(document.PrettyURL));
 
@@ -67,9 +62,12 @@ namespace GKManagers.CMSManager.DocumentProcessing
         {
             List<Dictionary<string, string>> itemFields = new List<Dictionary<string, string>>();
             Dictionary<string, string> fields = new Dictionary<string, string>();
+            string prettyURLName=DocType.PrettyURL.Substring(DocType.PrettyURL.LastIndexOf('/')+1);
 
-            fields.Add("pretty_url_name", DocType.PrettyURL.Substring(DocType.PrettyURL.LastIndexOf('/')+1));
+            
+            fields.Add("pretty_url_name", prettyURLName);
             fields.Add("long_title", DocType.Title);
+
             if(DocType.Title.Length>64)
                 fields.Add("short_title", DocType.Title.Substring(1,64));
             else
@@ -92,7 +90,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             fields.Add("cdrid", DocType.DocumentID.ToString());
 
 
-            fields.Add("sys_title", "99");
+            fields.Add("sys_title", prettyURLName);
 
             itemFields.Add(fields);
             return itemFields;

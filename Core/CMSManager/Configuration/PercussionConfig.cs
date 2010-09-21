@@ -77,15 +77,15 @@ namespace GKManagers.CMSManager.Configuration
             { this["community"] = value; }
         }
 
-        [ConfigurationProperty("appendtargetfolder")]
-        public AppendTargetFolderElement AppendTargetFolder
+        [ConfigurationProperty("siteRootPath")]
+        public SiteRootPathElement SiteRootPath
         {
             get
             {
-                return (AppendTargetFolderElement)this["appendtargetfolder"];
+                return (SiteRootPathElement)this["siteRootPath"];
             }
             set
-            { this["appendtargetfolder"] = value; }
+            { this["siteRootPath"] = value; }
         }
     }
 
@@ -199,7 +199,7 @@ namespace GKManagers.CMSManager.Configuration
     }
 
 
-    public class AppendTargetFolderElement : ConfigurationElement
+    public class SiteRootPathElement : ConfigurationElement
     {
         [ConfigurationProperty("value", IsRequired = true)]
         public String Value

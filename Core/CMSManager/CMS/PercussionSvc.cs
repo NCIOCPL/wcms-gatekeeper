@@ -108,7 +108,7 @@ namespace GKManagers.CMSManager.CMS
             props.Add(PercussionSvc.USER_NAME, percussionConfig.UserName.Value);
             props.Add(PercussionSvc.PASSWORD, percussionConfig.Password.Value);
             props.Add(PercussionSvc.COMMUNITY, percussionConfig.Community.Value);
-            props.Add(PercussionSvc.APPEND_TARGET_FOLDER, percussionConfig.AppendTargetFolder.Value);
+            props.Add(PercussionSvc.APPEND_TARGET_FOLDER, percussionConfig.SiteRootPath.Value);
 
 
             //props.Add(PercussionSvc.CONTENT_TYPE, "pdqDrugInfoSummary");
