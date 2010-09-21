@@ -7,6 +7,7 @@ using System.Configuration;
 using GKManagers.CMSManager.Configuration;
 namespace GKManagers.CMSManager.CMS
 {
+    [Obsolete("This class has been supplanted by CMSController.  Do not use PercussionSvc.", true)]
     internal class PercussionSvc
     {
         /**

@@ -36,12 +36,12 @@ namespace GKManagers.CMSManager.DocumentProcessing
             //throw new NotImplementedException();
 
             //Create Target Folder
-            CMSController.CreateTargetDirectory(GetTargetFolder(document.PrettyURL));
+            //CMSController.CreateTargetDirectory(GetTargetFolder(document.PrettyURL));
 
             // Get content item (Create new, or load existing) and Convert properties to CMS fields.
-            CMSController.SetContentType("pdqDrugInfoSummary");
+            //CMSController.SetContentType("pdqDrugInfoSummary");
 
-            CMSController.CreateContentItem(GetFields(document));
+            CMSController.CreateContentItem("pdqDrugInfoSummary", GetFields(document), GetTargetFolder(document.PrettyURL));
 
             // Map Relationships.
             // Store content item.
