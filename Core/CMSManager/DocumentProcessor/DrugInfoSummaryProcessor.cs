@@ -26,6 +26,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
+            List<long> idList;
+
             VerifyRequiredDocumentType(documentObject, DocumentType.DrugInfoSummary);
 
             DrugInfoSummaryDocument document = documentObject as DrugInfoSummaryDocument;
@@ -36,7 +38,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             //throw new NotImplementedException();
 
 
-            CMSController.CreateContentItem("pdqDrugInfoSummary", GetFields(document), GetTargetFolder(document.PrettyURL));
+            idList=CMSController.CreateContentItem("pdqDrugInfoSummary", GetFields(document), GetTargetFolder(document.PrettyURL));
 
             // Map Relationships.
             // Store content item.

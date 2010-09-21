@@ -91,19 +91,31 @@ namespace GKManagers.CMSManager.CMS
 
 
 
-        public void CreateContentItem(string contentType,
+        /// <summary>
+        /// Creates the content item.
+        /// </summary>
+        /// <param name="contentType">Type of the content.</param>
+        /// <param name="fieldCollections">The field collections.</param>
+        /// <param name="targetFolder">The target folder.</param>
+        /// <returns> A list of id's for the items created</returns>
+        public List<long> CreateContentItem(string contentType,
             List<Dictionary<string, string>> fieldCollections,
             string targetFolder)
         {
-                foreach (Dictionary<string, string> itemFields in fieldCollections)
+            List<long> idList = new List<long>();
+            long id;
+            foreach (Dictionary<string, string> itemFields in fieldCollections)
+            {
                 {
-                    {
-                        CreateItem(contentType, itemFields, targetFolder);
-                    }
+                    id = CreateItem(contentType, itemFields, targetFolder);
+                    idList.Add(id);
                 }
+            }
+
+            return idList;
         }
 
-        private void CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
+        private long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
         {
             PSItem item = PSWSUtils.CreateItem(m_contService, contentType);
 
@@ -120,6 +132,7 @@ namespace GKManagers.CMSManager.CMS
 
             long id = PSWSUtils.SaveItem(m_contService, item);
             PSWSUtils.CheckinItem(m_contService, id);
+            return id;
 
         }
 
