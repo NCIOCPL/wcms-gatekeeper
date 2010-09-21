@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="CMS\CMSController.cs" />
     <Compile Include="CMS\constants.cs" />
+    <Compile Include="CMS\ContentMetaItem.cs" />
     <Compile Include="CMS\WorkflowController.cs" />
     <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />

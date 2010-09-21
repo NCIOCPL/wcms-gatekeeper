@@ -137,6 +137,16 @@ namespace GKManagers.CMSManager.CMS
         }
 
 
+        private void UpdateItem(long id, Dictionary<string, string> fields)
+        {
+            PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
+            PSItem item = PSWSUtils.LoadItem(m_contService, id);
+            SetItemFields(item, fields);
+            PSWSUtils.SaveItem(m_contService, item);
+            PSWSUtils.ReleaseFromEdit(m_contService, status);
+
+        }
+
         private void SetItemFields(PSItem item, Dictionary<string, string> fields)
         {
             foreach (PSField srcField in item.Fields)
