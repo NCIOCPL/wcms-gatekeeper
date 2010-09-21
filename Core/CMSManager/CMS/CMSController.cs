@@ -98,7 +98,7 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fieldCollections">The field collections.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns> A list of id's for the items created</returns>
-        public List<long> CreateContentItem(string contentType,
+        public List<long> CreateContentItemList(string contentType,
             List<Dictionary<string, string>> fieldCollections,
             string targetFolder)
         {
@@ -136,6 +136,10 @@ namespace GKManagers.CMSManager.CMS
 
         }
 
+        public void UpdateContentItemList(List<ContentMetaItem> contentMetaItems)
+        {
+
+        }
 
         private void UpdateItem(long id, Dictionary<string, string> fields)
         {

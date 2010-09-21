@@ -37,9 +37,12 @@ namespace GKManagers.CMSManager.DocumentProcessing
             /// All the nifty document processing code starts here.
             //throw new NotImplementedException();
 
+            List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
+            fieldCollection.Add(GetFields(document));
 
-            idList=CMSController.CreateContentItem("pdqDrugInfoSummary", GetFields(document), GetTargetFolder(document.PrettyURL));
-
+            idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", fieldCollection, GetTargetFolder(document.PrettyURL));
+            ContentMetaItem cmi = new ContentMetaItem(9999,GetFields(document));
+           
             // Map Relationships.
             // Store content item.
 
@@ -60,9 +63,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
             return truncUrl;
         }
 
-        private List<Dictionary<string, string>> GetFields(GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument DocType)
+        private Dictionary<string, string> GetFields(GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument DocType)
         {
-            List<Dictionary<string, string>> itemFields = new List<Dictionary<string, string>>();
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName=DocType.PrettyURL.Substring(DocType.PrettyURL.LastIndexOf('/')+1);
 
@@ -93,9 +95,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
             fields.Add("sys_title", prettyURLName);
-
-            itemFields.Add(fields);
-            return itemFields;
+            
+            return fields;
         }
 
         #endregion
