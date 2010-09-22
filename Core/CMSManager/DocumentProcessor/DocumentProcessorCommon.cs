@@ -80,5 +80,116 @@ namespace GKManagers.CMSManager
                     expectedDocType, pdqDocument.DocumentType));
             }
         }
+
+        protected void TransitionItemsToStaging(long[] idList)
+        {
+            // GetWorkflowState() is guaranteed to return a valid state.
+            WorkflowState oldState = GetWorkflowState(idList);
+
+            // If we're already in Staging, there's nothing to do.
+            if (oldState != WorkflowState.Staging && oldState != WorkflowState.UpdateStaging)
+            {
+                WorkflowTransition transition = WorkflowTransition.Invalid;
+
+                // Perform the necessary transition to move the items to the appropriate
+                // editable state (Staging or UpdateStaging).
+                switch (oldState)
+                {
+                    case WorkflowState.Preview:
+                        transition = WorkflowTransition.RevertToStagingNew;
+                        break;
+                    case WorkflowState.Live:
+                        transition = WorkflowTransition.Update;
+                        break;
+                    case WorkflowState.UpdatePreview:
+                        transition = WorkflowTransition.RevertToStagingUpdate;
+                        break;
+                }
+
+                CMSController.PerformWorkflowTransition(idList, transition.ToString());
+            }
+        }
+
+        protected WorkflowState GetWorkflowState(long[] idList)
+        {
+            object state = CMSController.GetWorkflowState(idList, InferWorkflowState);
+
+            if (state == null ||
+                !state.GetType().Equals(typeof(WorkflowState)))
+                throw new CMSWorkflowStateInferenceException("Unable to determine workflow state.");
+
+            return (WorkflowState)state;
+        }
+
+        /// <summary>
+        /// Infers a workflow state from the list of transitions which can be made from it.
+        /// </summary>
+        /// <param name="transitionNameList">A list of transition trigger names.</param>
+        /// <returns>A boxed value containing a workflow state.</returns>
+        protected object InferWorkflowState(IEnumerable<string> transitionNameList)
+        {
+            WorkflowState state = WorkflowState.Invalid;
+            WorkflowTransition transition = WorkflowTransition.Invalid;
+            bool found = false;
+            string lastTransitionName = string.Empty;
+
+            if (transitionNameList == null || transitionNameList.Count() == 0)
+                throw new CMSWorkflowStateInferenceException("Transition List is null or empty.");
+
+            foreach (string name in transitionNameList)
+            {
+                if (found)
+                    break;
+
+                lastTransitionName = name;
+
+                // Convert the name to an enum for easy testing (avoids problems with
+                // spelling and casing).
+                transition = ConvertEnum<WorkflowTransition>.Convert(name);
+                switch (transition)
+                {
+                    // Staging
+                    case WorkflowTransition.PromoteToPreviewNew:
+                        state = WorkflowState.Staging;
+                        found = true;
+                        break;
+                    // Preview
+                    case WorkflowTransition.PromoteToLiveNew:
+                    case WorkflowTransition.RevertToStagingNew:
+                        state = WorkflowState.Preview;
+                        found = true;
+                        break;
+                    // Live
+                    case WorkflowTransition.Update:
+                        state = WorkflowState.Live;
+                        found = true;
+                        break;
+                    // Update Staging
+                    case WorkflowTransition.PromoteToPreviewUpdate:
+                        state = WorkflowState.UpdateStaging;
+                        found = true;
+                        break;
+                    // Update Preview
+                    case WorkflowTransition.PromoteToLiveUpdate:
+                    case WorkflowTransition.RevertToStagingUpdate:
+                        state = WorkflowState.UpdatePreview;
+                        found = true;
+                        break;
+                    // Unknown.
+                    case WorkflowTransition.Invalid:
+                    default:
+                        break;
+                }
+            }
+
+            if (!found || state==WorkflowState.Invalid)
+            {
+                throw new
+                    CMSWorkflowStateInferenceException(
+                        string.Format("Unable to infer workflow state from transition name {0}", lastTransitionName));
+            }
+
+            return (object)state;
+        }
     }
 }

@@ -41,9 +41,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
-               
                 // Turn the list of item fields into a list of one item.
-
                 CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
                 List<CreateContentItem> contentItemList = new List<CreateContentItem>();
                 contentItemList.Add(contentItem);
@@ -58,13 +56,15 @@ namespace GKManagers.CMSManager.DocumentProcessing
             }
             else
             {
-                
                 // A mapping exists, we're updating an item.
+
+                // This is an existing item, we must therefore put it in an editable state.
+                TransitionItemsToStaging(new long[1] { mappingInfo.CmsID });
+
                 UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
                 List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
                 contentItemList.Add(contentItem);
                 idList = CMSController.UpdateContentItemList(contentItemList);
-
 
             }
 
