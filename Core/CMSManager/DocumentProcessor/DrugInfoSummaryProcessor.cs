@@ -41,12 +41,18 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
+                //List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
+                //fieldCollection.Add(GetFields(document));
+                
                 // Turn the list of item fields into a list of one item.
-                List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
-                fieldCollection.Add(GetFields(document));
+
+                ContentItem contentItem = new ContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
+                List<ContentItem> contentItemList = new List<ContentItem>();
+                contentItemList.Add(contentItem);
+
 
                 // Create the new content item. (All items are created of the same type.)
-                idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", fieldCollection, GetTargetFolder(document.PrettyURL));
+                idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", contentItemList);
 
                 // Save the mapping between the CDR and CMS IDs.
                 mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
@@ -55,10 +61,10 @@ namespace GKManagers.CMSManager.DocumentProcessing
             else
             {
                 // A mapping exists, we're updating an item.
-                ContentMetaItem contentMetaItem = new ContentMetaItem(mappingInfo.CmsID, GetFields(document));
-                List<ContentMetaItem> contentMetaItemList = new List<ContentMetaItem>();
-                contentMetaItemList.Add(contentMetaItem);
-                CMSController.UpdateContentItemList(contentMetaItemList);
+                ContentItem contentItem = new ContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
+                List<ContentItem> contentItemList = new List<ContentItem>();
+                contentItemList.Add(contentItem);
+                CMSController.UpdateContentItemList(contentItemList);
             }
 
             // Map Relationships.

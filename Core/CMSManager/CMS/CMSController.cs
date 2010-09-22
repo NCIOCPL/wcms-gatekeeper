@@ -119,16 +119,14 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fieldCollections">The field collections.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns> A list of id's for the items created</returns>
-        public List<long> CreateContentItemList(string contentType,
-            List<Dictionary<string, string>> fieldCollections,
-            string targetFolder)
+        public List<long> CreateContentItemList(string contentType,List<ContentItem> contentItems)
         {
             List<long> idList = new List<long>();
             long id;
-            foreach (Dictionary<string, string> itemFields in fieldCollections)
+            foreach (ContentItem cmi in contentItems)
             {
                 {
-                    id = CreateItem(contentType, itemFields, targetFolder);
+                    id = CreateItem(contentType, cmi.Fields, cmi.TargetFolder);
                     idList.Add(id);
                 }
             }
@@ -157,18 +155,25 @@ namespace GKManagers.CMSManager.CMS
 
         }
 
-        public void UpdateContentItemList(List<ContentMetaItem> contentMetaItems)
+        public void UpdateContentItemList(List<ContentItem> contentMetaItems)
         {
-            foreach(ContentMetaItem cmi in contentMetaItems)
+            foreach(ContentItem cmi in contentMetaItems)
             {
-                UpdateItem(cmi.ID, cmi.Fields);
+                UpdateItem(cmi.ID, cmi.Fields,cmi.TargetFolder);
             }
         }
 
-        private void UpdateItem(long id, Dictionary<string, string> fields)
+        private void UpdateItem(long id, Dictionary<string, string> fields,string targetFolder)
         {
             PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
             PSItem item = PSWSUtils.LoadItem(m_contService, id);
+
+            PSItemFolders psf = new PSItemFolders();
+
+            psf.path = siteRootPath + targetFolder;
+
+            item.Folders = new PSItemFolders[] { psf };
+
             SetItemFields(item, fields);
             PSWSUtils.SaveItem(m_contService, item);
             PSWSUtils.ReleaseFromEdit(m_contService, status);
