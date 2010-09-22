@@ -168,5 +168,11 @@ namespace GKManagers.CMSManager.CMS
             req.PSItemStatus = new PSItemStatus[] { status };
             contentSvc.ReleaseFromEdit(req);
         }
+
+        public static void DeleteItem(contentSOAP contentSvc, long[] DeleteItemRequest)
+        {
+
+            contentSvc.DeleteItems(DeleteItemRequest);
+        }
     }
 }

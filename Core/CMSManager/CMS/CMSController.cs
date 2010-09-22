@@ -79,6 +79,9 @@ namespace GKManagers.CMSManager.CMS
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CMSController"/> class.
+        /// </summary>
         public CMSController()
         {
             // Percussion system login and any other needed intitialization goes here.
@@ -113,7 +116,7 @@ namespace GKManagers.CMSManager.CMS
 
 
         /// <summary>
-        /// Creates the content item.
+        /// Creates a new content item.
         /// </summary>
         /// <param name="contentType">Type of the content.</param>
         /// <param name="fieldCollections">The field collections.</param>
@@ -134,6 +137,13 @@ namespace GKManagers.CMSManager.CMS
             return idList;
         }
 
+        /// <summary>
+        /// Creates a single item in percussion.
+        /// </summary>
+        /// <param name="contentType">Type of the content like druginfosummary,cancerinfosummary.</param>
+        /// <param name="fields">The fields.</param>
+        /// <param name="targetFolder">The target folder in percussion.</param>
+        /// <returns>Id for the the created item</returns>
         private long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
         {
             PSItem item = PSWSUtils.CreateItem(m_contService, contentType);
@@ -155,11 +165,16 @@ namespace GKManagers.CMSManager.CMS
 
         }
 
-        public List<long> UpdateContentItemList(List<UpdateContentItem> contentMetaItems)
+        /// <summary>
+        /// Updates the content item list.
+        /// </summary>
+        /// <param name="contentItems">A collection of UpdateContentItem.</param>
+        /// <returns>List of IDs of all the content items updated </returns>
+        public List<long> UpdateContentItemList(List<UpdateContentItem> contentItems)
         {
             List<long> idUpdList = new List<long>();
             long idUpd;
-            foreach (UpdateContentItem cmi in contentMetaItems)
+            foreach (UpdateContentItem cmi in contentItems)
             {
                 idUpd=UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
                 idUpdList.Add(idUpd);
@@ -167,6 +182,13 @@ namespace GKManagers.CMSManager.CMS
             return idUpdList;
         }
 
+        /// <summary>
+        /// Updates a single content item.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="fields">The fields.</param>
+        /// <param name="targetFolder">The target folder.</param>
+        /// <returns></returns>
         private long UpdateItem(long id, Dictionary<string, string> fields,string targetFolder)
         {
             PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
@@ -184,6 +206,11 @@ namespace GKManagers.CMSManager.CMS
             return idUpd;
         }
 
+        /// <summary>
+        /// Sets the content item fields.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="fields">The fields.</param>
         private void SetItemFields(PSItem item, Dictionary<string, string> fields)
         {
             foreach (PSField srcField in item.Fields)
@@ -198,6 +225,14 @@ namespace GKManagers.CMSManager.CMS
             }
         }
 
+        /// <summary>
+        /// Deletes the content item.
+        /// </summary>
+        /// <param name="IDs">Array of Ids.</param>
+        public void DeleteItem(long[] IDs)
+        {
+            PSWSUtils.DeleteItem(m_contService, IDs);
+        }
 
         ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
         ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect

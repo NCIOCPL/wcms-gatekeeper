@@ -41,9 +41,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
-                //List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
-                //fieldCollection.Add(GetFields(document));
-                
+               
                 // Turn the list of item fields into a list of one item.
 
                 CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
@@ -69,6 +67,10 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
             }
+
+            //Below is sample code for delete
+            //long[] id = new long[] { -665719929998 };
+            //CMSController.DeleteItem(id);
 
             // Map Relationships.
             // Store content item.
