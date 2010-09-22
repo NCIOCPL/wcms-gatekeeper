@@ -36,7 +36,7 @@ namespace GKManagers.CMSManager
             if (data != null && data.Rows.Count > 0)
             {
                 result = new CMSIDMapping(Strings.ToInt(data.Rows[0]["CDRID"]),
-                                            Strings.ToInt(data.Rows[0]["CMSId"]),
+                                            Strings.ToLong(data.Rows[0]["CMSId"]),
                                             Strings.Clean(data.Rows[0]["PrettyUrl"]));
             }
 
@@ -57,7 +57,7 @@ namespace GKManagers.CMSManager
             if (data != null && data.Rows.Count > 0)
             {
                 result = new CMSIDMapping(Strings.ToInt(data.Rows[0]["CDRID"]),
-                                            Strings.ToInt(data.Rows[0]["CMSId"]),
+                                            Strings.ToLong(data.Rows[0]["CMSId"]),
                                             Strings.Clean(data.Rows[0]["PrettyUrl"]));
             }
 
