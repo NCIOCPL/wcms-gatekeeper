@@ -60,14 +60,13 @@
   <ItemGroup>
     <Compile Include="CMSIDMapping.cs" />
     <Compile Include="CMS\CMSController.cs" />
-    <Compile Include="CMS\constants.cs" />
     <Compile Include="CMS\UpdateContentItem.cs" />
     <Compile Include="CMS\CreateContentItem.cs" />
-    <Compile Include="CMS\WorkflowController.cs" />
     <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />
     <Compile Include="DocumentProcessor\DrugInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\IDocumentProcessor.cs" />
+    <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />
     <Compile Include="CMS\PercussionSvc.cs" />
