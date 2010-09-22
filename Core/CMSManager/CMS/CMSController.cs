@@ -138,7 +138,10 @@ namespace GKManagers.CMSManager.CMS
 
         public void UpdateContentItemList(List<ContentMetaItem> contentMetaItems)
         {
-
+            foreach(ContentMetaItem cmi in contentMetaItems)
+            {
+                UpdateItem(cmi.ID, cmi.Fields);
+            }
         }
 
         private void UpdateItem(long id, Dictionary<string, string> fields)

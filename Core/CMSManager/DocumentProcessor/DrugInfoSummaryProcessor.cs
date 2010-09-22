@@ -41,8 +41,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
             fieldCollection.Add(GetFields(document));
 
             idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", fieldCollection, GetTargetFolder(document.PrettyURL));
-            ContentMetaItem cmi = new ContentMetaItem(9999,GetFields(document));
-           
+            ContentMetaItem contentMetaItem = new ContentMetaItem(9999,GetFields(document));
+            List<ContentMetaItem> contentMetaItemList=new List<ContentMetaItem>();
+            contentMetaItemList.Add(contentMetaItem);
+            CMSController.UpdateContentItemList(contentMetaItemList);
+
             // Map Relationships.
             // Store content item.
 
