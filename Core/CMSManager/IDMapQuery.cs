@@ -43,7 +43,8 @@ namespace GKManagers.CMSManager
             SqlParameter[] parms ={
                             new SqlParameter("@CDRID", SqlDbType.Int){Value=cdrid},
                             new SqlParameter("@CMSID", SqlDbType.BigInt){Value=cmsid},
-                            new SqlParameter("@PrettyURL", SqlDbType.VarChar){Value=prettyURL}
+                            new SqlParameter("@PrettyURL", SqlDbType.VarChar){Value=prettyURL},
+                            new SqlParameter("@Status_Text", SqlDbType.VarChar){Direction = ParameterDirection.Output, Size = 255}
                                   };
 
             return SqlHelper.ExecuteNonQuery(GateKeeperConnectString,
@@ -61,7 +62,8 @@ namespace GKManagers.CMSManager
             DataTable results;
 
             SqlParameter[] parms ={
-                              new SqlParameter("@CDRID", SqlDbType.Int){Value = cdrid}
+                              new SqlParameter("@CDRID", SqlDbType.Int){Value = cdrid},
+                              new SqlParameter("@Status_Text", SqlDbType.VarChar){Direction = ParameterDirection.Output, Size = 255}
                                   };
 
             results = SqlHelper.ExecuteDatatable(GateKeeperConnectString,
@@ -81,7 +83,8 @@ namespace GKManagers.CMSManager
             DataTable results;
 
             SqlParameter[] parms ={
-                              new SqlParameter("@PrettyURL", SqlDbType.Int){Value = prettyUrl}
+                              new SqlParameter("@PrettyURL", SqlDbType.Int){Value = prettyUrl},
+                              new SqlParameter("@Status_Text", SqlDbType.VarChar){Direction = ParameterDirection.Output, Size = 255}
                                   };
 
             results = SqlHelper.ExecuteDatatable(GateKeeperConnectString,
@@ -103,7 +106,8 @@ namespace GKManagers.CMSManager
             SqlParameter[] parms ={
                             new SqlParameter("@CDRID", SqlDbType.Int){Value=cdrid},
                             new SqlParameter("@CMSID", SqlDbType.BigInt){Value=cmsid},
-                            new SqlParameter("@PrettyURL", SqlDbType.VarChar){Value=prettyURL}
+                            new SqlParameter("@PrettyURL", SqlDbType.VarChar){Value=prettyURL},
+                            new SqlParameter("@Status_Text", SqlDbType.VarChar){Direction = ParameterDirection.Output, Size = 255}
                                   };
 
             return SqlHelper.ExecuteNonQuery(GateKeeperConnectString,
@@ -119,7 +123,8 @@ namespace GKManagers.CMSManager
         public int DeleteCdrIDMapping(int cdrid)
         {
             SqlParameter[] parms ={
-                            new SqlParameter("@CDRID", SqlDbType.Int){Value=cdrid}
+                            new SqlParameter("@CDRID", SqlDbType.Int){Value=cdrid},
+                            new SqlParameter("@Status_Text", SqlDbType.VarChar){Direction = ParameterDirection.Output, Size = 255}
                                   };
 
             return SqlHelper.ExecuteNonQuery(GateKeeperConnectString,

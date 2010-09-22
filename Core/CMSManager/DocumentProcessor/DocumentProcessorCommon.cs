@@ -13,13 +13,13 @@ namespace GKManagers.CMSManager
     /// Abstract base class to implement the functionality shared between
     /// all DocumentProcessors.
     /// </summary>
-    public abstract class DocumentProcessorCommon
+    public abstract class DocumentProcessorCommon : IDisposable
     {
         #region Properties
 
         // Percussion control object, shared among all Document Processor types
         // derived from DocumentProcessorCommon
-        protected readonly CMSController CMSController = new CMSController();
+        protected CMSController CMSController{get;private set;}
 
         /// <summary>
         /// Delegate for writing warnings about potential problems encountered during document processing.
@@ -37,6 +37,23 @@ namespace GKManagers.CMSManager
 
         #endregion
 
+        #region Disposable Pattern Members
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Free managed resources only.
+            if (disposing)
+            {
+                CMSController.Dispose();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Constructor.
@@ -45,6 +62,7 @@ namespace GKManagers.CMSManager
         /// the concrete DocumentProcessor to manipulate the Percussion CMS.</param>
         public DocumentProcessorCommon(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
+            this.CMSController = new CMSController();
             WarningWriter = warningWriter;
             InformationWriter = informationWriter;
         }

@@ -13,7 +13,7 @@ namespace GKManagers.CMSManager.CMS
     /// This class is the sole means by which any code in the GateKeeper system may interact with Percussion.
     /// It manages the single login session used for all interations, and performs all needed operations.
     /// </summary>
-    public class CMSController
+    public class CMSController : IDisposable
     {
         
         #region Percussion Fields
@@ -57,6 +57,27 @@ namespace GKManagers.CMSManager.CMS
 
         #endregion
 
+        #region Disposable Pattern Members
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Free managed resources only.
+            if (disposing)
+            {
+                PSWSUtils.Logout(m_secService, m_rxSession);
+                m_rxSession = null;
+                m_secService = null;
+                m_contService = null;
+                m_sysService = null;
+            }
+        }
+
+        #endregion
 
         public CMSController()
         {

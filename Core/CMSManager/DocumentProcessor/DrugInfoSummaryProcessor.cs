@@ -10,7 +10,7 @@ using GKManagers.CMSManager.CMS;
 
 namespace GKManagers.CMSManager.DocumentProcessing
 {
-    public class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor
+    public class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
         public DrugInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
@@ -34,22 +34,56 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
-            /// All the nifty document processing code starts here.
-            //throw new NotImplementedException();
+            // Are we updating an existing document? Or saving a new one?
+            IDMapManager mapManager = new IDMapManager();
+            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(document.DocumentID);
 
-            List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
-            fieldCollection.Add(GetFields(document));
+            // No mapping found, this is a new item.
+            if (mappingInfo == null)
+            {
+                // Turn the list of item fields into a list of one item.
+                List<Dictionary<string, string>> fieldCollection = new List<Dictionary<string, string>>();
+                fieldCollection.Add(GetFields(document));
 
-            idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", fieldCollection, GetTargetFolder(document.PrettyURL));
-            ContentMetaItem contentMetaItem = new ContentMetaItem(9999,GetFields(document));
-            List<ContentMetaItem> contentMetaItemList=new List<ContentMetaItem>();
-            contentMetaItemList.Add(contentMetaItem);
-            CMSController.UpdateContentItemList(contentMetaItemList);
+                // Create the new content item. (All items are created of the same type.)
+                idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", fieldCollection, GetTargetFolder(document.PrettyURL));
+
+                // Save the mapping between the CDR and CMS IDs.
+                mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
+                mapManager.InsertCdrIDMapping(mappingInfo);
+            }
+            else
+            {
+                // A mapping exists, we're updating an item.
+                ContentMetaItem contentMetaItem = new ContentMetaItem(mappingInfo.CmsID, GetFields(document));
+                List<ContentMetaItem> contentMetaItemList = new List<ContentMetaItem>();
+                contentMetaItemList.Add(contentMetaItem);
+                CMSController.UpdateContentItemList(contentMetaItemList);
+            }
 
             // Map Relationships.
             // Store content item.
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+        }
+
+        #endregion
+
+
+        #region Disposable Pattern Members
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Free managed resources only.
+            if (disposing)
+            {
+                base.Dispose(disposing);
+            }
         }
 
         #endregion

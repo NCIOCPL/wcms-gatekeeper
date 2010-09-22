@@ -10,7 +10,7 @@ using GKManagers.CMSManager.CMS;
 
 namespace GKManagers.CMSManager.DocumentProcessing
 {
-    public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor
+    public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
@@ -45,5 +45,23 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
         #endregion
+
+        #region Disposable Pattern Members
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Free managed resources only.
+            if (disposing)
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        #endregion    
     }
 }
