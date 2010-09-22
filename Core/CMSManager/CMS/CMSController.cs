@@ -155,29 +155,33 @@ namespace GKManagers.CMSManager.CMS
 
         }
 
-        public void UpdateContentItemList(List<UpdateContentItem> contentMetaItems)
+        public List<long> UpdateContentItemList(List<UpdateContentItem> contentMetaItems)
         {
+            List<long> idUpdList = new List<long>();
+            long idUpd;
             foreach (UpdateContentItem cmi in contentMetaItems)
             {
-                UpdateItem(cmi.ID, cmi.Fields,cmi.TargetFolder);
+                idUpd=UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
+                idUpdList.Add(idUpd);
             }
+            return idUpdList;
         }
 
-        private void UpdateItem(long id, Dictionary<string, string> fields,string targetFolder)
+        private long UpdateItem(long id, Dictionary<string, string> fields,string targetFolder)
         {
             PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
-            PSItem item = PSWSUtils.LoadItem(m_contService, id);
-
+            PSItem item = new PSItem();
             PSItemFolders psf = new PSItemFolders();
-
             psf.path = siteRootPath + targetFolder;
-
             item.Folders = new PSItemFolders[] { psf };
 
-            SetItemFields(item, fields);
-            PSWSUtils.SaveItem(m_contService, item);
-            PSWSUtils.ReleaseFromEdit(m_contService, status);
+            item = PSWSUtils.LoadItem(m_contService, id);
 
+            SetItemFields(item, fields);
+            long idUpd = PSWSUtils.SaveItem(m_contService, item);
+            
+            PSWSUtils.ReleaseFromEdit(m_contService, status);
+            return idUpd;
         }
 
         private void SetItemFields(PSItem item, Dictionary<string, string> fields)

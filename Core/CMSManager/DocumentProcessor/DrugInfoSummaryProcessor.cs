@@ -60,11 +60,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
             }
             else
             {
+                
                 // A mapping exists, we're updating an item.
                 UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
                 List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
                 contentItemList.Add(contentItem);
-                CMSController.UpdateContentItemList(contentItemList);
+                idList = CMSController.UpdateContentItemList(contentItemList);
+
+
             }
 
             // Map Relationships.

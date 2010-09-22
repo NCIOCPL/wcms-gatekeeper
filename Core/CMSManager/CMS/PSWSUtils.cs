@@ -158,6 +158,7 @@ namespace GKManagers.CMSManager.CMS
             LoadItemsRequest req = new LoadItemsRequest();
             req.Id = new long[] { id };
             req.IncludeBinary = true;
+            req.IncludeFolderPath = true;
             PSItem[] items = contentSvc.LoadItems(req);
             return items[0];
         }
