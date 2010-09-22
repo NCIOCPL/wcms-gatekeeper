@@ -119,11 +119,11 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fieldCollections">The field collections.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns> A list of id's for the items created</returns>
-        public List<long> CreateContentItemList(string contentType,List<ContentItem> contentItems)
+        public List<long> CreateContentItemList(string contentType,List<CreateContentItem> contentItems)
         {
             List<long> idList = new List<long>();
             long id;
-            foreach (ContentItem cmi in contentItems)
+            foreach (CreateContentItem cmi in contentItems)
             {
                 {
                     id = CreateItem(contentType, cmi.Fields, cmi.TargetFolder);
@@ -155,9 +155,9 @@ namespace GKManagers.CMSManager.CMS
 
         }
 
-        public void UpdateContentItemList(List<ContentItem> contentMetaItems)
+        public void UpdateContentItemList(List<UpdateContentItem> contentMetaItems)
         {
-            foreach(ContentItem cmi in contentMetaItems)
+            foreach (UpdateContentItem cmi in contentMetaItems)
             {
                 UpdateItem(cmi.ID, cmi.Fields,cmi.TargetFolder);
             }

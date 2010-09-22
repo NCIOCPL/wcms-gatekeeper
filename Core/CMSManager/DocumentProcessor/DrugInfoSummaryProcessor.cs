@@ -46,8 +46,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 
                 // Turn the list of item fields into a list of one item.
 
-                ContentItem contentItem = new ContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
-                List<ContentItem> contentItemList = new List<ContentItem>();
+                CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
+                List<CreateContentItem> contentItemList = new List<CreateContentItem>();
                 contentItemList.Add(contentItem);
 
 
@@ -61,8 +61,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
             else
             {
                 // A mapping exists, we're updating an item.
-                ContentItem contentItem = new ContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
-                List<ContentItem> contentItemList = new List<ContentItem>();
+                UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
+                List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
                 contentItemList.Add(contentItem);
                 CMSController.UpdateContentItemList(contentItemList);
             }
