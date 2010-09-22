@@ -10,12 +10,21 @@ using System.Web.Services.Protocols;
 namespace GKManagers.CMSManager.CMS
 {
     /// <summary>
+    /// Delegate definition for determining an element's workflow state based on the list
+    /// of transitions currently allowed.
+    /// </summary>
+    /// <param name="transitionNames">An array of strings representing the triggers for the
+    /// transitions allowed from the current state.</param>
+    /// <returns></returns>
+    public delegate object WorkflowStateInfererDelegate(string[] transitionNames);
+
+    /// <summary>
     /// This class is the sole means by which any code in the GateKeeper system may interact with Percussion.
     /// It manages the single login session used for all interations, and performs all needed operations.
     /// </summary>
     public class CMSController : IDisposable
     {
-        
+
         #region Percussion Fields
 
         // These four fields represent the interface to Percussion.  They are initialized by the
@@ -53,7 +62,6 @@ namespace GKManagers.CMSManager.CMS
         // the controller's public methods.
 
         private string siteRootPath = string.Empty;
-        private WorkflowMapper m_workflowMap;
 
         #endregion
 
@@ -87,11 +95,20 @@ namespace GKManagers.CMSManager.CMS
             // Percussion system login and any other needed intitialization goes here.
             // The login ID and password are loaded from the application's configuration file.
             Login();
-            InitializeWorkflowController();
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
             siteRootPath = percussionConfig.SiteRootPath.Value;
 
         }
+
+        /// These are methods we may still need.
+
+        ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
+        ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect
+        ///                         based on a path and pretty_url_name field. Otherwise, we need to keep this information
+        ///                         in a GateKeeper-owned database.
+        ///     CreatePath (Based on a string containing the path. Is a site name needed?)
+
+
 
         /// <summary>
         /// Login to the Percussion session, set up services.
@@ -122,7 +139,7 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fieldCollections">The field collections.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns> A list of id's for the items created</returns>
-        public List<long> CreateContentItemList(string contentType,List<CreateContentItem> contentItems)
+        public List<long> CreateContentItemList(string contentType, List<CreateContentItem> contentItems)
         {
             List<long> idList = new List<long>();
             long id;
@@ -176,7 +193,7 @@ namespace GKManagers.CMSManager.CMS
             long idUpd;
             foreach (UpdateContentItem cmi in contentItems)
             {
-                idUpd=UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
+                idUpd = UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
                 idUpdList.Add(idUpd);
             }
             return idUpdList;
@@ -189,7 +206,7 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fields">The fields.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns></returns>
-        private long UpdateItem(long id, Dictionary<string, string> fields,string targetFolder)
+        private long UpdateItem(long id, Dictionary<string, string> fields, string targetFolder)
         {
             PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
             PSItem item = new PSItem();
@@ -201,7 +218,7 @@ namespace GKManagers.CMSManager.CMS
 
             SetItemFields(item, fields);
             long idUpd = PSWSUtils.SaveItem(m_contService, item);
-            
+
             PSWSUtils.ReleaseFromEdit(m_contService, status);
             return idUpd;
         }
@@ -234,25 +251,23 @@ namespace GKManagers.CMSManager.CMS
             PSWSUtils.DeleteItem(m_contService, IDs);
         }
 
-        ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
-        ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect
-        ///                         based on a path and pretty_url_name field. Otherwise, we need to keep this information
-        ///                         in a GateKeeper-owned database.
-        ///     CreatePath (Based on a string containing the path. Is a site name needed?)
-
-
         /// <summary>
-        /// Initialize the map
+        /// Retrieves the shared workflow state of a list of content items.
         /// </summary>
-        private void InitializeWorkflowController()
+        /// <param name="itemIDs">An array of content item IDs.</param>
+        /// <param name="inferState">Delegate for a method which is able to determine
+        /// a state name from the list of transitions it makes available.</param>
+        /// <returns></returns>
+        /// <remarks>All items must be maintained in the same state.</remarks>
+        public object GetWorkflowState(long[] itemIDs, WorkflowStateInfererDelegate inferState)
         {
-            PSWorkflow[] workflows;
-            
-            LoadWorkflowsRequest request = new LoadWorkflowsRequest();
-            request.Name = WorkFlowNames.WorkFlow;
-            workflows = m_sysService.LoadWorkflows(request);
+            string[] transitionNames = PSWSUtils.GetTransitions(m_sysService, itemIDs);
+            return inferState(transitionNames);
+        }
 
-            m_workflowMap = new WorkflowMapper(workflows);
+        public void PerformWorkflowTransition(long[] idList, string triggerName)
+        {
+            PSWSUtils.TransitionItems(m_sysService, idList, triggerName);
         }
     }
 }

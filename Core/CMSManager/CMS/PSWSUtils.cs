@@ -123,11 +123,11 @@ namespace GKManagers.CMSManager.CMS
             contentSvc.CheckinItems(req);
         }
 
-        public static void TransitionItem(systemSOAP systemSvc, long id,
+        public static void TransitionItems(systemSOAP systemSvc, long[] idList,
             string trigger)
         {
             TransitionItemsRequest req = new TransitionItemsRequest();
-            req.Id = new long[] { id };
+            req.Id = idList;
             req.Transition = trigger;
             systemSvc.TransitionItems(req);
         }
@@ -173,6 +173,22 @@ namespace GKManagers.CMSManager.CMS
         {
 
             contentSvc.DeleteItems(DeleteItemRequest);
+        }
+
+
+        /// <summary>
+        /// Retrieve the list of workflow transitions allowed for a list of content items.
+        /// </summary>
+        /// <param name="systemSvc">The system service.</param>
+        /// <param name="itemList">A list of content items.</param>
+        /// <returns>A list of the names for transitions which are allowed for
+        /// all content items specified in itemList.</returns>
+        /// <remarks>Only returns the tranitions which are common to all
+        /// items in the list</remarks>
+        public static string[] GetTransitions(systemSOAP systemSvc, long[] itemList)
+        {
+            GetAllowedTransitionsResponse response = systemSvc.GetAllowedTransitions(itemList);
+            return response.Transition;
         }
     }
 }
