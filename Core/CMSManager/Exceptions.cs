@@ -51,4 +51,20 @@ namespace GKManagers.CMSManager
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSManager namespace when an error occurs
+    /// in determining an item's workflow state.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSWorkflowStateInferenceException : Exception
+    {
+        public CMSWorkflowStateInferenceException() { }
+        public CMSWorkflowStateInferenceException(string message) : base(message) { }
+        public CMSWorkflowStateInferenceException(string message, Exception inner) : base(message, inner) { }
+        protected CMSWorkflowStateInferenceException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }
