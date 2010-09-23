@@ -172,7 +172,26 @@ namespace GKManagers.CMSManager.CMS
         public static void DeleteItem(contentSOAP contentSvc, long[] DeleteItemRequest)
         {
 
-            contentSvc.DeleteItems(DeleteItemRequest);
+            contentSvc.DeleteItems(DeleteItemRequest);            
+        }
+
+
+
+        public static void MoveFolderChildren(contentSOAP contentSvc, string targetPath,string sourcePath,long[] id)
+        {
+            MoveFolderChildrenRequest moveFolder = new MoveFolderChildrenRequest();
+            FolderRef folderRefSource = new FolderRef();
+            FolderRef folderRefTarget = new FolderRef();
+
+            folderRefSource.Path = sourcePath;
+            folderRefTarget.Path = targetPath;
+
+            moveFolder.Source = folderRefSource;
+            moveFolder.Target = folderRefTarget;
+            moveFolder.ChildId = id;
+
+            contentSvc.MoveFolderChildren(moveFolder);
+            
         }
 
 

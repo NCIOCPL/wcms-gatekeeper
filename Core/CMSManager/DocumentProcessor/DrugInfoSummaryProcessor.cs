@@ -66,14 +66,19 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 contentItemList.Add(contentItem);
                 idList = CMSController.UpdateContentItemList(contentItemList);
 
+                //if(mappingInfo.PrettyURL!=document.PrettyURL)
+                //{
+                //    long[] id = new long[] { idList[0] };
+                //    CMSController.CreateTargetFolder(document.PrettyURL);
+                //    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, document.PrettyURL, id);
+                //}
+
             }
 
             //Below is sample code for delete
             //long[] id = new long[] { -665719929998 };
             //CMSController.DeleteItem(id);
 
-            // Map Relationships.
-            // Store content item.
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }

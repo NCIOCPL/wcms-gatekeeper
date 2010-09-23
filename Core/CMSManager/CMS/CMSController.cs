@@ -251,6 +251,21 @@ namespace GKManagers.CMSManager.CMS
             PSWSUtils.DeleteItem(m_contService, IDs);
         }
 
+        public void MoveContentItemFolder(string sourcePath,string targetPath,long[] id)
+        {
+            sourcePath = siteRootPath + sourcePath;
+            sourcePath = siteRootPath + targetPath;
+
+            PSWSUtils.MoveFolderChildren(m_contService, targetPath, sourcePath,id);
+        }
+
+        public void CreateTargetFolder(string folderPath)
+        {
+            folderPath=siteRootPath + folderPath;
+            PSFolder[] folders = PSWSUtils.AddFolderTree(m_contService,
+                folderPath);
+        }
+
         /// <summary>
         /// Retrieves the shared workflow state of a list of content items.
         /// </summary>
