@@ -218,8 +218,7 @@ namespace GKManagers.CMSManager.CMS
 
             SetItemFields(item, fields);
             long idUpd = PSWSUtils.SaveItem(m_contService, item);
-            PSWSUtils.ReleaseFromEdit(m_contService, status);
-            PSWSUtils.CheckinItem(m_contService, id);
+            PSWSUtils.ReleaseFromEdit(m_contService, status);            
             return idUpd;
         }
 
