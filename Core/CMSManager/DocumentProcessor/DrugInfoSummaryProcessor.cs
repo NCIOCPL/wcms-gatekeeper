@@ -48,6 +48,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
                 // Create the new content item. (All items are created of the same type.)
+                InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
                 idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", contentItemList);
 
                 // Save the mapping between the CDR and CMS IDs.
@@ -64,6 +65,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
                 List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
                 contentItemList.Add(contentItem);
+                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
                 idList = CMSController.UpdateContentItemList(contentItemList);
 
                 //if(mappingInfo.PrettyURL!=document.PrettyURL)
@@ -81,6 +83,31 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+        }
+
+
+        /// <summary>
+        /// Move the specified DrugInfoSummary document from Staging to Preview.
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public void PromoteToPreview(int documentID)
+        {
+            IDMapManager mapManager = new IDMapManager();
+            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+
+            TransitionItemsToPreview(new long[1]{mappingInfo.CmsID});
+        }
+
+        /// <summary>
+        /// Move the specified DrugInfoSummary document from Preview to Live.
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public void PromoteToLive(int documentID)
+        {
+            IDMapManager mapManager = new IDMapManager();
+            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+
+            TransitionItemsToLive(new long[1] { mappingInfo.CmsID });
         }
 
         #endregion

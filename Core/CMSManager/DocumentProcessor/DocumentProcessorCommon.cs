@@ -87,22 +87,78 @@ namespace GKManagers.CMSManager
             WorkflowState oldState = GetWorkflowState(idList);
 
             // If we're already in Staging, there's nothing to do.
-            if (oldState != WorkflowState.Staging && oldState != WorkflowState.UpdateStaging)
+            if (oldState != WorkflowState.CDRStaging && oldState != WorkflowState.CDRStagingUpdate)
             {
                 WorkflowTransition transition = WorkflowTransition.Invalid;
 
                 // Perform the necessary transition to move the items to the appropriate
-                // editable state (Staging or UpdateStaging).
+                // editable state (CDRStaging or CDRStagingUpdate).
                 switch (oldState)
                 {
-                    case WorkflowState.Preview:
-                        transition = WorkflowTransition.RevertToStagingNew;
+                    case WorkflowState.CDRPreview:
+                        transition = WorkflowTransition.RevertToCDRStagingNew;
                         break;
-                    case WorkflowState.Live:
+                    case WorkflowState.CDRLive:
                         transition = WorkflowTransition.Update;
                         break;
-                    case WorkflowState.UpdatePreview:
-                        transition = WorkflowTransition.RevertToStagingUpdate;
+                    case WorkflowState.CDRPreviewUpdate:
+                        transition = WorkflowTransition.RevertToCDRStagingUpdate;
+                        break;
+                }
+
+                CMSController.PerformWorkflowTransition(idList, transition.ToString());
+            }
+        }
+
+        protected void TransitionItemsToPreview(long[] idList)
+        {
+            // GetWorkflowState() is guaranteed to return a valid state.
+            WorkflowState oldState = GetWorkflowState(idList);
+
+            // If we're already in Preview, there's nothing to do.
+            // Likewise, if we're already in Live, then we've already been through preview.
+            if (oldState != WorkflowState.CDRPreview && oldState != WorkflowState.CDRPreviewUpdate
+                && oldState!= WorkflowState.CDRLive)
+            {
+                WorkflowTransition transition = WorkflowTransition.Invalid;
+
+                // Perform the necessary transition to move the items to the appropriate
+                // editable state (CDRStaging or CDRStagingUpdate).
+                switch (oldState)
+                {
+                    case WorkflowState.CDRStaging:
+                        transition = WorkflowTransition.PromoteToCDRPreviewNew;
+                        break;
+                    case WorkflowState.CDRStagingUpdate:
+                        transition = WorkflowTransition.PromoteToCDRPreviewUpdate;
+                        break;
+                }
+
+                CMSController.PerformWorkflowTransition(idList, transition.ToString());
+            }
+        }
+
+        protected void TransitionItemsToLive(long[] idList)
+        {
+            // GetWorkflowState() is guaranteed to return a valid state.
+            WorkflowState oldState = GetWorkflowState(idList);
+
+            // If we're already in Live, there's nothing to do.
+            if (oldState != WorkflowState.CDRLive)
+            {
+                WorkflowTransition transition = WorkflowTransition.Invalid;
+
+                switch (oldState)
+                {
+                    case WorkflowState.CDRStaging:
+                    case WorkflowState.CDRStagingUpdate:
+                        throw new CMSWorkflowException("Illegal attempt to move directly from CDRStaging to CDRLive.");
+                        break;
+                    case WorkflowState.CDRPreview:
+                        transition = WorkflowTransition.PromoteToCDRLiveNew;
+                        break;
+                    case WorkflowState.CDRPreviewUpdate:
+                        transition = WorkflowTransition.PromoteToCDRLiveUpdate;
                         break;
                 }
 
@@ -148,37 +204,38 @@ namespace GKManagers.CMSManager
                 transition = ConvertEnum<WorkflowTransition>.Convert(name);
                 switch (transition)
                 {
-                    // Staging
-                    case WorkflowTransition.PromoteToPreviewNew:
-                        state = WorkflowState.Staging;
+                    // CDRStaging
+                    case WorkflowTransition.PromoteToCDRPreviewNew:
+                        state = WorkflowState.CDRStaging;
                         found = true;
                         break;
-                    // Preview
-                    case WorkflowTransition.PromoteToLiveNew:
-                    case WorkflowTransition.RevertToStagingNew:
-                        state = WorkflowState.Preview;
+                    // CDRPreview
+                    case WorkflowTransition.PromoteToCDRLiveNew:
+                    case WorkflowTransition.RevertToCDRStagingNew:
+                        state = WorkflowState.CDRPreview;
                         found = true;
                         break;
-                    // Live
+                    // CDRLive
                     case WorkflowTransition.Update:
-                        state = WorkflowState.Live;
+                        state = WorkflowState.CDRLive;
                         found = true;
                         break;
-                    // Update Staging
-                    case WorkflowTransition.PromoteToPreviewUpdate:
-                        state = WorkflowState.UpdateStaging;
+                    // CDRStaging Update
+                    case WorkflowTransition.PromoteToCDRPreviewUpdate:
+                        state = WorkflowState.CDRStagingUpdate;
                         found = true;
                         break;
-                    // Update Preview
-                    case WorkflowTransition.PromoteToLiveUpdate:
-                    case WorkflowTransition.RevertToStagingUpdate:
-                        state = WorkflowState.UpdatePreview;
+                    // CDRPreview Update
+                    case WorkflowTransition.PromoteToCDRLiveUpdate:
+                    case WorkflowTransition.RevertToCDRStagingUpdate:
+                        state = WorkflowState.CDRPreviewUpdate;
                         found = true;
                         break;
                     // Unknown.
                     case WorkflowTransition.Invalid:
                     default:
-                        break;
+                        throw new CMSWorkflowStateInferenceException(
+                            string.Format("Unknown workflow transition name {0}.", name));
                 }
             }
 
@@ -186,7 +243,7 @@ namespace GKManagers.CMSManager
             {
                 throw new
                     CMSWorkflowStateInferenceException(
-                        string.Format("Unable to infer workflow state from transition name {0}", lastTransitionName));
+                        string.Format("Unable to infer workflow state from transition name {0}.", lastTransitionName));
             }
 
             return (object)state;

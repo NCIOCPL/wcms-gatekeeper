@@ -60,25 +60,18 @@ namespace GKManagers
                 DrugInfoSummaryRenderer drugRender = new DrugInfoSummaryRenderer();
                 drugRender.Render(drugInfoSummary);
 
-                // Save drug info summary data into database
+                // Save drug info summary data into the Percussion CMS.
                 using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
                 {
                     processor.ProcessDocument(drugInfoSummary);
                 }
 
-//                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
-//                {
-                    //drugQuery.SaveDocument(drugInfoSummary, UserName);
-                    //Call cms manager store methos to push document to precussion.
-//                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove drug info summary data from database
-                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
-                {
-                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Staging, UserName);
-                }
+                // Remove from Staging does nothing.  This is by design.
+                // Attempting to remove the document at this stage would
+                // remove it from all stages.
             }
             else
             {
@@ -108,19 +101,17 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Push drug info summary document to the preview database
-                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                // Promote the document to Preview into the Percussion CMS.
+                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
                 {
-                    drugQuery.PushDocumentToPreview(drugInfoSummary, UserName);
+                    processor.PromoteToPreview(drugInfoSummary.DocumentID);
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove drug info summary data from database
-                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
-                {
-                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Preview, UserName);
-                }
+                // Remove from Preview does nothing.  This is by design.
+                // Attempting to remove the document at this stage would
+                // remove it from all stages.
             }
             else
             {
@@ -148,19 +139,16 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Push drug info summary document to the live database
-                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                // Promote the document to Live into the Percussion CMS.
+                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
                 {
-                    drugQuery.PushDocumentToLive(drugInfoSummary, UserName);
+                    processor.PromoteToLive(drugInfoSummary.DocumentID);
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove drug info summary data from database
-                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
-                {
-                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Live, UserName);
-                }
+                // Remove from Preview does nothing at this point.
+                throw new NotImplementedException("Sorry Bilal and Sharon, remove is *next* week!");
             }
             else
             {
