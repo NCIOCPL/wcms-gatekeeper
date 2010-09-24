@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Web.Services.Protocols;
+using System.Xml;
 namespace GKManagers.CMSManager
 {
     /// <summary>
@@ -66,5 +67,18 @@ namespace GKManagers.CMSManager
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
+    }
+
+        /// <summary>
+    /// Thrown by methods in the GKManagers.CMSManager namespace when an Soap error occurs.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSSoapException : Exception
+    {
+
+
+        public CMSSoapException(string message, SoapException inner)
+            : base(message + "\n\n" + inner.Detail.InnerXml.ToString())   {  }
+
     }
 }
