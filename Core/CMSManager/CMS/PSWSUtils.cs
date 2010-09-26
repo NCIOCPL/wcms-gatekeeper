@@ -142,9 +142,18 @@ namespace GKManagers.CMSManager.CMS
         }
         public static long SaveItem(contentSOAP contentSvc, PSItem item)
         {
-            SaveItemsRequest req = new SaveItemsRequest();
-            req.PSItem = new PSItem[] { item };
-            SaveItemsResponse response = contentSvc.SaveItems(req);
+            SaveItemsResponse response = null;
+
+            try
+            {
+                SaveItemsRequest req = new SaveItemsRequest();
+                req.PSItem = new PSItem[] { item };
+                response = contentSvc.SaveItems(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new Exception(ex.Detail.OuterXml);
+            }
 
             return response.Ids[0];
         }
