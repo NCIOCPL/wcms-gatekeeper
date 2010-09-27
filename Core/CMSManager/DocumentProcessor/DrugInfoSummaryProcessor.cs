@@ -68,23 +68,40 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
                 idList = CMSController.UpdateContentItemList(contentItemList);
 
-                //if(mappingInfo.PrettyURL!=document.PrettyURL)
-                //{
-                //    long[] id = new long[] { idList[0] };
-                //    CMSController.CreateTargetFolder(document.PrettyURL);
-                //    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, document.PrettyURL, id);
-                //}
+                //Check if the Pretty URL changed if yes then move the content item to the new folder in percussion.
+                if (mappingInfo.PrettyURL != document.PrettyURL)
+                {
+                    long[] id = idList.ToArray() ;
+                    CMSController.CreateTargetFolder(document.PrettyURL);
+                    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, document.PrettyURL, id);
+                   
+                    //Delete existing mapping for the CDRID.
+                    mapManager.DeleteCdrIDMapping(document.DocumentID);
+
+                    // Save the mapping between the CDR and CMS IDs.
+                    mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
+                    mapManager.InsertCdrIDMapping(mappingInfo);
+
+                }
 
             }
-
-            //Below is sample code for delete
-            //long[] id = new long[] { -665719929998 };
-            //CMSController.DeleteItem(id);
 
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
 
+        /// <summary>
+        /// Deletes the content item.
+        /// </summary>
+        /// <param name="documentID">The document ID.</param>
+        public void DeleteContentItem(int documentID)
+        {
+            IDMapManager mapManager = new IDMapManager();
+            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+            long[] id = new long[] {mappingInfo.CmsID};
+            CMSController.DeleteItem(id);
+
+        }
 
         /// <summary>
         /// Move the specified DrugInfoSummary document from Staging to Preview.

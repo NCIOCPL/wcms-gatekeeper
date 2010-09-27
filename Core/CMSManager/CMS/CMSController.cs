@@ -250,14 +250,24 @@ namespace GKManagers.CMSManager.CMS
             PSWSUtils.DeleteItem(m_contService, IDs);
         }
 
+        /// <summary>
+        /// Moves a content item from one folder to another.
+        /// </summary>
+        /// <param name="sourcePath">The source folder path.</param>
+        /// <param name="targetPath">The target folder path.</param>
+        /// <param name="id">The id.</param>
         public void MoveContentItemFolder(string sourcePath,string targetPath,long[] id)
         {
             sourcePath = siteRootPath + sourcePath;
-            sourcePath = siteRootPath + targetPath;
+            targetPath = siteRootPath + targetPath;
 
             PSWSUtils.MoveFolderChildren(m_contService, targetPath, sourcePath,id);
         }
 
+        /// <summary>
+        /// Creates the target folder in the percussion repository.
+        /// </summary>
+        /// <param name="folderPath">The folder path.</param>
         public void CreateTargetFolder(string folderPath)
         {
             folderPath=siteRootPath + folderPath;
