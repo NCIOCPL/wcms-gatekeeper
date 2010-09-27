@@ -34,7 +34,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
             /// All the nifty document processing code starts here.
-            throw new NotImplementedException();
+
+
 
             // Get content item (Create new, or load existing)
             // Convert properties to CMS fields.

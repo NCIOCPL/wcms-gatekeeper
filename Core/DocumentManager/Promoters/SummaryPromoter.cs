@@ -12,6 +12,8 @@ using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.ContentRendering;
 using GKManagers.BusinessObjects;
 
+using GKManagers.CMSManager.DocumentProcessing;
+
 namespace GKManagers
 {
     /// <summary>
@@ -55,10 +57,18 @@ namespace GKManagers
                 extract.Extract(summaryDoc, summary);
 
                 // Rendering summary data
-               SummaryRenderer summaryRender = new SummaryRenderer();
-               summaryRender.Render(summary);
+                SummaryRenderer summaryRender = new SummaryRenderer();
+                summaryRender.Render(summary);
+
+                // Save summary data into the Percussion CMS.
+                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
+                {
+                    processor.ProcessDocument(summary);
+                }
+
 
                 // Save summary data into database
+                // Don't delete this until after refactoring the render code.
                 using (SummaryQuery summaryQuery = new SummaryQuery())
                 {
                     summaryQuery.SaveDocument(summary, UserName);
