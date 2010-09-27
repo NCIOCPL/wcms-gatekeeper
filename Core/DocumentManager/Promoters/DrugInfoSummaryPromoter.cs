@@ -12,8 +12,6 @@ using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.ContentRendering;
 using GKManagers.BusinessObjects;
 
-using GKManagers.CMSManager;
-using GKManagers.CMSManager.CMS;
 using GKManagers.CMSManager.DocumentProcessing;
 
 namespace GKManagers
