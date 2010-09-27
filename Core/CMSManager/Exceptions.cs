@@ -42,7 +42,7 @@ namespace GKManagers.CMSManager
     /// in workflow processing.
     /// </summary>
     [global::System.Serializable]
-    public class CMSWorkflowException : Exception
+    public class CMSWorkflowException : CMSException
     {
         public CMSWorkflowException() { }
         public CMSWorkflowException(string message) : base(message) { }
@@ -58,7 +58,7 @@ namespace GKManagers.CMSManager
     /// in determining an item's workflow state.
     /// </summary>
     [global::System.Serializable]
-    public class CMSWorkflowStateInferenceException : Exception
+    public class CMSWorkflowStateInferenceException : CMSException
     {
         public CMSWorkflowStateInferenceException() { }
         public CMSWorkflowStateInferenceException(string message) : base(message) { }
@@ -73,10 +73,8 @@ namespace GKManagers.CMSManager
     /// Thrown by methods in the GKManagers.CMSManager namespace when an Soap error occurs.
     /// </summary>
     [global::System.Serializable]
-    public class CMSSoapException : Exception
+    public class CMSSoapException : CMSException
     {
-
-
         public CMSSoapException(string message, SoapException inner)
             : base(message + "\n\n" + inner.Detail.InnerXml.ToString())   {  }
 

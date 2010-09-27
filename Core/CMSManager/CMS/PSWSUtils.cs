@@ -152,7 +152,7 @@ namespace GKManagers.CMSManager.CMS
             }
             catch (SoapException ex)
             {
-                throw new Exception(ex.Detail.OuterXml);
+                throw new CMSSoapException("Percussion Error in SaveItem.", ex);
             }
 
             return response.Ids[0];
