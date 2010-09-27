@@ -62,6 +62,10 @@
     <Compile Include="CMS\CMSController.cs" />
     <Compile Include="CMS\UpdateContentItem.cs" />
     <Compile Include="CMS\CreateContentItem.cs" />
+    <Compile Include="Configuration\DrugInfoSummaryConfigSection.cs" />
+    <Compile Include="Configuration\RelatedPagesContentIDElement.cs" />
+    <Compile Include="Configuration\RelatedPagesSlotIDElement.cs" />
+    <Compile Include="Configuration\RelatedPagesSnippetTemplateIDElement.cs" />
     <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />
     <Compile Include="DocumentProcessor\DrugInfoSummaryProcessor.cs" />
