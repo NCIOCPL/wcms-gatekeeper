@@ -146,7 +146,10 @@ namespace GKManagers
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
                 // Remove from Preview does nothing at this point.
-                throw new NotImplementedException("Sorry Bilal and Sharon, remove is *next* week!");
+                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
+                {
+                    processor.DeleteContentItem(drugInfoSummary.DocumentID);
+                }
             }
             else
             {
