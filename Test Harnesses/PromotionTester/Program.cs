@@ -58,7 +58,7 @@ where:
 
         private static void RunAsStandard(string[] args)
         {
-            if (args.Length > 2)
+            if (args.Length == 2)
             {
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
