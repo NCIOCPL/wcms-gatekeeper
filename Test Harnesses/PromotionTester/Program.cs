@@ -4,16 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-
 using GKManagers;
 using GKManagers.BusinessObjects;
 using GKManagers.CMSManager.CMS;
 using GateKeeper.Common;
 using GateKeeper.DataAccess.GateKeeper;
-
+using System.Threading;
+using System.Configuration;
 namespace PromotionTester
 {
-    class Program
+    public class Program
     {
         #region Fields
         readonly static private string _usageInstructions = @"
@@ -28,32 +28,118 @@ where:
 
         static void Main(string[] args)
         {
-            if (args.Length == 2)
+            try
+            {
+                if (ConfigurationSettings.AppSettings["MultiThread"] == "True")
+                {
+                    //Process documents using multi thread.
+                    RunUsingThreads(args);
+                }
+                else if (ConfigurationSettings.AppSettings["SingleThread"] == "True")
+                {
+
+                    //Document processing as a single thread
+                    RunAsSingleThread(args);
+                }
+
+                else
+                {
+                    RunAsStandard(args);
+
+                }
+            }
+
+            catch
+            {
+
+            }
+
+        }
+
+        private static void RunAsStandard(string[] args)
+        {
+            if (args.Length > 2)
             {
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
 
-                DocumentXPathManager xPathManager = new DocumentXPathManager();
 
-                // Instantiate a promoter and go to town.
-                DocumentPromoterBase promoter =
-                    DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                promoter.Promote(xPathManager);
+                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+                    // Instantiate a promoter and go to town.
+                    DocumentPromoterBase promoter =
+                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                    promoter.Promote(xPathManager);
 
             }
             else
             {
                 Console.WriteLine(_usageInstructions);
             }
-
         }
+
+        private static void RunAsSingleThread(string[] args)
+        {
+            int i = 4;
+            if (args.Length > 2)
+            {
+                //RequestData data = DeserializeData(args[0]);
+                //ProcessActionType processAction = GetPromotionAction(args[1]);
+
+
+                for (i = 0; i <= 3; i++)
+                {
+                    RequestData data = DeserializeData(args[i]);
+                    ProcessActionType processAction = GetPromotionAction(args[4]);
+
+                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+                    // Instantiate a promoter and go to town.
+                    DocumentPromoterBase promoter =
+                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                    promoter.Promote(xPathManager);
+                }
+
+            }
+            else
+            {
+                Console.WriteLine(_usageInstructions);
+            }
+        }
+
+        private static void RunUsingThreads(string[] args)
+        {
+                ProcessDocumentThread processDocumentThread1 = new ProcessDocumentThread(args, 0);
+                Thread firstThread = new Thread(new ThreadStart(processDocumentThread1.DocumentThread));
+
+                ProcessDocumentThread processDocumentThread2 = new ProcessDocumentThread(args, 1);
+                Thread SecondThread = new Thread(new ThreadStart(processDocumentThread2.DocumentThread));
+
+
+                ProcessDocumentThread processDocumentThread3 = new ProcessDocumentThread(args, 2);
+                Thread ThirdThread = new Thread(new ThreadStart(processDocumentThread3.DocumentThread));
+
+
+                ProcessDocumentThread processDocumentThread4 = new ProcessDocumentThread(args, 3);
+                Thread FourthThread = new Thread(new ThreadStart(processDocumentThread4.DocumentThread));
+
+                            
+                firstThread.Start();
+                SecondThread.Start();
+                ThirdThread.Start();
+                FourthThread.Start();
+        }
+
+
+
+
 
         /// <summary>
         /// Deserializes a RequestData object back into memory.
         /// </summary>
         /// <param name="dataFileName">File containing a serialized RequestData object in XML format.</param>
         /// <returns></returns>
-        private static RequestData DeserializeData(string dataFileName)
+        public static RequestData DeserializeData(string dataFileName)
         {
             RequestData obj;
 
@@ -79,7 +165,7 @@ where:
         /// </summary>
         /// <param name="actionName">String containing a promotion action name</param>
         /// <returns></returns>
-        private static ProcessActionType GetPromotionAction(string actionName)
+        public static ProcessActionType GetPromotionAction(string actionName)
         {
             ProcessActionType action = ProcessActionType.Invalid;
 
@@ -97,5 +183,32 @@ where:
 
             return action;
         }
+    }
+
+    public class ProcessDocumentThread : Program
+    {
+        private string docPath;
+        public ProcessDocumentThread(string[] args,int i)
+        {
+            docPath = args[i];
+        }
+
+        public void DocumentThread()
+        {
+
+            RequestData data = DeserializeData(docPath);
+            ProcessActionType processAction = GetPromotionAction("PromoteToStaging");
+
+            DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+            // Instantiate a promoter and go to town.
+            DocumentPromoterBase promoter =
+                DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+            promoter.Promote(xPathManager);
+        }
+
+
+
+
     }
 }
