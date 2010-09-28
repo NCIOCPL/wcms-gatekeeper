@@ -186,7 +186,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             else
                 fields.Add("date_last_modified", string.Empty);
 
-            fields.Add("date_first_published", DocType.LastModifiedDate.ToString());
+            fields.Add("date_first_published", DocType.FirstPublishedDate.ToString());
 
             fields.Add("cdrid", DocType.DocumentID.ToString());
 
