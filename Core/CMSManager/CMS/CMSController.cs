@@ -67,14 +67,20 @@ namespace GKManagers.CMSManager.CMS
 
         #region Disposable Pattern Members
 
+        ~CMSController()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            // Free managed resources only.
+            // Free managed resources.
             if (disposing)
             {
                 PSWSUtils.Logout(m_secService, m_rxSession);
@@ -99,15 +105,6 @@ namespace GKManagers.CMSManager.CMS
             siteRootPath = percussionConfig.SiteRootPath.Value;
 
         }
-
-        /// These are methods we may still need.
-
-        ///     LoadContentItem - Loads an existing content item. (Does this need to be a content ID? Can it be a path?)
-        ///     ContentItemExists - Boolean -- true if an item exists, false otherwise.  Needs to be able to detect
-        ///                         based on a path and pretty_url_name field. Otherwise, we need to keep this information
-        ///                         in a GateKeeper-owned database.
-        ///     CreatePath (Based on a string containing the path. Is a site name needed?)
-
 
 
         /// <summary>
@@ -165,11 +162,11 @@ namespace GKManagers.CMSManager.CMS
         {
             PSItem item = PSWSUtils.CreateItem(m_contService, contentType);
 
-            //Attach to a folder
+            // Attach item to a folder
+            PSFolder folder = GuaranteeFolder(targetFolder);
 
             PSItemFolders psf = new PSItemFolders();
-
-            psf.path = siteRootPath + targetFolder;
+            psf.path = folder.path;
 
             item.Folders = new PSItemFolders[] { psf };
 
@@ -265,14 +262,17 @@ namespace GKManagers.CMSManager.CMS
         }
 
         /// <summary>
-        /// Creates the target folder in the percussion repository.
+        /// GuaranteeFolder that a folder exists, creating it if it doesn't
+        /// already exist.
         /// </summary>
         /// <param name="folderPath">The folder path.</param>
-        public void CreateTargetFolder(string folderPath)
+        /// <returns>A PSFolder object containing details of the folder.</returns>
+        /// <remarks>The folder path argument will have the path to the site root
+        /// prepended before the attempt is made to create it.</remarks>
+        public PSFolder GuaranteeFolder(string folderPath)
         {
-            folderPath=siteRootPath + folderPath;
-            PSFolder[] folders = PSWSUtils.AddFolderTree(m_contService,
-                folderPath);
+            FolderManager folderMgr = new FolderManager(m_contService);
+            return folderMgr.GuaranteeFolder(siteRootPath + folderPath);
         }
 
         /// <summary>

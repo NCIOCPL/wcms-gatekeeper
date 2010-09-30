@@ -189,20 +189,23 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="contentSvc">proxy of the content service</param>
         /// <param name="folderPath">The folder path.</param>
         /// <returns></returns>
+        [Obsolete("Bad idea. This method is going away. Use FolderManager.GuaranteeFolder() instead.")]
         public static PSFolder[] AddFolderTree(contentSOAP contentSvc,
             string folderPath)
         {
-            AddFolderTreeRequest req = new AddFolderTreeRequest();
+            PSFolder[] folderCollection = null;
             try
             {
+                AddFolderTreeRequest req = new AddFolderTreeRequest();
                 req.Path = folderPath;
+                folderCollection = contentSvc.AddFolderTree(req);
             }
             catch (SoapException ex)
             {
                 throw new CMSSoapException("Percussion Error in AddFolderTree.", ex);
             }
 
-            return contentSvc.AddFolderTree(req);
+            return folderCollection;
         }
 
         /// <summary>

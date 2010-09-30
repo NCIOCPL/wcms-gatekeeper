@@ -60,12 +60,9 @@
   <ItemGroup>
     <Compile Include="CMSIDMapping.cs" />
     <Compile Include="CMS\CMSController.cs" />
+    <Compile Include="CMS\FolderManager.cs" />
     <Compile Include="CMS\UpdateContentItem.cs" />
     <Compile Include="CMS\CreateContentItem.cs" />
-    <Compile Include="Configuration\DrugInfoSummaryConfigSection.cs" />
-    <Compile Include="Configuration\RelatedPagesContentIDElement.cs" />
-    <Compile Include="Configuration\RelatedPagesSlotIDElement.cs" />
-    <Compile Include="Configuration\RelatedPagesSnippetTemplateIDElement.cs" />
     <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />
     <Compile Include="DocumentProcessor\DrugInfoSummaryProcessor.cs" />
@@ -73,7 +70,6 @@
     <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />
-    <Compile Include="CMS\PercussionSvc.cs" />
     <Compile Include="IDMapManager.cs" />
     <Compile Include="IDMapQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

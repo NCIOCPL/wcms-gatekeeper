@@ -398,22 +398,5 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 #endregion
-        #region Disposable Pattern Members
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            // Free managed resources only.
-            if (disposing)
-            {
-                base.Dispose(disposing);
-            }
-        }
-
-        #endregion    
     }
 }

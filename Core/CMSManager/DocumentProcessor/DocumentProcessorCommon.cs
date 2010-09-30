@@ -39,6 +39,11 @@ namespace GKManagers.CMSManager
 
         #region Disposable Pattern Members
 
+        ~DocumentProcessorCommon()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -153,7 +158,6 @@ namespace GKManagers.CMSManager
                     case WorkflowState.CDRStaging:
                     case WorkflowState.CDRStagingUpdate:
                         throw new CMSWorkflowException("Illegal attempt to move directly from CDRStaging to CDRLive.");
-                        break;
                     case WorkflowState.CDRPreview:
                         transition = WorkflowTransition.PromoteToCDRLiveNew;
                         break;

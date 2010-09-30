@@ -72,7 +72,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 if (mappingInfo.PrettyURL != document.PrettyURL)
                 {
                     long[] id = idList.ToArray() ;
-                    CMSController.CreateTargetFolder(document.PrettyURL);
+                    CMSController.GuaranteeFolder(document.PrettyURL);
                     CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, document.PrettyURL, id);
                    
                     //Delete existing mapping for the CDRID.
@@ -132,14 +132,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         #region Disposable Pattern Members
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            // Free managed resources only.
+            // Free managed resources.
             if (disposing)
             {
                 base.Dispose(disposing);
