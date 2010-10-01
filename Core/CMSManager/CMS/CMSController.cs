@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using GKManagers.CMSManager.PercussionWebSvc;
 using GKManagers.CMSManager.Configuration;
+using GKManagers.CMSManager.PercussionWebSvc;
 using System.Web.Services.Protocols;
-
 namespace GKManagers.CMSManager.CMS
 {
     /// <summary>
@@ -101,8 +99,8 @@ namespace GKManagers.CMSManager.CMS
             // Percussion system login and any other needed intitialization goes here.
             // The login ID and password are loaded from the application's configuration file.
             Login();
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
-            siteRootPath = percussionConfig.SiteRootPath.Value;
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
 
         }
 
@@ -112,14 +110,14 @@ namespace GKManagers.CMSManager.CMS
         /// </summary>
         private void Login()
         {
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig/connectionInfo");
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
 
-            PSWSUtils.SetConnectionInfo(percussionConfig.Protocol.Value, percussionConfig.Host.Value,
-                Int16.Parse(percussionConfig.Port.Value));
+            PSWSUtils.SetConnectionInfo(percussionConfig.ConnectionInfo.Protocol.Value, percussionConfig.ConnectionInfo.Host.Value,
+                Int16.Parse(percussionConfig.ConnectionInfo.Port.Value));
 
             m_secService = PSWSUtils.GetSecurityService();
-            m_rxSession = PSWSUtils.Login(m_secService, percussionConfig.UserName.Value,
-                  percussionConfig.Password.Value, percussionConfig.Community.Value, null);
+            m_rxSession = PSWSUtils.Login(m_secService, percussionConfig.ConnectionInfo.UserName.Value,
+                  percussionConfig.ConnectionInfo.Password.Value, percussionConfig.ConnectionInfo.Community.Value, null);
 
             m_contService = PSWSUtils.GetContentService(m_secService.CookieContainer,
                 m_secService.PSAuthenticationHeaderValue);
@@ -136,14 +134,14 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="fieldCollections">The field collections.</param>
         /// <param name="targetFolder">The target folder.</param>
         /// <returns> A list of id's for the items created</returns>
-        public List<long> CreateContentItemList(string contentType, List<CreateContentItem> contentItems)
+        public List<long> CreateContentItemList(List<CreateContentItem> contentItems)
         {
             List<long> idList = new List<long>();
             long id;
             foreach (CreateContentItem cmi in contentItems)
             {
                 {
-                    id = CreateItem(contentType, cmi.Fields, cmi.TargetFolder);
+                    id = CreateItem(cmi.ContentType, cmi.Fields, cmi.TargetFolder);
                     idList.Add(id);
                 }
             }

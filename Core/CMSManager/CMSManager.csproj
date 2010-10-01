@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TeamSystem.Data.UnitTesting, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="NCILibrary.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b68440c3db501d2b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\NCILibrary\NCILibrary.Core.dll</HintPath>
@@ -63,6 +65,15 @@
     <Compile Include="CMS\FolderManager.cs" />
     <Compile Include="CMS\UpdateContentItem.cs" />
     <Compile Include="CMS\CreateContentItem.cs" />
+    <Compile Include="Configuration\ConnectionInfo.cs" />
+    <Compile Include="Configuration\ContentType.cs" />
+    <Compile Include="Configuration\pdqCancerInfoSummaryElement.cs" />
+    <Compile Include="Configuration\PDQCancerInfoSummaryLinkElement.cs" />
+    <Compile Include="Configuration\PDQCancerInfoSummaryPage.cs" />
+    <Compile Include="Configuration\PDQDrugInfoSummaryElement.cs" />
+    <Compile Include="Configuration\PDQMediaLinkElement.cs" />
+    <Compile Include="Configuration\PDQTableSectionElement.cs" />
+    <Compile Include="Configuration\ValueElement.cs" />
     <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />
     <Compile Include="DocumentProcessor\DrugInfoSummaryProcessor.cs" />

@@ -9,17 +9,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
+using GKManagers.CMSManager.Configuration;
 
 
 namespace GKManagers.CMSManager.DocumentProcessing
 {
     public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
+        public static PercussionConfig percussionConfig;
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
         {
-        }
+                        percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
 
+        }
         #region IDocumentProcessor Members
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 for (i = 0; i <= document.SectionList.Count - 1; i++)
                 {
-                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL));
+                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                     if (contentItem.Fields["sys_title"] != string.Empty || contentItem.Fields["sys_title"] != "")
                         contentItemList.Add(contentItem);
 
@@ -100,7 +103,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 // Create the new content item. (All items are created of the same type.)
                 InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-                idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryPage", contentItemList);
+                //idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryPage", contentItemList);
 
 
 
@@ -140,14 +143,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
             {
-                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL));
+                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
                 
             }
 
             // Create the new content item. (All items are created of the same type.)
             InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            idList = CMSController.CreateContentItemList("pdqTableSection", contentItemList);
+            //idList = CMSController.CreateContentItemList("pdqTableSection", contentItemList);
 
         }
 
@@ -171,19 +174,19 @@ namespace GKManagers.CMSManager.DocumentProcessing
             List<long> idList;
 
             // Turn the list of item fields into a list of one item.
-            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL));
+            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummary.Value);
             List<CreateContentItem> contentItemList = new List<CreateContentItem>();
             contentItemList.Add(contentItem);
 
 
             // Create the new content item. (All items are created of the same type.)
             InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            idList = CMSController.CreateContentItemList("pdqCancerInfoSummary", contentItemList);
+            //idList = CMSController.CreateContentItemList("pdqCancerInfoSummary", contentItemList);
 
             // Save the mapping between the CDR and CMS IDs.
-            IDMapManager mapManager = new IDMapManager();
-            mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
-            mapManager.InsertCdrIDMapping(mappingInfo);
+            //IDMapManager mapManager = new IDMapManager();
+            //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
+            //mapManager.InsertCdrIDMapping(mappingInfo);
 
         }
 
@@ -236,14 +239,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
             List<long> idList;
 
             // Turn the list of item fields into a list of one item.
-            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL));
+            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
             List<CreateContentItem> contentItemList = new List<CreateContentItem>();
             contentItemList.Add(contentItem);
 
 
             // Create the new content item. (All items are created of the same type.)
             InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryLink", contentItemList);
+            //idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryLink", contentItemList);
 
         }
 

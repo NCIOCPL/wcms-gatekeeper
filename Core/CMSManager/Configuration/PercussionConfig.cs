@@ -10,88 +10,28 @@ namespace GKManagers.CMSManager.Configuration
 {
     public class PercussionConfig : ConfigurationSection
     {
-        // Create a "font" element.
-        [ConfigurationProperty("protocol")]
-        public ProtocolElement Protocol
+        [ConfigurationProperty("connectionInfo")]
+        public ConnectionInfo ConnectionInfo
         {
             get
             {
-                return (ProtocolElement)this["protocol"];
+                return (ConnectionInfo)base["connectionInfo"];
             }
-            set
-            { this["protocol"] = value; }
+
         }
 
-        [ConfigurationProperty("host")]
-        public HostElement Host
+        [ConfigurationProperty("contentTypes")]
+        public ContentType ContentType
         {
             get
             {
-                return (HostElement)this["host"];
+                return (ContentType)base["contentTypes"];
             }
-            set
-            { this["host"] = value; }
+
         }
 
-        [ConfigurationProperty("port")]
-        public PortElement Port
-        {
-            get
-            {
-                return (PortElement)this["port"];
-            }
-            set
-            { this["port"] = value; }
-        }
 
-        [ConfigurationProperty("username")]
-        public UserNameElement UserName
-        {
-            get
-            {
-                return (UserNameElement)this["username"];
-            }
-            set
-            { this["username"] = value; }
-        }
-        
-        [ConfigurationProperty("password")]
-        public PasswordElement Password
-        {
-            get
-            {
-                return (PasswordElement)this["password"];
-            }
-            set
-            { this["password"] = value; }
-        }
-
-        [ConfigurationProperty("community")]
-        public CommunityElement Community
-        {
-            get
-            {
-                return (CommunityElement)this["community"];
-            }
-            set
-            { this["community"] = value; }
-        }
-
-        [ConfigurationProperty("siteRootPath")]
-        public SiteRootPathElement SiteRootPath
-        {
-            get
-            {
-                return (SiteRootPathElement)this["siteRootPath"];
-            }
-            set
-            { this["siteRootPath"] = value; }
-        }
     }
-
-
-
-
 
     public class ProtocolElement : ConfigurationElement
     {
@@ -131,7 +71,7 @@ namespace GKManagers.CMSManager.Configuration
 
     public class PortElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", DefaultValue = "http", IsRequired = true)]
+        [ConfigurationProperty("value",IsRequired = true)]
         public String Value
         {
             get

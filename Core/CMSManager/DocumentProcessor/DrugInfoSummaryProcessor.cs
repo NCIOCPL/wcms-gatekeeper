@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using GKManagers.CMSManager.Configuration;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
@@ -26,6 +26,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+
             List<long> idList;
 
             VerifyRequiredDocumentType(documentObject, DocumentType.DrugInfoSummary);
@@ -42,14 +44,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
             if (mappingInfo == null)
             {
                 // Turn the list of item fields into a list of one item.
-                CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL));
+                CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
                 List<CreateContentItem> contentItemList = new List<CreateContentItem>();
                 contentItemList.Add(contentItem);
 
 
                 // Create the new content item. (All items are created of the same type.)
                 InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-                idList = CMSController.CreateContentItemList("pdqDrugInfoSummary", contentItemList);
+                idList = CMSController.CreateContentItemList(contentItemList);
 
                 // Save the mapping between the CDR and CMS IDs.
                 mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);

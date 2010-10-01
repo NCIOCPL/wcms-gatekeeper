@@ -8,14 +8,16 @@ namespace GKManagers.CMSManager.CMS
     public class CreateContentItem
     {
         //constructor for creating new content item
-        public CreateContentItem(Dictionary<string, string> fields, string targetFolder)
+        public CreateContentItem(Dictionary<string, string> fields, string targetFolder,string contentType)
         {            
             Fields = fields;
             TargetFolder = targetFolder;
+            ContentType = contentType;
         }
 
         public Dictionary<string, string> Fields { get; private set; }
         public string TargetFolder { get; private set; }
+        public string ContentType { get; private set; }
 
     }
 }
