@@ -10,7 +10,7 @@ namespace GKManagers.CMSManager.Configuration
 {
     public class PDQTableSectionElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", DefaultValue = "pdqTableSection", IsRequired = true)]
+        [ConfigurationProperty("value", DefaultValue = "pdqTableSection", IsRequired = false)]
         public String Value
         {
             get

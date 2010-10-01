@@ -10,7 +10,7 @@ namespace GKManagers.CMSManager.Configuration
 {
     public class PDQMediaLinkElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", DefaultValue = "pdqMediaLink", IsRequired = true)]
+        [ConfigurationProperty("value", DefaultValue = "pdqMediaLink", IsRequired = false)]
         public String Value
         {
             get

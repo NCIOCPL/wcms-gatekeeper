@@ -11,61 +11,61 @@ namespace GKManagers.CMSManager.Configuration
     public class ContentType : ConfigurationElement
     {
         [ConfigurationProperty("pdqDrugInfoSummary")]
-        public ValueElement PDQDrugInfoSummary
+        public PDQDrugInfoSummaryElement PDQDrugInfoSummary
         {
             get
             {
-                return (ValueElement)base["pdqDrugInfoSummary"];
+                return (PDQDrugInfoSummaryElement)base["pdqDrugInfoSummary"];
             }
 
         }
 
         [ConfigurationProperty("pdqCancerInfoSummary")]
-        public ValueElement PDQCancerInfoSummary
+        public PDQCancerInfoSummaryElement PDQCancerInfoSummary
         {
             get
             {
-                return (ValueElement)base["pdqCancerInfoSummary"];
+                return (PDQCancerInfoSummaryElement)base["pdqCancerInfoSummary"];
             }
 
         }
 
         [ConfigurationProperty("pdqCancerInfoSummaryLink")]
-        public ValueElement PDQCancerInfoSummaryLink
+        public PDQCancerInfoSummaryLinkElement PDQCancerInfoSummaryLink
         {
             get
             {
-                return (ValueElement)base["pdqCancerInfoSummaryLink"];
+                return (PDQCancerInfoSummaryLinkElement)base["pdqCancerInfoSummaryLink"];
             }
 
         }
 
         [ConfigurationProperty("pdqCancerInfoSummaryPage")]
-        public ValueElement PDQCancerInfoSummaryPage
+        public PDQCancerInfoSummaryPageElement PDQCancerInfoSummaryPage
         {
             get
             {
-                return (ValueElement)base["pdqCancerInfoSummaryPage"];
+                return (PDQCancerInfoSummaryPageElement)base["pdqCancerInfoSummaryPage"];
             }
 
         }
 
         [ConfigurationProperty("pdqMediaLink")]
-        public ValueElement PDQMediaLink
+        public PDQMediaLinkElement PDQMediaLink
         {
             get
             {
-                return (ValueElement)base["pdqMediaLink"];
+                return (PDQMediaLinkElement)base["pdqMediaLink"];
             }
 
         }
 
         [ConfigurationProperty("pdqTableSection")]
-        public ValueElement PDQTableSection
+        public PDQTableSectionElement PDQTableSection
         {
             get
             {
-                return (ValueElement)base["pdqTableSection"];
+                return (PDQTableSectionElement)base["pdqTableSection"];
             }
 
         }

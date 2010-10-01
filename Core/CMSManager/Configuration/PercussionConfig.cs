@@ -20,7 +20,7 @@ namespace GKManagers.CMSManager.Configuration
 
         }
 
-        [ConfigurationProperty("contentTypes")]
+        [ConfigurationProperty("contentTypes", IsRequired = false)]
         public ContentType ContentType
         {
             get

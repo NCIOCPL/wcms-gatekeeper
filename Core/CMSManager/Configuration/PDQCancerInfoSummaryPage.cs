@@ -8,9 +8,9 @@ using System.Collections;
 
 namespace GKManagers.CMSManager.Configuration
 {
-    public class PDQCancerInfoSummaryPage : ConfigurationElement
+    public class PDQCancerInfoSummaryPageElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", DefaultValue = "pdqCancerInfoSummaryPage", IsRequired = true)]
+        [ConfigurationProperty("value", DefaultValue = "pdqCancerInfoSummaryPage", IsRequired = false)]
         public String Value
         {
             get

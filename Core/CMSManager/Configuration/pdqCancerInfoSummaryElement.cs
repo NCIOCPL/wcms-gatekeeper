@@ -10,7 +10,7 @@ namespace GKManagers.CMSManager.Configuration
 {
     public class PDQCancerInfoSummaryElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", DefaultValue = "pdqCancerInfoSummary", IsRequired = true)]
+        [ConfigurationProperty("value", DefaultValue = "pdqCancerInfoSummary", IsRequired = false)]
         public String Value
         {
             get
