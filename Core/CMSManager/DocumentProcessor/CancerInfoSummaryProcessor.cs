@@ -32,6 +32,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
+            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
+            List<long> idList;
 
             VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
 
@@ -49,35 +51,41 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
-                
+
                 // Create the new pdqCancerInfoSummary content item.
-                CreatePDQCancerInfoSummary(document, mappingInfo);
-                //Create new pdqCancerInfoSummaryLink
-                CreatePDQCancerInfoSummaryLink(document);
+                CreatePDQCancerInfoSummary(document, mappingInfo, contentItemList);
 
-                //Create new pdqTableSections
-                CreatePDQTableSections(document);
+                //Create new pdqCancerInfoSummaryLink content item
+                CreatePDQCancerInfoSummaryLink(document, contentItemList);
 
-                //Create new pdqCancerInfoSummaryPage
-                CreatePDQCancerInfoSummaryPage(document);
+                //Create new pdqTableSections content item
+                CreatePDQTableSections(document, contentItemList);
+
+                //Create new pdqCancerInfoSummaryPage content item
+                CreatePDQCancerInfoSummaryPage(document, contentItemList);
+
+                //Save all the content items in one operation using the contentItemList.
+                idList = CMSController.CreateContentItemList(contentItemList);
 
                 //Save pdqMediaLink
 
+                // Map Relationships.
+                //Save the mapping between the CDR and CMS IDs.
+                mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
+                mapManager.InsertCdrIDMapping(mappingInfo);
 
             }
 
             else
             {
 
-
-
             }
 
             // Get content item (Create new, or load existing)
 
 
-            // Convert properties to CMS fields.
-            // Map Relationships.
+            
+            
             // Store content item.
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
@@ -87,11 +95,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
         
         #region Private Methods
 
-        private void CreatePDQCancerInfoSummaryPage(SummaryDocument document)
+        private void CreatePDQCancerInfoSummaryPage(SummaryDocument document, List<CreateContentItem> contentItemList)
         {
             int i;
-            List<long> idList;
-            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
 
                 for (i = 0; i <= document.SectionList.Count - 1; i++)
                 {
@@ -100,12 +106,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
                         contentItemList.Add(contentItem);
 
                 }
-
-                // Create the new content item. (All items are created of the same type.)
-                InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-                //idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryPage", contentItemList);
-
-
 
         }
 
@@ -126,7 +126,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             }
 
-            fields.Add("bodyfield", html);
+            fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>",string.Empty).Replace("</TableSectionXML>",string.Empty));
             fields.Add("sys_title", prettyURLName);
 
 
@@ -134,11 +134,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 
-        private void CreatePDQTableSections(SummaryDocument document)
+        private void CreatePDQTableSections(SummaryDocument document, List<CreateContentItem> contentItemList)
         {
             int i;
-            List<long> idList;
-            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
 
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
@@ -147,10 +145,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 contentItemList.Add(contentItem);
                 
             }
-
-            // Create the new content item. (All items are created of the same type.)
-            InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            //idList = CMSController.CreateContentItemList("pdqTableSection", contentItemList);
 
         }
 
@@ -169,24 +163,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
 
-        private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo)
+        private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo, List<CreateContentItem> contentItemList)
         {
-            List<long> idList;
 
-            // Turn the list of item fields into a list of one item.
             CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummary.Value);
-            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
             contentItemList.Add(contentItem);
-
-
-            // Create the new content item. (All items are created of the same type.)
-            InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            //idList = CMSController.CreateContentItemList("pdqCancerInfoSummary", contentItemList);
-
-            // Save the mapping between the CDR and CMS IDs.
-            //IDMapManager mapManager = new IDMapManager();
-            //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
-            //mapManager.InsertCdrIDMapping(mappingInfo);
 
         }
 
@@ -234,19 +215,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 
-        private void CreatePDQCancerInfoSummaryLink(SummaryDocument document)
+        private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<CreateContentItem> contentItemList)
         {
-            List<long> idList;
 
-            // Turn the list of item fields into a list of one item.
             CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
-            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
             contentItemList.Add(contentItem);
-
-
-            // Create the new content item. (All items are created of the same type.)
-            InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-            //idList = CMSController.CreateContentItemList("pdqCancerInfoSummaryLink", contentItemList);
 
         }
 
