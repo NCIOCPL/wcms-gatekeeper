@@ -51,7 +51,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
-
                 // Create the new pdqCancerInfoSummary content item.
                 CreatePDQCancerInfoSummary(document, mappingInfo, contentItemList);
 
@@ -63,14 +62,16 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 //Create new pdqCancerInfoSummaryPage content item
                 CreatePDQCancerInfoSummaryPage(document, contentItemList);
+                
+                //Save pdqMediaLink
 
                 //Save all the content items in one operation using the contentItemList.
                 idList = CMSController.CreateContentItemList(contentItemList);
 
-                //Save pdqMediaLink
-
+                
                 // Map Relationships.
-                //Save the mapping between the CDR and CMS IDs.
+                //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
+                //the first Id "idList[0]" from the idList to save.
                 mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
                 mapManager.InsertCdrIDMapping(mappingInfo);
 
@@ -78,6 +79,51 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             else
             {
+                //Update Content Items
+
+                List<UpdateContentItem> contentItemsListToUpdate = new List<UpdateContentItem>();
+                long contentID;
+                // Add pdqCancerInfoSummary content item to the contentItemsListToUpdate 
+                UpdateContentItem updateContentItem = new UpdateContentItem(mappingInfo.CmsID, GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
+                contentItemsListToUpdate.Add(updateContentItem);
+
+
+                //Add pdqCancerInfoSummaryLink content item to the contentItemsListToUpdate
+                
+                //Get the ID for the content item to be updated.
+                contentID = GetpdqCancerInfoSummaryLinkID(document);
+
+                updateContentItem = new UpdateContentItem(contentID, GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
+                contentItemsListToUpdate.Add(updateContentItem);
+
+                //Add pdqTableSections content item to the contentItemsListToUpdate
+                GetPDQTableSectionsToUpdate(document, contentItemsListToUpdate);
+
+                //Add pdqCancerInfoSummaryPages content item to the contentItemsListToUpdate
+                GetPDQCancerInfoSummaryPagesToUpdate(document, contentItemsListToUpdate);
+
+
+                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));               
+                
+                //Update all the content Item in one operation
+                idList = CMSController.UpdateContentItemList(contentItemsListToUpdate);
+
+                //Check if the pdqCancerInfoSummary Pretty URL changed if yes then move the content item to the new folder in percussion.
+                string prettyURL=GetTargetFolder(document.BasePrettyURL);
+                if (mappingInfo.PrettyURL != prettyURL)
+                {
+                    long[] id = idList.ToArray();
+                    CMSController.GuaranteeFolder(prettyURL);
+                    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, prettyURL, id);
+
+                    //Delete existing mapping for the CDRID.
+                    mapManager.DeleteCdrIDMapping(document.DocumentID);
+
+                    // Save the mapping between the CDR and CMS IDs.
+                    mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
+                    mapManager.InsertCdrIDMapping(mappingInfo);
+
+                }
 
             }
 
@@ -130,7 +176,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 for (i = 0; i <= document.SectionList.Count - 1; i++)
                 {
-                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.SectionList[i].PrettyUrl), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                     if (contentItem.Fields["sys_title"] != string.Empty || contentItem.Fields["sys_title"] != "")
                         contentItemList.Add(contentItem);
 
@@ -170,7 +216,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
             {
-                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
+                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.TableSectionList[i].PrettyUrl), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
                 
             }
@@ -264,16 +310,69 @@ namespace GKManagers.CMSManager.DocumentProcessing
             return fields;
 
         }
+
+        private long GetpdqCancerInfoSummaryLinkID(SummaryDocument document)
+        {
+            long contentid;
+            contentid = CMSController.GetItemID(GetTargetFolder(document.BasePrettyURL), document.Title);
+            return contentid;
+        }
+
+
+        private void GetPDQTableSectionsToUpdate(SummaryDocument document, List<UpdateContentItem> contentItemsListToUpdate)
+        {
+            int i;
+            long contentid;
+
+
+            for (i = 0; i <= document.TableSectionList.Count - 1; i++)
+            {
+                string prettyURLName = document.TableSectionList[i].PrettyUrl.Substring(document.TableSectionList[i].PrettyUrl.LastIndexOf('/') + 1);
+                contentid = CMSController.GetItemID(GetTargetFolder(document.TableSectionList[i].PrettyUrl), prettyURLName);
+                UpdateContentItem updateContentItem = new UpdateContentItem(contentid, GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
+                contentItemsListToUpdate.Add(updateContentItem);
+            }
+
+        }
+
+        private void GetPDQCancerInfoSummaryPagesToUpdate(SummaryDocument document, List<UpdateContentItem> contentItemsListToUpdate)
+        {
+            int i;
+            long contentid;
+
+            for (i = 0; i <= document.SectionList.Count - 1; i++)
+            {
+                string prettyURLName = document.SectionList[i].PrettyUrl.Substring(document.SectionList[i].PrettyUrl.LastIndexOf('/') + 1);
+                contentid = CMSController.GetItemID(GetTargetFolder(document.SectionList[i].PrettyUrl), prettyURLName);
+                UpdateContentItem updateContentItem = new UpdateContentItem(contentid, GetFieldsPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
+                contentItemsListToUpdate.Add(updateContentItem);
+
+            }
+
+        }
+
+
         private string GetTargetFolder(string targetFolderPath)
         {
             // Remove last part of path, e.g. /cancertopics/druginfo/methotrexate becomes /cancertopics/druginfo
-            //Remove hostname and protocol.
-            System.Uri URL = new Uri(targetFolderPath);
-            targetFolderPath = URL.AbsolutePath;
-            string truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
-            if (truncUrl != string.Empty)
+            string truncUrl = string.Empty;
+            if (targetFolderPath.ToLower().StartsWith("http"))
             {
+                //Remove hostname and protocol.
+                System.Uri URL = new Uri(targetFolderPath);
+                targetFolderPath = URL.AbsolutePath;
+                truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
+                if (truncUrl != string.Empty)
+                {
+                    return truncUrl;
+                }
+            }
+
+            else
+            {
+                truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
                 return truncUrl;
+
             }
             return truncUrl;
         }

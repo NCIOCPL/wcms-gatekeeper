@@ -130,12 +130,10 @@ namespace GKManagers.CMSManager.CMS
 
 
         /// <summary>
-        /// Creates a new content item.
+        /// Creates the content items in the list.
         /// </summary>
-        /// <param name="contentType">Type of the content.</param>
-        /// <param name="fieldCollections">The field collections.</param>
-        /// <param name="targetFolder">The target folder.</param>
-        /// <returns> A list of id's for the items created</returns>
+        /// <param name="contentItems">The content items list.</param>
+        /// <returns>List of Id's for the items created</returns>
         public List<long> CreateContentItemList(List<CreateContentItem> contentItems)
         {
             List<long> idList = new List<long>();
@@ -338,5 +336,27 @@ namespace GKManagers.CMSManager.CMS
 
             return returnList;
         }
+
+        public long GetItemID(string targetFolder, string sysTitle)
+        {
+            long idList;
+            PSItemSummary[] curItems = PSWSUtils.FindFolderChildren(_contentService, siteRootPath + targetFolder);
+
+            idList = GetItem(curItems, sysTitle);
+            return idList;
+        }
+
+
+        private long  GetItem(PSItemSummary[] curItems, String sysTitle)
+        {
+            foreach (PSItemSummary item in curItems)
+            {
+                if (item.name.ToLower() == sysTitle.ToLower())
+                    return item.id;
+            }
+
+            return -1;
+        }
+
     }
 }
