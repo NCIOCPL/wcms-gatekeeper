@@ -49,9 +49,9 @@ where:
                 }
             }
 
-            catch
+            catch(Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
 
         }
