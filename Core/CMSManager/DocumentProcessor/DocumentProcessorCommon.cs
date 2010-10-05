@@ -73,7 +73,9 @@ namespace GKManagers.CMSManager
         }
 
         /// <summary>
-        /// Verifies that a document object contains an expected document type.
+        /// Verifies that a document object contains an expected document type.  Throws 
+        /// CMSManagerIncorrectDocumentTypeException if the value of the object's DocumentType
+        /// property does not match expectedDocType.
         /// </summary>
         /// <param name="pdqDocument">A document object to be tested for its concrete document type</param>
         /// <param name="expectedDocType">Enumerated value representing the expected document type.</param>
@@ -86,6 +88,21 @@ namespace GKManagers.CMSManager
             }
         }
 
+
+        /// <summary>
+        /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException
+        /// if the document is the target of any incoming relationships.
+        /// </summary>
+        /// <param name="documentCmsID">The document's ID in the CMS.</param>
+        /// <remarks>Each document processor must implement this method separately as the
+        /// logic for determining internal references varies with document type.</remarks>
+        abstract protected void VerifyDocumentMayBeDeleted(long documentCmsID);
+
+        /// <summary>
+        /// Moves the content items identified by idList to the Staging state.
+        /// </summary>
+        /// <param name="idList">An array of ID values identifying content items to
+        /// be moved</param>
         protected void TransitionItemsToStaging(long[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
@@ -115,6 +132,11 @@ namespace GKManagers.CMSManager
             }
         }
 
+        /// <summary>
+        /// Moves the content items identified by idList to the Preview state.
+        /// </summary>
+        /// <param name="idList">An array of ID values identifying content items to
+        /// be moved</param>
         protected void TransitionItemsToPreview(long[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
@@ -143,6 +165,14 @@ namespace GKManagers.CMSManager
             }
         }
 
+        /// <summary>
+        /// Moves the content items identified by idList to the Live state.
+        /// </summary>
+        /// <param name="idList">An array of ID values identifying content items to
+        /// be moved</param>
+        /// <remarks>Throws CMSWorkflowException if the targeted items are in the
+        /// CDRStaging or CDRStagingUpdate states as these are not valid states from
+        /// which to move to CDRLive.</remarks>
         protected void TransitionItemsToLive(long[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
@@ -170,6 +200,15 @@ namespace GKManagers.CMSManager
             }
         }
 
+        /// <summary>
+        /// Retrieves the workflow state of the content items identifed by idList.
+        /// </summary>
+        /// <param name="idList">An array of content items for which the workflow state
+        /// is to be determined.</param>
+        /// <returns>A WorkflowState value representing the items' current workflow state.</returns>
+        /// <remarks>Throws CMSWorkflowStateInferenceException if a workflow state cannot be
+        /// determined. (e.g. If the designated items do not have a shared workflow state,
+        /// or if the items belong to an unexpected workflow.  CancerGov_PDQ_Workflow is assumed.</remarks>
         protected WorkflowState GetWorkflowState(long[] idList)
         {
             object state = CMSController.GetWorkflowState(idList, InferWorkflowState);
@@ -186,6 +225,9 @@ namespace GKManagers.CMSManager
         /// </summary>
         /// <param name="transitionNameList">A list of transition trigger names.</param>
         /// <returns>A boxed value containing a workflow state.</returns>
+        /// <remarks>The workflow states and transitions searched for are assumed to
+        /// be from CancerGov_PDQ_Workflow which includes the states: CDRStaging, 
+        /// CDRPreview, CDRLive, CDRStagingUpdate and CDRPreviewUpdate.</remarks>
         protected object InferWorkflowState(IEnumerable<string> transitionNameList)
         {
             WorkflowState state = WorkflowState.Invalid;

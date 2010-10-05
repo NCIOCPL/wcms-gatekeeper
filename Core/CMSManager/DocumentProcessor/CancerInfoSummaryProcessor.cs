@@ -91,6 +91,35 @@ namespace GKManagers.CMSManager.DocumentProcessing
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
 
+
+        /// <summary>
+        /// Deletes the content items representing the speicified Cancer Information Summary document.
+        /// </summary>
+        /// <param name="documentID">The document ID.</param>
+        public void DeleteContentItem(int documentID)
+        {
+            IDMapManager mapManager = new IDMapManager();
+            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+
+            // Check for items with references.
+            VerifyDocumentMayBeDeleted(documentID);
+
+            throw new NotImplementedException();
+
+        }
+
+        /// <summary>
+        /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException
+        /// if the document is the target of any incoming relationships.
+        /// </summary>
+        /// <param name="documentCmsID">The document's ID in the CMS.</param>
+        protected override void VerifyDocumentMayBeDeleted(long documentCmsID)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
         #endregion
         
         #region Private Methods
