@@ -63,6 +63,7 @@
     <Compile Include="CMSIDMapping.cs" />
     <Compile Include="CMS\CMSController.cs" />
     <Compile Include="CMS\FolderManager.cs" />
+    <Compile Include="CMS\PSItemUtils.cs" />
     <Compile Include="CMS\UpdateContentItem.cs" />
     <Compile Include="CMS\CreateContentItem.cs" />
     <Compile Include="Configuration\ConnectionInfo.cs" />
