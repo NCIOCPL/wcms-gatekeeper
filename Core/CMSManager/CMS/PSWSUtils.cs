@@ -336,19 +336,21 @@ namespace GKManagers.CMSManager.CMS
         }
 
         /// <summary>
-        /// Loads the specified Content Item.
+        /// Retrieves an array of PSItem objects representing the content items
+        /// specified in the idList argument.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
         /// <param name="id">The ID of the Content Item to be loaded.</param>
-        /// <returns></returns>
-        public static PSItem LoadItem(contentSOAP contentSvc, long id)
+        /// <returns>An array of PSItem objects, listed in the same order as the
+        /// entries in idList. Never null or empty.</returns>
+        /// <remarks>The returned items are not editable.</remarks>
+        public static PSItem[] LoadItems(contentSOAP contentSvc, long[] idList)
         {
             LoadItemsRequest req = new LoadItemsRequest();
             PSItem[] items;
             try
             {
-                req.Id = new long[] { id };
-                req.IncludeBinary = true;
+                req.Id = idList;
                 req.IncludeFolderPath = true;
                 items = contentSvc.LoadItems(req);
             }
@@ -357,7 +359,7 @@ namespace GKManagers.CMSManager.CMS
                 throw new CMSSoapException("Percussion Error in LoadItem.", ex);
             }
 
-            return items[0];
+            return items;
         }
         /// <summary>
         /// Release the specified Content Item from Edit
@@ -430,6 +432,34 @@ namespace GKManagers.CMSManager.CMS
             }
 
             
+        }
+
+
+        /// <summary>
+        /// Retrieves relationships via the Percussion Content service.
+        /// By default, all defined active asesmbly relationships are returned. The list
+        /// may be filtered by assigning values to the various properties
+        /// of the PSAaRelationshipFilter object.
+        /// </summary>
+        /// <param name="contentSvc">Instance of the Percussion content service.</param>
+        /// <param name="filter">An instance of PSAaRelationshipFilter specifying
+        /// criteria to use when filtering the list of relationsships.</param>
+        /// <returns>An array of active asesmbly relationship objects. Never null,
+        /// but may be empty.</returns>
+        public static PSAaRelationship[] GetRelationships(contentSOAP contentSvc, PSAaRelationshipFilter filter)
+        {
+            try
+            {
+                LoadContentRelationsRequest req = new LoadContentRelationsRequest();
+                req.loadReferenceInfo = true;
+                req.PSAaRelationshipFilter = filter;
+                return contentSvc.LoadContentRelations(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in GetRelationships.", ex);
+            }
+
         }
 
 

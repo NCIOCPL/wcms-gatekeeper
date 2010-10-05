@@ -69,7 +69,7 @@ namespace GKManagers.CMSManager
             : base(info, context) { }
     }
 
-        /// <summary>
+    /// <summary>
     /// Thrown by methods in the GKManagers.CMSManager namespace when an Soap error occurs.
     /// </summary>
     [global::System.Serializable]
@@ -78,5 +78,23 @@ namespace GKManagers.CMSManager
         public CMSSoapException(string message, SoapException inner)
             : base(message + "\n\n" + inner.Detail.InnerXml.ToString())   {  }
 
+    }
+
+
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSManager namespace when an attempt is made
+    /// to delete content items which are the target of relationships owned by other
+    /// content items.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSCannotDeleteException : CMSException
+    {
+        public CMSCannotDeleteException() { }
+        public CMSCannotDeleteException(string message) : base(message) { }
+        public CMSCannotDeleteException(string message, Exception inner) : base(message, inner) { }
+        protected CMSCannotDeleteException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
     }
 }

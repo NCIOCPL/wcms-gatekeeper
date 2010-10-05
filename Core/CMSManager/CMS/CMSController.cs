@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web.Services.Protocols;
+
 using GKManagers.CMSManager.Configuration;
 using GKManagers.CMSManager.PercussionWebSvc;
-using System.Web.Services.Protocols;
+
 namespace GKManagers.CMSManager.CMS
 {
     /// <summary>
@@ -30,25 +32,25 @@ namespace GKManagers.CMSManager.CMS
         // need to communicate with the Percussion system.
 
         // The Percussion session, initialized by login() in the constructor. 
-        string m_rxSession;
+        string _percussionSession;
 
         /**
          * The security service instance; used to perform operations defined in
          * the security services. It is initialized by login().
          */
-        securitySOAP m_secService;
+        securitySOAP _securityService;
 
         /**
          * The content service instance; used to perform operations defined in
          * the content services. It is initialized by login().
          */
-        contentSOAP m_contService;
+        contentSOAP _contentService;
 
         /**
          * The system service instance; used to perform operations defined in
          * the system service. It is initialized by login().
          */
-        systemSOAP m_sysService;
+        systemSOAP _systemService;
 
         #endregion
 
@@ -81,11 +83,11 @@ namespace GKManagers.CMSManager.CMS
             // Free managed resources.
             if (disposing)
             {
-                PSWSUtils.Logout(m_secService, m_rxSession);
-                m_rxSession = null;
-                m_secService = null;
-                m_contService = null;
-                m_sysService = null;
+                PSWSUtils.Logout(_securityService, _percussionSession);
+                _percussionSession = null;
+                _securityService = null;
+                _contentService = null;
+                _systemService = null;
             }
         }
 
@@ -115,14 +117,14 @@ namespace GKManagers.CMSManager.CMS
             PSWSUtils.SetConnectionInfo(percussionConfig.ConnectionInfo.Protocol.Value, percussionConfig.ConnectionInfo.Host.Value,
                 Int16.Parse(percussionConfig.ConnectionInfo.Port.Value));
 
-            m_secService = PSWSUtils.GetSecurityService();
-            m_rxSession = PSWSUtils.Login(m_secService, percussionConfig.ConnectionInfo.UserName.Value,
+            _securityService = PSWSUtils.GetSecurityService();
+            _percussionSession = PSWSUtils.Login(_securityService, percussionConfig.ConnectionInfo.UserName.Value,
                   percussionConfig.ConnectionInfo.Password.Value, percussionConfig.ConnectionInfo.Community.Value, null);
 
-            m_contService = PSWSUtils.GetContentService(m_secService.CookieContainer,
-                m_secService.PSAuthenticationHeaderValue);
-            m_sysService = PSWSUtils.GetSystemService(m_secService.CookieContainer,
-                m_secService.PSAuthenticationHeaderValue);
+            _contentService = PSWSUtils.GetContentService(_securityService.CookieContainer,
+                _securityService.PSAuthenticationHeaderValue);
+            _systemService = PSWSUtils.GetSystemService(_securityService.CookieContainer,
+                _securityService.PSAuthenticationHeaderValue);
         }
 
 
@@ -158,7 +160,7 @@ namespace GKManagers.CMSManager.CMS
         /// <returns>Id for the the created item</returns>
         private long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
         {
-            PSItem item = PSWSUtils.CreateItem(m_contService, contentType);
+            PSItem item = PSWSUtils.CreateItem(_contentService, contentType);
 
             // Attach item to a folder
             PSFolder folder = GuaranteeFolder(targetFolder);
@@ -171,8 +173,8 @@ namespace GKManagers.CMSManager.CMS
 
             SetItemFields(item, fields);
 
-            long id = PSWSUtils.SaveItem(m_contService, item);
-            PSWSUtils.CheckinItem(m_contService, id);
+            long id = PSWSUtils.SaveItem(_contentService, item);
+            PSWSUtils.CheckinItem(_contentService, id);
             return id;
 
         }
@@ -203,17 +205,18 @@ namespace GKManagers.CMSManager.CMS
         /// <returns></returns>
         private long UpdateItem(long id, Dictionary<string, string> fields, string targetFolder)
         {
-            PSItemStatus status = PSWSUtils.PrepareForEdit(m_contService, id);
+            PSItemStatus status = PSWSUtils.PrepareForEdit(_contentService, id);
             PSItem item = new PSItem();
             PSItemFolders psf = new PSItemFolders();
             psf.path = siteRootPath + targetFolder;
             item.Folders = new PSItemFolders[] { psf };
 
-            item = PSWSUtils.LoadItem(m_contService, id);
+            PSItem[] returnList = PSWSUtils.LoadItems(_contentService, new long[]{id});
+            item = returnList[0];
 
             SetItemFields(item, fields);
-            long idUpd = PSWSUtils.SaveItem(m_contService, item);
-            PSWSUtils.ReleaseFromEdit(m_contService, status);            
+            long idUpd = PSWSUtils.SaveItem(_contentService, item);
+            PSWSUtils.ReleaseFromEdit(_contentService, status);
             return idUpd;
         }
 
@@ -236,13 +239,14 @@ namespace GKManagers.CMSManager.CMS
             }
         }
 
+
         /// <summary>
-        /// Deletes the content item.
+        /// Deletes the specified content item.
         /// </summary>
-        /// <param name="IDs">Array of Ids.</param>
-        public void DeleteItem(long[] IDs)
+        /// <param name="itemID">ID of the content item to be deleted.</param>
+        public void DeleteItem(long itemID)
         {
-            PSWSUtils.DeleteItem(m_contService, IDs);
+            PSWSUtils.DeleteItem(_contentService, new long[]{itemID});
         }
 
         /// <summary>
@@ -251,12 +255,12 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="sourcePath">The source folder path.</param>
         /// <param name="targetPath">The target folder path.</param>
         /// <param name="id">The id.</param>
-        public void MoveContentItemFolder(string sourcePath,string targetPath,long[] id)
+        public void MoveContentItemFolder(string sourcePath, string targetPath, long[] id)
         {
             sourcePath = siteRootPath + sourcePath;
             targetPath = siteRootPath + targetPath;
 
-            PSWSUtils.MoveFolderChildren(m_contService, targetPath, sourcePath,id);
+            PSWSUtils.MoveFolderChildren(_contentService, targetPath, sourcePath, id);
         }
 
         /// <summary>
@@ -269,7 +273,7 @@ namespace GKManagers.CMSManager.CMS
         /// prepended before the attempt is made to create it.</remarks>
         public PSFolder GuaranteeFolder(string folderPath)
         {
-            FolderManager folderMgr = new FolderManager(m_contService);
+            FolderManager folderMgr = new FolderManager(_contentService);
             return folderMgr.GuaranteeFolder(siteRootPath + folderPath);
         }
 
@@ -283,13 +287,56 @@ namespace GKManagers.CMSManager.CMS
         /// <remarks>All items must be maintained in the same state.</remarks>
         public object GetWorkflowState(long[] itemIDs, WorkflowStateInfererDelegate inferState)
         {
-            string[] transitionNames = PSWSUtils.GetTransitions(m_sysService, itemIDs);
+            string[] transitionNames = PSWSUtils.GetTransitions(_systemService, itemIDs);
             return inferState(transitionNames);
         }
 
+        /// <summary>
+        /// Moves the designated content items to another state in the workflow by
+        /// performing the named transition.
+        /// </summary>
+        /// <param name="idList">A list of content items.</param>
+        /// <param name="triggerName">The unique trigger name associated with a
+        /// workflow transition.</param>
+        /// <remarks>All content items must belong the same workflow and be
+        /// in the same state.</remarks>
         public void PerformWorkflowTransition(long[] idList, string triggerName)
         {
-            PSWSUtils.TransitionItems(m_sysService, idList, triggerName);
+            PSWSUtils.TransitionItems(_systemService, idList, triggerName);
+        }
+
+        /// <summary>
+        /// Retrieves a list of content items which own relationships to the content
+        /// item identified by itemID.
+        /// </summary>
+        /// <param name="itemID">The ID of a content item which is to be examined
+        /// for incoming relationships.</param>
+        /// <returns>An array of PSItem objects defining content items which have
+        /// relationships to the item identified by itemID. If no items have relationships,
+        /// the array will be empty, but is never null.</returns>
+        public PSItem[] LoadLinkingContentItems(long itemID)
+        {
+            PSItem[] returnList = new PSItem[] { };
+
+            // Check for any relationships.
+            PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
+            filter.Dependent = new long[1] { itemID };
+            PSAaRelationship[] relationships = PSWSUtils.GetRelationships(_contentService, filter);
+
+            // If incoming relationships exist, load the relevant content items.
+            if (relationships.Length > 0)
+            {
+                int relCount = relationships.Length;
+                long[] ownerIDs = new long[relCount];
+                for (int i = 0; i < relationships.Length; i++)
+                {
+                    ownerIDs[i] = relationships[i].ownerId;
+                }
+
+                returnList = PSWSUtils.LoadItems(_contentService, ownerIDs);
+            }
+
+            return returnList;
         }
     }
 }
