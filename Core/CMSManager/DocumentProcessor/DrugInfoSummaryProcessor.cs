@@ -109,7 +109,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // Check for items with references.
                 VerifyDocumentMayBeDeleted(mappingInfo.CmsID);
 
+                // Delete item from CMS.
                 CMSController.DeleteItem(mappingInfo.CmsID);
+
+                // Delete item mapping.
+                mapManager.DeleteCdrIDMapping(documentID);
             }
             else
             {
