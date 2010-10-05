@@ -176,7 +176,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 for (i = 0; i <= document.SectionList.Count - 1; i++)
                 {
-                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.SectionList[i].PrettyUrl), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                     if (contentItem.Fields["sys_title"] != string.Empty || contentItem.Fields["sys_title"] != "")
                         contentItemList.Add(contentItem);
 
@@ -216,7 +216,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
             {
-                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.TableSectionList[i].PrettyUrl), percussionConfig.ContentType.PDQTableSection.Value);
+                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
                 
             }
@@ -354,27 +354,20 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         private string GetTargetFolder(string targetFolderPath)
         {
-            // Remove last part of path, e.g. /cancertopics/druginfo/methotrexate becomes /cancertopics/druginfo
-            string truncUrl = string.Empty;
+            // Remove the jost name and protocol
             if (targetFolderPath.ToLower().StartsWith("http"))
             {
                 //Remove hostname and protocol.
                 System.Uri URL = new Uri(targetFolderPath);
                 targetFolderPath = URL.AbsolutePath;
-                truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
-                if (truncUrl != string.Empty)
-                {
-                    return truncUrl;
-                }
+                return targetFolderPath;
             }
 
             else
             {
-                truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
-                return truncUrl;
+                return targetFolderPath;
 
             }
-            return truncUrl;
         }
 
 
