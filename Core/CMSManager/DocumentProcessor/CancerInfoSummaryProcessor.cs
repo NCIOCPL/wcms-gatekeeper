@@ -176,9 +176,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 for (i = 0; i <= document.SectionList.Count - 1; i++)
                 {
-                    CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
-                    if (contentItem.Fields["sys_title"] != string.Empty || contentItem.Fields["sys_title"] != "")
+                    if (document.SectionList[i].IsTopLevel == true)
+                    {
+                        CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                         contentItemList.Add(contentItem);
+                    }
 
                 }
 
@@ -202,7 +204,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             }
 
             fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>",string.Empty).Replace("</TableSectionXML>",string.Empty));
-            fields.Add("sys_title", prettyURLName);
+            fields.Add("sys_title", cancerInfoSummaryPage.Title);
 
 
             return fields;
