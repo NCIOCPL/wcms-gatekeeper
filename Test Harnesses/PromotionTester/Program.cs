@@ -49,7 +49,7 @@ where:
                 }
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -58,18 +58,26 @@ where:
 
         private static void RunAsStandard(string[] args)
         {
-            if (args.Length == 2)
+            if (args.Length >= 2 && args.Length <= 3)
             {
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
+                CMSController.CMSPublishingTarget? publishingFlag = null;
+                if (args.Length == 3)
+                    publishingFlag = GetPublishingFlag(args[2]);
 
+                DocumentXPathManager xPathManager = new DocumentXPathManager();
 
-                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+                // Instantiate a promoter and go to town.
+                DocumentPromoterBase promoter =
+                    DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                promoter.Promote(xPathManager);
 
-                    // Instantiate a promoter and go to town.
-                    DocumentPromoterBase promoter =
-                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                    promoter.Promote(xPathManager);
+                if (publishingFlag.HasValue)
+                {
+                    CMSController controller = new CMSController();
+                    controller.StartPublishing(publishingFlag.Value);
+                }
 
             }
             else
@@ -109,25 +117,25 @@ where:
 
         private static void RunUsingThreads(string[] args)
         {
-                ProcessDocumentThread processDocumentThread1 = new ProcessDocumentThread(args, 0);
-                Thread firstThread = new Thread(new ThreadStart(processDocumentThread1.DocumentThread));
+            ProcessDocumentThread processDocumentThread1 = new ProcessDocumentThread(args, 0);
+            Thread firstThread = new Thread(new ThreadStart(processDocumentThread1.DocumentThread));
 
-                ProcessDocumentThread processDocumentThread2 = new ProcessDocumentThread(args, 1);
-                Thread SecondThread = new Thread(new ThreadStart(processDocumentThread2.DocumentThread));
-
-
-                ProcessDocumentThread processDocumentThread3 = new ProcessDocumentThread(args, 2);
-                Thread ThirdThread = new Thread(new ThreadStart(processDocumentThread3.DocumentThread));
+            ProcessDocumentThread processDocumentThread2 = new ProcessDocumentThread(args, 1);
+            Thread SecondThread = new Thread(new ThreadStart(processDocumentThread2.DocumentThread));
 
 
-                ProcessDocumentThread processDocumentThread4 = new ProcessDocumentThread(args, 3);
-                Thread FourthThread = new Thread(new ThreadStart(processDocumentThread4.DocumentThread));
+            ProcessDocumentThread processDocumentThread3 = new ProcessDocumentThread(args, 2);
+            Thread ThirdThread = new Thread(new ThreadStart(processDocumentThread3.DocumentThread));
 
-                            
-                firstThread.Start();
-                SecondThread.Start();
-                ThirdThread.Start();
-                FourthThread.Start();
+
+            ProcessDocumentThread processDocumentThread4 = new ProcessDocumentThread(args, 3);
+            Thread FourthThread = new Thread(new ThreadStart(processDocumentThread4.DocumentThread));
+
+
+            firstThread.Start();
+            SecondThread.Start();
+            ThirdThread.Start();
+            FourthThread.Start();
         }
 
 
@@ -183,12 +191,28 @@ where:
 
             return action;
         }
+
+        private static CMSController.CMSPublishingTarget GetPublishingFlag(string flagText)
+        {
+            CMSController.CMSPublishingTarget flag;
+            try
+            {
+                flag = ConvertEnum<CMSController.CMSPublishingTarget>.Convert(flagText);
+            }
+            catch (Exception)
+            {
+                Console.Error.WriteLine("Error attempting to convert {0} to CMSController.CMSPublishingTarget.", flagText);
+                throw;
+            }
+
+            return flag;
+        }
     }
 
     public class ProcessDocumentThread : Program
     {
         private string docPath;
-        public ProcessDocumentThread(string[] args,int i)
+        public ProcessDocumentThread(string[] args, int i)
         {
             docPath = args[i];
         }
@@ -206,9 +230,5 @@ where:
                 DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
             promoter.Promote(xPathManager);
         }
-
-
-
-
     }
 }

@@ -9,6 +9,7 @@ using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
 using GKManagers.BusinessObjects;
+using GKManagers.CMSManager.CMS;
 using GKManagers.DataAccess;
 
 namespace GKManagers
@@ -180,7 +181,7 @@ namespace GKManagers
                     }
 
                     // Update caches
-                    UpdateDocumentCache(documentTypeTracker, action, currentBatch);
+                    UpdateDocumentCacheAndPrettyUrls(documentTypeTracker, action, currentBatch);
 
                     BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
                         string.Format("Finish promotion to {0}", ActionToLocation(action)));
@@ -242,8 +243,18 @@ namespace GKManagers
 
         }
 
-
-        private static void UpdateDocumentCache(DocumentTypeTracker documentTypeTracker,
+        /// <summary>
+        /// Clears the protocol cache and refreshes the pretty URL list based on
+        /// the promotion stage which has just been completed.
+        /// </summary>
+        /// <param name="documentTypeTracker">Reference to a DocumentTypeTracker object
+        /// containing a list of document types which have been successfully promoted
+        /// to the current stage.</param>
+        /// <param name="action">A ProcessActionType value which has been performed.
+        /// Used to determine which environment should be updated.</param>
+        /// <param name="batchInfo">Batch object containing metadata for the
+        /// promotion batch.</param>
+        private static void UpdateDocumentCacheAndPrettyUrls(DocumentTypeTracker documentTypeTracker,
                 ProcessActionType action, Batch batchInfo)
         {
             // Caches only exists on Preview & Live. There's nothing to do on Staging.
@@ -294,6 +305,41 @@ namespace GKManagers
             }
         }
 
+        /// <summary>
+        /// Triggers the CMS to publish documents which have been updated.
+        /// </summary>
+        /// <param name="documentTypeTracker">Reference to a DocumentTypeTracker object
+        /// containing a list of document types which have been successfully updated.</param>
+        /// <param name="action">The ProcessActionType which has been performed in
+        /// updating the documents in the DocumentTypeTracker object.
+        /// Used to determine which environment should be updated.</param>
+        /// <param name="batchInfo">Batch object containing metadata for the promotion batch.</param>
+        private static void LaunchCMSPublishing(DocumentTypeTracker documentTypeTracker,
+                ProcessActionType action, Batch batchInfo)
+        {
+            // Shortcut for the multiple document types which are maintained in the CMS.
+            DocumentTypeFlag cmsManagedTypes =
+                DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary;
+
+            // Publishing only takes place for Preview & Live. There's nothing to do on Staging.
+            if ((action == ProcessActionType.PromoteToPreview || action == ProcessActionType.PromoteToLive)
+                && documentTypeTracker.Contains(cmsManagedTypes))
+            {
+                CMSController controller = new CMSController();
+
+                CMSController.CMSPublishingTarget target;
+                if (action == ProcessActionType.PromoteToPreview)
+                {
+                    target = CMSController.CMSPublishingTarget.CDRPreview;
+                }
+                else
+                {
+                    target = CMSController.CMSPublishingTarget.CDRLive;
+                }
+
+                controller.StartPublishing(target);
+            }
+        }
 
         /// <summary>
         /// Encapsulates the logic for checking whether the appropriate versions of a document
