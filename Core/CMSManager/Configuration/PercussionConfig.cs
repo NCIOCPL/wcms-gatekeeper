@@ -30,6 +30,17 @@ namespace GKManagers.CMSManager.Configuration
 
         }
 
+        [ConfigurationProperty("previewRepublishEditionList", IsRequired = true)]
+        public RepublishEditionListElement PreviewRepublishEditionList
+        {
+            get { return (RepublishEditionListElement)base["previewRepublishEditionList"]; }
+        }
+
+        [ConfigurationProperty("liveRepublishEditionList", IsRequired = true)]
+        public RepublishEditionListElement LiveRepublishEditionList
+        {
+            get { return (RepublishEditionListElement)base["liveRepublishEditionList"]; }
+        }
 
     }
 

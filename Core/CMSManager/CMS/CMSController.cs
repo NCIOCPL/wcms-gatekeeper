@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Web.Services.Protocols;
 
 using GKManagers.CMSManager.Configuration;
@@ -94,7 +93,7 @@ namespace GKManagers.CMSManager.CMS
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CMSController"/> class.
+        /// Initializes a new instance of the CMSController class.
         /// </summary>
         public CMSController()
         {
@@ -103,7 +102,6 @@ namespace GKManagers.CMSManager.CMS
             Login();
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
-
         }
 
 
@@ -126,8 +124,6 @@ namespace GKManagers.CMSManager.CMS
             _systemService = PSWSUtils.GetSystemService(_securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
         }
-
-
 
         /// <summary>
         /// Creates the content items in the list.
@@ -358,5 +354,57 @@ namespace GKManagers.CMSManager.CMS
             return -1;
         }
 
+
+        public enum CMSPublishingTarget
+        {
+            CDRStaging = 0, // For completeness, not really useful.
+            CDRPreview = 1,
+            CDRLive = 2
+        }
+
+
+        public void StartPublishing(CMSPublishingTarget target)
+        {
+            // Preview and Live are the only CMS publishing editions we would run.
+            if (target == CMSPublishingTarget.CDRPreview || target == CMSPublishingTarget.CDRLive)
+            {
+                // Server communication information.
+                PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+                string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
+                string host = percussionConfig.ConnectionInfo.Host.Value;
+                string port = percussionConfig.ConnectionInfo.Port.Value;
+                string publishingUrlFormat =
+                    "{0}://{1}:{2}/Rhythmyx/sys_pubHandler/publisher.htm?editionid={3}&PUBAction=publish";
+
+                string[] editionList = GetPublishingEditionList(target);
+
+                Array.ForEach(editionList, edition =>
+                {
+                    string activationUrl = string.Format(publishingUrlFormat, protocol, host, port, edition);
+                    WebRequest request = WebRequest.Create(activationUrl);
+                    WebResponse response = request.GetResponse();
+                });
+
+            }
+        }
+
+        private string[] GetPublishingEditionList(CMSPublishingTarget target)
+        {
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            string[] editionList;
+            string textValue;
+
+            if (target == CMSPublishingTarget.CDRPreview)
+                textValue = percussionConfig.PreviewRepublishEditionList.Value.Trim();
+            else
+                textValue = percussionConfig.LiveRepublishEditionList.Value.Trim();
+
+            if (!string.IsNullOrEmpty(textValue))
+                editionList = textValue.Split(new char[] { ',' });
+            else
+                editionList = new string[] { };
+
+            return editionList;
+        }
     }
 }
