@@ -54,6 +54,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // Create the new pdqCancerInfoSummary content item.
                 CreatePDQCancerInfoSummary(document, mappingInfo, contentItemList);
 
+                //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
+                
                 //Create new pdqCancerInfoSummaryLink content item
                 CreatePDQCancerInfoSummaryLink(document, contentItemList);
 
@@ -64,6 +66,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 CreatePDQCancerInfoSummaryPage(document, contentItemList);
                 
                 //Save pdqMediaLink
+
+                //TODO:  Set up Percussion slot relationships.
 
                 //Save all the content items in one operation using the contentItemList.
                 idList = CMSController.CreateContentItemList(contentItemList);
