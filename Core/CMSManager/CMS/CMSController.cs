@@ -224,11 +224,11 @@ namespace GKManagers.CMSManager.CMS
         {
             foreach (PSField srcField in item.Fields)
             {
-                string nameValue;
-                if (fields.TryGetValue(srcField.name, out nameValue))
+                string fieldValue;
+                if (fields.TryGetValue(srcField.name, out fieldValue))
                 {
                     PSFieldValue value = new PSFieldValue();
-                    value.RawData = nameValue;
+                    value.RawData = fieldValue;
                     srcField.PSFieldValue = new PSFieldValue[] { value };
                 }
             }

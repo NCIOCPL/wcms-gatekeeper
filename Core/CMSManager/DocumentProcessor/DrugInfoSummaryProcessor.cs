@@ -47,7 +47,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             if (mappingInfo == null)
             {
                 // Turn the list of item fields into a list of one item.
-                CreateContentItem contentItem = new CreateContentItem(GetFields(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
+                CreateContentItem contentItem = new CreateContentItem(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
                 List<CreateContentItem> contentItemList = new List<CreateContentItem>();
                 contentItemList.Add(contentItem);
 
@@ -67,7 +67,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // This is an existing item, we must therefore put it in an editable state.
                 TransitionItemsToStaging(new long[1] { mappingInfo.CmsID });
 
-                UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, GetFields(document), GetTargetFolder(document.PrettyURL));
+                UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
                 List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
                 contentItemList.Add(contentItem);
                 InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
@@ -211,39 +211,39 @@ namespace GKManagers.CMSManager.DocumentProcessing
             return truncUrl;
         }
 
-        private Dictionary<string, string> GetFields(GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument DocType)
+        private Dictionary<string, string> CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            string prettyURLName=DocType.PrettyURL.Substring(DocType.PrettyURL.LastIndexOf('/')+1);
+            string prettyURLName = drugInfo.PrettyURL.Substring(drugInfo.PrettyURL.LastIndexOf('/') + 1);
 
-            
+
             fields.Add("pretty_url_name", prettyURLName);
-            fields.Add("long_title", DocType.Title);
+            fields.Add("long_title", drugInfo.Title);
 
-            if(DocType.Title.Length>64)
-                fields.Add("short_title", DocType.Title.Substring(1,64));
+            if (drugInfo.Title.Length > 64)
+                fields.Add("short_title", drugInfo.Title.Substring(1, 64));
             else
-                fields.Add("short_title", DocType.Title);
+                fields.Add("short_title", drugInfo.Title);
 
-            fields.Add("long_description", DocType.Description);
-            fields.Add("bodyfield", DocType.Html);
+            fields.Add("long_description", drugInfo.Description);
+            fields.Add("bodyfield", drugInfo.Html);
             fields.Add("short_description", string.Empty);
             fields.Add("date_next_review", "1/1/2100");
             fields.Add("print_available", "1");
             fields.Add("email_available", "1");
             fields.Add("share_available", "1");
-            if(DocType.LastModifiedDate.ToString()!=string.Empty)
-                fields.Add("date_last_modified", DocType.LastModifiedDate.ToString());
+            if (drugInfo.LastModifiedDate != DateTime.MinValue)
+                fields.Add("date_last_modified", drugInfo.LastModifiedDate.ToString());
             else
-                fields.Add("date_last_modified", string.Empty);
+                fields.Add("date_last_modified", null);
 
-            fields.Add("date_first_published", DocType.FirstPublishedDate.ToString());
+            fields.Add("date_first_published", drugInfo.FirstPublishedDate.ToString());
 
-            fields.Add("cdrid", DocType.DocumentID.ToString());
+            fields.Add("cdrid", drugInfo.DocumentID.ToString());
 
 
             fields.Add("sys_title", prettyURLName);
-            
+
             return fields;
         }
 
