@@ -8,73 +8,58 @@ using GKManagers.CMSManager.PercussionWebSvc;
 
 namespace GKManagers.CMSManager.CMS
 {
-    public class PSWSUtils
+    /// <summary>
+    /// Utility methods for communicating with the Percussion CMS.
+    /// </summary>
+    public static class PSWSUtils
     {
+        // Don't even *THINK* about adding any static fields to this class.
 
-        private static string ms_protocol = "http";
-        private static string ms_host = "156.40.134.66";
-        private static int ms_port = 9922;
-        public static void SetConnectionInfo(string protocol, string host, int port)
-        {
 
-            ms_protocol = protocol;
-            ms_host = host;
-            ms_port = port;
-        }
 
         /// <summary>
-        ///     Creates a proxy of the security service.
+        /// Creates and intialize a proxy of the Percussion service for maintaining
+        /// login sessions.
         /// </summary>
-        /// <returns>
-        ///     the created proxy of the security service; 
-        /// </returns>
-        public static securitySOAP GetSecurityService()
+        /// <param name="protocol">Communications protocol to use when connecting to
+        /// the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <returns>An initialized proxy for the Percussion security service.</returns>
+        public static securitySOAP GetSecurityService(string protocol, string host, string port)
         {
            securitySOAP securitySvc = new securitySOAP();
-           try
-           {
-               securitySvc.Url = GetNewAddress(securitySvc.Url);
+
+            securitySvc.Url = RewriteServiceUrl(securitySvc.Url, protocol, host, port);
 
                // create a cookie object to maintain JSESSION
                CookieContainer cookie = new CookieContainer();
                securitySvc.CookieContainer = cookie;
-           }
-           catch (SoapException ex)
-           {
-               throw new CMSSoapException("Percussion Error in GetSecurityService.", ex);
-           }
 
             return securitySvc;
         }
 
 
         /// <summary>
-        /// Creates a new address from the specified source address.
+        /// Rewrites a Percussion service URL with a new protocol, host and port number.
         /// </summary>
         /// <param name="srcAddress">The source address with the 
         ///     the connection information (protocol, host and port)</param>
-        /// <returns></returns>
-        private static String GetNewAddress(String srcAddress)
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <returns>The modified service URL.</returns>
+        private static String RewriteServiceUrl(String srcAddress, string protocol, string host, string port)
         {
-            int pathStart;
-
-            try
-            {
-                pathStart = srcAddress.IndexOf("/Rhythmyx/");
-            }
-
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in GetNewAddress.", ex);
-            }
-
-            return ms_protocol + "://" + ms_host + ":" + ms_port +
-                srcAddress.Substring(pathStart);
+            int pathStart = srcAddress.IndexOf("/Rhythmyx/");
+            return string.Format("{0}://{1}:{2}{3}",
+                protocol, host, port, srcAddress.Substring(pathStart));
         }
 
 
         /// <summary>
-        /// Login with the specified credentials and associated parameters.
+        /// Login to a Percussion sesession with the specified credentials and associated parameters.
         /// </summary>
         /// <param name="securitySvc">the proxy of the security service</param>
         /// <param name="user">The login user.</param>
@@ -110,59 +95,55 @@ namespace GKManagers.CMSManager.CMS
 
 
         /// <summary>
-        /// Creates a proxy of the content service
+        /// Creates and intialize a proxy of the Percussion service used for manipulating
+        /// content items and relationships.
         /// </summary>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
         /// <param name="cookie">The cookie container for maintaining the session for all
         ///     webservice requests.</param>
         /// <param name="authHeader">The authentication header for maintaining the Rhythmyx session
         ///     for all webservice requests.</param>
-        /// <returns></returns>
-        public static contentSOAP GetContentService(CookieContainer cookie,PSAuthenticationHeader authHeader)
+        /// <returns>An initialized proxy for the Percussion content service.</returns>
+        public static contentSOAP GetContentService(string protocol, string host, string port, CookieContainer cookie, PSAuthenticationHeader authHeader)
         {
             contentSOAP contentSvc = new contentSOAP();
-            try
-            {
-                contentSvc.Url = GetNewAddress(contentSvc.Url);
 
-                contentSvc.CookieContainer = cookie;
-                contentSvc.PSAuthenticationHeaderValue = authHeader;
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in GetContentService.", ex);
-            }
-            
+            contentSvc.Url = RewriteServiceUrl(contentSvc.Url, protocol, host, port);
+            contentSvc.CookieContainer = cookie;
+            contentSvc.PSAuthenticationHeaderValue = authHeader;
+
             return contentSvc;
         }
 
         /// <summary>
-        /// Creates a proxy of the system service.
+        /// Creates and intialize a proxy of the Percussion service used for manipulating
+        /// the overall system (folders, list of relationships, etc).
         /// </summary>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
         /// <param name="cookie">The cookie container for maintaining the session for all
         ///     webservice requests.</param>
         /// <param name="authHeader">The authentication header for maintaining the Rhythmyx session
         ///     for all webservice requests.</param>
-        /// <returns></returns>
-        public static systemSOAP GetSystemService(CookieContainer cookie,PSAuthenticationHeader authHeader)
+        /// <returns>An initialized proxy for the Percussion system service.</returns>
+        public static systemSOAP GetSystemService(string protocol, string host, string port, CookieContainer cookie, PSAuthenticationHeader authHeader)
         {
             systemSOAP systemSvc = new systemSOAP();
-            try
-            {
-                systemSvc.Url = GetNewAddress(systemSvc.Url);
 
-                systemSvc.CookieContainer = cookie;
-                systemSvc.PSAuthenticationHeaderValue = authHeader;
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in GetSystemService.", ex);
-            }
+            systemSvc.Url = RewriteServiceUrl(systemSvc.Url, protocol, host, port);
+            systemSvc.CookieContainer = cookie;
+            systemSvc.PSAuthenticationHeaderValue = authHeader;
 
             return systemSvc;
         }
 
         /// <summary>
-        /// Logs out the specified Rhythmyx session.
+        /// Logs out from the Rhythmyx session.
         /// </summary>
         /// <param name="securitySvc">The security proxy.</param>
         /// <param name="rxSession">The Rhythmyx session.</param>

@@ -112,16 +112,17 @@ namespace GKManagers.CMSManager.CMS
         {
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
 
-            PSWSUtils.SetConnectionInfo(percussionConfig.ConnectionInfo.Protocol.Value, percussionConfig.ConnectionInfo.Host.Value,
-                Int16.Parse(percussionConfig.ConnectionInfo.Port.Value));
+            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
+            string host = percussionConfig.ConnectionInfo.Host.Value;
+            string port = percussionConfig.ConnectionInfo.Port.Value;
 
-            _securityService = PSWSUtils.GetSecurityService();
+            _securityService = PSWSUtils.GetSecurityService(protocol, host, port);
             _percussionSession = PSWSUtils.Login(_securityService, percussionConfig.ConnectionInfo.UserName.Value,
                   percussionConfig.ConnectionInfo.Password.Value, percussionConfig.ConnectionInfo.Community.Value, null);
 
-            _contentService = PSWSUtils.GetContentService(_securityService.CookieContainer,
+            _contentService = PSWSUtils.GetContentService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
-            _systemService = PSWSUtils.GetSystemService(_securityService.CookieContainer,
+            _systemService = PSWSUtils.GetSystemService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
         }
 
