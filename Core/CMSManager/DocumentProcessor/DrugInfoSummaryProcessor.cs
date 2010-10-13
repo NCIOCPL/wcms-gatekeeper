@@ -200,17 +200,43 @@ namespace GKManagers.CMSManager.DocumentProcessing
         #endregion
 
         #region Private Methods
-        private string GetTargetFolder(string targetFolderPath)
+
+        /// <summary>
+        /// Parses the URL for a drug information summary item and separates the folder path
+        /// from the item name.
+        /// </summary>
+        /// <param name="itemPath">Server-relative path of a drug information summary.</param>
+        /// <returns>The folder path where the item is to be stored.</returns>
+        /// <remarks>The rules for determining the target folder path vary between content items.
+        /// In the case of drug information summaries, the path item after the final, non-trailing,
+        /// path separator is the item name and the rest is used to determine the folder path.
+        /// e.g. For the URL /cancertopics/druginfo/methotrexate, the target path is /cancertopics/druginfo
+        /// </remarks>
+        private string GetTargetFolder(string itemPath)
         {
-            //1. Remove last part of path, e.g. /cancertopics/druginfo/methotrexate becomes /cancertopics/druginfo
-            string truncUrl = targetFolderPath.Substring(0, targetFolderPath.LastIndexOf('/'));
-            if (truncUrl != string.Empty)
+            // Elminate leading/trailing whitespace and trailing slash.
+            string targetFolder = itemPath.Trim();
+            if (targetFolder.EndsWith("/") && targetFolder.Length > 1)
             {
-                return truncUrl;
+                targetFolder = targetFolder.Substring(0, targetFolder.Length - 1);
             }
-            return truncUrl;
+
+            // Separate out the target folder.
+            int separatorIndex = itemPath.LastIndexOf('/');
+            if (separatorIndex >= 0)
+                targetFolder = itemPath.Substring(0, separatorIndex);
+
+            return targetFolder;
         }
 
+
+        /// <summary>
+        /// Creates a mapping of drug information summary data points and the fields used
+        /// in the CMS content type.
+        /// </summary>
+        /// <param name="drugInfo">DrugInfoSummaryDocument object to map</param>
+        /// <returns>A Dictionary of key/value pairs. Keys are the names of fields in the
+        /// CMS content type.</returns>
         private Dictionary<string, string> CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
@@ -229,9 +255,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             fields.Add("bodyfield", drugInfo.Html);
             fields.Add("short_description", string.Empty);
             fields.Add("date_next_review", "1/1/2100");
-            fields.Add("print_available", "1");
-            fields.Add("email_available", "1");
-            fields.Add("share_available", "1");
+
             if (drugInfo.LastModifiedDate != DateTime.MinValue)
                 fields.Add("date_last_modified", drugInfo.LastModifiedDate.ToString());
             else
