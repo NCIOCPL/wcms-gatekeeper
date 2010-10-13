@@ -77,16 +77,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 if (mappingInfo.PrettyURL != document.PrettyURL)
                 {
                     long[] id = idList.ToArray() ;
-                    CMSController.GuaranteeFolder(document.PrettyURL);
-                    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, document.PrettyURL, id);
+                    string targetFolder = GetTargetFolder(document.PrettyURL);
+                    string sourceFolder = GetTargetFolder(mappingInfo.PrettyURL);
+
+                    CMSController.GuaranteeFolder(targetFolder);
+                    CMSController.MoveContentItemFolder(sourceFolder, targetFolder, id);
                    
-                    //Delete existing mapping for the CDRID.
-                    mapManager.DeleteCdrIDMapping(document.DocumentID);
-
-                    // Save the mapping between the CDR and CMS IDs.
-                    mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
-                    mapManager.InsertCdrIDMapping(mappingInfo);
-
+                    // Update mapping for the CDRID.
+                    mapManager.UpdateCdrIDMapping(document.DocumentID, idList[0], document.PrettyURL);
                 }
 
             }

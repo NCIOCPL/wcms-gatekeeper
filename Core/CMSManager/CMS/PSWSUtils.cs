@@ -383,12 +383,13 @@ namespace GKManagers.CMSManager.CMS
 
 
         /// <summary>
-        /// Moves a content item from one folder to another.
+        /// Moves a collection of content items from one folder to another.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
         /// <param name="targetPath">The target folder path.</param>
         /// <param name="sourcePath">The source folder path.</param>
         /// <param name="id">The content item ids to be moved</param>
+        /// <remarks>All items being moved must have the same source and target paths.</remarks>
         public static void MoveFolderChildren(contentSOAP contentSvc, string targetPath,string sourcePath,long[] id)
         {
             MoveFolderChildrenRequest moveFolder = new MoveFolderChildrenRequest();
