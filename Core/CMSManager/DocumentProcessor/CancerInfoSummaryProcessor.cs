@@ -32,7 +32,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
-            List<CreateContentItem> contentItemList = new List<CreateContentItem>();
+            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
             List<long> idList;
 
             VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
@@ -85,10 +85,10 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 //Update Content Items
 
-                List<UpdateContentItem> contentItemsListToUpdate = new List<UpdateContentItem>();
+                List<ContentItemForUpdating> contentItemsListToUpdate = new List<ContentItemForUpdating>();
                 long contentID;
                 // Add pdqCancerInfoSummary content item to the contentItemsListToUpdate 
-                UpdateContentItem updateContentItem = new UpdateContentItem(mappingInfo.CmsID, GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(mappingInfo.CmsID, GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
 
@@ -97,7 +97,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 //Get the ID for the content item to be updated.
                 contentID = GetpdqCancerInfoSummaryLinkID(document);
 
-                updateContentItem = new UpdateContentItem(contentID, GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
+                updateContentItem = new ContentItemForUpdating(contentID, GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
                 //Add pdqTableSections content item to the contentItemsListToUpdate
@@ -174,7 +174,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
         
         #region Private Methods
 
-        private void CreatePDQCancerInfoSummaryPage(SummaryDocument document, List<CreateContentItem> contentItemList)
+        private void CreatePDQCancerInfoSummaryPage(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
             int i;
 
@@ -182,7 +182,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 {
                     if (document.SectionList[i].IsTopLevel == true)
                     {
-                        CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                        ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                         contentItemList.Add(contentItem);
                     }
 
@@ -215,14 +215,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 
-        private void CreatePDQTableSections(SummaryDocument document, List<CreateContentItem> contentItemList)
+        private void CreatePDQTableSections(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
             int i;
 
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
             {
-                CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
+                ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
                 
             }
@@ -244,10 +244,10 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
 
-        private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo, List<CreateContentItem> contentItemList)
+        private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo, List<ContentItemForCreating> contentItemList)
         {
 
-            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummary.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummary.Value);
             contentItemList.Add(contentItem);
 
         }
@@ -296,10 +296,10 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 
-        private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<CreateContentItem> contentItemList)
+        private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
 
-            CreateContentItem contentItem = new CreateContentItem(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
             contentItemList.Add(contentItem);
 
         }
@@ -325,7 +325,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
         }
 
 
-        private void GetPDQTableSectionsToUpdate(SummaryDocument document, List<UpdateContentItem> contentItemsListToUpdate)
+        private void GetPDQTableSectionsToUpdate(SummaryDocument document, List<ContentItemForUpdating> contentItemsListToUpdate)
         {
             int i;
             long contentid;
@@ -335,13 +335,13 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 string prettyURLName = document.TableSectionList[i].PrettyUrl.Substring(document.TableSectionList[i].PrettyUrl.LastIndexOf('/') + 1);
                 contentid = CMSController.GetItemID(GetTargetFolder(document.TableSectionList[i].PrettyUrl), prettyURLName);
-                UpdateContentItem updateContentItem = new UpdateContentItem(contentid, GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
             }
 
         }
 
-        private void GetPDQCancerInfoSummaryPagesToUpdate(SummaryDocument document, List<UpdateContentItem> contentItemsListToUpdate)
+        private void GetPDQCancerInfoSummaryPagesToUpdate(SummaryDocument document, List<ContentItemForUpdating> contentItemsListToUpdate)
         {
             int i;
             long contentid;
@@ -350,7 +350,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 string prettyURLName = document.SectionList[i].PrettyUrl.Substring(document.SectionList[i].PrettyUrl.LastIndexOf('/') + 1);
                 contentid = CMSController.GetItemID(GetTargetFolder(document.SectionList[i].PrettyUrl), prettyURLName);
-                UpdateContentItem updateContentItem = new UpdateContentItem(contentid, GetFieldsPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, GetFieldsPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
             }

@@ -13,8 +13,9 @@ namespace GKManagers.CMSManager.CMS
     /// </summary>
     public static class PSWSUtils
     {
-        // Don't even *THINK* about adding any static fields to this class.
-
+        /*
+           Don't even *THINK* about adding any static fields to this class.
+        */
 
 
         /// <summary>
@@ -251,6 +252,8 @@ namespace GKManagers.CMSManager.CMS
             }
 
         }
+
+        
         /// <summary>
         /// Associates the specified Content Items with the specified Folder.
         /// </summary>
@@ -272,8 +275,8 @@ namespace GKManagers.CMSManager.CMS
             {
                 throw new CMSSoapException("Percussion Error in AddFolderChildren.", ex);
             }
-
         }
+
         /// <summary>
         /// Saves the specified Content Item to the repository.
         /// </summary>
@@ -282,6 +285,7 @@ namespace GKManagers.CMSManager.CMS
         /// <returns></returns>
         public static long SaveItem(contentSOAP contentSvc, PSItem item)
         {
+            //TODO: Refactor SaveItem() and its callers to receive an array of PSItem objects.
             SaveItemsResponse response = null;
 
             try
@@ -297,6 +301,7 @@ namespace GKManagers.CMSManager.CMS
 
             return response.Ids[0];
         }
+
         /// <summary>
         /// Prepares the specified Content Item for Edit.
         /// </summary>
@@ -305,6 +310,7 @@ namespace GKManagers.CMSManager.CMS
         /// <returns></returns>
         public static PSItemStatus PrepareForEdit(contentSOAP contentSvc, long id)
         {
+            //TODO: Refactor PrepareForEdit() to receive an array of long values.
             try
             {
                 return contentSvc.PrepareForEdit(new long[] { id })[0];
@@ -342,6 +348,7 @@ namespace GKManagers.CMSManager.CMS
 
             return items;
         }
+
         /// <summary>
         /// Release the specified Content Item from Edit
         /// </summary>
@@ -349,6 +356,7 @@ namespace GKManagers.CMSManager.CMS
         /// <param name="status">The status of the Content Item to be released for edit.</param>
         public static void ReleaseFromEdit(contentSOAP contentSvc, PSItemStatus status)
         {
+            // TODO: Refactor ReleaseFromEdit() to receive an array of PSItemStatus objects.
             ReleaseFromEditRequest req = new ReleaseFromEditRequest();
             try
             {

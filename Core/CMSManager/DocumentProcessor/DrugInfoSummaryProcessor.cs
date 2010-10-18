@@ -47,8 +47,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
             if (mappingInfo == null)
             {
                 // Turn the list of item fields into a list of one item.
-                CreateContentItem contentItem = new CreateContentItem(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
-                List<CreateContentItem> contentItemList = new List<CreateContentItem>();
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
+                List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
                 contentItemList.Add(contentItem);
 
 
@@ -67,8 +67,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // This is an existing item, we must therefore put it in an editable state.
                 TransitionItemsToStaging(new long[1] { mappingInfo.CmsID });
 
-                UpdateContentItem contentItem = new UpdateContentItem(mappingInfo.CmsID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
-                List<UpdateContentItem> contentItemList = new List<UpdateContentItem>();
+                ContentItemForUpdating contentItem = new ContentItemForUpdating(mappingInfo.CmsID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
+                List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
                 contentItemList.Add(contentItem);
                 InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
                 idList = CMSController.UpdateContentItemList(contentItemList);

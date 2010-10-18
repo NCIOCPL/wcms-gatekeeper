@@ -21,7 +21,7 @@ namespace GKManagers.CMSManager.CMS
         {
             string fieldValue = null;
 
-            // Find the field with the pretty url name.
+            // Find the named field within the PSItem's field collection.
             IEnumerable<PSField> namedField =
                 item.Fields.Where(field => field.name == fieldName);
             if (namedField.Count() > 0)

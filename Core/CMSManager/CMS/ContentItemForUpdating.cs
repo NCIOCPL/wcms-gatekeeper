@@ -5,19 +5,19 @@ using System.Text;
 using System.Collections.ObjectModel;
 namespace GKManagers.CMSManager.CMS
 {
-    public class CreateContentItem
+    public class ContentItemForUpdating
     {
-        //constructor for creating new content item
-        public CreateContentItem(Dictionary<string, string> fields, string targetFolder,string contentType)
-        {            
+        //Constructor for updating  content Item
+        public ContentItemForUpdating(long id,Dictionary<string,string> fields,string targetFolder)
+        {
+            ID = id;
             Fields = fields;
             TargetFolder = targetFolder;
-            ContentType = contentType;
         }
 
+        public long ID {get;private set;}
         public Dictionary<string, string> Fields { get; private set; }
         public string TargetFolder { get; private set; }
-        public string ContentType { get; private set; }
 
     }
 }

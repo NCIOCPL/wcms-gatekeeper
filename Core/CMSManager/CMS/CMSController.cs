@@ -131,11 +131,11 @@ namespace GKManagers.CMSManager.CMS
         /// </summary>
         /// <param name="contentItems">The content items list.</param>
         /// <returns>List of Id's for the items created</returns>
-        public List<long> CreateContentItemList(List<CreateContentItem> contentItems)
+        public List<long> CreateContentItemList(List<ContentItemForCreating> contentItems)
         {
             List<long> idList = new List<long>();
             long id;
-            foreach (CreateContentItem cmi in contentItems)
+            foreach (ContentItemForCreating cmi in contentItems)
             {
                 {
                     id = CreateItem(cmi.ContentType, cmi.Fields, cmi.TargetFolder);
@@ -179,11 +179,11 @@ namespace GKManagers.CMSManager.CMS
         /// </summary>
         /// <param name="contentItems">A collection of UpdateContentItem.</param>
         /// <returns>List of IDs of all the content items updated </returns>
-        public List<long> UpdateContentItemList(List<UpdateContentItem> contentItems)
+        public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems)
         {
             List<long> idUpdList = new List<long>();
             long idUpd;
-            foreach (UpdateContentItem cmi in contentItems)
+            foreach (ContentItemForUpdating cmi in contentItems)
             {
                 idUpd = UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
                 idUpdList.Add(idUpd);
