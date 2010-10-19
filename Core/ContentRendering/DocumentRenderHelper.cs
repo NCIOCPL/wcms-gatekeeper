@@ -27,45 +27,18 @@ namespace GateKeeper.ContentRendering
 
         #region Public Static Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="imSize"></param>
-        /// <param name="defaultSz"></param>
-        /// <returns></returns>
-        static public int DeterminePixelSize(string imSize, int defaultSz)
-        {
-            int width;
-            switch (imSize)
-            {
-                case "full": width = 571; break;
-                case "three-quarters": width = 429; break;
-                case "half": width = 274; break;
-                case "third": width = 179; break;
-                case "quarter": width = 131; break;
-                case "fifth": width = 103; break;
-                case "sixth": width = 84; break;
-                case "as-is": width = 571; break;
-                case "not-set": width = defaultSz; break;
-                default: width = defaultSz; break;
-            }
-            return width;
-        }
-
-
         static public string ProcessMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable, bool bInList)
         {
              // Check if the alt and image info is available 
-            if (mediaLink.Alt.Length == 0 || mediaLink.Ref.Length == 0)
+            if (mediaLink.Alt.Length == 0 || mediaLink.ReferencedCdrID == 0)
             {
                 throw new Exception("Media Extraction Error: No ref or alt attribute found in the MediaLink tag.  Exception occurred in ProcessMediaLink");
             }
 
             // Captions will not be displayed in the dictionary page, but will be displayed in the pop-up
-            // Remove extra zeros from the Ref attribute
-            int cdrId = Int32.Parse(Regex.Replace(mediaLink.Ref, "^CDR(0*)", "", RegexOptions.Compiled));
+
             //If the size is not specified, the default for glossary is 179 and for summary is 274
-            int width = DeterminePixelSize(mediaLink.Size, (bGlossary ? 179 : 274));
+            int width = MediaLink.DeterminePixelSize(mediaLink.Size, (bGlossary ? 179 : 274));
 
             bool bThumb = mediaLink.IsThumb;
             if (mediaLink.Size.Equals("not-set") && bGlossary)
@@ -77,10 +50,10 @@ namespace GateKeeper.ContentRendering
             string imLoc = "[__imagelocation]";   
             // For as-is image, the image name is CDR#.jpg
             if (mediaLink.Size.Equals("as-is"))
-                imName = imLoc + "CDR" + cdrId + ".jpg";
+                imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + ".jpg";
             // For other size image, the image name is CDR#-width.jpg
             else
-                imName = imLoc + "CDR" + cdrId + "-" + width + ".jpg";
+                imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-" + width + ".jpg";
 
             //Write HTML
             string langBuf=string.Empty;
@@ -100,8 +73,8 @@ namespace GateKeeper.ContentRendering
             // If inline = "No", MinWidth, Thumb, Captions will be considered
             else
             {
-                string vertSpacer = "<td><img src=\"/images/spacer.gif\" width=\"11\" height=\"1\"/></td>";
-                string horSpacer = " <tr><td><img src=\"/images/spacer.gif\" width=\"1\" height=\"5\"/></td></tr> ";
+                string vertSpacer = "<td><img src=\"/images/spacer.gif\" alt=\"\" width=\"11\" height=\"1\"/></td>";
+                string horSpacer = " <tr><td><img src=\"/images/spacer.gif\" alt=\"\" width=\"1\" height=\"5\"/></td></tr> ";
     
                 int table_wdt = width;
                 if (!mediaLink.Size.Equals("full"))
@@ -119,7 +92,7 @@ namespace GateKeeper.ContentRendering
                        langBuf += " <p><table align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"" + table_wdt + "\" >";
                 }
 
-                string imPopup = "/Common/PopUps/popImage.aspx?imageName=" + imLoc + "CDR" + cdrId + "-750.jpg";
+                string imPopup = "/Common/PopUps/popImage.aspx?imageName=" + imLoc + "CDR" + mediaLink.ReferencedCdrID + "-750.jpg";
                 if (mediaLink.Caption.Length > 0)
                 {
                     string caption = string.Empty;

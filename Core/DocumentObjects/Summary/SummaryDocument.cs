@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.Media;
 
 namespace GateKeeper.DocumentObjects.Summary
 {
@@ -226,6 +227,17 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _tableSectionList; }
             internal set { _tableSectionList = value; }
+        }
+
+        private List<MediaLink> _mediaLinkSectionList;
+        public List<MediaLink> MediaLinkSectionList
+        {
+            get
+            {
+                if (_mediaLinkSectionList == null)
+                    _mediaLinkSectionList = new List<MediaLink>();
+                return _mediaLinkSectionList;
+            }
         }
 
         /// <summary>

@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
+
 using GateKeeper.Common;
 using GateKeeper.Common.XPathKeys;
 using GateKeeper.DocumentObjects;
@@ -149,10 +151,11 @@ namespace GateKeeper.DataAccess.CDR
         private void ExtractMediaLinks(XPathNavigator xNav, GlossaryTermDocument glossaryTermDoc)
         {
             string path = xPathManager.GetXPath(GlossaryTermXPath.MediaLink);
-            try{
+            try
+            {
                 XPathNodeIterator mediaLinkIter = xNav.Select(path);
 
-                 while (mediaLinkIter.MoveNext())
+                while (mediaLinkIter.MoveNext())
                 {
                     string tempMediaDocumentID = string.Empty;
                     int mediaDocumentID = 0;
@@ -166,7 +169,11 @@ namespace GateKeeper.DataAccess.CDR
                     string mediaLinkID = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaID));
                     string thumb = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaThumb));
                     bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
+
+                    // Extract document reference and find the CDR document ID
                     string imgRef = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaRef));
+                    int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
+
                     string alt = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaAlt));
                     bool isInline = false;
                     string inLine = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaInline));
@@ -176,9 +183,12 @@ namespace GateKeeper.DataAccess.CDR
                     long minWidth = -1;
                     if ((width != null) && (width.Length > 0))
                         minWidth = long.Parse(width);
+
+                    // If size is not speicified, a width of one-third is used.
+                    // Logic migrated from legacy rendering code.
                     string size = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaSize));
                     if (size.Equals(String.Empty))
-                        size = "not-set";
+                        size = "third";
 
                     XmlDocument mediaXml = new XmlDocument();
                     mediaXml.LoadXml(mediaLinkIter.Current.OuterXml);
@@ -206,7 +216,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                         {
-                            MediaLink mediaLink = new MediaLink(imgRef, alt, isInline, minWidth, size, mediaLinkID, langCapMap[lang], 
+                            MediaLink mediaLink = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, langCapMap[lang],
                                 mediaDocumentID, lang, isThumb, mediaXml);
                             glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(mediaLink);
                         }

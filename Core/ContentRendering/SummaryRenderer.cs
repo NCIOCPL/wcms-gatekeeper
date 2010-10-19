@@ -408,6 +408,7 @@ namespace GateKeeper.ContentRendering
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
+        [Obsolete("Don't use this method! MediaLink data is now being extracted in (duh!) Extract.")]
         private void BuildMediaLink(XPathNavigator xNav, SummaryDocument summary)
         {
             try
@@ -459,8 +460,9 @@ namespace GateKeeper.ContentRendering
                     XPathNavigator listNode = mediaLink.SelectSingleNode("./parent::LI");
                     if (listNode != null)
                         isInList = true;
+                    int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
 
-                    MediaLink link = new MediaLink(imgRef, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+                    MediaLink link = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
                     string test = "<MediaHTML>" + DocumentRenderHelper.ProcessMediaLink(link, false, isInTable, isInList) + "</MediaHTML>";
                     mediaLink.OuterXml = test;
                     BuildMediaLink(xNav, summary);
@@ -555,7 +557,7 @@ namespace GateKeeper.ContentRendering
                         }
 
                         // Build Media Link html
-                        BuildMediaLink(sectionNav, summary);
+                        //BuildMediaLink(sectionNav, summary);
 
                         // Save the results of the transform into the Html property
                         section.Html.LoadXml(sectionNav.OuterXml);

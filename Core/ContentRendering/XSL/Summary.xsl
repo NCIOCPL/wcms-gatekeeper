@@ -199,7 +199,20 @@
 	-->
 
 	<xsl:template match="MediaLink">
-		<xsl:copy-of select="." />
+		<!--<xsl:copy-of select="." />-->
+    <div style="border: 1px solid black;">The slot for a Media document goes here.<br/>
+      id = <xsl:value-of select="@id"/><br/>
+      alt = <xsl:value-of select="@alt"/><br/>
+      inline = <xsl:value-of select="@inline"/><br/>
+      MinWidth = <xsl:value-of select="@MinWidth"/><br/>
+      language = <xsl:value-of select="@language"/><br/>
+      size = <xsl:value-of select="@size"/><br/>
+      thumb = <xsl:value-of select="@thumb"/><br/>
+      Caption:<br />
+      <div style="border: 1px solid blue; margin: 5px;">
+        <xsl:copy-of select="Caption"/>
+      </div>
+    </div>
 	</xsl:template>
 
 	<xsl:template match="Reference">

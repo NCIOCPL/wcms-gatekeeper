@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="AudienceType.cs" />
     <Compile Include="Country\CountryDocument.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
     <Compile Include="PreviewTypes.cs" />
     <Compile Include="Protocol\OrganizationRoleType.cs" />

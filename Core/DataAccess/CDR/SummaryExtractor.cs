@@ -5,10 +5,12 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
+
 using GateKeeper.Common;
 using GateKeeper.Common.XPathKeys;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
+using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.Logging;
 
@@ -272,21 +274,78 @@ namespace GateKeeper.DataAccess.CDR
             }               
         }
 
+        private void ExtractMediaLink(XPathNavigator mediaLink, SummaryDocument summary)
+        {
+            if (mediaLink != null)
+            {
+                string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, "id");
+                string thumb = DocumentHelper.GetAttribute(mediaLink, "thumb");
+                bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
+                string imgRef = DocumentHelper.GetAttribute(mediaLink, "ref");
+                int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
+
+                string alt = DocumentHelper.GetAttribute(mediaLink, "alt");
+                bool isInline = false;
+                string inLine = DocumentHelper.GetAttribute(mediaLink, "inline");
+                if (inLine.ToUpper().Equals("YES"))
+                    isInline = true;
+                string width = DocumentHelper.GetAttribute(mediaLink, "MinWidth");
+                long minWidth = -1;
+                if ((width != null) && (width.Length > 0))
+                    minWidth = long.Parse(width);
+                string size = DocumentHelper.GetAttribute(mediaLink, "size");
+                if (size.Equals(String.Empty))
+                    size = "half";
+
+                XmlDocument mediaXml = new XmlDocument();
+                mediaXml.LoadXml(mediaLink.OuterXml);
+
+                XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
+                Language capLang = Language.English;
+                string caption = string.Empty;
+                if (captionNode != null)
+                {
+                    capLang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetAttribute(mediaLink, "language"));
+                    caption = captionNode.InnerXml;
+                    // Check if the media language is the same as the summary language, if not, log an warning
+                    if (capLang != summary.Language)
+                    {
+                        summary.WarningWriter("Media Link Warning: The media link language does not match the language defined in summary! Summary ID=" + summary.DocumentID + " MediaLinkID=" + mediaLinkID + ".");
+                    }
+                }
+                // Find media link's parent node
+                bool isInTable = false;
+                bool isInList = false;
+                // Is the media link embeded in table?
+                XPathNavigator tableNode = mediaLink.SelectSingleNode("./parent::td");
+                if (tableNode != null)
+                    isInTable = true;
+                // Is the media link embeded in list?
+                XPathNavigator listNode = mediaLink.SelectSingleNode("./parent::LI");
+                if (listNode != null)
+                    isInList = true;
+
+                MediaLink link = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+                summary.MediaLinkSectionList.Add(link);
+            }
+        }
+
         /// <summary>
         /// Extracts top-level summary sections from the source document.
-        /// Note: This method calls ExtractTableSections() and 
-        /// ExtractSubSection() as well.
+        /// Note: This method calls ExtractTableSections(), ExtractSubSection() and
+        /// ExtractMediaLink() as well.
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
         private void ExtractTopLevelSections(XPathNavigator xNav, SummaryDocument summary)
         {
             string path = xPathManager.GetXPath(SummaryXPath.TopSection);
-            try {
+            try
+            {
                 int pageNumber = 1;
                 int tableID = 1;
                 int priority = 1;
-                
+
                 // Handle top-level summary sections
                 XPathNodeIterator sectionIter = xNav.Select(path);
                 int topSectionPriority = 0;
@@ -320,10 +379,10 @@ namespace GateKeeper.DataAccess.CDR
                         // Check if the second level is a parent section.
                         XPathNavigator nextLevel = nav.SelectSingleNode(xPathManager.GetXPath(SummaryXPath.Section));
                         if (nextLevel != null && subSection.Level == 2 && subSection.Title.Trim() != string.Empty)
-                             secondLevelSection = subSection;
+                            secondLevelSection = subSection;
 
                         if (subSection.Level == 3 && secondLevelSection.ParentSummarySectionID != Guid.Empty && subSection.Title.Trim().Length > 0)
-                             subSection.ParentSummarySectionID = secondLevelSection.SummarySectionID;
+                            subSection.ParentSummarySectionID = secondLevelSection.SummarySectionID;
 
                         if (subSection.Level >= 4)
                         {
@@ -339,26 +398,29 @@ namespace GateKeeper.DataAccess.CDR
                         }
                         else
                         {
-                                summary.SectionList.Add(subSection);
+                            summary.SectionList.Add(subSection);
                         }
-                   }
+                    }
 
-                   // Handle media link reference id, apparently it is save as summary section level 5 in gatekeeper database
-                   XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
-                   XPathNodeIterator mediaLinkIter = topSectionNav.Select(xPathManager.GetXPath(SummaryXPath.MediaLink));
-                   while (mediaLinkIter.MoveNext())
-                   {
-                       XPathNavigator mediaLink = mediaLinkIter.Current;
-                       string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID)).Substring(1);
-                       summary.AddLevel5Section(mediaLinkID, "Reference " + mediaLinkID, topLevelSection.SummarySectionID, SummarySectionType.Reference, 0);
-                   }              
-               }
-           }
-           catch (Exception e)
-           {
-               throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
-           }    
+                    // Handle media link reference id, apparently it is save as summary section level 5 in gatekeeper database
+                    XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
+                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(xPathManager.GetXPath(SummaryXPath.MediaLink));
+                    while (mediaLinkIter.MoveNext())
+                    {
+                        XPathNavigator mediaLink = mediaLinkIter.Current;
+                        string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID)).Substring(1);
+                        summary.AddLevel5Section(mediaLinkID, "Reference " + mediaLinkID, topLevelSection.SummarySectionID, SummarySectionType.Reference, 0);
+
+                        ExtractMediaLink(mediaLink, summary);                        
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
+            }
         }
+
         #endregion Extraction
 
         #region Reference Formatting

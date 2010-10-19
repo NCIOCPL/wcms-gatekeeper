@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
+using GateKeeper.DocumentObjects;
+
 namespace GateKeeper.DocumentObjects.Media
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace GateKeeper.DocumentObjects.Media
     {
         #region Fields
 
-        private string _ref = string.Empty;
+        private int _referencedCdrDocumentID = 0;
         private string _alt = string.Empty;
         private string _size = "not-set";
         private string _html = string.Empty;
@@ -32,10 +34,10 @@ namespace GateKeeper.DocumentObjects.Media
         /// <summary>
         /// Reference for the mediaLink.
         /// </summary>
-        public string Ref
+        public int ReferencedCdrID
         {
-            get { return _ref; }
-            internal set { _ref = value; }
+            get { return _referencedCdrDocumentID; }
+            internal set { _referencedCdrDocumentID = value; }
         }
 
         /// <summary>
@@ -137,6 +139,36 @@ namespace GateKeeper.DocumentObjects.Media
             set { _html = value; }
         }
 
+
+        /// <summary>
+        /// URL for the size-specific version of the image file to use for inline references.
+        /// The URL is relative to the base location where Media documents are stored.
+        /// </summary>
+        public string InlineImageUrl
+        {
+            get
+            {
+                string url;
+                int width = DeterminePixelSize();
+
+                if (_size.Equals("as-is"))
+                    url = string.Format("CDR{0}.jpg", ReferencedCdrID);
+                else
+                    url = string.Format("CDR{0}-{1}.jpg", ReferencedCdrID, width);
+
+                return url;
+            }
+        }
+
+        /// <summary>
+        /// URL to use when referencing the image file from within a pop-up.
+        /// The URL is relative to the base location where Media documents are stored.
+        /// </summary>
+        public string PopupImageUrl
+        {
+            get { return string.Format("CDR{0}-750.jpg", ReferencedCdrID); }
+        }
+
         #endregion
 
         #region Constructors
@@ -150,10 +182,10 @@ namespace GateKeeper.DocumentObjects.Media
         /// <param name="language"></param>
         /// <param name="isThumb"></param>
         /// <param name="xml"></param>
-        public MediaLink(string imgRef, string alt, bool isInline, long minWidth, string size, string ID, 
+        public MediaLink(int cdrID, string alt, bool isInline, long minWidth, string size, string ID, 
                         string caption, int mediaDocumentID, Language language, bool isThumb, XmlDocument xml)
         {
-            this._ref = imgRef;
+            this._referencedCdrDocumentID = cdrID;
             this._alt = alt;
             this._isInline = _isInline;
             this._minWidth = minWidth;
@@ -187,6 +219,63 @@ namespace GateKeeper.DocumentObjects.Media
             return sb.ToString();
         }
 
+
+        /// <summary>
+        /// Translates a user-friendly image size text into a pixel size for use in HTML.
+        /// </summary>
+        /// <param name="imSize">One of the allowed image size values: full, three-quarters, half,
+        /// thrd, quarter, fifth, sixth, as-is, or not-set.</param>
+        /// <param name="defaultSz">Pixel size to use if no value is set.</param>
+        /// <returns>The image width in pixels to use when displaying the image. (Determines
+        /// which version of the image will be used.)</returns>
+        /// <remarks>For MediaLink elements in glossary terms, a default size of 179 pixels (third) should be used.
+        /// for MediaLink elements in summary documents, a default size of 274 pixels (half) is used.</remarks>
+        [Obsolete("The static implemention of DeterminePixelSize is deprecated. New code should use the instance variation which has no default values.")]
+        static public int DeterminePixelSize(string imSize, int defaultSz)
+        {
+            int width;
+            switch (imSize)
+            {
+                case "full": width = 571; break;
+                case "three-quarters": width = 429; break;
+                case "half": width = 274; break;
+                case "third": width = 179; break;
+                case "quarter": width = 131; break;
+                case "fifth": width = 103; break;
+                case "sixth": width = 84; break;
+                case "as-is": width = 571; break;
+                case "not-set": width = defaultSz; break;
+                default: width = defaultSz; break;
+            }
+            return width;
+        }
+
+        /// <summary>
+        /// Translates the media item's user-friendly image size text into a pixel size for use in HTML.
+        /// </summary>
+        /// <returns>The image width in pixels to use when displaying the image. (Determines
+        /// which version of the image will be used.)</returns>
+        public int DeterminePixelSize()
+        {
+            int width;
+            switch (_size)
+            {
+                case "full": width = 571; break;
+                case "three-quarters": width = 429; break;
+                case "half": width = 274; break;
+                case "third": width = 179; break;
+                case "quarter": width = 131; break;
+                case "fifth": width = 103; break;
+                case "sixth": width = 84; break;
+                case "as-is": width = 571; break;
+                default:
+                    throw new MediaLinkSizeException(string.Format("Unknown MediaLink size value: {0}.", _size));
+                    ;
+            }
+            return width;
+        }
+
         #endregion
+
     }
 }

@@ -108,7 +108,7 @@ namespace GateKeeper.ContentRendering
                         graph.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                         graph.DrawImage(sourceImage, 0, 0, bitmap.Width, bitmap.Height);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         // You cannot create a Graphics object from an image with an indexed pixel format < 16.
                         //  To get around this problem: size the new bitmap to the new bitmaps dimensions.
