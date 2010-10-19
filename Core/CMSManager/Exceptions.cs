@@ -79,8 +79,7 @@ namespace GKManagers.CMSManager
             : base(message + "\n\n" + inner.Detail.InnerXml.ToString())   {  }
 
     }
-
-
+    
     /// <summary>
     /// Thrown by methods in the GKManagers.CMSManager namespace when an attempt is made
     /// to delete content items which are the target of relationships owned by other
@@ -93,6 +92,22 @@ namespace GKManagers.CMSManager
         public CMSCannotDeleteException(string message) : base(message) { }
         public CMSCannotDeleteException(string message, Exception inner) : base(message, inner) { }
         protected CMSCannotDeleteException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+    
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSManager namespace when the CMS returns an
+    /// unexpected result when performing an operation.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSOperationalException : CMSException
+    {
+        public CMSOperationalException() { }
+        public CMSOperationalException(string message) : base(message) { }
+        public CMSOperationalException(string message, Exception inner) : base(message, inner) { }
+        protected CMSOperationalException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }

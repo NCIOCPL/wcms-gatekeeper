@@ -306,20 +306,39 @@ namespace GKManagers.CMSManager.CMS
         /// Prepares the specified Content Item for Edit.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
-        /// <param name="id">The ID of the Content Item to be prepared for editing.</param>
-        /// <returns></returns>
-        public static PSItemStatus PrepareForEdit(contentSOAP contentSvc, long id)
+        /// <param name="idList">Array ofContent Item IDs to be prepared for editing.</param>
+        /// <returns>An array of PSItemStatus objects reflecting the checkout state of each
+        /// item in idList. The list is in the same order as the values in idList.</returns>
+        public static PSItemStatus[] PrepareForEdit(contentSOAP contentSvc, long[] idList)
         {
-            //TODO: Refactor PrepareForEdit() to receive an array of long values.
             try
             {
-                return contentSvc.PrepareForEdit(new long[] { id })[0];
+                return contentSvc.PrepareForEdit( idList );
             }
             catch (SoapException ex)
             {
                 throw new CMSSoapException("Percussion Error in PrepareForEdit.", ex);
             }
 
+        }
+
+        /// <summary>
+        /// Release the specified Content Item from Edit
+        /// </summary>
+        /// <param name="contentSvc">The proxy of the content service.</param>
+        /// <param name="status">Collection of status objects for the Content Items to be released for edit.</param>
+        public static void ReleaseFromEdit(contentSOAP contentSvc, PSItemStatus[] status)
+        {
+            try
+            {
+                ReleaseFromEditRequest req = new ReleaseFromEditRequest();
+                req.PSItemStatus = status;
+                contentSvc.ReleaseFromEdit(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in ReleaseFromEdit.", ex);
+            }
         }
 
         /// <summary>
@@ -350,27 +369,6 @@ namespace GKManagers.CMSManager.CMS
         }
 
         /// <summary>
-        /// Release the specified Content Item from Edit
-        /// </summary>
-        /// <param name="contentSvc">The proxy of the content service.</param>
-        /// <param name="status">The status of the Content Item to be released for edit.</param>
-        public static void ReleaseFromEdit(contentSOAP contentSvc, PSItemStatus status)
-        {
-            // TODO: Refactor ReleaseFromEdit() to receive an array of PSItemStatus objects.
-            ReleaseFromEditRequest req = new ReleaseFromEditRequest();
-            try
-            {
-                req.PSItemStatus = new PSItemStatus[] { status };
-                contentSvc.ReleaseFromEdit(req);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in ReleaseFromEdit.", ex);
-            }
-
-        }
-
-        /// <summary>
         /// Deletes a content item.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
@@ -387,8 +385,6 @@ namespace GKManagers.CMSManager.CMS
             }
 
         }
-
-
 
         /// <summary>
         /// Moves a collection of content items from one folder to another.
@@ -424,7 +420,6 @@ namespace GKManagers.CMSManager.CMS
             
         }
 
-
         /// <summary>
         /// Retrieves relationships via the Percussion Content service.
         /// By default, all defined active asesmbly relationships are returned. The list
@@ -436,7 +431,7 @@ namespace GKManagers.CMSManager.CMS
         /// criteria to use when filtering the list of relationsships.</param>
         /// <returns>An array of active asesmbly relationship objects. Never null,
         /// but may be empty.</returns>
-        public static PSAaRelationship[] GetRelationships(contentSOAP contentSvc, PSAaRelationshipFilter filter)
+        public static PSAaRelationship[] FindRelationships(contentSOAP contentSvc, PSAaRelationshipFilter filter)
         {
             try
             {
@@ -447,11 +442,46 @@ namespace GKManagers.CMSManager.CMS
             }
             catch (SoapException ex)
             {
-                throw new CMSSoapException("Percussion Error in GetRelationships.", ex);
+                throw new CMSSoapException("Percussion Error in FindRelationships.", ex);
             }
 
         }
 
+        /// <summary>
+        /// Creates relationships between a parent object and a collection of child objects using a named
+        /// slot and snippet template.
+        /// </summary>
+        /// <param name="contentSvc">Instance of the Percussion content service.</param>
+        /// <param name="parentItemID">ID of the parent content item.</param>
+        /// <param name="childItemIDList">Array of child item IDs.</param>
+        /// <param name="slotName">Name of the slot which will contain the child items.</param>
+        /// <param name="snippetTemplateName">Name of the snippet template to use when rendering
+        /// the child items.</param>
+        /// <returns>An array of PSAaRelationship objects representing the created relationships.
+        /// The array is never null or empty</returns>
+        /// <remarks>Before relationships may be created, the parent content item must be placed in an
+        /// editable condition by calling PrepareForEdit.</remarks>
+        public static PSAaRelationship[] CreateRelationships(contentSOAP contentSvc,
+            long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
+        {
+            PSAaRelationship[] results = null;
+            try
+            {
+                AddContentRelationsRequest req = new AddContentRelationsRequest();
+                req.Id = parentItemID;
+                req.RelatedId = childItemIDList;
+                req.Slot = slotName;
+                req.Template = snippetTemplateName;
+
+                results = contentSvc.AddContentRelations(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in CreateRelationships().", ex);
+            }
+
+            return results;
+        }
 
         /// <summary>
         /// Retrieve the list of workflow transitions allowed for a list of content items.
@@ -475,6 +505,45 @@ namespace GKManagers.CMSManager.CMS
             }
 
             return response.Transition;
+        }
+
+        public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
+        {
+            /*
+             * 
+             *  Preliminary implementation.
+             * 
+             * */
+
+            FindItemsRequest req = new FindItemsRequest();
+
+            // Basic set up.
+            req.PSSearch = new PSSearch();
+            req.PSSearch.useExternalSearchEngine = false;
+            req.PSSearch.useDbCaseSensitivity = false;
+            req.PSSearch.PSSearchParams = new PSSearchParams();
+
+            // Search for specific content types.
+            if (!string.IsNullOrEmpty(contentType))
+            {
+                req.PSSearch.PSSearchParams.ContentType = contentType;
+            }
+
+            // Search for fields
+            if (fieldCriteria!= null && fieldCriteria.Count>0)
+            {
+                req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count];
+                int offset = 0;
+                foreach (KeyValuePair<string,string> pair in fieldCriteria)
+                {
+                    req.PSSearch.PSSearchParams.Parameter[offset] = new PSSearchField();
+                    req.PSSearch.PSSearchParams.Parameter[offset].name = pair.Key;
+                    req.PSSearch.PSSearchParams.Parameter[offset].Value = pair.Value;
+                    req.PSSearch.PSSearchParams.Parameter[offset].Operator = operatorTypes.equal;
+                }
+            }
+
+            return contentSvc.FindItems(req);
         }
     }
 }

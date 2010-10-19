@@ -200,7 +200,7 @@ namespace GKManagers.CMSManager.CMS
         /// <returns></returns>
         private long UpdateItem(long id, Dictionary<string, string> fields, string targetFolder)
         {
-            PSItemStatus status = PSWSUtils.PrepareForEdit(_contentService, id);
+            PSItemStatus[] checkOutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { id });
             PSItem item = new PSItem();
             PSItemFolders psf = new PSItemFolders();
             psf.path = siteRootPath + targetFolder;
@@ -211,7 +211,7 @@ namespace GKManagers.CMSManager.CMS
 
             SetItemFields(item, fields);
             long idUpd = PSWSUtils.SaveItem(_contentService, item);
-            PSWSUtils.ReleaseFromEdit(_contentService, status);
+            PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
             return idUpd;
         }
 
@@ -316,7 +316,7 @@ namespace GKManagers.CMSManager.CMS
             // Check for any relationships.
             PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
             filter.Dependent = new long[1] { itemID };
-            PSAaRelationship[] relationships = PSWSUtils.GetRelationships(_contentService, filter);
+            PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
 
             // If incoming relationships exist, load the relevant content items.
             if (relationships.Length > 0)
@@ -333,6 +333,36 @@ namespace GKManagers.CMSManager.CMS
 
             return returnList;
         }
+
+        /// <summary>
+        /// Creates relationships between a parent object and a collection of child objects using a named
+        /// slot and snippet template.
+        /// </summary>
+        /// <param name="contentSvc">Instance of the Percussion content service.</param>
+        /// <param name="parentItemID">ID of the parent content item.</param>
+        /// <param name="childItemIDList">Array of child item IDs.</param>
+        /// <param name="slotName">Name of the slot which will contain the child items.</param>
+        /// <param name="snippetTemplateName">Name of the snippet template to use when rendering
+        /// the child items.</param>
+        /// <returns>An array of PSAaRelationship objects representing the created relationships.
+        /// The array is never null or empty</returns>
+        public PSAaRelationship[] CreateRelationships(long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
+        {
+            PSAaRelationship[] relationships = null;
+
+            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[]{parentItemID});
+            if (!parentCheckoutStatus[0].didCheckout)
+                throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
+
+            relationships = PSWSUtils.CreateRelationships(_contentService, parentItemID, childItemIDList, slotName, snippetTemplateName);
+
+            PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
+
+            return relationships;
+        }
+
+
+        /*  ????????????????  */
 
         public long GetItemID(string targetFolder, string sysTitle)
         {
@@ -406,6 +436,26 @@ namespace GKManagers.CMSManager.CMS
                 editionList = new string[] { };
 
             return editionList;
+        }
+
+        public long[] SearchForContentItems(contentSOAP contentSvc, string contentType, Dictionary<string, string> fieldCriteria)
+        {
+            /*
+             * 
+             * Preliminary implementation.
+             * 
+             * */
+            long[] contentIdList;
+
+            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, fieldCriteria);
+            contentIdList = new long[searchResults.Length];
+            for (int i = 0; i < searchResults.Length; i++)
+            {
+                // FindItemByFieldValues always returns the sys_contentid field, so it's safe to assume this expression will work.
+                contentIdList[i] = long.Parse(Array.Find(searchResults[i].Fields, field => field.name.Equals("sys_contentid")).Value);
+            }
+
+            return contentIdList;
         }
     }
 }

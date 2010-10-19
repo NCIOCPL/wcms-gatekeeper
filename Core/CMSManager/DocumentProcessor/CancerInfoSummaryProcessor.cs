@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GateKeeper.Common;
-using GateKeeper.DocumentObjects;
-using GateKeeper.DocumentObjects.Summary;
-using GateKeeper.DocumentObjects.Media;
-using GKManagers.CMSManager.CMS;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
+
 using GKManagers.CMSManager.Configuration;
+using GKManagers.CMSManager.CMS;
+using GKManagers.CMSManager.PercussionWebSvc;
+using GateKeeper.Common;
+using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.Summary;
+using GateKeeper.DocumentObjects.Media;
 
 
 namespace GKManagers.CMSManager.DocumentProcessing
@@ -21,9 +23,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
         {
-                        percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
-
+            percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
         }
+
         #region IDocumentProcessor Members
 
         /// <summary>
@@ -33,9 +35,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
-            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
-            List<long> idList;
-
             VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
 
             SummaryDocument document = documentObject as SummaryDocument;
@@ -52,8 +51,27 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
+                List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+                List<long> idList;
+
+                long summaryRootID;
+                long[] summaryPageIDList;
+
                 // Create the new pdqCancerInfoSummary content item.
-                CreatePDQCancerInfoSummary(document, mappingInfo, contentItemList);
+                List<ContentItemForCreating> rootList = new List<ContentItemForCreating>();
+                CreatePDQCancerInfoSummary(document, mappingInfo, rootList);
+                summaryRootID = CMSController.CreateContentItemList(rootList)[0];
+
+
+                //Create new pdqCancerInfoSummaryPage content items
+                List<ContentItemForCreating> summaryPageList = new List<ContentItemForCreating>();
+                CreatePDQCancerInfoSummaryPage(document, summaryPageList);
+                idList = CMSController.CreateContentItemList(summaryPageList);
+                summaryPageIDList = idList.ToArray();
+
+                // Add summary pages into the page slot.
+                PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRootID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
+
 
                 //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
                 
@@ -62,9 +80,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 //Create new pdqTableSections content item
                 CreatePDQTableSections(document, contentItemList);
-
-                //Create new pdqCancerInfoSummaryPage content item
-                CreatePDQCancerInfoSummaryPage(document, contentItemList);
 
                 //Create new pdqMediaLink content item
                 CreatePDQMediaLink(document, contentItemList);
@@ -78,19 +93,20 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // Map Relationships.
                 //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
                 //the first Id "idList[0]" from the idList to save.
-                mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
-                mapManager.InsertCdrIDMapping(mappingInfo);
+                //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
+                //mapManager.InsertCdrIDMapping(mappingInfo);
 
             }
 
             else
             {
                 //Update Content Items
+                List<long> idList;
 
                 List<ContentItemForUpdating> contentItemsListToUpdate = new List<ContentItemForUpdating>();
                 long contentID;
                 // Add pdqCancerInfoSummary content item to the contentItemsListToUpdate 
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(mappingInfo.CmsID, GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(mappingInfo.CmsID, CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
 
@@ -99,7 +115,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 //Get the ID for the content item to be updated.
                 contentID = GetpdqCancerInfoSummaryLinkID(document);
 
-                updateContentItem = new ContentItemForUpdating(contentID, GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
+                updateContentItem = new ContentItemForUpdating(contentID, CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
                 //Add pdqTableSections content item to the contentItemsListToUpdate
@@ -178,7 +194,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 {
                     if (document.SectionList[i].IsTopLevel == true)
                     {
-                        ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                        ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
                         contentItemList.Add(contentItem);
                     }
 
@@ -186,7 +202,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         }
 
-        private Dictionary<string, string> GetFieldsPDQCancerInfoSummaryPage(SummarySection cancerInfoSummaryPage)
+        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryPage(SummarySection cancerInfoSummaryPage)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string html = cancerInfoSummaryPage.Html.OuterXml;
@@ -218,14 +234,14 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count-1;i++ )
             {
-                ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
                 
             }
 
         }
 
-        private Dictionary<string, string> GetFieldsPDQTableSection(SummarySection tableSection)
+        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummarySection tableSection)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
@@ -242,51 +258,47 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo, List<ContentItemForCreating> contentItemList)
         {
-
-            ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummary.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummary.Value);
             contentItemList.Add(contentItem);
-
         }
 
-        private Dictionary<string, string> GetFieldsPDQCancerInfoSummary(SummaryDocument DocType)
+        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummary(SummaryDocument summary)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            string prettyURLName = DocType.BasePrettyURL.Substring(DocType.BasePrettyURL.LastIndexOf('/') + 1);
+            string prettyURLName = summary.BasePrettyURL.Substring(summary.BasePrettyURL.LastIndexOf('/') + 1);
 
 
             fields.Add("pretty_url_name", prettyURLName);
-            fields.Add("long_title", DocType.Title);
+            fields.Add("long_title", summary.Title);
 
-            if (DocType.Title.Length > 64)
-                fields.Add("short_title", DocType.Title.Substring(1, 64));
+            if (summary.Title.Length > 64)
+                fields.Add("short_title", summary.Title.Substring(1, 64));
             else
-                fields.Add("short_title", DocType.Title);
+                fields.Add("short_title", summary.Title);
 
-            fields.Add("long_description", DocType.Description);
+            fields.Add("long_description", summary.Description);
             fields.Add("short_description", string.Empty);
             fields.Add("date_next_review", "1/1/2100");
-            fields.Add("print_available", "1");
-            fields.Add("email_available", "1");
-            fields.Add("share_available", "1");
-            if (DocType.LastModifiedDate.ToString() != string.Empty)
-                fields.Add("date_last_modified", DocType.LastModifiedDate.ToString());
+
+            if (summary.LastModifiedDate == DateTime.MinValue)
+                fields.Add("date_last_modified", null);
             else
-                fields.Add("date_last_modified", string.Empty);
-            DateTime dt = new DateTime(1753, 1, 1);
-            if (DocType.FirstPublishedDate < dt)
+                fields.Add("date_last_modified", summary.LastModifiedDate.ToString());
+
+            if (summary.FirstPublishedDate == DateTime.MinValue)
             {
-                fields.Add("date_first_published", dt.ToString());
+                fields.Add("date_first_published", null);
             }
             else
             {
-                fields.Add("date_first_published", DocType.FirstPublishedDate.ToString());
+                fields.Add("date_first_published", summary.FirstPublishedDate.ToString());
             }
 
-            fields.Add("cdrid", DocType.DocumentID.ToString());
-            fields.Add("summary_type", DocType.Type);
-            fields.Add("audience", DocType.AudienceType);
+            fields.Add("cdrid", summary.DocumentID.ToString());
+            fields.Add("summary_type", summary.Type);
+            fields.Add("audience", summary.AudienceType);
 
-            fields.Add("sys_title", DocType.Title);
+            fields.Add("sys_title", summary.Title);
 
             return fields;
         }
@@ -295,12 +307,12 @@ namespace GKManagers.CMSManager.DocumentProcessing
         private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
 
-            ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
             contentItemList.Add(contentItem);
 
         }
 
-        private Dictionary<string, string> GetFieldsPDQCancerInfoSummaryLink(SummaryDocument DocType)
+        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument DocType)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
@@ -321,7 +333,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 if (document.MediaLinkSectionList[i]!=null)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQMediaLink(document.MediaLinkSectionList[i],i+1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i],i+1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
                     contentItemList.Add(contentItem);
                 }
 
@@ -329,7 +341,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         }
 
-        private Dictionary<string, string> GetFieldsPDQMediaLink(MediaLink mediaLink, int appendPrettyURL)
+        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(MediaLink mediaLink, int appendPrettyURL)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             fields.Add("inline_image_url",mediaLink.InlineImageUrl );
@@ -366,7 +378,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 string prettyURLName = document.TableSectionList[i].PrettyUrl.Substring(document.TableSectionList[i].PrettyUrl.LastIndexOf('/') + 1);
                 contentid = CMSController.GetItemID(GetTargetFolder(document.TableSectionList[i].PrettyUrl), prettyURLName);
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, GetFieldsPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
             }
 
@@ -381,7 +393,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 string prettyURLName = document.SectionList[i].PrettyUrl.Substring(document.SectionList[i].PrettyUrl.LastIndexOf('/') + 1);
                 contentid = CMSController.GetItemID(GetTargetFolder(document.SectionList[i].PrettyUrl), prettyURLName);
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, GetFieldsPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
                 contentItemsListToUpdate.Add(updateContentItem);
 
             }
