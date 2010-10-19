@@ -4,6 +4,7 @@ using System.Linq;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
+using GateKeeper.DocumentObjects.Media;
 using GKManagers.CMSManager.CMS;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -64,8 +65,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
                 //Create new pdqCancerInfoSummaryPage content item
                 CreatePDQCancerInfoSummaryPage(document, contentItemList);
-                
-                //Save pdqMediaLink
+
+                //Create new pdqMediaLink content item
+                CreatePDQMediaLink(document, contentItemList);
 
                 //TODO:  Set up Percussion slot relationships.
 
@@ -131,12 +133,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             }
 
-            // Get content item (Create new, or load existing)
-
-
-            
-            
-            // Store content item.
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
@@ -290,7 +286,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             fields.Add("summary_type", DocType.Type);
             fields.Add("audience", DocType.AudienceType);
 
-            fields.Add("sys_title", prettyURLName);
+            fields.Add("sys_title", DocType.Title);
 
             return fields;
         }
@@ -308,13 +304,48 @@ namespace GKManagers.CMSManager.DocumentProcessing
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
-            fields.Add("sys_title", DocType.Title);
-            fields.Add("Long_title", DocType.Title);
+            fields.Add("sys_title", DocType.ShortTitle);
+            fields.Add("long_title", DocType.Title);
             fields.Add("short_title", DocType.ShortTitle);
             fields.Add("long_description", DocType.Description);
 
             return fields;
 
+        }
+
+        private void CreatePDQMediaLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
+        {
+            int i;
+
+            for (i = 0; i <= document.MediaLinkSectionList.Count - 1; i++)
+            {
+                if (document.MediaLinkSectionList[i]!=null)
+                {
+                    ContentItemForCreating contentItem = new ContentItemForCreating(GetFieldsPDQMediaLink(document.MediaLinkSectionList[i],i+1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
+                    contentItemList.Add(contentItem);
+                }
+
+            }
+
+        }
+
+        private Dictionary<string, string> GetFieldsPDQMediaLink(MediaLink mediaLink, int appendPrettyURL)
+        {
+            Dictionary<string, string> fields = new Dictionary<string, string>();
+            fields.Add("inline_image_url",mediaLink.InlineImageUrl );
+            fields.Add("popup_image_url",mediaLink.PopupImageUrl);
+            if (string.IsNullOrEmpty(mediaLink.Caption))
+            {
+                fields.Add("caption_text", "NULL");
+
+            }
+            else
+            {
+                fields.Add("caption_text", mediaLink.Caption);
+            }
+            fields.Add("pretty_url_name", "image" + appendPrettyURL);
+            fields.Add("sys_title", "image" + appendPrettyURL);
+            return fields;
         }
 
         private long GetpdqCancerInfoSummaryLinkID(SummaryDocument document)
