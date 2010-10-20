@@ -74,7 +74,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
                 //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
-                
+
                 //Create new pdqCancerInfoSummaryLink content item
                 CreatePDQCancerInfoSummaryLink(document, contentItemList);
 
@@ -89,7 +89,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 //Save all the content items in one operation using the contentItemList.
                 idList = CMSController.CreateContentItemList(contentItemList);
 
-                
+
                 // Map Relationships.
                 //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
                 //the first Id "idList[0]" from the idList to save.
@@ -111,7 +111,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
                 //Add pdqCancerInfoSummaryLink content item to the contentItemsListToUpdate
-                
+
                 //Get the ID for the content item to be updated.
                 contentID = GetpdqCancerInfoSummaryLinkID(document);
 
@@ -125,13 +125,13 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 GetPDQCancerInfoSummaryPagesToUpdate(document, contentItemsListToUpdate);
 
 
-                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));               
-                
+                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
+
                 //Update all the content Item in one operation
                 idList = CMSController.UpdateContentItemList(contentItemsListToUpdate);
 
                 //Check if the pdqCancerInfoSummary Pretty URL changed if yes then move the content item to the new folder in percussion.
-                string prettyURL=GetTargetFolder(document.BasePrettyURL);
+                string prettyURL = GetTargetFolder(document.BasePrettyURL);
                 if (mappingInfo.PrettyURL != prettyURL)
                 {
                     long[] id = idList.ToArray();
@@ -183,22 +183,22 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
         #endregion
-        
+
         #region Private Methods
 
         private void CreatePDQCancerInfoSummaryPage(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
             int i;
 
-                for (i = 0; i <= document.SectionList.Count - 1; i++)
+            for (i = 0; i <= document.SectionList.Count - 1; i++)
+            {
+                if (document.SectionList[i].IsTopLevel == true)
                 {
-                    if (document.SectionList[i].IsTopLevel == true)
-                    {
-                        ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
-                        contentItemList.Add(contentItem);
-                    }
-
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                    contentItemList.Add(contentItem);
                 }
+
+            }
 
         }
 
@@ -210,16 +210,19 @@ namespace GKManagers.CMSManager.DocumentProcessing
             string prettyURLName = cancerInfoSummaryPage.PrettyUrl.Substring(cancerInfoSummaryPage.PrettyUrl.LastIndexOf('/') + 1);
             if (cancerInfoSummaryPage.Html.OuterXml.Contains("<SummaryRef"))
             {
-                BuildSummaryRefLink(ref html,0);
+                BuildSummaryRefLink(ref html, 0);
             }
 
+            // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
             if (cancerInfoSummaryPage.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
             {
                 string glossaryTermTag = "Summary-GlossaryTermRef";
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             }
 
-            fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>",string.Empty).Replace("</TableSectionXML>",string.Empty));
+            // TODO: Remove MediaHTML out of the data access layer!
+            fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>", string.Empty).Replace("</TableSectionXML>", string.Empty));
+            fields.Add("long_title", cancerInfoSummaryPage.Title);
             fields.Add("sys_title", cancerInfoSummaryPage.Title);
 
 
@@ -232,11 +235,11 @@ namespace GKManagers.CMSManager.DocumentProcessing
             int i;
 
 
-            for (i = 0; i <= document.TableSectionList.Count-1;i++ )
+            for (i = 0; i <= document.TableSectionList.Count - 1; i++)
             {
                 ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
                 contentItemList.Add(contentItem);
-                
+
             }
 
         }
@@ -307,7 +310,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
         private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
 
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL),percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
             contentItemList.Add(contentItem);
 
         }
@@ -331,9 +334,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.MediaLinkSectionList.Count - 1; i++)
             {
-                if (document.MediaLinkSectionList[i]!=null)
+                if (document.MediaLinkSectionList[i] != null)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i],i+1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
                     contentItemList.Add(contentItem);
                 }
 
@@ -344,8 +347,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
         private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(MediaLink mediaLink, int appendPrettyURL)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            fields.Add("inline_image_url",mediaLink.InlineImageUrl );
-            fields.Add("popup_image_url",mediaLink.PopupImageUrl);
+            fields.Add("inline_image_url", mediaLink.InlineImageUrl);
+            fields.Add("popup_image_url", mediaLink.PopupImageUrl);
             if (string.IsNullOrEmpty(mediaLink.Caption))
             {
                 fields.Add("caption_text", "NULL");
@@ -543,6 +546,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             html = collectHTML + partC;
         }
 
-#endregion
+        #endregion
+
     }
 }
