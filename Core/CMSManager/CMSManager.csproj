@@ -74,7 +74,7 @@
     <Compile Include="Configuration\PDQMediaLinkElement.cs" />
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />
-    <Compile Include="DocumentProcessing\InlineSlotObjectMap.cs" />
+    <Compile Include="CMS\InlineSlotObjectMap.cs" />
     <Compile Include="DocumentProcessing\CancerInfoSummaryProcessor.cs" />
     <Compile Include="DocumentProcessing\DocumentProcessorCommon.cs" />
     <Compile Include="DocumentProcessing\DrugInfoSummaryProcessor.cs" />

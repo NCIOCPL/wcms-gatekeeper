@@ -6,7 +6,7 @@ using System.Text;
 
 using GateKeeper.DocumentObjects.Summary;
 
-namespace GKManagers.CMSManager.DocumentProcessing
+namespace GKManagers.CMSManager
 {
     internal class InlineSlotObjectMap
     {
