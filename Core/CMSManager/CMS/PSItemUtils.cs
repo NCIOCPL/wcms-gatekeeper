@@ -12,9 +12,16 @@ namespace GKManagers.CMSManager.CMS
     /// </summary>
     static class PSItemUtils
     {
+        const ulong idMask = 0xffffffffL;
+
         public static bool CompareItemIds(long itemID1, long itemID2)
         {
-            return ((ulong)itemID1 | 0xffffffff) == ((ulong)itemID2 | 0xffffffff);
+            return ((ulong)itemID1 | idMask) == ((ulong)itemID2 | idMask);
+        }
+
+        public static long GetID(long itemID1)
+        {
+            return (long)((ulong)itemID1 & idMask);
         }
 
         public static string GetFieldValue(PSItem item, string fieldName)

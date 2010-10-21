@@ -325,7 +325,7 @@ namespace GateKeeper.DataAccess.CDR
                 if (listNode != null)
                     isInList = true;
 
-                MediaLink link = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+                MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
                 summary.MediaLinkSectionList.Add(link);
             }
         }

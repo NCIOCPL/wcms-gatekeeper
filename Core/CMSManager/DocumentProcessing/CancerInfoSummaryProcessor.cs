@@ -51,53 +51,8 @@ namespace GKManagers.CMSManager.DocumentProcessing
             // No mapping found, this is a new item.
             if (mappingInfo == null)
             {
-                List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
-                List<long> idList;
-
-                long summaryRootID;
-                long[] summaryPageIDList;
-
-                // Create the new pdqCancerInfoSummary content item.
-                List<ContentItemForCreating> rootList = new List<ContentItemForCreating>();
-                CreatePDQCancerInfoSummary(document, mappingInfo, rootList);
-                summaryRootID = CMSController.CreateContentItemList(rootList)[0];
-
-
-                //Create new pdqCancerInfoSummaryPage content items
-                List<ContentItemForCreating> summaryPageList = new List<ContentItemForCreating>();
-                CreatePDQCancerInfoSummaryPage(document, summaryPageList);
-                idList = CMSController.CreateContentItemList(summaryPageList);
-                summaryPageIDList = idList.ToArray();
-
-                // Add summary pages into the page slot.
-                PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRootID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
-
-
-                //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
-
-                //Create new pdqCancerInfoSummaryLink content item
-                CreatePDQCancerInfoSummaryLink(document, contentItemList);
-
-                //Create new pdqTableSections content item
-                CreatePDQTableSections(document, contentItemList);
-
-                //Create new pdqMediaLink content item
-                CreatePDQMediaLink(document, contentItemList);
-
-                //TODO:  Set up Percussion slot relationships.
-
-                //Save all the content items in one operation using the contentItemList.
-                idList = CMSController.CreateContentItemList(contentItemList);
-
-
-                // Map Relationships.
-                //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
-                //the first Id "idList[0]" from the idList to save.
-                //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
-                //mapManager.InsertCdrIDMapping(mappingInfo);
-
+                CreateNewCancerInformationSummary(document);
             }
-
             else
             {
                 //Update Content Items
@@ -153,6 +108,123 @@ namespace GKManagers.CMSManager.DocumentProcessing
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
 
+
+        private void CreateNewCancerInformationSummary(SummaryDocument document)
+        {
+            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+            List<long> idList;
+
+            long summaryRootID;
+            long[] summaryPageIDList;
+            //long[] embeddedItemIDList;
+
+            // TODO:  Move all this to a new CreateEmbeddedContentItems or similar method
+
+            // Create the embeddable content items first so we can get their contentIDs.
+            List<ContentItemForCreating> embeddedItemList = new List<ContentItemForCreating>();
+            CreatePDQTableSections(document, embeddedItemList);
+            CreatePDQMediaLink(document, embeddedItemList);
+            idList = CMSController.CreateContentItemList(embeddedItemList);
+            //embeddedItemIDList = idList.ToArray();
+
+            InlineSlotObjectMap embeddedItemIDMap = new InlineSlotObjectMap();
+            BuildEmbeddedItemMap(document, idList, embeddedItemIDMap);
+
+            ResolveInlineSlots(document.SectionList, embeddedItemIDMap);
+
+            // END TODO.
+
+
+            // Create the new pdqCancerInfoSummary content item.
+            List<ContentItemForCreating> rootList = new List<ContentItemForCreating>();
+            CreatePDQCancerInfoSummary(document, rootList);
+            summaryRootID = CMSController.CreateContentItemList(rootList)[0];
+
+
+            //Create new pdqCancerInfoSummaryPage content items
+            List<ContentItemForCreating> summaryPageList = new List<ContentItemForCreating>();
+            CreatePDQCancerInfoSummaryPage(document, summaryPageList);
+            idList = CMSController.CreateContentItemList(summaryPageList);
+            summaryPageIDList = idList.ToArray();
+
+            // Add summary pages into the page slot.
+            PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRootID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
+
+
+            //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
+
+            //Create new pdqCancerInfoSummaryLink content item
+            CreatePDQCancerInfoSummaryLink(document, contentItemList);
+
+            //TODO:  Set up Percussion slot relationships.
+
+            //Save all the content items in one operation using the contentItemList.
+            idList = CMSController.CreateContentItemList(contentItemList);
+
+
+            // Map Relationships.
+            //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
+            //the first Id "idList[0]" from the idList to save.
+            //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
+            //mapManager.InsertCdrIDMapping(mappingInfo);
+
+        }
+
+        private void BuildEmbeddedItemMap(SummaryDocument document, List<long>idList, InlineSlotObjectMap itemIDMap)
+        {
+            // Order is assumed to be Table Sections, and then MediaLinks.
+            int tableCount = document.TableSectionList.Count();
+            for (int i = 0; i < tableCount; i++)
+            {
+                itemIDMap.AddSection(document.TableSectionList[i].SectionID, idList[i]);
+            }
+
+            // Now the MediaLinks.
+            int mediaCount = document.MediaLinkSectionList.Count();
+            for (int i = 0; i < mediaCount; i++)
+            {
+                // The math may seem weird, but it's right. The tablecount is the index of the
+                // first ID which hasn't been used yet.
+                itemIDMap.AddSection(document.MediaLinkSectionList[i].Reference, idList[i + tableCount]);
+            }
+        }
+
+        private void ResolveInlineSlots(List<SummarySection> sectionList, InlineSlotObjectMap itemIDMap)
+        {
+            foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
+            {
+                XmlDocument html = section.Html;
+
+                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+
+                foreach (XmlNode node in nodeList)
+                {
+                    XmlAttributeCollection attributeList = node.Attributes;
+
+                    XmlAttribute reference = attributeList["objectId"];
+                    XmlAttribute attrib;
+
+                    string target = reference.Value;
+                    long dependent = PSItemUtils.GetID(itemIDMap[target]);
+
+                    attrib = html.CreateAttribute("sys_dependentid");
+                    attrib.Value = dependent.ToString();
+                    attributeList.Append(attrib);
+
+                    attrib = html.CreateAttribute("contenteditable");
+                    attrib.Value = "false";
+                    attributeList.Append(attrib);
+
+                    attrib = html.CreateAttribute("rxinlineslot");
+                    attrib.Value = "105";
+                    attributeList.Append(attrib);
+
+                    attrib = html.CreateAttribute("sys_dependentvariantid");
+                    attrib.Value = "937";
+                    attributeList.Append(attrib);
+                }
+            }
+        }
 
         /// <summary>
         /// Deletes the content items representing the speicified Cancer Information Summary document.
@@ -220,7 +292,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             }
 
-            // TODO: Remove MediaHTML out of the data access layer!
+            // TODO: Move MediaHTML out of the data access layer!
             fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>", string.Empty).Replace("</TableSectionXML>", string.Empty));
             fields.Add("long_title", cancerInfoSummaryPage.Title);
             fields.Add("sys_title", cancerInfoSummaryPage.Title);
@@ -250,7 +322,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
 
             fields.Add("pretty_url_name", prettyURLName);
-            fields.Add("bodyfield", tableSection.Html.InnerXml.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty));
+            fields.Add("long_title", tableSection.Title);
+            // TODO: Move MediaHTML out of the data access layer!
+            fields.Add("bodyfield", tableSection.Html.OuterXml.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty));
             fields.Add("sys_title", prettyURLName);
 
 
@@ -259,7 +333,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
 
 
-        private void CreatePDQCancerInfoSummary(SummaryDocument document, CMSIDMapping mappingInfo, List<ContentItemForCreating> contentItemList)
+        private void CreatePDQCancerInfoSummary(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
             ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummary.Value);
             contentItemList.Add(contentItem);
@@ -358,6 +432,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 fields.Add("caption_text", mediaLink.Caption);
             }
+            fields.Add("long_description", mediaLink.Alt);
             fields.Add("pretty_url_name", "image" + appendPrettyURL);
             fields.Add("sys_title", "image" + appendPrettyURL);
             return fields;

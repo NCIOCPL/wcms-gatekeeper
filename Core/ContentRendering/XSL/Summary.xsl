@@ -198,20 +198,26 @@
 		Reference will be pre-rendered.
 	-->
 
-	<xsl:template match="MediaLink">
-		<!--<xsl:copy-of select="." />-->
-    <div style="border: 1px solid black;">The slot for a Media document goes here.<br/>
-      id = <xsl:value-of select="@id"/><br/>
-      alt = <xsl:value-of select="@alt"/><br/>
-      inline = <xsl:value-of select="@inline"/><br/>
-      MinWidth = <xsl:value-of select="@MinWidth"/><br/>
-      language = <xsl:value-of select="@language"/><br/>
-      size = <xsl:value-of select="@size"/><br/>
-      thumb = <xsl:value-of select="@thumb"/><br/>
-      Caption:<br />
+  
+  <xsl:template match="SummaryRef">
+    <div style="border: 1px solid green;">A SummaryRef goes here.<br />
+      href = <xsl:value-of select="@href"/><br />
+      url = <xsl:value-of select="@url"/><br />
+      text content:<br/>
       <div style="border: 1px solid blue; margin: 5px;">
-        <xsl:copy-of select="Caption"/>
+        <xsl:copy-of select="text()"/>
       </div>
+    </div>
+  </xsl:template>
+  
+  <!--
+    Renders a placeholder tag structure for MediaLinks.  The MediaLink data is
+    gathered during the Extract step and the tag structure replaced by the CMS,
+    using the value of the objectID attribute.
+  -->
+	<xsl:template match="MediaLink">
+    <div inlinetype="rxvariant" templatename="pdqSnMediaLink" objectId="{@ref}">
+      Placeholder slot
     </div>
 	</xsl:template>
 

@@ -61,6 +61,7 @@
     <Compile Include="CMSIDMapping.cs" />
     <Compile Include="CMS\CMSController.cs" />
     <Compile Include="CMS\FolderManager.cs" />
+    <Compile Include="CMS\PercussionGuid.cs" />
     <Compile Include="CMS\PSItemUtils.cs" />
     <Compile Include="CMS\ContentItemForUpdating.cs" />
     <Compile Include="CMS\ContentItemForCreating.cs" />
@@ -73,10 +74,11 @@
     <Compile Include="Configuration\PDQMediaLinkElement.cs" />
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />
-    <Compile Include="DocumentProcessor\CancerInfoSummaryProcessor.cs" />
-    <Compile Include="DocumentProcessor\DocumentProcessorCommon.cs" />
-    <Compile Include="DocumentProcessor\DrugInfoSummaryProcessor.cs" />
-    <Compile Include="DocumentProcessor\IDocumentProcessor.cs" />
+    <Compile Include="DocumentProcessing\CancerInformationSummarySectionMap.cs" />
+    <Compile Include="DocumentProcessing\CancerInfoSummaryProcessor.cs" />
+    <Compile Include="DocumentProcessing\DocumentProcessorCommon.cs" />
+    <Compile Include="DocumentProcessing\DrugInfoSummaryProcessor.cs" />
+    <Compile Include="DocumentProcessing\IDocumentProcessor.cs" />
     <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />

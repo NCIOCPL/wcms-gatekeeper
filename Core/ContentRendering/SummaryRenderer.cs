@@ -462,7 +462,7 @@ namespace GateKeeper.ContentRendering
                         isInList = true;
                     int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
 
-                    MediaLink link = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+                    MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
                     string test = "<MediaHTML>" + DocumentRenderHelper.ProcessMediaLink(link, false, isInTable, isInList) + "</MediaHTML>";
                     mediaLink.OuterXml = test;
                     BuildMediaLink(xNav, summary);

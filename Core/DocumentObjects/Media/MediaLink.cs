@@ -15,6 +15,7 @@ namespace GateKeeper.DocumentObjects.Media
     {
         #region Fields
 
+        private string _reference = string.Empty;
         private int _referencedCdrDocumentID = 0;
         private string _alt = string.Empty;
         private string _size = "not-set";
@@ -34,6 +35,13 @@ namespace GateKeeper.DocumentObjects.Media
         /// <summary>
         /// Reference for the mediaLink.
         /// </summary>
+        public string Reference
+        {
+            get { return _reference; }
+            internal set { _reference = value; }
+        }
+
+        
         public int ReferencedCdrID
         {
             get { return _referencedCdrDocumentID; }
@@ -182,9 +190,10 @@ namespace GateKeeper.DocumentObjects.Media
         /// <param name="language"></param>
         /// <param name="isThumb"></param>
         /// <param name="xml"></param>
-        public MediaLink(int cdrID, string alt, bool isInline, long minWidth, string size, string ID, 
+        public MediaLink(string reference, int cdrID, string alt, bool isInline, long minWidth, string size, string ID, 
                         string caption, int mediaDocumentID, Language language, bool isThumb, XmlDocument xml)
         {
+            this._reference = reference;
             this._referencedCdrDocumentID = cdrID;
             this._alt = alt;
             this._isInline = _isInline;

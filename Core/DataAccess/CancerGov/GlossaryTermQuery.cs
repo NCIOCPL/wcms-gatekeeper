@@ -360,7 +360,7 @@ namespace GateKeeper.DataAccess.CancerGov
                             db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
                             // Replace summaryref with prettyURL
                             string html = gtDef.Html.Trim();
-                            //TODO: Uncomment this block to enable prettyURL
+                            //TODO: Fix SummaryRef tags in Glossary Terms.
                             if (html.Contains("<SummaryRef"))
                             {
                                 BuildSummaryRefLink(ref html, 1);

@@ -216,7 +216,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                         {
-                            MediaLink mediaLink = new MediaLink(cdrId, alt, isInline, minWidth, size, mediaLinkID, langCapMap[lang],
+                            MediaLink mediaLink = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, langCapMap[lang],
                                 mediaDocumentID, lang, isThumb, mediaXml);
                             glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(mediaLink);
                         }
