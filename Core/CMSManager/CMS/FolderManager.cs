@@ -42,7 +42,7 @@ namespace NCI.WCM.CMSManager.CMS
         #region Constructors
 
         /// <summary>
-        /// The presense of a static constructor forces _folderCollection to be
+        /// The presence of a static constructor forces _folderCollection to be
         /// initialized earlier immediately instead of waiting until the member
         /// is referenced.  (Fewer runtime checks this way.)
         /// </summary>
