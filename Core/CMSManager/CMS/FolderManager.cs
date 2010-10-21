@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Web.Services.Protocols;
 using System.Xml;
 
+using NCI.WCM.CMSManager.PercussionWebSvc;
 
-using GKManagers.CMSManager.PercussionWebSvc;
-
-namespace GKManagers.CMSManager.CMS
+namespace NCI.WCM.CMSManager.CMS
 {
     /// <summary>
     /// In Percussion, attempting to attach an item to a folder causes the folder

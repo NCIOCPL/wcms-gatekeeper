@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using GKManagers.CMSManager.PercussionWebSvc;
+using NCI.WCM.CMSManager.PercussionWebSvc;
 
-namespace GKManagers.CMSManager.CMS
+namespace NCI.WCM.CMSManager.CMS
 {
     /// <summary>
     /// Utility methods for working with PSItem objects.

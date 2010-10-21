@@ -4,9 +4,9 @@ using System.Net;
 using System.Web.Services.Protocols;
 
 using GKManagers.CMSManager.Configuration;
-using GKManagers.CMSManager.PercussionWebSvc;
+using NCI.WCM.CMSManager.PercussionWebSvc;
 
-namespace GKManagers.CMSManager.CMS
+namespace NCI.WCM.CMSManager.CMS
 {
     /// <summary>
     /// Delegate definition for determining an element's workflow state based on the list

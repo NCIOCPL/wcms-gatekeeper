@@ -5,7 +5,8 @@ using System.Text;
 
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
-using GKManagers.CMSManager.CMS;
+using NCI.WCM.CMSManager;
+using NCI.WCM.CMSManager.CMS;
 
 namespace GKManagers.CMSManager
 {

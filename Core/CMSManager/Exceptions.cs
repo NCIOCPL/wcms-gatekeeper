@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Web.Services.Protocols;
 using System.Xml;
-namespace GKManagers.CMSManager
+
+namespace NCI.WCM.CMSManager
 {
     /// <summary>
     /// Absract base class for all exceptions thrown by objects in the CMSManager namespace.

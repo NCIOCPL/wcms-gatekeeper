@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Web.Services.Protocols;
-using GKManagers.CMSManager.PercussionWebSvc;
 
-namespace GKManagers.CMSManager.CMS
+using NCI.WCM.CMSManager.PercussionWebSvc;
+using NCI.WCM.CMSManager;
+
+namespace NCI.WCM.CMSManager.CMS
 {
     /// <summary>
     /// Utility methods for communicating with the Percussion CMS.

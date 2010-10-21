@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GKManagers.CMSManager.CMS
+namespace NCI.WCM.CMSManager.CMS
 {
     //internal class PercussionGuid
     //{

@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
 
-using GKManagers.CMSManager.Configuration;
-using GKManagers.CMSManager.CMS;
-using GKManagers.CMSManager.PercussionWebSvc;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
+using GKManagers.CMSManager.Configuration;
+using NCI.WCM.CMSManager.CMS;
+using NCI.WCM.CMSManager.PercussionWebSvc;
 
 
 namespace GKManagers.CMSManager.DocumentProcessing
