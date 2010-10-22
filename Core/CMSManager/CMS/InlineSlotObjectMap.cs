@@ -8,11 +8,11 @@ using GateKeeper.DocumentObjects.Summary;
 
 namespace NCI.WCM.CMSManager.CMS
 {
-    internal class InlineSlotObjectMap
+    internal class SectionToCmsIDMap
     {
         Dictionary<string, long> _map = new Dictionary<string, long>();
 
-        public InlineSlotObjectMap()
+        public SectionToCmsIDMap()
         {
         }
 
@@ -21,9 +21,14 @@ namespace NCI.WCM.CMSManager.CMS
                 _map.Add(sectionID, itemID);
         }
 
-        public long this[string key]
+        public long this[string sectionKey]
         {
-            get { return _map[key]; }
+            get { return _map[sectionKey]; }
+        }
+
+        public bool ContainsSectionKey(string sectionKey)
+        {
+            return _map.ContainsKey(sectionKey);
         }
     }
 }

@@ -9,7 +9,8 @@ using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
 using GKManagers.BusinessObjects;
-using GKManagers.CMSManager.CMS;
+
+using NCI.WCM.CMSManager.CMS;
 using GKManagers.DataAccess;
 
 namespace GKManagers

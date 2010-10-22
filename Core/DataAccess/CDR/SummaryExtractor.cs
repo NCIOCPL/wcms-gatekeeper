@@ -38,7 +38,8 @@ namespace GateKeeper.DataAccess.CDR
         private void ExtractMetadata(XPathNavigator xNav, SummaryDocument summary)
         {
             string path = string.Empty;
-            try{
+            try
+            {
                 // Extract summary metadata
                 path = xPathManager.GetXPath(SummaryXPath.URL);
                 XPathNavigator prettyUrlNav = xNav.SelectSingleNode(path);
@@ -68,7 +69,7 @@ namespace GateKeeper.DataAccess.CDR
                 path = xPathManager.GetXPath(SummaryXPath.Descript);
                 summary.Description = DocumentHelper.GetXmlDocumentValue(xNav, path);
                 path = xPathManager.GetXPath(SummaryXPath.Lang);
-                summary.Language = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav,path));
+                summary.Language = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, path));
                 path = xPathManager.GetXPath(SummaryXPath.Audience);
                 summary.AudienceType = DocumentHelper.GetXmlDocumentValue(xNav, path);
 
@@ -101,7 +102,8 @@ namespace GateKeeper.DataAccess.CDR
         {
             // This is used to track error
             string path = xPathManager.GetXPath(SummaryXPath.PatientVersion);
-            try {
+            try
+            {
                 // Handle summary relations...
                 int patientVersionOfID = 0;
 
@@ -131,7 +133,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         throw new Exception("Extraction Error: " + path + " should be a valid CDRID. CurrentValue=" + tempSpanishVersionID + ". Document CDRID= " + _documentID.ToString());
                     }
-                }                
+                }
             }
             catch (Exception e)
             {
@@ -147,7 +149,8 @@ namespace GateKeeper.DataAccess.CDR
         private void ExtractPrettyURLReferences(XPathNavigator xNav, SummaryDocument summary)
         {
             string path = string.Empty;
-            try {
+            try
+            {
                 // Handle PrettyUrlMap 
                 path = xPathManager.GetXPath(SummaryXPath.Ref);
                 XPathNodeIterator nodeIter = xNav.Select(path);
@@ -198,10 +201,13 @@ namespace GateKeeper.DataAccess.CDR
         private SummarySection ExtractSection(XPathNavigator sectionNav, ref int priority)
         {
             SummarySection summarySection = new SummarySection();
-            try {
+            try
+            {
                 if (sectionNav.HasAttributes)
                 {
-                    summarySection.SectionID = sectionNav.GetAttribute(xPathManager.GetXPath(CommonXPath.CDRID), string.Empty).Trim().Substring(1);
+                    /* The unmodified section ID is used here.  See the notes accompanying the
+                     * SummarySection.RawID and legacy SummarySection.SectionID properties for details. */
+                    summarySection.RawSectionID = sectionNav.GetAttribute(xPathManager.GetXPath(CommonXPath.CDRID), string.Empty).Trim();
                 }
 
                 summarySection.SummarySectionID = Guid.NewGuid();
@@ -240,8 +246,9 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="tableID">Identifier for each table (used as part of the pretty URL for each table enlarge section)</param>
         private void ExtractTableSections(XPathNavigator sectionNav, SummaryDocument summary, Guid parentSectionID, int sectionPriority, ref int tableID)
         {
-           string path = xPathManager.GetXPath(SummaryXPath.SectTable);
-           try {
+            string path = xPathManager.GetXPath(SummaryXPath.SectTable);
+            try
+            {
                 // Extract tables and create separate sections for them. 
                 // These sections will be the "enlarged" version of the 
                 // table which gets it's own pretty URL and entry in the 
@@ -260,9 +267,9 @@ namespace GateKeeper.DataAccess.CDR
                     tableSection.PrettyUrl = summary.BasePrettyURL + "/Table" + tableID;
                     //TODO: This formular is from the old code, need to investigate how the table priority is used the decide
                     // if we need to modify the formular
-                    tableSection.Priority = sectionPriority * 1000 + priority; 
+                    tableSection.Priority = sectionPriority * 1000 + priority;
                     summary.PrettyUrlMap.Add(tableSection.SectionID, tableSection.PrettyUrl);
-                    
+
                     // Add to the summary section list...
                     summary.TableSectionList.Add(tableSection);
                     tableID++;
@@ -271,7 +278,7 @@ namespace GateKeeper.DataAccess.CDR
             catch (Exception e)
             {
                 throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
-            }               
+            }
         }
 
         private void ExtractMediaLink(XPathNavigator mediaLink, SummaryDocument summary)
@@ -408,10 +415,13 @@ namespace GateKeeper.DataAccess.CDR
                     while (mediaLinkIter.MoveNext())
                     {
                         XPathNavigator mediaLink = mediaLinkIter.Current;
-                        string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID)).Substring(1);
+
+                        /* The unmodified section ID is used here.  See the notes accompanying the
+                         * SummarySection.RawID and SummarySection.SectionID properties for details. */
+                        string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID));
                         summary.AddLevel5Section(mediaLinkID, "Reference " + mediaLinkID, topLevelSection.SummarySectionID, SummarySectionType.Reference, 0);
 
-                        ExtractMediaLink(mediaLink, summary);                        
+                        ExtractMediaLink(mediaLink, summary);
                     }
                 }
             }
@@ -434,7 +444,8 @@ namespace GateKeeper.DataAccess.CDR
         {
             // Buffer that contains the re-formatted references
             StringBuilder nodeBuffer = new StringBuilder("[");
-            try {
+            try
+            {
                 // List to hold nodes in a sequence until we have determined it is continuous or not
                 List<XmlNode> tempNodeList = new List<XmlNode>();
                 // refidx attributes of the current and previous (last reference) for comparison
@@ -506,7 +517,8 @@ namespace GateKeeper.DataAccess.CDR
         private List<XmlNode> GetReferenceNodeList(XPathNavigator referenceNav)
         {
             List<XmlNode> referenceNodeList = new List<XmlNode>();
-            try {
+            try
+            {
                 if (referenceNav != null)
                 {
                     if (referenceNav.Name == "Reference")
@@ -549,7 +561,8 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="lastNode"></param>
         private void ReplaceNodes(string referencesXml, XmlNode firstNode, XmlNode lastNode)
         {
-            try {
+            try
+            {
                 // Insert new reformatted references before the first reference node
                 firstNode.CreateNavigator().InsertBefore(referencesXml);
                 // Delete the old unformatted references 
@@ -569,7 +582,8 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="isContinuous"></param>
         private void DumpReferenceList(List<XmlNode> tempNodeList, StringBuilder nodeBuffer, bool isContinuous)
         {
-            try {
+            try
+            {
                 // take the first element and the last element and make sure 
                 // there are more than 2 and it is a continuous sequence
                 if (tempNodeList.Count >= 2 && isContinuous)
@@ -623,7 +637,8 @@ namespace GateKeeper.DataAccess.CDR
         /// should be converted to [1-4,5,6,9]</example>
         public void PrepareXml(XmlDocument xmlDoc, DocumentXPathManager xPathMgr)
         {
-            try {
+            try
+            {
                 // Get Summary XPath
                 xPathManager = xPathMgr;
 
@@ -666,7 +681,8 @@ namespace GateKeeper.DataAccess.CDR
         {
             SummarySectionType type = SummarySectionType.SummarySection;
 
-            try {
+            try
+            {
                 if (Enum.IsDefined(typeof(SummarySectionType), summarySectionTypeString))
                 {
                     type = (SummarySectionType)Enum.Parse(typeof(SummarySectionType), summarySectionTypeString);

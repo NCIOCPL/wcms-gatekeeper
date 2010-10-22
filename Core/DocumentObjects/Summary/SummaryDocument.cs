@@ -296,7 +296,14 @@ namespace GateKeeper.DocumentObjects.Summary
             // should be an extraction task.
             SummarySection level5Section = new SummarySection();
             level5Section.SummarySectionID = Guid.NewGuid();
-            level5Section.SectionID = sectionID;
+
+            /*
+             * The *unmodified* section ID is saved here.
+             * See the notes accompanying the defintion of
+             * SummarySection.RawSectionID for further details.
+             */
+            level5Section.RawSectionID = sectionID;
+
             level5Section.Title = sectionTitle;
             level5Section.ParentSummarySectionID = parentSectionID;
             level5Section.Level = 5;

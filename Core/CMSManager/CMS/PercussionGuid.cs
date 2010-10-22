@@ -1,90 +1,91 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NCI.WCM.CMSManager.CMS
 {
-    //internal class PercussionGuid
-    //{
-    //    private long guid;
+    public class PercussionGuid
+    {
+        public PercussionGuid()
+        {
 
-    //    public PercussionGuid()
-    //    {
+        }
 
-    //    }
-    //    public PercussionGuid(int id)
-    //    {
-    //        setId(id);
-    //        setRevision(-1);
-    //        setType(101);
-    //    }
-    //    public PercussionGuid(Long guid)
-    //    {
-    //        this.guid = guid;
-    //    }
+        public PercussionGuid(int id)
+        {
+            ID = id;
+            Revision = -1;
+            Type = 101;
+        }
 
-    //    public long getGuid()
-    //    {
-    //        return guid;
-    //    }
+        public PercussionGuid(long guid)
+        {
+            Guid = guid;
+        }
 
-    //    public void setGuid(long guid)
-    //    {
-    //        this.guid = guid;
-    //    }
+        public long Guid { get; set; }
 
-    //    public int getId()
-    //    {
-    //        return getId(guid);
-    //    }
-    //    public void setId(int id)
-    //    {
-    //        ulong mask = 0xFFFFFFFF00000000L;
-    //        guid = (mask & guid) | (long)id);
-    //    }
+        public int ID
+        {
+            get { return (int)(Guid & 0xFFFFFFFFL); }
+            set
+            {
+                unchecked
+                {
+                    long mask = (long)0xFFFFFFFF00000000L;
+                    Guid = (mask & Guid) | (uint)value;
+                }
+            }
+        }
 
-    //    public int getRevision()
-    //    {
+        public int Revision
+        {
+            get { return (int)(Guid >> 40); }
+            set
+            {
+                long mask = 0x000000FFFFFFFFFFL;
+                Guid = (mask & Guid) | (uint)value;
+            }
+        }
 
-    //        return getRevision(guid);
-    //    }
+        public int Type
+        {
+            get { return (int)(Guid >> 32) & 0xFF; }
+            set
+            {
+                unchecked
+                {
+                    long mask = (long)0xFFFFFF00FFFFFFFFL;
+                    Guid = (mask & Guid) | (uint)value << 32;
+                }
+            }
+        }
 
-    //    public void setRevision(int revision)
-    //    {
-    //        long mask = 0x000000FFFFFFFFFFL;
-    //        guid = (mask & guid) | (long)revision << 40;
-    //    }
+        public override String ToString()
+        {
+            return string.Format("{0}-{1}-{2}", Revision, Type, ID);
+        }
 
-    //    public int getType()
-    //    {
-    //        return getType(guid);
-    //    }
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
 
-    //    public void setType(int type)
-    //    {
-    //        ulong mask = 0xFFFFFF00FFFFFFFFL;
-    //        guid = (mask & guid) | (long)type << 32;
+            PercussionGuid rhs = obj as PercussionGuid;
+            if ((Object)rhs == null)
+            {
+                return false;
+            }
 
-    //    }
+            return Revision == rhs.Revision
+                && Type == rhs.Type
+                && ID == rhs.ID;
+        }
 
-    //    public String toString()
-    //    {
-    //        return "" + getType() + "-" + getId() + "-" + getRevision();
-    //    }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
-    //    public int getId(long id)
-    //    {
-    //        return (int)(id & 0xFFFFFFFFL);
-    //    }
-    //    public int getRevision(long id)
-    //    {
-
-    //        return (int)(id >> 40);
-    //    }
-    //    public int getType(long id)
-    //    {
-    //        return (int)(id >> 32) & 0xFF;
-    //    }
-    //}
+    }
 }

@@ -15,7 +15,7 @@ namespace GateKeeper.DocumentObjects.Summary
 
         private Guid _summarySectionID = Guid.Empty;
         private Guid _parentSummarySectionID = Guid.Empty;
-        private string _sectionID = string.Empty;
+        private string _rawSectionID = string.Empty;
         private XmlDocument _xml = null;
         private XmlDocument _html = null;
         private string _title = string.Empty;
@@ -27,19 +27,45 @@ namespace GateKeeper.DocumentObjects.Summary
         private int _level = 0;
         private int _priority = 0;
         private SummarySectionType _sectionType = SummarySectionType.SummarySection;
-        
+
         #endregion
 
         #region Public Properties
 
         /// <summary>
         /// Internal document identifier for the section.
+        /// 
+        /// Legacy code included some hackishness with removing the first character
+        /// from the ID.  The getter for this property is preserved in order to minimize
+        /// the impact on existing code, however the *unmodified* ID value must be
+        /// set via RawSectionID.
         /// </summary>
         /// <example>Typically of the form: "51"</example>
         public string SectionID
         {
-            get { return _sectionID; }
-            internal set { _sectionID = value; }
+            get
+            {
+                if (string.IsNullOrEmpty(_rawSectionID))
+                    return string.Empty;
+                else
+                    return _rawSectionID.Substring(1);
+            }
+        }
+
+        /// <summary>
+        /// Document identifier for the section.  RawSectionID contains the ID exactly
+        /// as it appears in the document's XML source.
+        /// 
+        /// The RawSectionID is a workaround for some legacy hackishness where ID values
+        /// were created by removing the first character from the section's actual ID value.
+        /// Legacy code continues to use the SectionID property which continues to remove
+        /// the leading character.  The RawSectionID is used wherever the original, unaltered
+        /// value is needed.
+        /// </summary>
+        public string RawSectionID
+        {
+            get { return _rawSectionID; }
+            internal set { _rawSectionID = value; }
         }
 
         /// <summary>
@@ -194,37 +220,6 @@ namespace GateKeeper.DocumentObjects.Summary
 
             this._xml = new XmlDocument();
             this._xml.PreserveWhitespace = true;
-       }
-
-        /// <summary>
-        /// Class constructor with parameters.
-        /// </summary>
-        /// <param name="summarySectionID"></param>
-        /// <param name="sectionID"></param>
-        /// <param name="parentSummarySectionID"></param>
-        /// <param name="sectionTitle"></param>
-        /// <param name="sectionType"></param>
-        /// <param name="priority"></param>
-        /// <param name="level"></param>
-        public SummarySection(Guid summarySectionID, string sectionID, Guid parentSummarySectionID, string sectionTitle, SummarySectionType sectionType, string toc, string html, int priority, int level)
-        {
-            this._html = new XmlDocument();
-            this._html.PreserveWhitespace = true;
-
-            this._xml = new XmlDocument();
-            this._xml.PreserveWhitespace = true;
-
-            this._summarySectionID = summarySectionID;
-            this._sectionID = sectionID;
-            this._parentSummarySectionID = parentSummarySectionID;
-            this._sectionType = sectionType;
-            this._toc = toc;
-            if (html != null)
-            {
-                this._html.LoadXml(html);
-            }
-            this._priority = priority;
-            this._level = level;
         }
 
         #endregion
@@ -238,14 +233,14 @@ namespace GateKeeper.DocumentObjects.Summary
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(base.ToString());
-            sb.Append(string.Format("\nSectionID = {0} SummarySectionID = {1} TOC = {2} IsTableSection = {3} ", 
+            sb.Append(string.Format("\nSectionID = {0} SummarySectionID = {1} TOC = {2} IsTableSection = {3} ",
                 this.SectionID, this.SummarySectionID, this.TOC, this.IsTableSection));
 
             sb.Append(string.Format("Level = {0} SectionType = {1} ",
                 this.Level, this.SectionType.ToString()));
-                
-            sb.Append(string.Format("IsTopLevel = {0} PrettyUrl = {1} Text = {2} Html = {3}", 
-                this.IsTopLevel, this.PrettyUrl,  this.Text, this.Html.OuterXml));
+
+            sb.Append(string.Format("IsTopLevel = {0} PrettyUrl = {1} Text = {2} Html = {3}",
+                this.IsTopLevel, this.PrettyUrl, this.Text, this.Html.OuterXml));
 
             return sb.ToString();
         }

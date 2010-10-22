@@ -19,9 +19,9 @@ namespace GateKeeper.ContentRendering
     {
 
         #region Constants
-        const string vertSpacer = "<td><img src=\"/images/spacer.gif\" width=\"11\" height=\"1\" /></td>";
-        const string horSpacer = " <tr><td><img src=\"/images/spacer.gif\" width=\"1\" height=\"5\" /></td></tr> ";
-        const string botSpacer = " <tr><td><img src=\"/images/spacer.gif\" width=\"1\" height=\"10\" /></td></tr> ";
+        const string vertSpacer = "<td><img src=\"/images/spacer.gif\" alt=\"\" width=\"11\" height=\"1\" /></td>";
+        const string horSpacer = " <tr><td><img src=\"/images/spacer.gif\" alt=\"\" width=\"1\" height=\"5\" /></td></tr> ";
+        const string botSpacer = " <tr><td><img src=\"/images/spacer.gif\" alt=\"\" width=\"1\" height=\"10\" /></td></tr> ";
 
         #endregion
 
@@ -141,8 +141,8 @@ namespace GateKeeper.ContentRendering
 					//for display grey line above the caption
                   if (mediaLink.Caption.Length > 0)
                   {
-                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" width=\"12\" height=\"10\" border=\"0\"/></td></tr></table></div></td></tr>";
-                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" width=\"12\" height=\"3\" border=\"0\"/></td></tr>";
+                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"10\" border=\"0\"/></td></tr></table></div></td></tr>";
+                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"3\" border=\"0\"/></td></tr>";
                       // Insert captions in the dictionary if it is from summary page
                       langBuf += capHtml;
                   }

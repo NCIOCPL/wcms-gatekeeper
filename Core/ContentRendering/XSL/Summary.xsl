@@ -216,11 +216,11 @@
     using the value of the objectID attribute.
   -->
 	<xsl:template match="MediaLink">
-    <div inlinetype="rxvariant" templatename="pdqSnMediaLink" objectId="{@ref}">
+    <div inlinetype="rxvariant" objectId="{@ref}">
       Placeholder slot
     </div>
 	</xsl:template>
-
+  
 	<xsl:template match="Reference">
 		<xsl:element name="a">
 			<xsl:attribute name="href">#Reference<xsl:for-each select="ancestor::SummarySection[child::ReferenceSection]"><xsl:value-of select="count(preceding-sibling::SummarySection) + 1"/>.</xsl:for-each><xsl:value-of select="@refidx"/></xsl:attribute>

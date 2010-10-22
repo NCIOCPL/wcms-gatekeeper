@@ -116,21 +116,25 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             long summaryRootID;
             long[] summaryPageIDList;
-            //long[] embeddedItemIDList;
 
             // TODO:  Move all this to a new CreateEmbeddedContentItems or similar method
 
             // Create the embeddable content items first so we can get their contentIDs.
-            List<ContentItemForCreating> embeddedItemList = new List<ContentItemForCreating>();
-            CreatePDQTableSections(document, embeddedItemList);
-            CreatePDQMediaLink(document, embeddedItemList);
-            idList = CMSController.CreateContentItemList(embeddedItemList);
-            //embeddedItemIDList = idList.ToArray();
 
-            InlineSlotObjectMap embeddedItemIDMap = new InlineSlotObjectMap();
-            BuildEmbeddedItemMap(document, idList, embeddedItemIDMap);
+            // Create TableSection content items.
+            List<ContentItemForCreating> tableItemList = new List<ContentItemForCreating>();
+            CreatePDQTableSections(document, tableItemList);
+            List<long> tableItemIDs = CMSController.CreateContentItemList(tableItemList);
+            SectionToCmsIDMap tableIDMap = BuildItemIDMap(document.TableSectionList, tableItemIDs);
+            ResolveInlineSlots(document.SectionList, tableIDMap, "pdqSnTableSection");
 
-            ResolveInlineSlots(document.SectionList, embeddedItemIDMap);
+            // Create MediaLink content items.
+            List<ContentItemForCreating> mediaLinkSlotList = new List<ContentItemForCreating>();
+            CreatePDQMediaLink(document, mediaLinkSlotList);
+            List<long> mediaLinkSlotIDs = CMSController.CreateContentItemList(mediaLinkSlotList);
+            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList, mediaLinkSlotIDs);
+            ResolveInlineSlots(document.SectionList, mediaLinkIDMap, "pdqSnMediaLink");
+
 
             // END TODO.
 
@@ -170,27 +174,37 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         }
 
-        private void BuildEmbeddedItemMap(SummaryDocument document, List<long>idList, InlineSlotObjectMap itemIDMap)
+        private SectionToCmsIDMap BuildItemIDMap(IList<SummarySection> sectionList, List<long> idList)
         {
-            // Order is assumed to be Table Sections, and then MediaLinks.
-            int tableCount = document.TableSectionList.Count();
-            for (int i = 0; i < tableCount; i++)
+            SectionToCmsIDMap itemIDMap = new SectionToCmsIDMap();
+
+            int sectionCount = sectionList.Count();
+            for (int i = 0; i < sectionCount; i++)
             {
-                itemIDMap.AddSection(document.TableSectionList[i].SectionID, idList[i]);
+                itemIDMap.AddSection(sectionList[i].RawSectionID, idList[i]);
             }
 
-            // Now the MediaLinks.
-            int mediaCount = document.MediaLinkSectionList.Count();
-            for (int i = 0; i < mediaCount; i++)
-            {
-                // The math may seem weird, but it's right. The tablecount is the index of the
-                // first ID which hasn't been used yet.
-                itemIDMap.AddSection(document.MediaLinkSectionList[i].Reference, idList[i + tableCount]);
-            }
+            return itemIDMap;
         }
 
-        private void ResolveInlineSlots(List<SummarySection> sectionList, InlineSlotObjectMap itemIDMap)
+        private SectionToCmsIDMap BuildItemIDMap(IList<MediaLink> mediaLinkList, List<long> idList)
         {
+            SectionToCmsIDMap itemIDMap = new SectionToCmsIDMap();
+
+            int mediaCount = mediaLinkList.Count();
+            for (int i = 0; i < mediaCount; i++)
+            {
+                itemIDMap.AddSection(mediaLinkList[i].Reference, idList[i]);
+            }
+
+            return itemIDMap;
+        }
+
+
+        private void ResolveInlineSlots(List<SummarySection> sectionList, SectionToCmsIDMap itemIDMap, string templateName)
+        {
+            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+
             foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
             {
                 XmlDocument html = section.Html;
@@ -204,24 +218,27 @@ namespace GKManagers.CMSManager.DocumentProcessing
                     XmlAttribute reference = attributeList["objectId"];
                     XmlAttribute attrib;
 
-                    string target = reference.Value;
-                    long dependent = PSItemUtils.GetID(itemIDMap[target]);
+                    if (itemIDMap.ContainsSectionKey(reference.Value))
+                    {
+                        string target = reference.Value;
+                        long dependent = PSItemUtils.GetID(itemIDMap[target]);
 
-                    attrib = html.CreateAttribute("sys_dependentid");
-                    attrib.Value = dependent.ToString();
-                    attributeList.Append(attrib);
+                        attrib = html.CreateAttribute("sys_dependentid");
+                        attrib.Value = dependent.ToString();
+                        attributeList.Append(attrib);
 
-                    attrib = html.CreateAttribute("contenteditable");
-                    attrib.Value = "false";
-                    attributeList.Append(attrib);
+                        attrib = html.CreateAttribute("contenteditable");
+                        attrib.Value = "false";
+                        attributeList.Append(attrib);
 
-                    attrib = html.CreateAttribute("rxinlineslot");
-                    attrib.Value = "105";
-                    attributeList.Append(attrib);
+                        attrib = html.CreateAttribute("rxinlineslot");
+                        attrib.Value = "105";
+                        attributeList.Append(attrib);
 
-                    attrib = html.CreateAttribute("sys_dependentvariantid");
-                    attrib.Value = "937";
-                    attributeList.Append(attrib);
+                        attrib = html.CreateAttribute("sys_dependentvariantid");
+                        attrib.Value = snippetTemplate.ID.ToString();
+                        attributeList.Append(attrib);
+                    }
                 }
             }
         }

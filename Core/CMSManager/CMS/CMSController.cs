@@ -26,7 +26,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         #region Percussion Fields
 
-        // These four fields represent the interface to Percussion.  They are initialized by the
+        // These fields represent the interface to Percussion.  They are initialized by the
         // CMSController constructor. These fields are used by all CMSController methods which
         // need to communicate with the Percussion system.
 
@@ -50,6 +50,12 @@ namespace NCI.WCM.CMSManager.CMS
          * the system service. It is initialized by login().
          */
         systemSOAP _systemService;
+
+        /*
+         * The assembly service instance; used to retrieve lists of slots
+         * and templates. It is initialized by login().
+         */
+        assemblySOAP _assemblyService;
 
         #endregion
 
@@ -87,6 +93,7 @@ namespace NCI.WCM.CMSManager.CMS
                 _securityService = null;
                 _contentService = null;
                 _systemService = null;
+                _assemblyService = null;
             }
         }
 
@@ -104,6 +111,17 @@ namespace NCI.WCM.CMSManager.CMS
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
         }
 
+        public TemplateNameManager TemplateNameManager
+        {
+            /*
+             * At a glance, lazy-loading like this seems dangerous. But the TemplateNameManager
+             * property can only be accessed from an instance of CMSController. Because the constructor
+             * calls Login, the _assemblyService can be used safely.  The only danger is if someone
+             * tries using the property after CMController has been disposed, but that requires a high
+             * degree of not knowing what you're doing.
+             */
+            get { return new TemplateNameManager(_assemblyService); }
+        }
 
         /// <summary>
         /// Login to the Percussion session, set up services.
@@ -123,6 +141,8 @@ namespace NCI.WCM.CMSManager.CMS
             _contentService = PSWSUtils.GetContentService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
             _systemService = PSWSUtils.GetSystemService(protocol, host, port, _securityService.CookieContainer,
+                _securityService.PSAuthenticationHeaderValue);
+            _assemblyService = PSWSUtils.GetAssemblyService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
         }
 

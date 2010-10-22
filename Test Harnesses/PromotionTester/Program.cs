@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml.Serialization;
 using GKManagers;
 using GKManagers.BusinessObjects;
-using GKManagers.CMSManager.CMS;
+using NCI.WCM.CMSManager.CMS;
 using GateKeeper.Common;
 using GateKeeper.DataAccess.GateKeeper;
 using System.Threading;

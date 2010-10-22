@@ -65,6 +65,7 @@
     <Compile Include="CMS\PSItemUtils.cs" />
     <Compile Include="CMS\ContentItemForUpdating.cs" />
     <Compile Include="CMS\ContentItemForCreating.cs" />
+    <Compile Include="CMS\TemplateNameManager.cs" />
     <Compile Include="Configuration\ConnectionInfo.cs" />
     <Compile Include="Configuration\ContentType.cs" />
     <Compile Include="Configuration\pdqCancerInfoSummaryElement.cs" />

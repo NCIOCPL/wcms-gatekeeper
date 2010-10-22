@@ -20,9 +20,15 @@ namespace GateKeeper.ContentRendering
     public class SummaryRenderer : DocumentRenderer
     {
         #region Fields
+
         private SummarySection _lastTopLevelSection = null;
         private StringBuilder _currentSectionTOC = new StringBuilder();
         private Language _language;
+
+        const string tablePlaceholder = @"
+<div inlinetype=""rxvariant"" objectId=""{0}"">
+  Placeholder slot
+</div>";
 
         #endregion Fields
 
@@ -396,8 +402,12 @@ namespace GateKeeper.ContentRendering
                 string ID = DocumentHelper.GetAttribute(level5Iter.Current, idAttribute).Trim();
                 if (ID.Length > 0)
                 {
-                    string sectionID = ID.Substring(1);
-                    summary.AddLevel5Section(sectionID, "Reference " + sectionID,
+                    /* The unmodified section ID is passed as the sectID parameter, but
+                     * a modified version is used in creating the sectionTitle.  See the
+                     * notes accompanying the SummarySection.RawID and SummarySection.SectionID
+                     * properties for details. */
+                    string trimmedID = (string.IsNullOrEmpty(ID) ? string.Empty : ID.Substring(1));
+                    summary.AddLevel5Section(ID, "Reference " + trimmedID,
                         parentSectionID, SummarySectionType.Reference, priority++);
                 }
             }
@@ -569,43 +579,26 @@ namespace GateKeeper.ContentRendering
                 }
 
                 // Format table enlarges...
+                /*
+                 * This is a HUGE hack.  Table sections are extracted in the Extract phase, but
+                 * rather than rendering the Table XML, we end up extracting the rendered HTML
+                 * from the overall rendered summary and loading that into the sections.
+                 * 
+                 * The placeholder DIV (which by rights belongs in the XSL) is substituted for the
+                 * rendered HTML immediately after the HTML is copied to the table section.
+                 * 
+                 * This is completely dependent on summary.TableSectionList remaining in the same
+                 * order with the same number of entries as the XML. Granted, that's a pretty safe
+                 * bet, but it throws loose coupling out the window.
+                 */
                 foreach (SummarySection tableSection in summary.TableSectionList)
                 {
                     XPathNavigator sectionNav = xNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
                     if (sectionNav != null)
                     {
-                        // Get the section title
-                        XPathNavigator titleNav = sectionNav.SelectSingleNode("./table/span/b");
-                        // Set the section title
-                        string title = string.Empty;
-                        if (titleNav != null)
-                        {
-                            title = titleNav.InnerXml.Trim();
-                            title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
-                        }
+                        RewriteTableXml(tableSection, sectionNav);
+                        sectionNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
 
-                        // Format the table enlarge (put into a separate section 
-                        // during extraction)
-                        FormatTableEnlarge(sectionNav);
-
-                        // Save the results of the transform into the Html property
-                        string html = sectionNav.InnerXml;
-                        // Remove the two unneed tag from output xml
-                        html = html.Replace("<a name=\"TableSection\"></a>", string.Empty);
-                        html = html.Replace("<a name=\"Section_" + tableSection.SectionID + "\"></a>", string.Empty);
-                        // Change back the name in table section
-                        html = html.Replace("Class=\"SummarySection-Table-Small\"", string.Empty);
-                        html = html.Replace("Class=\"SummaryRef-Small\"", "Class=\"SummaryRef\"");
-                        html = html.Replace("Class=\"Summary-LOERef-Small\"", "Class=\"Summary-LOERef\"");
-                        html = html.Replace("Class=\"Summary-ProtocolRef-Small\"", "Class=\"Summary-ProtocolRef\"");
-                        html = html.Replace("Class=\"Summary-GlossaryTermRef-Small\"", "Class=\"Summary-GlossaryTermRef\"");
-                        html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
-                        html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
-                        html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + "</a>";
-                        tableSection.Html.LoadXml(html);
-
-                        if (title.Trim().Length > 0)
-                            tableSection.Title = title;
                     }
                 }
                 summary.Html = xNav.OuterXml;
@@ -614,6 +607,44 @@ namespace GateKeeper.ContentRendering
             {
                 throw new Exception("Rendering Error: Render data from summary document failed. Document CDRID=" + document.DocumentID.ToString(), e);
             }
+        }
+
+        private void RewriteTableXml(SummarySection tableSection, XPathNavigator sectionNav)
+        {
+            // Get the section title
+            XPathNavigator titleNav = sectionNav.SelectSingleNode("./table/span/b");
+            // Set the section title
+            string title = string.Empty;
+            if (titleNav != null)
+            {
+                title = titleNav.InnerXml.Trim();
+                title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
+            }
+
+            // Format the table enlarge (put into a separate section 
+            // during extraction)
+
+            // TODO: Remove this call, move the Enlarge link to the template.
+            FormatTableEnlarge(sectionNav);
+
+            // Save the results of the transform into the Html property
+            string html = sectionNav.InnerXml;
+            // Remove the two unneed tag from output xml
+            html = html.Replace("<a name=\"TableSection\"></a>", string.Empty);
+            html = html.Replace("<a name=\"Section_" + tableSection.SectionID + "\"></a>", string.Empty);
+            // Change back the name in table section
+            html = html.Replace("Class=\"SummarySection-Table-Small\"", string.Empty);
+            html = html.Replace("Class=\"SummaryRef-Small\"", "Class=\"SummaryRef\"");
+            html = html.Replace("Class=\"Summary-LOERef-Small\"", "Class=\"Summary-LOERef\"");
+            html = html.Replace("Class=\"Summary-ProtocolRef-Small\"", "Class=\"Summary-ProtocolRef\"");
+            html = html.Replace("Class=\"Summary-GlossaryTermRef-Small\"", "Class=\"Summary-GlossaryTermRef\"");
+            html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
+            html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
+            html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + "</a>";
+            tableSection.Html.LoadXml(html);
+
+            if (title.Trim().Length > 0)
+                tableSection.Title = title;
         }
 
         #endregion Public Methods

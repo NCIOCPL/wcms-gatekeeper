@@ -96,7 +96,6 @@ namespace NCI.WCM.CMSManager.CMS
             return rxSession;
         }
 
-
         /// <summary>
         /// Creates and intialize a proxy of the Percussion service used for manipulating
         /// content items and relationships.
@@ -547,5 +546,51 @@ namespace NCI.WCM.CMSManager.CMS
 
             return contentSvc.FindItems(req);
         }
+
+        #region Assembly Service Methods
+
+        /// <summary>
+        /// Creates and intialize a proxy of the Percussion service used for retriving
+        /// slots and templates.
+        /// </summary>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <param name="cookie">The cookie container for maintaining the session for all
+        ///     webservice requests.</param>
+        /// <param name="authHeader">The authentication header for maintaining the Rhythmyx session
+        ///     for all webservice requests.</param>
+        /// <returns>An initialized proxy for the Percussion content service.</returns>
+        public static assemblySOAP GetAssemblyService(string protocol, string host, string port, CookieContainer cookie, PSAuthenticationHeader authHeader)
+        {
+            assemblySOAP assemblySvc = new assemblySOAP();
+
+            assemblySvc.Url = RewriteServiceUrl(assemblySvc.Url, protocol, host, port);
+            assemblySvc.CookieContainer = cookie;
+            assemblySvc.PSAuthenticationHeaderValue = authHeader;
+
+            return assemblySvc;
+        }
+
+        public static PSAssemblyTemplate[] LoadAssemblyTemplates(assemblySOAP assemblySvc)
+        {
+            PSAssemblyTemplate[] templateData;
+
+            try
+            {
+                LoadAssemblyTemplatesRequest req = new LoadAssemblyTemplatesRequest();
+                templateData = assemblySvc.LoadAssemblyTemplates(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in LoadAssemblyTemplates", ex);
+            }
+
+
+            return templateData;
+        }
+
+        #endregion
     }
 }
