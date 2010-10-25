@@ -23,7 +23,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         #region Constructor and Initialization
 
-        public TemplateNameManager(assemblySOAP assemblyService)
+        internal TemplateNameManager(assemblySOAP assemblyService)
         {
             _assemblyService = assemblyService;
 

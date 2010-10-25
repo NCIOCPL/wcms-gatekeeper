@@ -123,6 +123,11 @@ namespace NCI.WCM.CMSManager.CMS
             get { return new TemplateNameManager(_assemblyService); }
         }
 
+        public FolderManager FolderManager
+        {
+            get { return new FolderManager(_contentService); }
+        }
+
         /// <summary>
         /// Login to the Percussion session, set up services.
         /// </summary>
@@ -288,8 +293,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// prepended before the attempt is made to create it.</remarks>
         public PSFolder GuaranteeFolder(string folderPath)
         {
-            FolderManager folderMgr = new FolderManager(_contentService);
-            return folderMgr.GuaranteeFolder(siteRootPath + folderPath);
+            return FolderManager.GuaranteeFolder(siteRootPath + folderPath);
         }
 
         /// <summary>

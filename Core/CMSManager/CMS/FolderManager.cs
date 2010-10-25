@@ -14,7 +14,7 @@ namespace NCI.WCM.CMSManager.CMS
     /// The purpose of the Foldermanager class is to provide a threadsafe mechanism
     /// for obtaining a folder's PSFolder object.
     /// </summary>
-    class FolderManager
+    public class FolderManager
     {
         #region Constants
 
@@ -54,7 +54,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// The public constructor.
         /// </summary>
         /// <param name="contentService">Reference to the Percussion content Service.</param>
-        public FolderManager(contentSOAP contentService)
+        internal FolderManager(contentSOAP contentService)
         {
             _contentService = contentService;
         }

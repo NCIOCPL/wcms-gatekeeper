@@ -20,81 +20,7 @@ namespace NCI.WCM.CMSManager.CMS
         */
 
 
-        /// <summary>
-        /// Creates and intialize a proxy of the Percussion service for maintaining
-        /// login sessions.
-        /// </summary>
-        /// <param name="protocol">Communications protocol to use when connecting to
-        /// the Percussion server.  Should be either HTTP or HTTPS.</param>
-        /// <param name="host">Host name or IP address of the Percussion server.</param>
-        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
-        /// <returns>An initialized proxy for the Percussion security service.</returns>
-        public static securitySOAP GetSecurityService(string protocol, string host, string port)
-        {
-           securitySOAP securitySvc = new securitySOAP();
-
-            securitySvc.Url = RewriteServiceUrl(securitySvc.Url, protocol, host, port);
-
-               // create a cookie object to maintain JSESSION
-               CookieContainer cookie = new CookieContainer();
-               securitySvc.CookieContainer = cookie;
-
-            return securitySvc;
-        }
-
-
-        /// <summary>
-        /// Rewrites a Percussion service URL with a new protocol, host and port number.
-        /// </summary>
-        /// <param name="srcAddress">The source address with the 
-        ///     the connection information (protocol, host and port)</param>
-        /// <param name="protocol">Communications protocol to use when connecting to
-        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
-        /// <param name="host">Host name or IP address of the Percussion server.</param>
-        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
-        /// <returns>The modified service URL.</returns>
-        private static String RewriteServiceUrl(String srcAddress, string protocol, string host, string port)
-        {
-            int pathStart = srcAddress.IndexOf("/Rhythmyx/");
-            return string.Format("{0}://{1}:{2}{3}",
-                protocol, host, port, srcAddress.Substring(pathStart));
-        }
-
-
-        /// <summary>
-        /// Login to a Percussion sesession with the specified credentials and associated parameters.
-        /// </summary>
-        /// <param name="securitySvc">the proxy of the security service</param>
-        /// <param name="user">The login user.</param>
-        /// <param name="password">The login password.</param>
-        /// <param name="community">The name of the Community into which to log the user</param>
-        /// <param name="locale">The name of the Locale into which to log the user</param>
-        /// <returns></returns>
-        public static string Login(securitySOAP securitySvc, string user,string password, string community, string locale)
-        {
-            LoginRequest loginReq = new LoginRequest();
-            string rxSession;
-            try
-            {
-                loginReq.Username = user;
-                loginReq.Password = password;
-                loginReq.Community = community;
-                loginReq.LocaleCode = locale;
-
-                // Setting the authentication header to maintain Rhythmyx session
-                LoginResponse loginResp = securitySvc.Login(loginReq);
-                rxSession = loginResp.PSLogin.sessionId;
-                securitySvc.PSAuthenticationHeaderValue = new PSAuthenticationHeader();
-                securitySvc.PSAuthenticationHeaderValue.Session = rxSession;
-            }
-
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in Login.", ex);
-            }
-            
-            return rxSession;
-        }
+        #region Content Service Methods
 
         /// <summary>
         /// Creates and intialize a proxy of the Percussion service used for manipulating
@@ -118,50 +44,6 @@ namespace NCI.WCM.CMSManager.CMS
             contentSvc.PSAuthenticationHeaderValue = authHeader;
 
             return contentSvc;
-        }
-
-        /// <summary>
-        /// Creates and intialize a proxy of the Percussion service used for manipulating
-        /// the overall system (folders, list of relationships, etc).
-        /// </summary>
-        /// <param name="protocol">Communications protocol to use when connecting to
-        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
-        /// <param name="host">Host name or IP address of the Percussion server.</param>
-        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
-        /// <param name="cookie">The cookie container for maintaining the session for all
-        ///     webservice requests.</param>
-        /// <param name="authHeader">The authentication header for maintaining the Rhythmyx session
-        ///     for all webservice requests.</param>
-        /// <returns>An initialized proxy for the Percussion system service.</returns>
-        public static systemSOAP GetSystemService(string protocol, string host, string port, CookieContainer cookie, PSAuthenticationHeader authHeader)
-        {
-            systemSOAP systemSvc = new systemSOAP();
-
-            systemSvc.Url = RewriteServiceUrl(systemSvc.Url, protocol, host, port);
-            systemSvc.CookieContainer = cookie;
-            systemSvc.PSAuthenticationHeaderValue = authHeader;
-
-            return systemSvc;
-        }
-
-        /// <summary>
-        /// Logs out from the Rhythmyx session.
-        /// </summary>
-        /// <param name="securitySvc">The security proxy.</param>
-        /// <param name="rxSession">The Rhythmyx session.</param>
-        public static void Logout(securitySOAP securitySvc, String rxSession)
-        {
-            LogoutRequest logoutReq = new LogoutRequest();
-            try
-            {
-                logoutReq.SessionId = rxSession;
-                securitySvc.Logout(logoutReq);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in Logout.", ex);
-            }
-
         }
 
         /// <summary>
@@ -227,29 +109,6 @@ namespace NCI.WCM.CMSManager.CMS
             catch (SoapException ex)
             {
                 throw new CMSSoapException("Percussion Error in CheckinItem.", ex);
-            }
-
-        }
-
-        /// <summary>
-        /// Transitions the content items to cdrlive,cdrstaging,...
-        /// </summary>
-        /// <param name="systemSvc">The proxy of the content service.</param>
-        /// <param name="idList">List of ids for the transition</param>
-        /// <param name="trigger">The trigger.</param>
-        public static void TransitionItems(systemSOAP systemSvc, long[] idList,
-            string trigger)
-        {
-            TransitionItemsRequest req = new TransitionItemsRequest();
-            try
-            {
-                req.Id = idList;
-                req.Transition = trigger;
-                systemSvc.TransitionItems(req);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in TransitionItems.", ex);
             }
 
         }
@@ -484,30 +343,6 @@ namespace NCI.WCM.CMSManager.CMS
             return results;
         }
 
-        /// <summary>
-        /// Retrieve the list of workflow transitions allowed for a list of content items.
-        /// </summary>
-        /// <param name="systemSvc">The system service.</param>
-        /// <param name="itemList">A list of content items.</param>
-        /// <returns>A list of the names for transitions which are allowed for
-        /// all content items specified in itemList.</returns>
-        /// <remarks>Only returns the tranitions which are common to all
-        /// items in the list</remarks>
-        public static string[] GetTransitions(systemSOAP systemSvc, long[] itemList)
-        {
-            GetAllowedTransitionsResponse response;
-            try
-            {
-                response = systemSvc.GetAllowedTransitions(itemList);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in GetTransitions.", ex);
-            }
-
-            return response.Transition;
-        }
-
         public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
         {
             /*
@@ -546,6 +381,83 @@ namespace NCI.WCM.CMSManager.CMS
 
             return contentSvc.FindItems(req);
         }
+
+        #endregion
+
+        #region System Service Methods
+
+        /// <summary>
+        /// Creates and intialize a proxy of the Percussion service used for manipulating
+        /// the overall system (folders, list of relationships, etc).
+        /// </summary>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <param name="cookie">The cookie container for maintaining the session for all
+        ///     webservice requests.</param>
+        /// <param name="authHeader">The authentication header for maintaining the Rhythmyx session
+        ///     for all webservice requests.</param>
+        /// <returns>An initialized proxy for the Percussion system service.</returns>
+        public static systemSOAP GetSystemService(string protocol, string host, string port, CookieContainer cookie, PSAuthenticationHeader authHeader)
+        {
+            systemSOAP systemSvc = new systemSOAP();
+
+            systemSvc.Url = RewriteServiceUrl(systemSvc.Url, protocol, host, port);
+            systemSvc.CookieContainer = cookie;
+            systemSvc.PSAuthenticationHeaderValue = authHeader;
+
+            return systemSvc;
+        }
+
+        /// <summary>
+        /// Retrieve the list of workflow transitions allowed for a list of content items.
+        /// </summary>
+        /// <param name="systemSvc">The system service.</param>
+        /// <param name="itemList">A list of content items.</param>
+        /// <returns>A list of the names for transitions which are allowed for
+        /// all content items specified in itemList.</returns>
+        /// <remarks>Only returns the tranitions which are common to all
+        /// items in the list</remarks>
+        public static string[] GetTransitions(systemSOAP systemSvc, long[] itemList)
+        {
+            GetAllowedTransitionsResponse response;
+            try
+            {
+                response = systemSvc.GetAllowedTransitions(itemList);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in GetTransitions.", ex);
+            }
+
+            return response.Transition;
+        }
+
+        /// <summary>
+        /// Transitions the content items to cdrlive,cdrstaging,...
+        /// </summary>
+        /// <param name="systemSvc">The proxy of the content service.</param>
+        /// <param name="idList">List of ids for the transition</param>
+        /// <param name="trigger">The trigger.</param>
+        public static void TransitionItems(systemSOAP systemSvc, long[] idList,
+            string trigger)
+        {
+            TransitionItemsRequest req = new TransitionItemsRequest();
+            try
+            {
+                req.Id = idList;
+                req.Transition = trigger;
+                systemSvc.TransitionItems(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in TransitionItems.", ex);
+            }
+
+        }
+
+        #endregion
 
         #region Assembly Service Methods
 
@@ -592,5 +504,110 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         #endregion
+
+        #region Security Service Methods
+
+        /// <summary>
+        /// Creates and intialize a proxy of the Percussion service for maintaining
+        /// login sessions.
+        /// </summary>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        /// the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <returns>An initialized proxy for the Percussion security service.</returns>
+        public static securitySOAP GetSecurityService(string protocol, string host, string port)
+        {
+            securitySOAP securitySvc = new securitySOAP();
+
+            securitySvc.Url = RewriteServiceUrl(securitySvc.Url, protocol, host, port);
+
+            // create a cookie object to maintain JSESSION
+            CookieContainer cookie = new CookieContainer();
+            securitySvc.CookieContainer = cookie;
+
+            return securitySvc;
+        }
+
+
+        /// <summary>
+        /// Login to a Percussion sesession with the specified credentials and associated parameters.
+        /// </summary>
+        /// <param name="securitySvc">the proxy of the security service</param>
+        /// <param name="user">The login user.</param>
+        /// <param name="password">The login password.</param>
+        /// <param name="community">The name of the Community into which to log the user</param>
+        /// <param name="locale">The name of the Locale into which to log the user</param>
+        /// <returns></returns>
+        public static string Login(securitySOAP securitySvc, string user, string password, string community, string locale)
+        {
+            LoginRequest loginReq = new LoginRequest();
+            string rxSession;
+            try
+            {
+                loginReq.Username = user;
+                loginReq.Password = password;
+                loginReq.Community = community;
+                loginReq.LocaleCode = locale;
+
+                // Setting the authentication header to maintain Rhythmyx session
+                LoginResponse loginResp = securitySvc.Login(loginReq);
+                rxSession = loginResp.PSLogin.sessionId;
+                securitySvc.PSAuthenticationHeaderValue = new PSAuthenticationHeader();
+                securitySvc.PSAuthenticationHeaderValue.Session = rxSession;
+            }
+
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in Login.", ex);
+            }
+
+            return rxSession;
+        }
+
+        /// <summary>
+        /// Logs out from the Rhythmyx session.
+        /// </summary>
+        /// <param name="securitySvc">The security proxy.</param>
+        /// <param name="rxSession">The Rhythmyx session.</param>
+        public static void Logout(securitySOAP securitySvc, String rxSession)
+        {
+            LogoutRequest logoutReq = new LogoutRequest();
+            try
+            {
+                logoutReq.SessionId = rxSession;
+                securitySvc.Logout(logoutReq);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in Logout.", ex);
+            }
+
+        }
+
+        #endregion
+
+
+        #region Utility Methods
+
+        /// <summary>
+        /// Rewrites a Percussion service URL with a new protocol, host and port number.
+        /// </summary>
+        /// <param name="srcAddress">The source address with the 
+        ///     the connection information (protocol, host and port)</param>
+        /// <param name="protocol">Communications protocol to use when connecting to
+        ///     the Percussion server.  Should be either HTTP or HTTPS.</param>
+        /// <param name="host">Host name or IP address of the Percussion server.</param>
+        /// <param name="port">Port number to use when connecting to the Percussion server.</param>
+        /// <returns>The modified service URL.</returns>
+        private static String RewriteServiceUrl(String srcAddress, string protocol, string host, string port)
+        {
+            int pathStart = srcAddress.IndexOf("/Rhythmyx/");
+            return string.Format("{0}://{1}:{2}{3}",
+                protocol, host, port, srcAddress.Substring(pathStart));
+        }
+
+        #endregion
+
     }
 }
