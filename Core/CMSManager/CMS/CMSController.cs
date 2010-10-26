@@ -178,7 +178,8 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="fields">The fields.</param>
         /// <param name="targetFolder">The target folder in percussion.</param>
         /// <returns>Id for the the created item</returns>
-        private long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
+        [Obsolete("This method will be merged with CreateContentItemList().")]
+        public long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
         {
             PSItem item = PSWSUtils.CreateItem(_contentService, contentType);
 
