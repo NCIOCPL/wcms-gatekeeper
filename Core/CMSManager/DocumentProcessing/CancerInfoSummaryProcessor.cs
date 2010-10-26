@@ -19,11 +19,26 @@ namespace GKManagers.CMSManager.DocumentProcessing
 {
     public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
-        public static PercussionConfig percussionConfig;
+        private PercussionConfig PercussionConfig;
+
+        // Contain the names of the ContentTypes used to represent Cancer Info Sumamries in the CMS.
+        // Set in the constructor.
+        readonly private string CancerInfoSummaryContentType;
+        readonly private string CancerInfoSummaryPageContentType;
+        readonly private string CancerInfoSummaryLinkContentType;
+        readonly private string MediaLinkContentType;
+        readonly private string TableSectionContentType;
+
+
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
         {
-            percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            PercussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            CancerInfoSummaryContentType = PercussionConfig.ContentType.PDQCancerInfoSummary.Value;
+            CancerInfoSummaryPageContentType = PercussionConfig.ContentType.PDQCancerInfoSummaryPage.Value;
+            CancerInfoSummaryLinkContentType = PercussionConfig.ContentType.PDQCancerInfoSummaryLink.Value;
+            MediaLinkContentType = PercussionConfig.ContentType.PDQMediaLink.Value;
+            TableSectionContentType = PercussionConfig.ContentType.PDQTableSection.Value;
         }
 
         #region IDocumentProcessor Members
@@ -42,66 +57,18 @@ namespace GKManagers.CMSManager.DocumentProcessing
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
 
-            /// All the nifty document processing code starts here.
 
             // Are we updating an existing document? Or saving a new one?
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(document.DocumentID);
+            PercussionGuid identifier = GetCdrDocumentID(CancerInfoSummaryContentType, document.DocumentID);
 
             // No mapping found, this is a new item.
-            if (mappingInfo == null)
+            if (identifier == null)
             {
                 CreateNewCancerInformationSummary(document);
             }
             else
             {
-                //Update Content Items
-                List<long> idList;
-
-                List<ContentItemForUpdating> contentItemsListToUpdate = new List<ContentItemForUpdating>();
-                long contentID;
-                // Add pdqCancerInfoSummary content item to the contentItemsListToUpdate 
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(mappingInfo.CmsID, CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
-                contentItemsListToUpdate.Add(updateContentItem);
-
-
-                //Add pdqCancerInfoSummaryLink content item to the contentItemsListToUpdate
-
-                //Get the ID for the content item to be updated.
-                contentID = GetpdqCancerInfoSummaryLinkID(document);
-
-                updateContentItem = new ContentItemForUpdating(contentID, CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
-                contentItemsListToUpdate.Add(updateContentItem);
-
-                //Add pdqTableSections content item to the contentItemsListToUpdate
-                GetPDQTableSectionsToUpdate(document, contentItemsListToUpdate);
-
-                //Add pdqCancerInfoSummaryPages content item to the contentItemsListToUpdate
-                GetPDQCancerInfoSummaryPagesToUpdate(document, contentItemsListToUpdate);
-
-
-                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
-
-                //Update all the content Item in one operation
-                idList = CMSController.UpdateContentItemList(contentItemsListToUpdate);
-
-                //Check if the pdqCancerInfoSummary Pretty URL changed if yes then move the content item to the new folder in percussion.
-                string prettyURL = GetTargetFolder(document.BasePrettyURL);
-                if (mappingInfo.PrettyURL != prettyURL)
-                {
-                    long[] id = idList.ToArray();
-                    CMSController.GuaranteeFolder(prettyURL);
-                    CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, prettyURL, id);
-
-                    //Delete existing mapping for the CDRID.
-                    mapManager.DeleteCdrIDMapping(document.DocumentID);
-
-                    // Save the mapping between the CDR and CMS IDs.
-                    mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
-                    mapManager.InsertCdrIDMapping(mappingInfo);
-
-                }
-
+                UpdateCancerInformationSummary(document);
             }
 
 
@@ -165,12 +132,61 @@ namespace GKManagers.CMSManager.DocumentProcessing
             //Save all the content items in one operation using the contentItemList.
             idList = CMSController.CreateContentItemList(contentItemList);
 
+        }
 
-            // Map Relationships.
-            //Save the mapping between the CDR and CMS IDs.As the mapping is to be saved only for the pdqCancerInfoSummary just pick
-            //the first Id "idList[0]" from the idList to save.
-            //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.BasePrettyURL);
+        private void UpdateCancerInformationSummary(SummaryDocument document)
+        {
+            // Stop until we're ready to work on update.
+            throw new NotImplementedException("UpdateCancerInformationSummary");
+
+            PercussionGuid documentCmsID = new PercussionGuid();
+
+            //Update Content Items
+            List<long> idList;
+
+            List<ContentItemForUpdating> contentItemsListToUpdate = new List<ContentItemForUpdating>();
+            long contentID;
+            // Add pdqCancerInfoSummary content item to the contentItemsListToUpdate 
+            ContentItemForUpdating updateContentItem = new ContentItemForUpdating(documentCmsID.ID, CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.PrettyURL));
+            contentItemsListToUpdate.Add(updateContentItem);
+
+
+            //Add pdqCancerInfoSummaryLink content item to the contentItemsListToUpdate
+
+            //Get the ID for the content item to be updated.
+            contentID = GetpdqCancerInfoSummaryLinkID(document);
+
+            updateContentItem = new ContentItemForUpdating(contentID, CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.PrettyURL));
+            contentItemsListToUpdate.Add(updateContentItem);
+
+            //Add pdqTableSections content item to the contentItemsListToUpdate
+            GetPDQTableSectionsToUpdate(document, contentItemsListToUpdate);
+
+            //Add pdqCancerInfoSummaryPages content item to the contentItemsListToUpdate
+            GetPDQCancerInfoSummaryPagesToUpdate(document, contentItemsListToUpdate);
+
+
+            InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
+
+            //Update all the content Item in one operation
+            idList = CMSController.UpdateContentItemList(contentItemsListToUpdate);
+
+            //Check if the pdqCancerInfoSummary Pretty URL changed if yes then move the content item to the new folder in percussion.
+            string prettyURL = GetTargetFolder(document.BasePrettyURL);
+            //if (mappingInfo.PrettyURL != prettyURL)
+            //{
+            long[] id = idList.ToArray();
+            CMSController.GuaranteeFolder(prettyURL);
+            //CMSController.MoveContentItemFolder(mappingInfo.PrettyURL, prettyURL, id);
+
+            ////Delete existing mapping for the CDRID.
+            //mapManager.DeleteCdrIDMapping(document.DocumentID);
+
+            //// Save the mapping between the CDR and CMS IDs.
+            //mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
             //mapManager.InsertCdrIDMapping(mappingInfo);
+
+            //}
 
         }
 
@@ -249,9 +265,6 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentID">The document ID.</param>
         public void DeleteContentItem(int documentID)
         {
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
-
             // Check for items with references.
             VerifyDocumentMayBeDeleted(documentID);
 
@@ -283,7 +296,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 if (document.SectionList[i].IsTopLevel == true)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryPage.Value);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryPageContentType);
                     contentItemList.Add(contentItem);
                 }
 
@@ -326,7 +339,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count - 1; i++)
             {
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQTableSection.Value);
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), TableSectionContentType);
                 contentItemList.Add(contentItem);
 
             }
@@ -352,7 +365,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         private void CreatePDQCancerInfoSummary(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummary.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryContentType);
             contentItemList.Add(contentItem);
         }
 
@@ -401,7 +414,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
         private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
 
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQCancerInfoSummaryLink.Value);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryLinkContentType);
             contentItemList.Add(contentItem);
 
         }
@@ -427,7 +440,7 @@ namespace GKManagers.CMSManager.DocumentProcessing
             {
                 if (document.MediaLinkSectionList[i] != null)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), percussionConfig.ContentType.PDQMediaLink.Value);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), MediaLinkContentType);
                     contentItemList.Add(contentItem);
                 }
 
@@ -457,41 +470,45 @@ namespace GKManagers.CMSManager.DocumentProcessing
 
         private long GetpdqCancerInfoSummaryLinkID(SummaryDocument document)
         {
-            long contentid;
-            contentid = CMSController.GetItemID(GetTargetFolder(document.BasePrettyURL), document.Title);
-            return contentid;
+            throw new NotImplementedException("GetpdqCancerInfoSummaryLinkID");
+            //long contentid;
+            //contentid = CMSController.GetItemID(GetTargetFolder(document.BasePrettyURL), document.Title);
+            //return contentid;
         }
 
 
         private void GetPDQTableSectionsToUpdate(SummaryDocument document, List<ContentItemForUpdating> contentItemsListToUpdate)
         {
-            int i;
-            long contentid;
+            throw new NotImplementedException("GetPDQTableSectionsToUpdate");
 
+            //int i;
+            //long contentid;
 
-            for (i = 0; i <= document.TableSectionList.Count - 1; i++)
-            {
-                string prettyURLName = document.TableSectionList[i].PrettyUrl.Substring(document.TableSectionList[i].PrettyUrl.LastIndexOf('/') + 1);
-                contentid = CMSController.GetItemID(GetTargetFolder(document.TableSectionList[i].PrettyUrl), prettyURLName);
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
-                contentItemsListToUpdate.Add(updateContentItem);
-            }
+            //for (i = 0; i <= document.TableSectionList.Count - 1; i++)
+            //{
+            //    string prettyURLName = document.TableSectionList[i].PrettyUrl.Substring(document.TableSectionList[i].PrettyUrl.LastIndexOf('/') + 1);
+            //    contentid = CMSController.GetItemID(GetTargetFolder(document.TableSectionList[i].PrettyUrl), prettyURLName);
+            //    ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.PrettyURL));
+            //    contentItemsListToUpdate.Add(updateContentItem);
+            //}
 
         }
 
         private void GetPDQCancerInfoSummaryPagesToUpdate(SummaryDocument document, List<ContentItemForUpdating> contentItemsListToUpdate)
         {
-            int i;
-            long contentid;
+            throw new NotImplementedException("GetPDQTableSectionsToUpdate");
 
-            for (i = 0; i <= document.SectionList.Count - 1; i++)
-            {
-                string prettyURLName = document.SectionList[i].PrettyUrl.Substring(document.SectionList[i].PrettyUrl.LastIndexOf('/') + 1);
-                contentid = CMSController.GetItemID(GetTargetFolder(document.SectionList[i].PrettyUrl), prettyURLName);
-                ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
-                contentItemsListToUpdate.Add(updateContentItem);
+            //int i;
+            //long contentid;
 
-            }
+            //for (i = 0; i <= document.SectionList.Count - 1; i++)
+            //{
+            //    string prettyURLName = document.SectionList[i].PrettyUrl.Substring(document.SectionList[i].PrettyUrl.LastIndexOf('/') + 1);
+            //    contentid = CMSController.GetItemID(GetTargetFolder(document.SectionList[i].PrettyUrl), prettyURLName);
+            //    ContentItemForUpdating updateContentItem = new ContentItemForUpdating(contentid, CreateFieldValueMapPDQTableSection(document.SectionList[i]), GetTargetFolder(document.PrettyURL));
+            //    contentItemsListToUpdate.Add(updateContentItem);
+
+            //}
 
         }
 

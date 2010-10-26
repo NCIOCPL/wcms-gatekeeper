@@ -16,9 +16,19 @@ namespace GKManagers.CMSManager.DocumentProcessing
 {
     public class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
+        #region Fields
+
+        // Contains the name of the Drug Information Summary ContentType as used in the CMS.
+        // Set in the constructor.
+        readonly private string DrugInfoSummaryContentType;
+        
+        #endregion
+
         public DrugInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
         {
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            DrugInfoSummaryContentType = percussionConfig.ContentType.PDQDrugInfoSummary.Value;
         }
 
         #region IDocumentProcessor Members
@@ -41,14 +51,13 @@ namespace GKManagers.CMSManager.DocumentProcessing
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
             // Are we updating an existing document? Or saving a new one?
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(document.DocumentID);
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, document.DocumentID);
 
-            // No mapping found, this is a new item.
-            if (mappingInfo == null)
+            // No identifier was returned, this is a new item.
+            if (identifier == null)
             {
                 // Turn the list of item fields into a list of one item.
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), percussionConfig.ContentType.PDQDrugInfoSummary.Value);
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), DrugInfoSummaryContentType);
                 List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
                 contentItemList.Add(contentItem);
 
@@ -56,40 +65,39 @@ namespace GKManagers.CMSManager.DocumentProcessing
                 // Create the new content item. (All items are created of the same type.)
                 InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
                 idList = CMSController.CreateContentItemList(contentItemList);
-
-                // Save the mapping between the CDR and CMS IDs.
-                mappingInfo = new CMSIDMapping(document.DocumentID, idList[0], document.PrettyURL);
-                mapManager.InsertCdrIDMapping(mappingInfo);
             }
             else
             {
-                // A mapping exists, we're updating an item.
+                // We're updating an existing item, go fetch it.
+                PSItem[] oldItem = CMSController.LoadContentItems(new long[] { identifier.ID });
 
                 // This is an existing item, we must therefore put it in an editable state.
-                TransitionItemsToStaging(new long[1] { mappingInfo.CmsID });
+                TransitionItemsToStaging(new long[1] { identifier.ID });
 
-                ContentItemForUpdating contentItem = new ContentItemForUpdating(mappingInfo.CmsID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
+                // TODO: Refactor this.  We've already loaded the item so we can check its path,
+                // and the CMSController.UpdateContentItemList method goes and loads it again
+                // before overwriting the field values. Making the communications layer responsible
+                // for knowing exactly what to update may be too much logic in that layer.
+
+                ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
                 List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
                 contentItemList.Add(contentItem);
                 InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
                 idList = CMSController.UpdateContentItemList(contentItemList);
 
                 //Check if the Pretty URL changed if yes then move the content item to the new folder in percussion.
-                if (mappingInfo.PrettyURL != document.PrettyURL)
+                string targetFolder = GetTargetFolder(document.PrettyURL);
+                string oldPath = CMSController.GetPathInSite(oldItem[0]);
+                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase))
                 {
                     long[] id = idList.ToArray() ;
-                    string targetFolder = GetTargetFolder(document.PrettyURL);
-                    string sourceFolder = GetTargetFolder(mappingInfo.PrettyURL);
+                    //string sourceFolder = GetTargetFolder(oldItem[0].Folders[0].path);
 
                     CMSController.GuaranteeFolder(targetFolder);
-                    CMSController.MoveContentItemFolder(sourceFolder, targetFolder, id);
-                   
-                    // Update mapping for the CDRID.
-                    mapManager.UpdateCdrIDMapping(document.DocumentID, idList[0], document.PrettyURL);
+                    CMSController.MoveContentItemFolder(oldPath, targetFolder, id);
                 }
 
             }
-
 
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
@@ -100,19 +108,15 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentID">The document ID.</param>
         public void DeleteContentItem(int documentID)
         {
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
 
-            if (mappingInfo != null)
+            if (identifier != null)
             {
                 // Check for items with references.
-                VerifyDocumentMayBeDeleted(mappingInfo.CmsID);
+                VerifyDocumentMayBeDeleted(identifier.ID);
 
                 // Delete item from CMS.
-                CMSController.DeleteItem(mappingInfo.CmsID);
-
-                // Delete item mapping.
-                mapManager.DeleteCdrIDMapping(documentID);
+                CMSController.DeleteItem(identifier.ID);
             }
             else
             {
@@ -164,10 +168,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentID">The document's CDR ID.</param>
         public void PromoteToPreview(int documentID)
         {
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
 
-            TransitionItemsToPreview(new long[1]{mappingInfo.CmsID});
+            TransitionItemsToPreview(new long[1]{identifier.ID});
         }
 
         /// <summary>
@@ -176,10 +179,9 @@ namespace GKManagers.CMSManager.DocumentProcessing
         /// <param name="documentID">The document's CDR ID.</param>
         public void PromoteToLive(int documentID)
         {
-            IDMapManager mapManager = new IDMapManager();
-            CMSIDMapping mappingInfo = mapManager.LoadCdrIDMappingByCdrid(documentID);
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
 
-            TransitionItemsToLive(new long[1] { mappingInfo.CmsID });
+            TransitionItemsToLive(new long[1] { identifier.ID });
         }
 
         #endregion

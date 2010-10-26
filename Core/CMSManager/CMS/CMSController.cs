@@ -359,6 +359,17 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// Retrieves a list of content items identified by the values in itemIDList.
+        /// </summary>
+        /// <param name="itemIDList">An array of content item ID values.</param>
+        /// <returns>An array of content items in the same order as the values
+        /// in itemIDList</returns>
+        public PSItem[] LoadContentItems(long[] itemIDList)
+        {
+            return PSWSUtils.LoadItems(_contentService, itemIDList);
+        }
+
+        /// <summary>
         /// Creates relationships between a parent object and a collection of child objects using a named
         /// slot and snippet template.
         /// </summary>
@@ -385,30 +396,27 @@ namespace NCI.WCM.CMSManager.CMS
             return relationships;
         }
 
-
-        /*  ????????????????  */
-
-        public long GetItemID(string targetFolder, string sysTitle)
+        /// <summary>
+        /// Strips the leading //Sites/sitename portion from the first path
+        /// a content item resides in.
+        /// </summary>
+        /// <param name="item">A content item</param>
+        /// <returns>The path relative to the site's base, or null if no path is available.</returns>
+        public string GetPathInSite(PSItem item)
         {
-            long idList;
-            PSItemSummary[] curItems = PSWSUtils.FindFolderChildren(_contentService, siteRootPath + targetFolder);
+            if (item == null || item.Folders == null || item.Folders.Length == 0)
+                return null;
 
-            idList = GetItem(curItems, sysTitle);
-            return idList;
+            PSItemFolders pathFolder = Array.Find(item.Folders, folder => (string.IsNullOrEmpty(folder.path)));
+            if (pathFolder == null)
+                return null;
+
+            string path = pathFolder.path;
+            if (path.StartsWith(siteRootPath, StringComparison.InvariantCultureIgnoreCase))
+                return path.Substring(siteRootPath.Length);
+            else
+                return path;
         }
-
-
-        private long  GetItem(PSItemSummary[] curItems, String sysTitle)
-        {
-            foreach (PSItemSummary item in curItems)
-            {
-                if (item.name.ToLower() == sysTitle.ToLower())
-                    return item.id;
-            }
-
-            return -1;
-        }
-
 
         public enum CMSPublishingTarget
         {
@@ -462,21 +470,28 @@ namespace NCI.WCM.CMSManager.CMS
             return editionList;
         }
 
-        public long[] SearchForContentItems(contentSOAP contentSvc, string contentType, Dictionary<string, string> fieldCriteria)
+
+        /// <summary>
+        /// Peforms a search of the CMS repository for content items via a the CMS database search
+        /// engine (as opposed to the full text search engine).
+        /// Search criteria must include a content type, and may optionally include a list of
+        /// field/values pairs.
+        /// </summary>
+        /// <param name="contentType">String naming the content type for limiting the search.</param>
+        /// <param name="fieldCriteria">Optional list of name/value pairs identifying the fields
+        /// and values to search for</param>
+        /// <returns>An array containing zero or more content item ID values.</returns>
+        public PercussionGuid[] SearchForContentItems(string contentType, Dictionary<string, string> fieldCriteria)
         {
-            /*
-             * 
-             * Preliminary implementation.
-             * 
-             * */
-            long[] contentIdList;
+            PercussionGuid[] contentIdList;
 
             PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, fieldCriteria);
-            contentIdList = new long[searchResults.Length];
+            contentIdList = new PercussionGuid[searchResults.Length];
             for (int i = 0; i < searchResults.Length; i++)
             {
                 // FindItemByFieldValues always returns the sys_contentid field, so it's safe to assume this expression will work.
-                contentIdList[i] = long.Parse(Array.Find(searchResults[i].Fields, field => field.name.Equals("sys_contentid")).Value);
+                long value = long.Parse(Array.Find(searchResults[i].Fields, field => field.name.Equals("sys_contentid")).Value);
+                contentIdList[i] = new PercussionGuid(value);
             }
 
             return contentIdList;

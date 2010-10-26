@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace NCI.WCM.CMSManager.CMS
 {
+    /// <summary>
+    /// Map for section placeholder values to their CMS IDs.
+    /// </summary>
     internal class SectionToCmsIDMap
     {
         Dictionary<string, long> _map = new Dictionary<string, long>();

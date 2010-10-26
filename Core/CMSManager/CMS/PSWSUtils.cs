@@ -343,14 +343,9 @@ namespace NCI.WCM.CMSManager.CMS
             return results;
         }
 
+
         public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
         {
-            /*
-             * 
-             *  Preliminary implementation.
-             * 
-             * */
-
             FindItemsRequest req = new FindItemsRequest();
 
             // Basic set up.

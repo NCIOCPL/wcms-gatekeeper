@@ -89,6 +89,41 @@ namespace GKManagers.CMSManager
             }
         }
 
+        /// <summary>
+        /// Searches the CMS repository for the specified CDR Document.
+        /// </summary>
+        /// <param name="contentType">The CMS content type of the document being searched for.</param>
+        /// <param name="cdrID">The document's CDR ID</param>
+        /// <returns>If found, a Percussion GUID value is returned which identifies the document.
+        /// A null return means no matching document was located.</returns>
+        public PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        {
+            PercussionGuid[] searchResults;
+            PercussionGuid foundItem;
+
+            Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
+            fieldCriteria.Add("cdrid", cdrID.ToString("d"));
+            searchResults = CMSController.SearchForContentItems(contentType, fieldCriteria);
+
+            if (searchResults.Count() > 1)
+            {
+                // Something is wrong; the CDRID is supposed to be unique!
+                throw new CMSOperationalException(string.Format("Found multiple content items with CDRID {0}.", cdrID));
+            }
+            else if (searchResults.Count() < 1)
+            {
+                // No results found.
+                foundItem = null;
+            }
+            else
+            {
+                // Found exactly 1 item.
+                foundItem = searchResults[0]; 
+            }
+
+            return foundItem;
+        }
+
 
         /// <summary>
         /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException

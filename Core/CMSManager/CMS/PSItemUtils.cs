@@ -14,11 +14,13 @@ namespace NCI.WCM.CMSManager.CMS
     {
         const ulong idMask = 0xffffffffL;
 
+        [Obsolete("use PercussionGuid")]
         public static bool CompareItemIds(long itemID1, long itemID2)
         {
             return ((ulong)itemID1 | idMask) == ((ulong)itemID2 | idMask);
         }
 
+        [Obsolete("use PercussionGuid")]
         public static long GetID(long itemID1)
         {
             return (long)((ulong)itemID1 & idMask);
