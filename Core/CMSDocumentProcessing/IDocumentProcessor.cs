@@ -5,7 +5,7 @@ using System.Text;
 
 using GateKeeper.DocumentObjects;
 
-namespace GKManagers.CMSManager
+namespace GKManagers.CMSDocumentProcessing
 {
     /// <summary>
     /// Defines the generic interface for all Document Processors. The variety of data structures

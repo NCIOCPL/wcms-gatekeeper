@@ -10,7 +10,7 @@ namespace NCI.WCM.CMSManager.CMS
     /// <summary>
     /// Utility methods for working with PSItem objects.
     /// </summary>
-    static class PSItemUtils
+    public static class PSItemUtils
     {
         const ulong idMask = 0xffffffffL;
 

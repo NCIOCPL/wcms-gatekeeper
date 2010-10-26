@@ -103,6 +103,10 @@
       <Project>{817A5A3A-9088-483E-A591-AF0A7B41374A}</Project>
       <Name>BatchManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CMSDocumentProcessing\CMSDocumentProcessing.csproj">
+      <Project>{DD69C2C5-626D-4A06-9C6E-37461F0B93F1}</Project>
+      <Name>CMSDocumentProcessing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CMSManager\CMSManager.csproj">
       <Project>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</Project>
       <Name>CMSManager</Name>

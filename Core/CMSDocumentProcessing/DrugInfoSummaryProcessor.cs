@@ -12,7 +12,7 @@ using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
 using NCI.WCM.CMSManager.PercussionWebSvc;
 
-namespace GKManagers.CMSManager.DocumentProcessing
+namespace GKManagers.CMSDocumentProcessing
 {
     public class DrugInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {

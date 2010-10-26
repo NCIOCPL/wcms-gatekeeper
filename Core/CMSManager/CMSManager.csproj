@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NCILibrary.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b68440c3db501d2b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\NCILibrary\NCILibrary.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -75,11 +71,6 @@
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />
     <Compile Include="CMS\SectionToCmsIDMap.cs" />
-    <Compile Include="DocumentProcessing\CancerInfoSummaryProcessor.cs" />
-    <Compile Include="DocumentProcessing\DocumentProcessorCommon.cs" />
-    <Compile Include="DocumentProcessing\DrugInfoSummaryProcessor.cs" />
-    <Compile Include="DocumentProcessing\IDocumentProcessor.cs" />
-    <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -263,16 +254,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DocumentObjects\DocumentObjects.csproj">
-      <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
-      <Name>DocumentObjects</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />

@@ -8,7 +8,7 @@ using GateKeeper.DocumentObjects;
 using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
 
-namespace GKManagers.CMSManager
+namespace GKManagers.CMSDocumentProcessing
 {
     /// <summary>
     /// Abstract base class to implement the functionality shared between

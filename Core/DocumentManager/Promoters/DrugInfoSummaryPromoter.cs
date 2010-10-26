@@ -12,7 +12,7 @@ using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.ContentRendering;
 using GKManagers.BusinessObjects;
 
-using GKManagers.CMSManager.DocumentProcessing;
+using GKManagers.CMSDocumentProcessing;
 
 namespace GKManagers
 {

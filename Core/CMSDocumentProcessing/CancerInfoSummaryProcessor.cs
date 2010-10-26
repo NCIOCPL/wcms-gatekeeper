@@ -15,7 +15,7 @@ using NCI.WCM.CMSManager.CMS;
 using NCI.WCM.CMSManager.PercussionWebSvc;
 
 
-namespace GKManagers.CMSManager.DocumentProcessing
+namespace GKManagers.CMSDocumentProcessing
 {
     public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
