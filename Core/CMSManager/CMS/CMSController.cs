@@ -484,9 +484,35 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>An array containing zero or more content item ID values.</returns>
         public PercussionGuid[] SearchForContentItems(string contentType, Dictionary<string, string> fieldCriteria)
         {
+            return SearchForContentItems(contentType, null, fieldCriteria);
+        }
+
+
+        /// <summary>
+        /// Peforms a search of the CMS repository for content items via a the CMS database search
+        /// engine (as opposed to the full text search engine).
+        /// Search criteria must include a content type, and may optionally include a list of
+        /// field/values pairs.
+        /// </summary>
+        /// <param name="contentType">String naming the content type for limiting the search.</param>
+        /// <param name="path">Base path in which to search for content items.
+        /// (Must begin with /, must not include the //Sites/sitename component.)</param>
+        /// <param name="fieldCriteria">Optional list of name/value pairs identifying the fields
+        /// and values to search for</param>
+        /// <returns>An array containing zero or more content item ID values.</returns>
+        public PercussionGuid[] SearchForContentItems(string contentType, string path, Dictionary<string, string> fieldCriteria)
+        {
             PercussionGuid[] contentIdList;
 
-            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, fieldCriteria);
+            string searchPath;
+
+            if (!string.IsNullOrEmpty(path))
+                searchPath = siteRootPath + path;
+            else
+                searchPath = null;
+
+
+            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, searchPath, fieldCriteria);
             contentIdList = new PercussionGuid[searchResults.Length];
             for (int i = 0; i < searchResults.Length; i++)
             {

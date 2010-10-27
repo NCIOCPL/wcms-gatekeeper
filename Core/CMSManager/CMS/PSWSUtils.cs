@@ -346,6 +346,13 @@ namespace NCI.WCM.CMSManager.CMS
 
         public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
         {
+            return FindItemByFieldValues(contentSvc, contentType, null, fieldCriteria);
+        }
+
+        public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, string searchPath, Dictionary<string, string> fieldCriteria)
+        {
+            PSSearchResults[] results;
+
             FindItemsRequest req = new FindItemsRequest();
 
             // Basic set up.
@@ -360,12 +367,20 @@ namespace NCI.WCM.CMSManager.CMS
                 req.PSSearch.PSSearchParams.ContentType = contentType;
             }
 
+            // Search in path
+            if (!string.IsNullOrEmpty(searchPath))
+            {
+                req.PSSearch.PSSearchParams.FolderFilter = new PSSearchParamsFolderFilter();
+                req.PSSearch.PSSearchParams.FolderFilter.includeSubFolders = true;
+                req.PSSearch.PSSearchParams.FolderFilter.Value = searchPath;
+            }
+
             // Search for fields
-            if (fieldCriteria!= null && fieldCriteria.Count>0)
+            if (fieldCriteria != null && fieldCriteria.Count > 0)
             {
                 req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count];
                 int offset = 0;
-                foreach (KeyValuePair<string,string> pair in fieldCriteria)
+                foreach (KeyValuePair<string, string> pair in fieldCriteria)
                 {
                     req.PSSearch.PSSearchParams.Parameter[offset] = new PSSearchField();
                     req.PSSearch.PSSearchParams.Parameter[offset].name = pair.Key;
@@ -374,7 +389,16 @@ namespace NCI.WCM.CMSManager.CMS
                 }
             }
 
-            return contentSvc.FindItems(req);
+            try
+            {
+                results = contentSvc.FindItems(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in FindItemByFieldValues.", ex);
+            }
+
+            return results;
         }
 
         #endregion
