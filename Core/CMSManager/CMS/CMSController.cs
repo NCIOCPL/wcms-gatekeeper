@@ -499,7 +499,8 @@ namespace NCI.WCM.CMSManager.CMS
         /// (Must begin with /, must not include the //Sites/sitename component.)</param>
         /// <param name="fieldCriteria">Optional list of name/value pairs identifying the fields
         /// and values to search for</param>
-        /// <returns>An array containing zero or more content item ID values.</returns>
+        /// <returns>An array containing zero or more content item ID values.  The array may
+        /// be empty, but is never null.</returns>
         public PercussionGuid[] SearchForContentItems(string contentType, string path, Dictionary<string, string> fieldCriteria)
         {
             PercussionGuid[] contentIdList;
