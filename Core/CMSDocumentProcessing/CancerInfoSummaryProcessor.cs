@@ -21,6 +21,19 @@ namespace GKManagers.CMSDocumentProcessing
     {
         private PercussionConfig PercussionConfig;
 
+        #region Constants
+
+        const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
+        const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
+        const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
+
+        #endregion
+
+        #region Runtime Constants
+
+        // Yeah, it's a funny name for the region. These values are loaded at runtime,
+        // but aren't allowed to change during the run.
+
         // Contain the names of the ContentTypes used to represent Cancer Info Sumamries in the CMS.
         // Set in the constructor.
         readonly private string CancerInfoSummaryContentType;
@@ -28,6 +41,8 @@ namespace GKManagers.CMSDocumentProcessing
         readonly private string CancerInfoSummaryLinkContentType;
         readonly private string MediaLinkContentType;
         readonly private string TableSectionContentType;
+
+        #endregion
 
 
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
@@ -64,10 +79,12 @@ namespace GKManagers.CMSDocumentProcessing
             // No mapping found, this is a new item.
             if (identifier == null)
             {
+                InformationWriter(string.Format("Create new content item for document CDRID = {0}.", document.DocumentID));
                 CreateNewCancerInformationSummary(document);
             }
             else
             {
+                InformationWriter(string.Format("Update existing content item for document CDRID = {0}.", document.DocumentID));
                 UpdateCancerInformationSummary(document);
             }
 
@@ -78,10 +95,9 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void CreateNewCancerInformationSummary(SummaryDocument document)
         {
-            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
             List<long> idList;
 
-            long summaryRootID;
+            PercussionGuid summaryRoot;
             long[] summaryPageIDList;
 
             // TODO:  Move all this to a new CreateEmbeddedContentItems or similar method
@@ -96,9 +112,9 @@ namespace GKManagers.CMSDocumentProcessing
             ResolveInlineSlots(document.SectionList, tableIDMap, "pdqSnTableSection");
 
             // Create MediaLink content items.
-            List<ContentItemForCreating> mediaLinkSlotList = new List<ContentItemForCreating>();
-            CreatePDQMediaLink(document, mediaLinkSlotList);
-            List<long> mediaLinkSlotIDs = CMSController.CreateContentItemList(mediaLinkSlotList);
+            List<ContentItemForCreating> mediaLinkItemList = new List<ContentItemForCreating>();
+            CreatePDQMediaLink(document, mediaLinkItemList);
+            List<long> mediaLinkSlotIDs = CMSController.CreateContentItemList(mediaLinkItemList);
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList, mediaLinkSlotIDs);
             ResolveInlineSlots(document.SectionList, mediaLinkIDMap, "pdqSnMediaLink");
 
@@ -106,32 +122,47 @@ namespace GKManagers.CMSDocumentProcessing
             // END TODO.
 
 
-            // Create the new pdqCancerInfoSummary content item.
+            // Create the Cancer Info Summary item.
             List<ContentItemForCreating> rootList = new List<ContentItemForCreating>();
             CreatePDQCancerInfoSummary(document, rootList);
-            summaryRootID = CMSController.CreateContentItemList(rootList)[0];
+            summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
 
 
-            //Create new pdqCancerInfoSummaryPage content items
+            //Create Cancer Info Summary Page items
             List<ContentItemForCreating> summaryPageList = new List<ContentItemForCreating>();
             CreatePDQCancerInfoSummaryPage(document, summaryPageList);
             idList = CMSController.CreateContentItemList(summaryPageList);
             summaryPageIDList = idList.ToArray();
 
             // Add summary pages into the page slot.
-            PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRootID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
+            PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRoot.ID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
 
 
-            //TODO: Need to handle pre-existing summary link for Patient vs. Health Professional.
+            //  Search for a CISLink in the parent folder.
+            string parentPath = GetParentFolder(document.BasePrettyURL);
+            PercussionGuid[] searchList =
+                CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, parentPath, null);
 
-            //Create new pdqCancerInfoSummaryLink content item
-            CreatePDQCancerInfoSummaryLink(document, contentItemList);
+            // TODO: Turn AudienceType into an enum during Extract.
+            string slotName;
+            if (document.AudienceType.Equals("Patients", StringComparison.InvariantCultureIgnoreCase))
+                slotName = PatientVersionLinkSlot;
+            else
+                slotName = HealthProfVersionLinkSlot;
 
-            //TODO:  Set up Percussion slot relationships.
-
-            //Save all the content items in one operation using the contentItemList.
-            idList = CMSController.CreateContentItemList(contentItemList);
-
+            if (searchList.Length==0)
+            {
+                // If a summary link doesn't exist, create a new one.
+                List<ContentItemForCreating> summaryLinkList = new List<ContentItemForCreating>();
+                CreatePDQCancerInfoSummaryLink(document, summaryLinkList);
+                idList = CMSController.CreateContentItemList(summaryLinkList);
+                CMSController.CreateRelationships(idList[0], new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+            }
+            else
+            {
+                // If the summary link does exist, add this summary to the appropriate slot.
+                CMSController.CreateRelationships(searchList[0].ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+            }
         }
 
         private void UpdateCancerInformationSummary(SummaryDocument document)
@@ -403,6 +434,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("cdrid", summary.DocumentID.ToString());
             fields.Add("summary_type", summary.Type);
+
+            // Guaranteed by CDR to be (exact text) either "Patients" or "Health professionals".
             fields.Add("audience", summary.AudienceType);
 
             fields.Add("sys_title", summary.Title);
@@ -413,10 +446,10 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void CreatePDQCancerInfoSummaryLink(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
-
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryLinkContentType);
+            ContentItemForCreating contentItem =
+                new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document),
+                    GetParentFolder(document.BasePrettyURL), CancerInfoSummaryLinkContentType);
             contentItemList.Add(contentItem);
-
         }
 
         private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument DocType)
@@ -513,25 +546,64 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        private string GetTargetFolder(string targetFolderPath)
+        /// <summary>
+        /// Receives a Cancer Information Summary's pretty URL and converts it into
+        /// a path relative to the base of the site folder structure, ommitting only
+        /// the //Sites/sitename portion.  If the URL begins with a protocol and host,
+        /// they are removed.
+        /// </summary>
+        /// <param name="prettyUrl">The Cancer Information Summary's online URL.</param>
+        /// <returns>Path relative to the //Sites/sitename folder.</returns>
+        private string GetTargetFolder(string prettyUrl)
         {
-            // Remove the jost name and protocol
-            if (targetFolderPath.ToLower().StartsWith("http"))
+            string targetUrl;
+
+            // If present, remove the host name and protocol
+            // TODO: Refactor to allow protocols other than http.
+            if (prettyUrl.ToLower().StartsWith("http"))
             {
                 //Remove hostname and protocol.
-                System.Uri URL = new Uri(targetFolderPath);
-                targetFolderPath = URL.AbsolutePath;
-                return targetFolderPath;
+                System.Uri URL = new Uri(prettyUrl);
+                targetUrl = URL.AbsolutePath;
             }
-
             else
             {
-                return targetFolderPath;
-
+                targetUrl = prettyUrl;
             }
+
+            // Trim any trailing slash for consistency.
+            if (targetUrl.EndsWith("/") && targetUrl.Length > 1)
+                targetUrl = targetUrl.Substring(0, targetUrl.Length - 1);
+
+            return targetUrl;
         }
 
+        /// <summary>
+        /// Receives a Cancer Information Summary's pretty URL and converts it to
+        /// the document's parent folder.  If the folder specified has no parent,
+        /// the root folder is returned.
+        /// </summary>
+        /// <param name="prettyUrl">The Cancer Information Summary's online URL.</param>
+        /// <returns>Path relative to the //Sites/sitename folder.</returns>
+        private string GetParentFolder(string prettyUrl)
+        {
+            const string separator = "/";
+            string folder = GetTargetFolder(prettyUrl);
 
+            // GetTargetFolder() handles any trailing slash for us.
+            // Default to the folder value in order to handle path of /.
+            string parent = folder;
+
+            // More than a single separator means there's something to work with.
+            if (!folder.Equals(separator))
+            {
+                int index = folder.LastIndexOf(separator);
+                if (index > 0)
+                    parent = folder.Substring(0, index);
+            }
+
+            return parent;
+        }
 
 
 
