@@ -14,7 +14,9 @@
   -->
 
   <xsl:template match="Table">
-				
+			
+    <!-- The TableSectionXML tag is needed so the renderer can limit itself
+    to only rewriting styles in a limited region of the rendered page. -->
 		<TableSectionXML>
 				<xsl:element name="a">
 				<xsl:attribute name="name">SectionXML<xsl:value-of select="@id"/></xsl:attribute>

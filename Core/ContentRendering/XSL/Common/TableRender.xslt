@@ -53,7 +53,7 @@
             </span>
           </xsl:for-each>
         </xsl:if>
-        <div name="EnlargePlaceholder" align="right"></div>
+
         <COLGROUP>
           <xsl:for-each select="TGroup/ColSpec">
             <xsl:variable name="cellength">

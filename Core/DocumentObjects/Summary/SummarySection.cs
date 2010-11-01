@@ -18,6 +18,7 @@ namespace GateKeeper.DocumentObjects.Summary
         private string _rawSectionID = string.Empty;
         private XmlDocument _xml = null;
         private XmlDocument _html = null;
+        private XmlDocument _standaloneHtml = null; // HACK: See StandaloneHTML property.
         private string _title = string.Empty;
         private string _text = string.Empty;
         private string _toc = string.Empty;
@@ -119,7 +120,27 @@ namespace GateKeeper.DocumentObjects.Summary
         public XmlDocument Html
         {
             get { return _html; }
-            internal set { _html = value; }
+        }
+
+        /// <summary>
+        /// Pre-rendered HTML document for the standalone version of
+        /// a section.  Only used for TableSections.
+        /// 
+        /// This is a tremendous HACK.  In a proper design, TableSection would
+        /// be derived from SummarySection and only TableSection would have
+        /// the additonal property.
+        /// </summary>
+        public XmlDocument StandaloneHTML
+        {
+            get
+            {
+                if (_standaloneHtml == null)
+                {
+                    _standaloneHtml = new XmlDocument();
+                    _standaloneHtml.PreserveWhitespace = true;
+                }
+                return _standaloneHtml;
+            }
         }
 
         /// <summary>
@@ -146,7 +167,6 @@ namespace GateKeeper.DocumentObjects.Summary
         public System.Xml.XmlDocument Xml
         {
             get { return _xml; }
-            internal set { _xml = value; }
         }
 
         /// <summary>

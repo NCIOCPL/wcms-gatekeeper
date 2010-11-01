@@ -167,7 +167,7 @@ namespace GateKeeper.ContentRendering
         /// Handles references to the table enlarge HTML.
         /// </summary>
         /// <param name="sourceTableSectionNav">Navigator that points to table section: <a name="Section_130"><table...</param>
-        private void FormatTableEnlarge(XPathNavigator sourceTableSectionNav)
+        private void ProcessTableForStandalone(XPathNavigator sourceTableSectionNav)
         {
             try
             {
@@ -262,60 +262,6 @@ namespace GateKeeper.ContentRendering
                             title = titleNav.InnerXml.Trim();
                             title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
                             titleNav.InnerXml = title;
-                        }
-
-
-                         // Replace summaryref with prettyURL
-                       XPathNavigator divNav = tableSectionIter.Current.SelectSingleNode(".//div[@name='EnlargePlaceholder']");
-                       if (divNav != null)
-                       {
-                            // Add enlarge table link: <div align=right><a href="/cancertopics/...">Enlarge</a></div>
-                            string link = string.Empty;
-                            string strCDRID = CDRHelper.RebuildCDRID(summary.DocumentID.ToString());
-                            // TODO: REMOVE- trim out one zero here for string comparison purpose.
-                            // Reason: prvious program missing one 0 in CDRID
-                            int documentIDLength = summary.DocumentID.ToString().Length;
-                            int idLength = strCDRID.Length;
-                            if (strCDRID.Length > 12 && documentIDLength < 6)
-                            {
-                                //int index = strCDRID.LastIndexOf("0");
-                                string firstPart = strCDRID.Substring(0, 3);
-                                string secondPart = strCDRID.Substring(4);
-                                strCDRID = firstPart + secondPart;
-                            }
-                            string cdrRef = strCDRID + "#_" + tableSectionID;
-
-                            string prettyURL = string.Empty;
-                            foreach (SummarySection tableSection in summary.TableSectionList)
-                            {
-                                if (tableSection.SectionID == tableSectionID)
-                                {
-                                    // This prettyURL contain table #
-                                    prettyURL = tableSection.PrettyUrl;
-                                    DocumentHelper.GetBasePrettyUrl(ref prettyURL);
-                                }
-                            }
-
-                            switch (summary.Language)
-                            {
-                                    
-                                case Language.English:
-                                    // TODO: This url will be used when string comparison is done.
-                                    link = "<a class=\"SummaryRef\" href=\"" + prettyURL + "\">Enlarge</a>"; 
-                                    //link = string.Format("<SummaryRef href=\"{0}\">Enlarge</SummaryRef>", cdrRef);
-                                    break;
-                                case Language.Spanish:
-                                    // TODO: This url will be used when string comparison is done.
-                                    link = "<a class=\"SummaryRef\" href=\"" + prettyURL + "\">Ampliar</a>"; 
-                                    //link = string.Format("<SummaryRef href=\"{0}\">Ampliar</SummaryRef>", cdrRef);
-                                    break;
-                            }
-
-                            // Replace summaryref with prettyURL
-                            // Strip out name attribute of the placeholder div
-                            XmlNode divNode = ((IHasXmlNode)divNav).GetNode();
-                            divNode.Attributes.Remove(divNode.Attributes["name"]);
-                            divNav.InnerXml = link;
                         }
                     }
                 }  // End while loop
@@ -566,9 +512,6 @@ namespace GateKeeper.ContentRendering
                             section.Level = 5;
                         }
 
-                        // Build Media Link html
-                        //BuildMediaLink(sectionNav, summary);
-
                         // Save the results of the transform into the Html property
                         section.Html.LoadXml(sectionNav.OuterXml);
                     }
@@ -580,28 +523,35 @@ namespace GateKeeper.ContentRendering
 
                 // Format table enlarges...
                 /*
-                 * This is a HUGE hack.  Table sections are extracted in the Extract phase, but
-                 * rather than rendering the Table XML, we end up extracting the rendered HTML
-                 * from the overall rendered summary and loading that into the sections.
+                 * This is a HUGE hack.  Table sections are extracted in the Extract phase, but rather than rendering the
+                 * Table XML, we end up extracting the rendered HTML from the overall rendered summary and load that into the sections.
                  * 
                  * The placeholder DIV (which by rights belongs in the XSL) is substituted for the
                  * rendered HTML immediately after the HTML is copied to the table section.
-                 * 
-                 * This is completely dependent on summary.TableSectionList remaining in the same
-                 * order with the same number of entries as the XML. Granted, that's a pretty safe
-                 * bet, but it throws loose coupling out the window.
                  */
                 foreach (SummarySection tableSection in summary.TableSectionList)
                 {
+                    // SectionNav finds the tables in the top-level HTML.
                     XPathNavigator sectionNav = xNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
                     if (sectionNav != null)
                     {
-                        RewriteTableXml(tableSection, sectionNav);
-                        sectionNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
+                        RewriteAndExtractTableXml(tableSection, sectionNav);
+                        //sectionNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
 
+                        ReplaceTableInSectionHtml(summary.SectionList, tableSection);
                     }
                 }
+                // This is wrong.  We need to update the invdividual summary sections, not the top-level HTML.
                 summary.Html = xNav.OuterXml;
+
+                /*
+                 * 1. Loop through the collection of sections.
+                 * 2. Does the section HTML contain a table?
+                 * 3. Look up the corresponding table section.
+                 * 4. Replace the node with a placeholder.
+                 * 
+                 */
+
             }
             catch (Exception e)
             {
@@ -609,10 +559,13 @@ namespace GateKeeper.ContentRendering
             }
         }
 
-        private void RewriteTableXml(SummarySection tableSection, XPathNavigator sectionNav)
+        /* HACK: This code rewrites the table XML and copies it into the table section. */
+        private void RewriteAndExtractTableXml(SummarySection tableSection, XPathNavigator sectionNav)
         {
             // Get the section title
             XPathNavigator titleNav = sectionNav.SelectSingleNode("./table/span/b");
+
+
             // Set the section title
             string title = string.Empty;
             if (titleNav != null)
@@ -621,17 +574,20 @@ namespace GateKeeper.ContentRendering
                 title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
             }
 
-            // Format the table enlarge (put into a separate section 
-            // during extraction)
+            // Format the table enlarge (put into a separate section during extraction)
+            ProcessTableForStandalone(sectionNav);
 
-            // TODO: Remove this call, move the Enlarge link to the template.
-            FormatTableEnlarge(sectionNav);
+            // Save the unmodified results of the transform into the Html property
+            tableSection.Html.LoadXml(sectionNav.OuterXml);
 
-            // Save the results of the transform into the Html property
+            // Now modify the HTML to create the version that will be used
+            // in the fullsize (standalone) table.
             string html = sectionNav.InnerXml;
+
             // Remove the two unneed tag from output xml
             html = html.Replace("<a name=\"TableSection\"></a>", string.Empty);
             html = html.Replace("<a name=\"Section_" + tableSection.SectionID + "\"></a>", string.Empty);
+
             // Change back the name in table section
             html = html.Replace("Class=\"SummarySection-Table-Small\"", string.Empty);
             html = html.Replace("Class=\"SummaryRef-Small\"", "Class=\"SummaryRef\"");
@@ -641,10 +597,27 @@ namespace GateKeeper.ContentRendering
             html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
             html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
             html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + "</a>";
-            tableSection.Html.LoadXml(html);
+            tableSection.StandaloneHTML.LoadXml(html);
 
             if (title.Trim().Length > 0)
                 tableSection.Title = title;
+        }
+
+        private void ReplaceTableInSectionHtml(List<SummarySection> sectionList, SummarySection tableSection)
+        {
+            foreach (SummarySection section in sectionList)
+            {
+                if (section.IsTableSection)
+                    continue;
+
+                XPathNavigator sectionNav = section.Html.CreateNavigator();
+                XPathNavigator tableNav = sectionNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
+                if (tableNav != null)
+                {
+                    tableNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
+                }
+
+            }
         }
 
         #endregion Public Methods

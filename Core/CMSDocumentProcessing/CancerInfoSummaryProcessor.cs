@@ -353,7 +353,7 @@ namespace GKManagers.CMSDocumentProcessing
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             }
 
-            // TODO: Move MediaHTML out of the data access layer!
+            // TODO: Cleanup MediaHTML and TableSectionXML before we get this far.
             fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>", string.Empty).Replace("</TableSectionXML>", string.Empty));
             fields.Add("long_title", cancerInfoSummaryPage.Title);
             fields.Add("sys_title", cancerInfoSummaryPage.Title);
@@ -370,22 +370,39 @@ namespace GKManagers.CMSDocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count - 1; i++)
             {
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), TableSectionContentType);
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), TableSectionContentType);
                 contentItemList.Add(contentItem);
-
             }
 
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummarySection tableSection)
+        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummaryDocument document, SummarySection tableSection)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
 
             fields.Add("pretty_url_name", prettyURLName);
             fields.Add("long_title", tableSection.Title);
-            // TODO: Move MediaHTML out of the data access layer!
-            fields.Add("bodyfield", tableSection.Html.OuterXml.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty));
+
+            fields.Add("inline_table", tableSection.Html.OuterXml);
+            fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
+
+            fields.Add("date_next_review", "1/1/2100");
+
+            if (document.LastModifiedDate == DateTime.MinValue)
+                fields.Add("date_last_modified", null);
+            else
+                fields.Add("date_last_modified", document.LastModifiedDate.ToString());
+
+            if (document.FirstPublishedDate == DateTime.MinValue)
+            {
+                fields.Add("date_first_published", null);
+            }
+            else
+            {
+                fields.Add("date_first_published", document.FirstPublishedDate.ToString());
+            }
+
             fields.Add("sys_title", prettyURLName);
 
 
@@ -405,6 +422,7 @@ namespace GKManagers.CMSDocumentProcessing
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName = summary.BasePrettyURL.Substring(summary.BasePrettyURL.LastIndexOf('/') + 1);
 
+            string TOC = BuildTableOfContents(summary);
 
             fields.Add("pretty_url_name", prettyURLName);
             fields.Add("long_title", summary.Title);
@@ -438,9 +456,48 @@ namespace GKManagers.CMSDocumentProcessing
             // Guaranteed by CDR to be (exact text) either "Patients" or "Health professionals".
             fields.Add("audience", summary.AudienceType);
 
+            fields.Add("table_of_contents", TOC);
+
             fields.Add("sys_title", summary.Title);
 
             return fields;
+        }
+
+        private string BuildTableOfContents(SummaryDocument summary)
+        {
+            // TODO:  Replace BuildTableOfContents() with something a bit less hackish.
+            // At the very least, it would be nice to drop the table and hard-coded
+            // spacer URL.
+
+            StringBuilder sb = new StringBuilder();
+
+            int lastNestingLevel = 1;
+
+            // The Table of Contents consists of section titles for the top three levels.
+            summary.SectionList.ForEach(section =>
+            {
+                if (section.Level <= 3 &&
+                    !string.IsNullOrEmpty(section.Title))
+                {
+                    if (section.Level > lastNestingLevel)
+                        sb.Append("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr><td><img src=\"http://www.cancer.gov/images/spacer.gif\" border=\"0\" width=\"30\" height=\"1\" alt=\"\"></td><td width=\"100%\">");
+                    else if (section.Level < lastNestingLevel)
+                        sb.Append("</td></tr></table>");
+
+                    sb.AppendFormat("<a href=\"#Section{0}\">{1}</a><br />", section.RawSectionID, section.Title);
+
+                    lastNestingLevel = section.Level;
+                }
+
+            });
+
+            // Clean up any lingering tables.
+            if (lastNestingLevel > 2)
+                sb.Append("</td></tr></table>");
+            if (lastNestingLevel > 1)
+                sb.Append("</td></tr></table>");
+
+            return sb.ToString();
         }
 
 
@@ -481,23 +538,23 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(MediaLink mediaLink, int appendPrettyURL)
+        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(MediaLink mediaLink, int listOffset)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             fields.Add("inline_image_url", mediaLink.InlineImageUrl);
             fields.Add("popup_image_url", mediaLink.PopupImageUrl);
             if (string.IsNullOrEmpty(mediaLink.Caption))
             {
-                fields.Add("caption_text", "NULL");
-
+                fields.Add("caption_text", null);
             }
             else
             {
                 fields.Add("caption_text", mediaLink.Caption);
             }
             fields.Add("long_description", mediaLink.Alt);
-            fields.Add("pretty_url_name", "image" + appendPrettyURL);
-            fields.Add("sys_title", "image" + appendPrettyURL);
+            fields.Add("pretty_url_name", "image" + listOffset);
+            fields.Add("section_id", mediaLink.Id);
+            fields.Add("sys_title", "image" + listOffset);
             return fields;
         }
 
