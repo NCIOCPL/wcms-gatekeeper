@@ -8,7 +8,7 @@ using System.Xml;
 namespace NCI.WCM.CMSManager
 {
     /// <summary>
-    /// Absract base class for all exceptions thrown by objects in the CMSManager namespace.
+    /// Absract base class for all exceptions thrown by objects in the NCI.WCM.CMSManager namespace.
     /// </summary>
     [global::System.Serializable]
     public abstract class CMSException : Exception
@@ -23,7 +23,7 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when an unexpected document type
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an unexpected document type
     /// is encountered during processing.
     /// </summary>
     [global::System.Serializable]
@@ -39,7 +39,7 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when an error occurs
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an error occurs
     /// in workflow processing.
     /// </summary>
     [global::System.Serializable]
@@ -55,7 +55,7 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when an error occurs
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an error occurs
     /// in determining an item's workflow state.
     /// </summary>
     [global::System.Serializable]
@@ -71,7 +71,7 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when an Soap error occurs.
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an Soap error occurs.
     /// </summary>
     [global::System.Serializable]
     public class CMSSoapException : CMSException
@@ -82,7 +82,7 @@ namespace NCI.WCM.CMSManager
     }
     
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when an attempt is made
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an attempt is made
     /// to delete content items which are the target of relationships owned by other
     /// content items.
     /// </summary>
@@ -99,7 +99,7 @@ namespace NCI.WCM.CMSManager
     }
     
     /// <summary>
-    /// Thrown by methods in the GKManagers.CMSManager namespace when the CMS returns an
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the CMS returns an
     /// unexpected result when performing an operation.
     /// </summary>
     [global::System.Serializable]
@@ -109,6 +109,22 @@ namespace NCI.WCM.CMSManager
         public CMSOperationalException(string message) : base(message) { }
         public CMSOperationalException(string message, Exception inner) : base(message, inner) { }
         protected CMSOperationalException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the TemplateNameManager
+    /// is unable to locate an expected template.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSMissingTemplateException : CMSException
+    {
+        public CMSMissingTemplateException() { }
+        public CMSMissingTemplateException(string message) : base(message) { }
+        public CMSMissingTemplateException(string message, Exception inner) : base(message, inner) { }
+        protected CMSMissingTemplateException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }

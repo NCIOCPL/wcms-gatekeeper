@@ -13,7 +13,7 @@ namespace NCI.WCM.CMSManager.CMS
     /// <summary>
     /// Utility methods for communicating with the Percussion CMS.
     /// </summary>
-    public static class PSWSUtils
+    internal static class PSWSUtils
     {
         /*
            Don't even *THINK* about adding any static fields to this class.
@@ -104,6 +104,22 @@ namespace NCI.WCM.CMSManager.CMS
             try
             {
                 req.Id = new long[] { id };
+                contentSvc.CheckinItems(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in CheckinItem.", ex);
+            }
+
+        }
+
+
+        public static void CheckInItemList(contentSOAP contentSvc, long[] idList)
+        {
+            CheckinItemsRequest req = new CheckinItemsRequest();
+            try
+            {
+                req.Id = idList;
                 contentSvc.CheckinItems(req);
             }
             catch (SoapException ex)

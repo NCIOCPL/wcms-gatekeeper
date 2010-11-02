@@ -11,6 +11,7 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
 using GKManagers.CMSManager.Configuration;
+using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
 using NCI.WCM.CMSManager.PercussionWebSvc;
 
@@ -26,6 +27,10 @@ namespace GKManagers.CMSDocumentProcessing
         const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
+        const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
+
+        // TODO: Seriously, the AudienceType string needs to be changed to an Enum.
+        const string PatientAudience = "Patients";
 
         #endregion
 
@@ -145,24 +150,30 @@ namespace GKManagers.CMSDocumentProcessing
 
             // TODO: Turn AudienceType into an enum during Extract.
             string slotName;
-            if (document.AudienceType.Equals("Patients", StringComparison.InvariantCultureIgnoreCase))
+            if (document.AudienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
                 slotName = PatientVersionLinkSlot;
             else
                 slotName = HealthProfVersionLinkSlot;
 
+            PercussionGuid summaryLink;
             if (searchList.Length==0)
             {
                 // If a summary link doesn't exist, create a new one.
                 List<ContentItemForCreating> summaryLinkList = new List<ContentItemForCreating>();
                 CreatePDQCancerInfoSummaryLink(document, summaryLinkList);
                 idList = CMSController.CreateContentItemList(summaryLinkList);
-                CMSController.CreateRelationships(idList[0], new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                summaryLink = new PercussionGuid(idList[0]);
+                CMSController.CreateRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
             }
             else
             {
                 // If the summary link does exist, add this summary to the appropriate slot.
-                CMSController.CreateRelationships(searchList[0].ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                summaryLink = searchList[0];
+                CMSController.CreateRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
             }
+
+            // Find the Patient or Health Professional version and create a relationship.
+            LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
         }
 
         private void UpdateCancerInformationSummary(SummaryDocument document)
@@ -289,6 +300,55 @@ namespace GKManagers.CMSDocumentProcessing
                 }
             }
         }
+
+        /// <summary>
+        /// Determines whether the specified Cancer Information Summary document is a Health Professional
+        /// or Patient version, attempts to locate the alternate one, and if it exists, creates a relationship
+        /// with it.
+        /// </summary>
+        /// <param name="documentID">Identifier for the content item to connect with its alternate version.</param>
+        /// <param name="audienceType">Audience type value for the current content item.</param>
+        private void LinkToAlternateAudienceVersion(PercussionGuid documentID, string audienceType)
+        {
+            // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
+            PSItem[] parentItems = CMSController.LoadLinkingContentItems(documentID.ID);
+            PSItem summaryLink =
+                Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
+            if (summaryLink == null)
+                throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", documentID.ToString()));
+            
+            PercussionGuid summaryLinkID= new PercussionGuid(summaryLink.id);
+            
+
+            // 2. Search the link item for child items in the other audience type's slot.
+            string theirSlotName;   // Slot to search for alternate version.
+            string mySlotName;      // Slot to store this item in.
+            if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
+            {
+                mySlotName = PatientVersionLinkSlot;
+                theirSlotName = HealthProfVersionLinkSlot;
+            }
+            else
+            {
+                mySlotName = HealthProfVersionLinkSlot;
+                theirSlotName = PatientVersionLinkSlot;
+            }
+
+            PercussionGuid[] otherAudienceVersion =
+                CMSController.SearchForItemsInSlot(summaryLinkID, theirSlotName);
+
+            // 3. If the slot contains a content item, it must be of the opposite audience type.
+            if (otherAudienceVersion.Length > 0)
+            {
+                // Link from this item to the alternate version.
+                CMSController.CreateRelationships(documentID.ID, new long[] { otherAudienceVersion[0].ID }, theirSlotName, AudienceTabSnippetTemplate);
+
+                // Link from the alternate version back to this one.
+                // TODO: Delete any existing relationships in that slot.
+                CMSController.CreateRelationships(otherAudienceVersion[0].ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
+            }
+        }
+
 
         /// <summary>
         /// Deletes the content items representing the speicified Cancer Information Summary document.

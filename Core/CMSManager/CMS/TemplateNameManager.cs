@@ -35,7 +35,6 @@ namespace NCI.WCM.CMSManager.CMS
                     // Was the map loaded while we waited for the lock?
                     if (_templateMap == null)
                     {
-                        _templateMap = new Dictionary<string, PercussionGuid>();
                         LoadTemplateIDMap();
                     }
                 }
@@ -46,6 +45,7 @@ namespace NCI.WCM.CMSManager.CMS
         {
             PSAssemblyTemplate[] templateData = PSWSUtils.LoadAssemblyTemplates(_assemblyService);
 
+            _templateMap = new Dictionary<string, PercussionGuid>();
             Array.ForEach(templateData, template =>
             {
                 _templateMap.Add(template.name, new PercussionGuid(template.id));
@@ -56,7 +56,14 @@ namespace NCI.WCM.CMSManager.CMS
 
         public PercussionGuid this[string key]
         {
-            get { return _templateMap[key]; }
+            get
+            {
+                if (!_templateMap.ContainsKey(key))
+                    throw new CMSMissingTemplateException(string.Format("Unknown template name: {0}.", key));
+
+                return _templateMap[key];
+            }
         }
+
     }
 }

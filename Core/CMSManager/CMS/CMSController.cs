@@ -200,6 +200,18 @@ namespace NCI.WCM.CMSManager.CMS
 
         }
 
+        public void CheckInItems(PercussionGuid[] itemIDList)
+        {
+            int length = itemIDList.Length;
+            long[] rawIDs = new long[length];
+            for (int i = 0; i < length; i++)
+            {
+                rawIDs[i] = itemIDList[i].ID;
+            }
+
+            PSWSUtils.CheckInItemList(_contentService, rawIDs);
+        }
+
         /// <summary>
         /// Updates the content item list.
         /// </summary>
@@ -268,6 +280,18 @@ namespace NCI.WCM.CMSManager.CMS
         public void DeleteItem(long itemID)
         {
             PSWSUtils.DeleteItem(_contentService, new long[]{itemID});
+        }
+
+        public void DeleteItemList(PercussionGuid[] itemList)
+        {
+            int length = itemList.Length;
+            long[] rawIDs = new long[length];
+            for (int i = 0; i < length; i++)
+            {
+                rawIDs[i] = itemList[i].ID;
+            }
+
+            PSWSUtils.DeleteItem(_contentService, rawIDs);
         }
 
         /// <summary>
@@ -524,5 +548,47 @@ namespace NCI.WCM.CMSManager.CMS
 
             return contentIdList;
         }
+
+        /// <summary>
+        /// Searches for items stored in a specific slot.
+        /// </summary>
+        /// <param name="owner">ID of the relationship owner.</param>
+        /// <param name="slotname">Name of the slot to look in.</param>
+        /// <returns>Array of PercussionGuid objects which reside in the slot.</returns>
+        public PercussionGuid[] SearchForItemsInSlot(PercussionGuid owner, string slotname)
+        {
+            PercussionGuid[] returnList = new PercussionGuid[] { };
+
+            // Check for any relationships.
+            PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
+
+            // Was an owner specified?
+            if (owner != null)
+            {
+                filter.Owner = owner.ID;
+            }
+
+            // Slot name if specified
+            if (!string.IsNullOrEmpty(slotname))
+            {
+                filter.slot = slotname;
+            }
+            
+            PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
+
+            // If relationships exist, load the relevant content items.
+            if (relationships.Length > 0)
+            {
+                int relCount = relationships.Length;
+                returnList = new PercussionGuid[relCount];
+                for (int i = 0; i < relCount; i++)
+                {
+                    returnList[i] = new PercussionGuid(relationships[i].dependentId);
+                }
+            }
+
+            return returnList;
+        }
+
     }
 }
