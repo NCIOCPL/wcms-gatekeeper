@@ -83,6 +83,8 @@ namespace GKManagers
 
             // Tracks whether the first pass through the innermost loop has been executed.
             bool isFirstPass = true;
+            object suppressSetting = ConfigurationManager.AppSettings["suppressMultiThreading"];
+            bool suppressMultiThreading = (suppressSetting != null) ? Strings.ToBoolean(suppressSetting) : false;
 
             try
             {
@@ -148,6 +150,7 @@ namespace GKManagers
                                 locationMap, statusMap);
 
                             // Promotion to staging is multi-threaded. Everything else is multi-threaded.
+
                             if (action == ProcessActionType.PromoteToStaging)
                             {
                                 ThreadPool.QueueUserWorkItem(workerThreads[docIndex].PromotionCallback,
