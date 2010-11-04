@@ -131,15 +131,15 @@ namespace GKManagers.CMSDocumentProcessing
         /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException
         /// if the document is the target of any incoming relationships.
         /// </summary>
-        /// <param name="documentCmsID">The document's ID in the CMS.</param>
-        protected override void VerifyDocumentMayBeDeleted(long documentCmsID)
+        /// <param name="documentCmsIdentifier">The document's ID in the CMS.</param>
+        protected void VerifyDocumentMayBeDeleted(long documentCmsIdentifier)
         {
-            PSItem[] itemsWithLinks = CMSController.LoadLinkingContentItems(documentCmsID);
+            PSItem[] itemsWithLinks = CMSController.LoadLinkingContentItems(documentCmsIdentifier);
 
             // Filter out any items where this content item is both the target and the
             // source of the relationship. (Internal link)
             itemsWithLinks =
-                Array.FindAll(itemsWithLinks, item => !PSItemUtils.CompareItemIds(item.id, documentCmsID));
+                Array.FindAll(itemsWithLinks, item => !PSItemUtils.CompareItemIds(item.id, documentCmsIdentifier));
 
             // Build up a list of item URLs which refer to the targeted item.
             List<string> itemPaths = new List<string>();
@@ -155,7 +155,7 @@ namespace GKManagers.CMSDocumentProcessing
             if (itemPaths.Count > 0)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("Document is referenced by:\n", documentCmsID);
+                sb.AppendFormat("Document is referenced by:\n", documentCmsIdentifier);
                 itemPaths.ForEach(path => sb.AppendLine(path));
                 throw new CMSCannotDeleteException(sb.ToString());
             }

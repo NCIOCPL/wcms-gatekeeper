@@ -126,15 +126,6 @@ namespace GKManagers.CMSDocumentProcessing
 
 
         /// <summary>
-        /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException
-        /// if the document is the target of any incoming relationships.
-        /// </summary>
-        /// <param name="documentCmsID">The document's ID in the CMS.</param>
-        /// <remarks>Each document processor must implement this method separately as the
-        /// logic for determining internal references varies with document type.</remarks>
-        abstract protected void VerifyDocumentMayBeDeleted(long documentCmsID);
-
-        /// <summary>
         /// Moves the content items identified by idList to the Staging state.
         /// </summary>
         /// <param name="idList">An array of ID values identifying content items to

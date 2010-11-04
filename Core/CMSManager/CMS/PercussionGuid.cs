@@ -77,8 +77,7 @@ namespace NCI.WCM.CMSManager.CMS
                 return false;
             }
 
-            return Revision == rhs.Revision
-                && Type == rhs.Type
+            return Type == rhs.Type
                 && ID == rhs.ID;
         }
 

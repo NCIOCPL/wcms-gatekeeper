@@ -26,8 +26,12 @@ namespace GKManagers.CMSDocumentProcessing
 
         const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
+        const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
+        const string InlineSlot = "sys_inline_variant";
+
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
         const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
+
 
         // TODO: Seriously, the AudienceType string needs to be changed to an Enum.
         const string PatientAudience = "Patients";
@@ -140,7 +144,7 @@ namespace GKManagers.CMSDocumentProcessing
             summaryPageIDList = idList.ToArray();
 
             // Add summary pages into the page slot.
-            PSAaRelationship[] relationships = CMSController.CreateRelationships(summaryRoot.ID, summaryPageIDList, "pdqCancerInformationSummaryPageSlot", "pdqSnCancerInformationSummaryPage");
+            PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, "pdqSnCancerInformationSummaryPage");
 
 
             //  Search for a CISLink in the parent folder.
@@ -163,13 +167,13 @@ namespace GKManagers.CMSDocumentProcessing
                 CreatePDQCancerInfoSummaryLink(document, summaryLinkList);
                 idList = CMSController.CreateContentItemList(summaryLinkList);
                 summaryLink = new PercussionGuid(idList[0]);
-                CMSController.CreateRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
             }
             else
             {
                 // If the summary link does exist, add this summary to the appropriate slot.
                 summaryLink = searchList[0];
-                CMSController.CreateRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
             }
 
             // Find the Patient or Health Professional version and create a relationship.
@@ -341,11 +345,11 @@ namespace GKManagers.CMSDocumentProcessing
             if (otherAudienceVersion.Length > 0)
             {
                 // Link from this item to the alternate version.
-                CMSController.CreateRelationships(documentID.ID, new long[] { otherAudienceVersion[0].ID }, theirSlotName, AudienceTabSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(documentID.ID, new long[] { otherAudienceVersion[0].ID }, theirSlotName, AudienceTabSnippetTemplate);
 
                 // Link from the alternate version back to this one.
                 // TODO: Delete any existing relationships in that slot.
-                CMSController.CreateRelationships(otherAudienceVersion[0].ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(otherAudienceVersion[0].ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
             }
         }
 
@@ -356,28 +360,166 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="documentID">The document ID.</param>
         public void DeleteContentItem(int documentID)
         {
-            // Check for items with references.
-            VerifyDocumentMayBeDeleted(documentID);
+            // Retrieve IDs for the summary and all its components. They will be needed
+            // for both delete and for delete validation.
+            PercussionGuid rootItem = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
 
-            throw new NotImplementedException();
+            // A null rootItem means the document has already been deleted.
+            // No further work is required.
+            if (rootItem != null)
+            {
+                PercussionGuid summaryLink = LocateSummaryLink(rootItem);
+                PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
+                PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
+                // Creat a list of all content IDs making up the document.
+                // It is important for verification that rootItem always be first.
+                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
+
+                VerifyDocumentMayBeDeleted(fullIDList.ToArray());
+
+                CMSController.DeleteItemList(fullIDList);
+            }
         }
 
         /// <summary>
         /// Verifies that a document object has no incoming refernces. Throws CMSCannotDeleteException
         /// if the document is the target of any incoming relationships.
         /// </summary>
-        /// <param name="documentCmsID">The document's ID in the CMS.</param>
-        protected override void VerifyDocumentMayBeDeleted(long documentCmsID)
+        /// <param name="documentCmsIdentifier">The document's ID in the CMS.</param>
+        protected void VerifyDocumentMayBeDeleted(PercussionGuid[] summaryIdentifers)
         {
-            throw new NotImplementedException();
+            // The first item in the collection is always root.
+            PercussionGuid rootItem = summaryIdentifers[0];
+
+            /// Find all the incoming relationships.  (Need to include inline links!)
+            PSAaRelationship[] incomingRelationship = 
+                CMSController.FindIncomingActiveAssemblyRelationships(summaryIdentifers);
+            List<PercussionGuid> externalOwners = new List<PercussionGuid>();
+
+            /// Eliminate the internal relationships.
+            Array.ForEach(incomingRelationship, relationship =>
+            {
+                // If the owner of this relationship isn't one of the objects making up the document,
+                // then add the relationship's owner to the list of external owners.
+                PercussionGuid owner = new PercussionGuid(relationship.ownerId);
+                if (Array.Find(summaryIdentifers, guid => guid.ID == owner.ID) == null)
+                    externalOwners.Add(owner);
+            });
+
+            // Find the ID of any alternate audience versions and eliminate from the list.
+            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
+            externalOwners.RemoveAll(owner => alternateAudiences.Contains(owner));
+
+            /// If there are any external relationship owners, don't allow the delete.
+            if (externalOwners.Count > 0)
+            {
+                PSItem[] itemsWithLinks = CMSController.LoadContentItems(externalOwners.ToArray());
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Document is referenced by:\n");
+                foreach (PSItem item in itemsWithLinks)
+                {
+                    sb.AppendFormat("Content item: {0}\n", new PercussionGuid(item.id).ID);
+                    string prettyUrlName = PSItemUtils.GetFieldValue(item, "pretty_url_name");
+                    Array.ForEach(item.Folders, folder =>
+                    {
+                        sb.AppendFormat("\t{0}/{1}\n", folder.path, prettyUrlName);
+                    });
+                }
+
+                throw new CMSCannotDeleteException(sb.ToString());
+            }
         }
 
 
+        /// <summary>
+        /// Locates a Cancer Information Summary document's corresponding summary link item.
+        /// </summary>
+        /// <param name="rootItemID">The CMS ID of a CancerInformationSummary object.</param>
+        /// <returns>The CMS ID of the matching CancerInformationSummaryLink object</returns>
+        private PercussionGuid LocateSummaryLink(PercussionGuid rootItemID)
+        {
+            // TODO: Rewrite this to find all incoming Active Assembly relationships
+            // which use the Patient or HealtProfessional slots with the link template.
+
+            PercussionGuid summaryLinkID = null;
+
+            PSItem[] rootItem = CMSController.LoadContentItems(new long[] { rootItemID.ID });
+            string linkPath = GetParentFolder(CMSController.GetPathInSite(rootItem[0]));
+            PercussionGuid[] searchList =
+                CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, linkPath, null);
+
+            // It would be very weird to not find a summary link. Let the caller decide how to handle that.
+            if (searchList != null)
+            {
+                // There should only be one item found. Verify that it's the one we want.
+                // Is the root ID in the patient slot?
+                PercussionGuid[] foundIDs = CMSController.SearchForItemsInSlot(searchList[0], PatientVersionLinkSlot);
+                if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0] == rootItemID)
+                {
+                    summaryLinkID = searchList[0];
+                }
+                else
+                {
+                    // Is the root ID in the health professional slot?
+                    foundIDs = CMSController.SearchForItemsInSlot(searchList[0], HealthProfVersionLinkSlot);
+                    if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0].ID == rootItemID.ID)
+                        summaryLinkID = searchList[0];
+                }
+            }
+
+            return summaryLinkID;
+        }
+
+        /// <summary>
+        /// Locates all content items embedded in inline slots within a set of
+        /// CancerInformationSummaryPage objects.
+        /// </summary>
+        /// <param name="pageIDList">An array of pages to search for items in inline slots.</param>
+        /// <returns>The CMS identifers for the embedded content items.</returns>
+        private PercussionGuid[] LocateMediaLinksAndTableSections(PercussionGuid[] pageIDList)
+        {
+            List<PercussionGuid> subItems = new List<PercussionGuid>();
+            Array.ForEach(pageIDList, pageID =>
+            {
+                PercussionGuid[] items = CMSController.SearchForItemsInSlot(pageID, InlineSlot);
+                subItems.AddRange(items);
+            });
+
+            return subItems.ToArray();
+        }
+
+        /// <summary>
+        /// Searches for all content items which refer to the root item as their alternate
+        /// audience version. In theory, this should be a 1:1 relationship, but a full
+        /// set of values is returned so that errors don't prevent deletion.
+        /// </summary>
+        /// <param name="rootItemID">ID of the CancerInformationSummary item to be
+        /// checked for alternate audiences.</param>
+        /// <returns>A non-null, possibly empty array of item IDs which identify rootItemID
+        /// as their alternate audience version.</returns>
+        private PercussionGuid[] LocateAlternateAudienceVersions(PercussionGuid rootItemID)
+        {
+            List<PercussionGuid> foundOwners = new List<PercussionGuid>();
+
+            PercussionGuid[] rootIDArray = new PercussionGuid[]{rootItemID};
+            string[] slots = { PatientVersionLinkSlot, HealthProfVersionLinkSlot };
+
+            PSAaRelationship[] relationships;
+            Array.ForEach(slots, slotname =>
+            {
+                // Find all relationships using the alternate audience slots in conjunction
+                // with the template for audience tabs.
+                relationships =
+                    CMSController.FindIncomingActiveAssemblyRelationships(rootIDArray,
+                    slotname, AudienceTabSnippetTemplate);
+                Array.ForEach(relationships, rel => foundOwners.Add(new PercussionGuid(rel.ownerId)));
+            });
+
+            return foundOwners.ToArray();
+        }
 
         #endregion
-
-        #region Private Methods
 
         private void CreatePDQCancerInfoSummaryPage(SummaryDocument document, List<ContentItemForCreating> contentItemList)
         {
@@ -843,8 +985,6 @@ namespace GKManagers.CMSDocumentProcessing
             }
             html = collectHTML + partC;
         }
-
-        #endregion
 
     }
 }

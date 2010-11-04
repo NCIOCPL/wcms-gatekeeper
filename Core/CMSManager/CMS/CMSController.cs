@@ -383,6 +383,60 @@ namespace NCI.WCM.CMSManager.CMS
             return returnList;
         }
 
+
+        /// <summary>
+        /// Finds the active assembly relationships which a collection of content items depend on.
+        /// </summary>
+        /// <param name="IDList">An array of PercusionGuid objects to be checked
+        /// for incoming active assembly relationships. Required.</param>
+        /// <returns>An array of zero or more PSAaRelationship objects having one or move
+        /// items from IDList as a dependent.</returns>
+        public PSAaRelationship[] FindIncomingActiveAssemblyRelationships(PercussionGuid[] IDList)
+        {
+            return FindIncomingActiveAssemblyRelationships(IDList, null, null);
+        }
+
+        /// <summary>
+        /// Finds the active assembly relationships which a collection of content items depend on.
+        /// </summary>
+        /// <param name="IDList">An array of PercusionGuid objects to be checked
+        /// for incoming active assembly relationships. Required.</param>
+        /// <param name="slotName">If specified, restricts the result set to relationships which
+        /// use the named slot.</param>
+        /// <param name="templateName">If specified, restricts the result set to relationships which
+        /// use the named snippet template.</param>
+        /// <returns>An array of zero or more PSAaRelationship objects having one or move
+        /// items from IDList as a dependent.</returns>
+        public PSAaRelationship[] FindIncomingActiveAssemblyRelationships(PercussionGuid[] IDList, string slotName, string templateName)
+        {
+            PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
+            filter.Dependent = Array.ConvertAll(IDList, guid => (long)guid.ID);
+
+            if (!string.IsNullOrEmpty(slotName))
+            {
+                filter.slot = slotName;
+            }
+
+            if (!string.IsNullOrEmpty(templateName))
+            {
+                filter.template = templateName;
+            }
+
+            return PSWSUtils.FindRelationships(_contentService, filter);
+        }
+
+        /// <summary>
+        /// Retrieves a list of content items identified by the values in itemIDList.
+        /// </summary>
+        /// <param name="itemIDList">An array of content item ID values.</param>
+        /// <returns>An array of content items in the same order as the values
+        /// in itemIDList</returns>
+        public PSItem[] LoadContentItems(PercussionGuid[] itemIDList)
+        {
+            long[] idList = Array.ConvertAll(itemIDList, item => (long)item.ID);
+            return PSWSUtils.LoadItems(_contentService, idList);
+        }
+
         /// <summary>
         /// Retrieves a list of content items identified by the values in itemIDList.
         /// </summary>
@@ -406,7 +460,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// the child items.</param>
         /// <returns>An array of PSAaRelationship objects representing the created relationships.
         /// The array is never null or empty</returns>
-        public PSAaRelationship[] CreateRelationships(long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
+        public PSAaRelationship[] CreateActiveAssemblyRelationships(long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
         {
             PSAaRelationship[] relationships = null;
 
@@ -414,7 +468,7 @@ namespace NCI.WCM.CMSManager.CMS
             if (!parentCheckoutStatus[0].didCheckout)
                 throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
 
-            relationships = PSWSUtils.CreateRelationships(_contentService, parentItemID, childItemIDList, slotName, snippetTemplateName);
+            relationships = PSWSUtils.CreateActiveAssemblyRelationships(_contentService, parentItemID, childItemIDList, slotName, snippetTemplateName);
 
             PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
 
@@ -432,7 +486,7 @@ namespace NCI.WCM.CMSManager.CMS
             if (item == null || item.Folders == null || item.Folders.Length == 0)
                 return null;
 
-            PSItemFolders pathFolder = Array.Find(item.Folders, folder => (string.IsNullOrEmpty(folder.path)));
+            PSItemFolders pathFolder = Array.Find(item.Folders, folder => (!string.IsNullOrEmpty(folder.path)));
             if (pathFolder == null)
                 return null;
 
@@ -589,6 +643,38 @@ namespace NCI.WCM.CMSManager.CMS
 
             return returnList;
         }
+
+        #region Static Utility Methods
+
+        /// <summary>
+        /// Creates an array of PercussionGuid objects from a list of objects containing
+        /// individual or collections of PercussionGuid objects.
+        /// </summary>
+        /// <param name="potentialGuids">PercussionGuid objects. May be individual, PercussionGuid
+        /// objects, or collections which implement IEnumerable for PercussionGuid.</param>
+        /// <returns></returns>
+        public static PercussionGuid[] BuildGuidArray(params Object[] potentialGuids)
+        {
+            List<PercussionGuid> guidList = new List<PercussionGuid>();
+
+            foreach (object item in potentialGuids)
+            {
+                // skip the empties.
+                if (item == null)
+                    continue;
+
+                if (item is PercussionGuid)
+                    guidList.Add(item as PercussionGuid);
+                else if (item is IEnumerable<PercussionGuid>)
+                    guidList.AddRange(item as IEnumerable<PercussionGuid>);
+                else
+                    throw new ArgumentException("BuildGuidArray arguments must be either PercussionGuid or an IEnumerable<PercussionGuid> collection.");
+            }
+
+            return guidList.ToArray();
+        }
+
+        #endregion
 
     }
 }

@@ -71,7 +71,9 @@ namespace GKManagers
                 // Don't delete this until after refactoring the render code.
                 using (SummaryQuery summaryQuery = new SummaryQuery())
                 {
-                    summaryQuery.SaveDocument(summary, UserName);
+                    // Remove from Staging does nothing.  This is by design.
+                    // Attempting to remove the document at this stage would
+                    // remove it from all stages.
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
@@ -118,11 +120,9 @@ namespace GKManagers
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Preview, UserName);
-                }
+                // Remove from Preview does nothing.  This is by design.
+                // Attempting to remove the document at this stage would
+                // remove it from all stages.
             }
             else
             {
@@ -158,11 +158,16 @@ namespace GKManagers
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
+                // Remove from Preview does nothing at this point.
+                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
                 {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Live, UserName);
+                    processor.DeleteContentItem(summary.DocumentID);
                 }
+                //// Remove summary data from database
+                //using (SummaryQuery summaryQuery = new SummaryQuery())
+                //{
+                //    summaryQuery.DeleteDocument(summary, ContentDatabase.Live, UserName);
+                //}
             }
             else
             {

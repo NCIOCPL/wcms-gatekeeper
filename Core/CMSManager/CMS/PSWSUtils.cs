@@ -337,7 +337,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// The array is never null or empty</returns>
         /// <remarks>Before relationships may be created, the parent content item must be placed in an
         /// editable condition by calling PrepareForEdit.</remarks>
-        public static PSAaRelationship[] CreateRelationships(contentSOAP contentSvc,
+        public static PSAaRelationship[] CreateActiveAssemblyRelationships(contentSOAP contentSvc,
             long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
         {
             PSAaRelationship[] results = null;
@@ -353,7 +353,7 @@ namespace NCI.WCM.CMSManager.CMS
             }
             catch (SoapException ex)
             {
-                throw new CMSSoapException("Percussion error in CreateRelationships().", ex);
+                throw new CMSSoapException("Percussion error in CreateActiveAssemblyRelationships().", ex);
             }
 
             return results;
