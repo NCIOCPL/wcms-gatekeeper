@@ -66,15 +66,14 @@ namespace GKManagers
                     processor.ProcessDocument(summary);
                 }
 
-
-                // Save summary data into database
-                // Don't delete this until after refactoring the render code.
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    // Remove from Staging does nothing.  This is by design.
-                    // Attempting to remove the document at this stage would
-                    // remove it from all stages.
-                }
+                //// Save summary data into database
+                //// Don't delete this until after refactoring the render code.
+                //using (SummaryQuery summaryQuery = new SummaryQuery())
+                //{
+                //    // Remove from Staging does nothing.  This is by design.
+                //    // Attempting to remove the document at this stage would
+                //    // remove it from all stages.
+                //}
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {

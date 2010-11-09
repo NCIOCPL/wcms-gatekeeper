@@ -619,9 +619,7 @@ namespace NCI.WCM.CMSManager.CMS
             contentIdList = new PercussionGuid[searchResults.Length];
             for (int i = 0; i < searchResults.Length; i++)
             {
-                // FindItemByFieldValues always returns the sys_contentid field, so it's safe to assume this expression will work.
-                long value = long.Parse(Array.Find(searchResults[i].Fields, field => field.name.Equals("sys_contentid")).Value);
-                contentIdList[i] = new PercussionGuid(value);
+                contentIdList[i] = new PercussionGuid(searchResults[i].id);
             }
 
             return contentIdList;
