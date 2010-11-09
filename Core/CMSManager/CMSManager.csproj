@@ -87,7 +87,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="PercussionWSDL\assembly\assembly.wsdl" />
     <None Include="PercussionWSDL\assembly\assembly.xsd" />
     <None Include="PercussionWSDL\assembly\assemblyServices.xsd" />
