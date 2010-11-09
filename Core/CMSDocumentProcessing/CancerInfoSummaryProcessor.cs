@@ -32,6 +32,8 @@ namespace GKManagers.CMSDocumentProcessing
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
         const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
 
+        const string languageEnglish = "en-us";
+        const string languageSpanish = "es-us";
 
         // TODO: Seriously, the AudienceType string needs to be changed to an Enum.
         const string PatientAudience = "Patients";
@@ -123,8 +125,8 @@ namespace GKManagers.CMSDocumentProcessing
             // Create MediaLink content items.
             List<ContentItemForCreating> mediaLinkItemList = new List<ContentItemForCreating>();
             CreatePDQMediaLink(document, mediaLinkItemList);
-            List<long> mediaLinkSlotIDs = CMSController.CreateContentItemList(mediaLinkItemList);
-            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList, mediaLinkSlotIDs);
+            List<long> mediaLinkItemIDs = CMSController.CreateContentItemList(mediaLinkItemList);
+            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList, mediaLinkItemIDs);
             ResolveInlineSlots(document.SectionList, mediaLinkIDMap, "pdqSnMediaLink");
 
 
@@ -178,6 +180,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Find the Patient or Health Professional version and create a relationship.
             LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
+
+            LinkToAlternateLanguageVersion(document, summaryRoot);
         }
 
         private void UpdateCancerInformationSummary(SummaryDocument document)
@@ -353,6 +357,30 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
+        /// <summary>
+        /// Creates a Translation relationship between the Spanish and English versions of
+        /// the CancerInformationSummary document.
+        /// </summary>
+        /// <param name="summary">Reference to a CancerInformationSummary object.</param>
+        /// <param name="rootID">The CMSID for the root element of the CancerInformationSummary's
+        /// composite content item.</param>
+        private void LinkToAlternateLanguageVersion(SummaryDocument summary, PercussionGuid rootID)
+        {
+            // We only need to set up a translation relationship from Spanish to English,
+            // not the other way around.  CDR business rules dicatate that the English version
+            // must exist before the translation can be created.
+            if (summary.Language == Language.Spanish)
+            {
+                // If this relationship did not exist, we would not know the document was in Spanish.
+                SummaryRelation relationship = summary.RelationList.Find(relation => relation.RelationType == SummaryRelationType.SpanishTranslationOf);
+
+                PercussionGuid englishItem = GetCdrDocumentID(CancerInfoSummaryContentType, relationship.RelatedSummaryID);
+                if (englishItem == null)
+                    throw new CMSOperationalException(string.Format("Document {0} must exist before its translation may be added.", relationship.RelatedSummaryID));
+
+                CMSController.CreateRelationship(rootID.ID, englishItem.ID, CMSController.TranslationRelationshipType);
+            }
+        }
 
         /// <summary>
         /// Deletes the content items representing the speicified Cancer Information Summary document.
@@ -529,7 +557,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 if (document.SectionList[i].IsTopLevel == true)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryPageContentType);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document, document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryPageContentType);
                     contentItemList.Add(contentItem);
                 }
 
@@ -537,19 +565,19 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryPage(SummarySection cancerInfoSummaryPage)
+        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryPage(SummaryDocument summary, SummarySection summarySection)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
-            string html = cancerInfoSummaryPage.Html.OuterXml;
+            string html = summarySection.Html.OuterXml;
 
-            string prettyURLName = cancerInfoSummaryPage.PrettyUrl.Substring(cancerInfoSummaryPage.PrettyUrl.LastIndexOf('/') + 1);
-            if (cancerInfoSummaryPage.Html.OuterXml.Contains("<SummaryRef"))
+            string prettyURLName = summarySection.PrettyUrl.Substring(summarySection.PrettyUrl.LastIndexOf('/') + 1);
+            if (summarySection.Html.OuterXml.Contains("<SummaryRef"))
             {
                 BuildSummaryRefLink(ref html, 0);
             }
 
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
-            if (cancerInfoSummaryPage.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
+            if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
             {
                 string glossaryTermTag = "Summary-GlossaryTermRef";
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
@@ -557,9 +585,11 @@ namespace GKManagers.CMSDocumentProcessing
 
             // TODO: Cleanup MediaHTML and TableSectionXML before we get this far.
             fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>", string.Empty).Replace("</TableSectionXML>", string.Empty));
-            fields.Add("long_title", cancerInfoSummaryPage.Title);
-            fields.Add("sys_title", cancerInfoSummaryPage.Title);
+            fields.Add("long_title", summarySection.Title);
+            fields.Add("sys_title", summarySection.Title);
 
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
             return fields;
         }
@@ -578,34 +608,48 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummaryDocument document, SummarySection tableSection)
+        private Dictionary<string, string>  CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
 
             fields.Add("pretty_url_name", prettyURLName);
-            fields.Add("long_title", tableSection.Title);
+
+            // The long_title field is required, but the DTD for table sections doesn't require them.
+            // If there is no title, fill it in, but make it hidden.
+            if (string.IsNullOrEmpty(tableSection.Title))
+            {
+                fields.Add("long_title", "Section: " + tableSection.RawSectionID);
+                fields.Add("showpagetitle", "false");
+            }
+            else
+            {
+                fields.Add("long_title", tableSection.Title);
+            }
 
             fields.Add("inline_table", tableSection.Html.OuterXml);
             fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
 
             fields.Add("date_next_review", "1/1/2100");
 
-            if (document.LastModifiedDate == DateTime.MinValue)
+            if (summary.LastModifiedDate == DateTime.MinValue)
                 fields.Add("date_last_modified", null);
             else
-                fields.Add("date_last_modified", document.LastModifiedDate.ToString());
+                fields.Add("date_last_modified", summary.LastModifiedDate.ToString());
 
-            if (document.FirstPublishedDate == DateTime.MinValue)
+            if (summary.FirstPublishedDate == DateTime.MinValue)
             {
                 fields.Add("date_first_published", null);
             }
             else
             {
-                fields.Add("date_first_published", document.FirstPublishedDate.ToString());
+                fields.Add("date_first_published", summary.FirstPublishedDate.ToString());
             }
 
             fields.Add("sys_title", prettyURLName);
+
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
 
             return fields;
@@ -662,6 +706,9 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("sys_title", summary.Title);
 
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+
             return fields;
         }
 
@@ -711,14 +758,17 @@ namespace GKManagers.CMSDocumentProcessing
             contentItemList.Add(contentItem);
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument DocType)
+        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument summary)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
 
-            fields.Add("sys_title", DocType.ShortTitle);
-            fields.Add("long_title", DocType.Title);
-            fields.Add("short_title", DocType.ShortTitle);
-            fields.Add("long_description", DocType.Description);
+            fields.Add("sys_title", summary.ShortTitle);
+            fields.Add("long_title", summary.Title);
+            fields.Add("short_title", summary.ShortTitle);
+            fields.Add("long_description", summary.Description);
+
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
             return fields;
 
@@ -732,7 +782,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 if (document.MediaLinkSectionList[i] != null)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), MediaLinkContentType);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), MediaLinkContentType);
                     contentItemList.Add(contentItem);
                 }
 
@@ -740,7 +790,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(MediaLink mediaLink, int listOffset)
+        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             fields.Add("inline_image_url", mediaLink.InlineImageUrl);
@@ -757,6 +807,10 @@ namespace GKManagers.CMSDocumentProcessing
             fields.Add("pretty_url_name", "image" + listOffset);
             fields.Add("section_id", mediaLink.Id);
             fields.Add("sys_title", "image" + listOffset);
+
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+
             return fields;
         }
 
@@ -986,5 +1040,22 @@ namespace GKManagers.CMSDocumentProcessing
             html = collectHTML + partC;
         }
 
+        public string GetLanguageCode(Language language)
+        {
+            string languageCode;
+
+            switch (language)
+            {
+                case Language.Spanish:
+                    languageCode= languageSpanish;
+                    break;
+                case Language.English:
+                default:
+                    languageCode= languageEnglish;
+                    break;
+            }
+
+            return languageCode;
+        }
     }
 }

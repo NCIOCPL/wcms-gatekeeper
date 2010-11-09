@@ -23,6 +23,12 @@ namespace NCI.WCM.CMSManager.CMS
     /// </summary>
     public class CMSController : IDisposable
     {
+        #region Public Constants
+
+        public const string TranslationRelationshipType = "Translation";
+
+        #endregion
+
 
         #region Percussion Fields
 
@@ -30,8 +36,10 @@ namespace NCI.WCM.CMSManager.CMS
         // CMSController constructor. These fields are used by all CMSController methods which
         // need to communicate with the Percussion system.
 
-        // The Percussion session, initialized by login() in the constructor. 
-        string _percussionSession;
+        /*
+         * Describes the current Percussion login session, initialized by login() in the constructor.
+         */
+        PSLogin _loginSessionContext;
 
         /**
          * The security service instance; used to perform operations defined in
@@ -56,6 +64,7 @@ namespace NCI.WCM.CMSManager.CMS
          * and templates. It is initialized by login().
          */
         assemblySOAP _assemblyService;
+
 
         #endregion
 
@@ -88,12 +97,12 @@ namespace NCI.WCM.CMSManager.CMS
             // Free managed resources.
             if (disposing)
             {
-                PSWSUtils.Logout(_securityService, _percussionSession);
-                _percussionSession = null;
+                PSWSUtils.Logout(_securityService, _loginSessionContext.sessionId);
                 _securityService = null;
                 _contentService = null;
                 _systemService = null;
                 _assemblyService = null;
+                _loginSessionContext = null;
             }
         }
 
@@ -140,7 +149,7 @@ namespace NCI.WCM.CMSManager.CMS
             string port = percussionConfig.ConnectionInfo.Port.Value;
 
             _securityService = PSWSUtils.GetSecurityService(protocol, host, port);
-            _percussionSession = PSWSUtils.Login(_securityService, percussionConfig.ConnectionInfo.UserName.Value,
+            _loginSessionContext= PSWSUtils.Login(_securityService, percussionConfig.ConnectionInfo.UserName.Value,
                   percussionConfig.ConnectionInfo.Password.Value, percussionConfig.ConnectionInfo.Community.Value, null);
 
             _contentService = PSWSUtils.GetContentService(protocol, host, port, _securityService.CookieContainer,
@@ -473,6 +482,21 @@ namespace NCI.WCM.CMSManager.CMS
             PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
 
             return relationships;
+        }
+
+        public PSRelationship CreateRelationship(long parentItemID, long childItemID, string relationshipType)
+        {
+            PSRelationship relationship = null;
+
+            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { parentItemID });
+            if (!parentCheckoutStatus[0].didCheckout)
+                throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
+
+            relationship = PSWSUtils.CreateRelationship(_systemService, parentItemID, childItemID, relationshipType);
+
+            PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
+
+            return relationship;
         }
 
         /// <summary>

@@ -421,6 +421,31 @@ namespace NCI.WCM.CMSManager.CMS
 
         #region System Service Methods
 
+        public static PSRelationship CreateRelationship(systemSOAP systemSvc,
+            long parentItemID, long childItemID, string relationshipType)
+        {
+            PSRelationship relationship = null;
+
+            try
+            {
+                CreateRelationshipRequest req = new CreateRelationshipRequest();
+                req.Name = relationshipType;
+                req.OwnerId = parentItemID;
+                req.DependentId = childItemID;
+
+                CreateRelationshipResponse result = systemSvc.CreateRelationship(req);
+
+                if (result != null)
+                    relationship = result.PSRelationship;
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in CreateRelationship().", ex);
+            }
+
+            return relationship;
+        }
+
         /// <summary>
         /// Creates and intialize a proxy of the Percussion service used for manipulating
         /// the overall system (folders, list of relationships, etc).
@@ -574,10 +599,11 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="community">The name of the Community into which to log the user</param>
         /// <param name="locale">The name of the Locale into which to log the user</param>
         /// <returns></returns>
-        public static string Login(securitySOAP securitySvc, string user, string password, string community, string locale)
+        public static PSLogin Login(securitySOAP securitySvc, string user, string password, string community, string locale)
         {
             LoginRequest loginReq = new LoginRequest();
-            string rxSession;
+            PSLogin loginContext = null;
+
             try
             {
                 loginReq.Username = user;
@@ -587,9 +613,9 @@ namespace NCI.WCM.CMSManager.CMS
 
                 // Setting the authentication header to maintain Rhythmyx session
                 LoginResponse loginResp = securitySvc.Login(loginReq);
-                rxSession = loginResp.PSLogin.sessionId;
+                loginContext = loginResp.PSLogin;
                 securitySvc.PSAuthenticationHeaderValue = new PSAuthenticationHeader();
-                securitySvc.PSAuthenticationHeaderValue.Session = rxSession;
+                securitySvc.PSAuthenticationHeaderValue.Session = loginContext.sessionId;
             }
 
             catch (SoapException ex)
@@ -597,7 +623,7 @@ namespace NCI.WCM.CMSManager.CMS
                 throw new CMSSoapException("Percussion Error in Login.", ex);
             }
 
-            return rxSession;
+            return loginContext;
         }
 
         /// <summary>
