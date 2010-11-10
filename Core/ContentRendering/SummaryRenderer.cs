@@ -265,6 +265,16 @@ namespace GateKeeper.ContentRendering
                         }
                     }
                 }  // End while loop
+
+                // Clean up the TableSectionXML tags.
+                // TODO: This should really be done in the same loop as above.
+                // Editing the current node of an XPathNodeIterator loses position and makes that tricky.
+                tableSectionIter = sectionNav.Select(".//TableSectionXML");
+                while (tableSectionIter.MoveNext())
+                {
+                    tableSectionIter.Current.OuterXml = tableSectionIter.Current.InnerXml;
+                }
+
             }
             catch (Exception e)
             {

@@ -194,6 +194,7 @@ namespace GKManagers.CMSDocumentProcessing
             long[] newSummaryPageIDList;
             List<long> idList;
 
+            // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
             // No links from other summaries to table sections and media links.
             CMSController.DeleteItemList(oldSubItems);
@@ -568,7 +569,7 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             // TODO: Cleanup MediaHTML and TableSectionXML before we get this far.
-            fields.Add("bodyfield", html.Replace("<MediaHTML>", string.Empty).Replace("</MediaHTML>", string.Empty).Replace("<TableSectionXML>", string.Empty).Replace("</TableSectionXML>", string.Empty));
+            fields.Add("bodyfield", html);
             fields.Add("long_title", summarySection.Title);
             fields.Add("sys_title", summarySection.Title);
 
