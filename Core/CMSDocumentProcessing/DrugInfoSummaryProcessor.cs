@@ -74,11 +74,6 @@ namespace GKManagers.CMSDocumentProcessing
                 // This is an existing item, we must therefore put it in an editable state.
                 TransitionItemsToStaging(new long[1] { identifier.ID });
 
-                // TODO: Refactor this.  We've already loaded the item so we can check its path,
-                // and the CMSController.UpdateContentItemList method goes and loads it again
-                // before overwriting the field values. Making the communications layer responsible
-                // for knowing exactly what to update may be too much logic in that layer.
-
                 ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document));
                 List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
                 contentItemList.Add(contentItem);
@@ -90,8 +85,7 @@ namespace GKManagers.CMSDocumentProcessing
                 string oldPath = CMSController.GetPathInSite(oldItem[0]);
                 if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    long[] id = idList.ToArray() ;
-                    //string sourceFolder = GetTargetFolder(oldItem[0].Folders[0].path);
+                    long[] id = idList.ToArray();
 
                     CMSController.GuaranteeFolder(targetFolder);
                     CMSController.MoveContentItemFolder(oldPath, targetFolder, id);
