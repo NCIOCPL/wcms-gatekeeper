@@ -225,8 +225,12 @@ namespace GKManagers.CMSDocumentProcessing
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
 
-            // TODO: Update CancerInformationSummary fields.
-            // TODO: Update CancerInformationSummaryLink fields.
+            // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
+            ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
+            ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
+            List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[]{summaryItem, summaryLinkItem});
+            List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
+            
             // TODO: Handle change of URL.
         }
 

@@ -79,7 +79,7 @@ namespace GKManagers.CMSDocumentProcessing
                 // before overwriting the field values. Making the communications layer responsible
                 // for knowing exactly what to update may be too much logic in that layer.
 
-                ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
+                ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document));
                 List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
                 contentItemList.Add(contentItem);
                 InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));

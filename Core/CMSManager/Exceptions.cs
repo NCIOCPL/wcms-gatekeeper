@@ -129,4 +129,20 @@ namespace NCI.WCM.CMSManager
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when an attempt is made to
+    /// set a content item field which does not exist.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSInvalidFieldnameException : CMSException
+    {
+        public CMSInvalidFieldnameException() { }
+        public CMSInvalidFieldnameException(string message) : base(message) { }
+        public CMSInvalidFieldnameException(string message, Exception inner) : base(message, inner) { }
+        protected CMSInvalidFieldnameException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

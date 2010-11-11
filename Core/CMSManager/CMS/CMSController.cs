@@ -167,12 +167,26 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>List of Id's for the items created</returns>
         public List<long> CreateContentItemList(List<ContentItemForCreating> contentItems)
         {
+            return CreateContentItemList(contentItems, null);
+        }
+
+        /// <summary>
+        /// Creates the content items in the list.
+        /// </summary>
+        /// <param name="contentItems">The content items list.</param>
+        /// <returns>List of Id's for the items created</returns>
+        public List<long> CreateContentItemList(List<ContentItemForCreating> contentItems,
+            Action<string> errorHandler)
+        {
             List<long> idList = new List<long>();
             long id;
             foreach (ContentItemForCreating cmi in contentItems)
             {
                 {
-                    id = CreateItem(cmi.ContentType, cmi.Fields, cmi.TargetFolder);
+                    id = CreateItem(cmi.ContentType,
+                        cmi.Fields,
+                        cmi.TargetFolder,
+                        errorHandler);
                     idList.Add(id);
                 }
             }
@@ -181,15 +195,22 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Creates a single item in percussion.
+        /// Creates a single item in the CMS.
         /// </summary>
         /// <param name="contentType">Type of the content like druginfosummary,cancerinfosummary.</param>
         /// <param name="fields">The fields.</param>
         /// <param name="targetFolder">The target folder in percussion.</param>
+        /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
+        /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
+        /// will throw CMSInvalidFieldnameException with the invalid name.</param>
         /// <returns>Id for the the created item</returns>
-        [Obsolete("This method will be merged with CreateContentItemList().")]
-        public long CreateItem(string contentType, Dictionary<string, string> fields, string targetFolder)
+        public long CreateItem(string contentType, 
+            Dictionary<string, string> fields, 
+            string targetFolder, 
+            Action<string> invalidFieldnameHandler)
         {
+            // TODO: Merge this with the version of CreateContentItemList which accepts invalidFieldnameHandler.
+
             PSItem item = PSWSUtils.CreateItem(_contentService, contentType);
 
             // Attach item to a folder
@@ -200,8 +221,23 @@ namespace NCI.WCM.CMSManager.CMS
 
             item.Folders = new PSItemFolders[] { psf };
 
-
-            SetItemFields(item, fields);
+            if (invalidFieldnameHandler == null)
+            {
+                // If no error handler supplied, then catch invalid field names here.
+                List<string> invalidFields = new List<string>();
+                MergeFieldValues(item, fields, fieldName => { invalidFields.Add(fieldName); });
+                if (invalidFields.Count != 0)
+                {
+                    throw new
+                        CMSInvalidFieldnameException(string.Format("Invalid field names specified: {0}",
+                        string.Join(", ", invalidFields.ToArray())));
+                }
+            }
+            else
+            {
+                // Pass the user-supplied handler
+                MergeFieldValues(item, fields, invalidFieldnameHandler);
+            }
 
             long id = PSWSUtils.SaveItem(_contentService, item);
             PSWSUtils.CheckinItem(_contentService, id);
@@ -221,6 +257,7 @@ namespace NCI.WCM.CMSManager.CMS
             PSWSUtils.CheckInItemList(_contentService, rawIDs);
         }
 
+
         /// <summary>
         /// Updates the content item list.
         /// </summary>
@@ -228,11 +265,25 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>List of IDs of all the content items updated </returns>
         public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems)
         {
+            return UpdateContentItemList(contentItems, null);
+        }
+
+        /// <summary>
+        /// Updates the content item list.
+        /// </summary>
+        /// <param name="contentItems">A collection of UpdateContentItem.</param>
+        /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
+        /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
+        /// will throw CMSInvalidFieldnameException with the invalid name.</param>
+        /// <returns>List of IDs of all the content items updated </returns>
+        public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems,
+            Action<string> invalidFieldnameHandler)
+        {
             List<long> idUpdList = new List<long>();
             long idUpd;
             foreach (ContentItemForUpdating cmi in contentItems)
             {
-                idUpd = UpdateItem(cmi.ID, cmi.Fields, cmi.TargetFolder);
+                idUpd = UpdateItem(cmi.ID, cmi.Fields, invalidFieldnameHandler);
                 idUpdList.Add(idUpd);
             }
             return idUpdList;
@@ -243,40 +294,86 @@ namespace NCI.WCM.CMSManager.CMS
         /// </summary>
         /// <param name="id">The id.</param>
         /// <param name="fields">The fields.</param>
-        /// <param name="targetFolder">The target folder.</param>
-        /// <returns></returns>
-        private long UpdateItem(long id, Dictionary<string, string> fields, string targetFolder)
+        /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
+        /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
+        /// will throw CMSInvalidFieldnameException with the invalid name.</param>
+        /// <returns>The ID of the content time which has been updated.</returns>
+        private long UpdateItem(long id,
+            Dictionary<string, string> fields,
+            Action<string> invalidFieldnameHandler)
         {
+            // TODO: Merge this with the version of UpdateContentItemList which accepts invalidFieldnameHandler.
+
             PSItemStatus[] checkOutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { id });
-            PSItem item = new PSItem();
-            PSItemFolders psf = new PSItemFolders();
-            psf.path = siteRootPath + targetFolder;
-            item.Folders = new PSItemFolders[] { psf };
 
             PSItem[] returnList = PSWSUtils.LoadItems(_contentService, new long[]{id});
-            item = returnList[0];
+            PSItem item = returnList[0];
 
-            SetItemFields(item, fields);
+            if (invalidFieldnameHandler == null)
+            {
+                // If no error handler supplied, then catch invalid field names here.
+                List<string> invalidFields = new List<string>();
+                MergeFieldValues(item, fields, fieldName => { invalidFields.Add(fieldName); });
+                if (invalidFields.Count != 0)
+                {
+                    // Undo checkout before throwing error.
+                    PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
+
+                    throw new
+                        CMSInvalidFieldnameException(string.Format("Invalid field names specified: {0}",
+                           string.Join(", ", invalidFields.ToArray())));
+                }
+            }
+            else
+            {
+                // Pass the user-supplied handler
+                MergeFieldValues(item, fields, invalidFieldnameHandler);
+            }
+
             long idUpd = PSWSUtils.SaveItem(_contentService, item);
             PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
             return idUpd;
         }
 
         /// <summary>
-        /// Sets the content item fields.
+        /// Merge a collection of field name/values pairs into the list of fields
+        /// contained in a content item.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <param name="fields">The fields.</param>
-        private void SetItemFields(PSItem item, Dictionary<string, string> fields)
+        /// <param name="item">The item to store the values in.</param>
+        /// <param name="fieldValueList">Collection of field name/values pairs.</param>
+        /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
+        /// when a fieldname is not valid.</param>
+        /// <remarks>If any of the fields named in fieldValueList don't exist in item.Fields, the field
+        /// name is reported via invalidFieldnameHandler. If invalidFieldnameHandler is null, invalid
+        /// field names result in CMSInvalidFieldnameException being thrown with the invalid name.</remarks>
+        private void MergeFieldValues(PSItem item,
+            Dictionary<string, string> fieldValueList,
+            Action<string> invalidFieldnameHandler)
         {
-            foreach (PSField srcField in item.Fields)
+            // If the named field doesn't exist in item.Fields, check for the presence of
+            // invalidFieldnameHandler.  If invalidFieldnameHandler is non-null, call it with
+            // the field name.  Otherwise, throw CMSInvalidFieldnameException.
+
+            // Scan through the item's fields collection and look for field names.
+            foreach (KeyValuePair<string,string> kvp in fieldValueList)
             {
-                string fieldValue;
-                if (fields.TryGetValue(srcField.name, out fieldValue))
+                string targetName = kvp.Key;
+                string fieldValue = kvp.Value;
+
+                PSField itemField = Array.Find(item.Fields, field => { return field.name == targetName; });
+                if (itemField != null)
                 {
                     PSFieldValue value = new PSFieldValue();
                     value.RawData = fieldValue;
-                    srcField.PSFieldValue = new PSFieldValue[] { value };
+                    itemField.PSFieldValue = new PSFieldValue[] { value };
+                }
+                else
+                {
+                    // If the named field doesn't exist in item.Fields, either handle the error, or throw CMSInvalidFieldnameException.
+                    if (invalidFieldnameHandler != null)
+                        invalidFieldnameHandler(targetName);
+                    else
+                        throw new CMSInvalidFieldnameException(targetName);
                 }
             }
         }
