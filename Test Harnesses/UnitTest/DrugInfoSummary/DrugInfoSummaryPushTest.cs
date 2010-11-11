@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+
 using NUnit.Framework;
-using GateKeeper.DataAccess.CDR;
-using GateKeeper.DocumentObjects.DrugInfoSummary;
-using GateKeeper.DataAccess.CDR;
-using GateKeeper.DataAccess.CancerGov;
-using GateKeeper.DataAccess.GateKeeper;
+
 using GateKeeper.ContentRendering;
+using GateKeeper.DataAccess.CancerGov;
+using GateKeeper.DataAccess.CDR;
+using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.DrugInfoSummary;
+
 namespace GateKeeper.UnitTest.DrugInfoSummary
 {
     [TestFixture]

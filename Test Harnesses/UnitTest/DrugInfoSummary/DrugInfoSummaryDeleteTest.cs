@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+
 using NUnit.Framework;
+
 using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CDR;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
-using GateKeeper.DataAccess.CDR;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.ContentRendering;

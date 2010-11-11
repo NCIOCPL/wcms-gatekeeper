@@ -5,8 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Collections;
-using GateKeeper.Common;
+
 using NUnit.Framework;
+
+using GateKeeper.Common;
 using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CDR;
 using GateKeeper.DataAccess.CancerGov;
@@ -14,7 +16,6 @@ using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.ContentRendering;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
-using GateKeeper.Common;
 using GKManagers.BusinessObjects;
 using GKManagers;
 
