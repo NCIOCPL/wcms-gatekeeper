@@ -59,6 +59,13 @@ namespace GKManagers.CMSDocumentProcessing
         #endregion
 
 
+        #region Internal Delegates
+
+        private delegate string SubDocumentIDDelegate<SubDocumentType>(SubDocumentType subDocument);
+
+        #endregion
+
+
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
         {
@@ -113,12 +120,12 @@ namespace GKManagers.CMSDocumentProcessing
 
             PercussionGuid summaryRoot;
             long[] summaryPageIDList;
-
+            string createPath = GetTargetFolder(document.BasePrettyURL);
 
             // Create the embeddable content items and resolve the item references.
 
             // Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(document);
+            List<ContentItemForCreating> tableList = CreatePDQTableSections(document, createPath);
             List<long> tableIDs = CMSController.CreateContentItemList(tableList);
 
             SectionToCmsIDMap tableIDMap = BuildItemIDMap(document.TableSectionList,
@@ -126,7 +133,7 @@ namespace GKManagers.CMSDocumentProcessing
             ResolveInlineSlots(document.SectionList, tableIDMap, TableSectionSnippetTemplate);
 
             // MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(document);
+            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(document, createPath);
             List<long> mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
 
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList,
@@ -135,12 +142,12 @@ namespace GKManagers.CMSDocumentProcessing
 
 
             // Create the Cancer Info Summary item.
-            List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document);
+            List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
             summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
 
 
             //Create Cancer Info Summary Page items
-            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document);
+            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document, createPath);
             idList = CMSController.CreateContentItemList(summaryPageList);
             summaryPageIDList = idList.ToArray();
 
@@ -161,10 +168,11 @@ namespace GKManagers.CMSDocumentProcessing
                 slotName = HealthProfVersionLinkSlot;
 
             PercussionGuid summaryLink;
-            if (searchList.Length==0)
+            if (searchList.Length == 0)
             {
                 // If a summary link doesn't exist, create a new one.
-                List<ContentItemForCreating> summaryLinkList = CreatePDQCancerInfoSummaryLink(document);
+                string linkItemPath = GetParentFolder(document.BasePrettyURL);
+                List<ContentItemForCreating> summaryLinkList = CreatePDQCancerInfoSummaryLink(document, linkItemPath);
                 idList = CMSController.CreateContentItemList(summaryLinkList);
                 summaryLink = new PercussionGuid(idList[0]);
                 CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
@@ -191,8 +199,8 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
-            long[] newSummaryPageIDList;
-            List<long> idList;
+            PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
+            string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
 
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
@@ -202,14 +210,14 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Create the new embeddable content items.
             // Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary);
+            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, existingItemPath);
             List<long> tableIDs = CMSController.CreateContentItemList(tableList);
 
             SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
             ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
 
             // MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary);
+            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, existingItemPath);
             List<long> mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
 
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
@@ -217,7 +225,9 @@ namespace GKManagers.CMSDocumentProcessing
 
 
             // Create new Cancer Info Summary Page items
-            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary);
+            long[] newSummaryPageIDList;
+            List<long> idList;
+            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, existingItemPath);
             idList = CMSController.CreateContentItemList(summaryPageList);
             newSummaryPageIDList = idList.ToArray();
 
@@ -227,15 +237,34 @@ namespace GKManagers.CMSDocumentProcessing
             // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
             ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
             ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
-            List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[]{summaryItem, summaryLinkItem});
+            List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
             List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
 
-            // TODO: Handle change of URL.
 
-
+            // Handle a change of URL.
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList);
+            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLink, componentIDs);
         }
 
-        private delegate string SubDocumentIDDelegate<SubDocumentType>(SubDocumentType subDocument);
+        private void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
+            PercussionGuid summaryLinkItemID, PercussionGuid[] summaryComponentIDList)
+        {
+            string newPath = GetTargetFolder(targetURL);
+            PSItem[] keyItems = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootItemID, summaryLinkItemID });
+            string oldPath = CMSController.GetPathInSite(keyItems[0]);  // Root item.
+
+            if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Move the CancerInformationSummary and all its components. The link item is moved separately.
+                CMSController.GuaranteeFolder(newPath);
+                CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
+
+                oldPath = CMSController.GetPathInSite(keyItems[1]); // Link item.
+                newPath = GetParentFolder(targetURL);
+                CMSController.MoveContentItemFolder(oldPath, newPath, new long[] { summaryLinkItemID.ID });
+            }
+        }
+
 
         private SectionToCmsIDMap BuildItemIDMap<SubDocumentType>(IList<SubDocumentType> subDocumentList,
             SubDocumentIDDelegate<SubDocumentType> IdValueAccessor,
@@ -310,9 +339,9 @@ namespace GKManagers.CMSDocumentProcessing
                 Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
             if (summaryLink == null)
                 throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", documentID.ToString()));
-            
-            PercussionGuid summaryLinkID= new PercussionGuid(summaryLink.id);
-            
+
+            PercussionGuid summaryLinkID = new PercussionGuid(summaryLink.id);
+
 
             // 2. Search the link item for child items in the other audience type's slot.
             string theirSlotName;   // Slot to search for alternate version.
@@ -409,7 +438,7 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid rootItem = summaryIdentifers[0];
 
             /// Find all the incoming relationships.  (Need to include inline links!)
-            PSAaRelationship[] incomingRelationship = 
+            PSAaRelationship[] incomingRelationship =
                 CMSController.FindIncomingActiveAssemblyRelationships(summaryIdentifers);
             List<PercussionGuid> externalOwners = new List<PercussionGuid>();
 
@@ -518,7 +547,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             List<PercussionGuid> foundOwners = new List<PercussionGuid>();
 
-            PercussionGuid[] rootIDArray = new PercussionGuid[]{rootItemID};
+            PercussionGuid[] rootIDArray = new PercussionGuid[] { rootItemID };
             string[] slots = { PatientVersionLinkSlot, HealthProfVersionLinkSlot };
 
             PSAaRelationship[] relationships;
@@ -537,8 +566,10 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
-        private List<ContentItemForCreating> CreatePDQCancerInfoSummaryPage(SummaryDocument document)
+        private List<ContentItemForCreating> CreatePDQCancerInfoSummaryPage(SummaryDocument document, string creationPath)
         {
+            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
             int i;
@@ -547,7 +578,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 if (document.SectionList[i].IsTopLevel == true)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document, document.SectionList[i]), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryPageContentType);
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document, document.SectionList[i]), creationPath, CancerInfoSummaryPageContentType);
                     contentItemList.Add(contentItem);
                 }
             }
@@ -585,21 +616,23 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        private List<ContentItemForCreating> CreatePDQTableSections(SummaryDocument document)
+        private List<ContentItemForCreating> CreatePDQTableSections(SummaryDocument document, string creationPath)
         {
+            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
             int i;
 
             for (i = 0; i <= document.TableSectionList.Count - 1; i++)
             {
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), GetTargetFolder(document.BasePrettyURL), TableSectionContentType);
+                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), creationPath, TableSectionContentType);
                 contentItemList.Add(contentItem);
             }
 
             return contentItemList;
         }
 
-        private Dictionary<string, string>  CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
+        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
         {
             Dictionary<string, string> fields = new Dictionary<string, string>();
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
@@ -648,11 +681,13 @@ namespace GKManagers.CMSDocumentProcessing
 
 
 
-        private List<ContentItemForCreating> CreatePDQCancerInfoSummary(SummaryDocument document)
+        private List<ContentItemForCreating> CreatePDQCancerInfoSummary(SummaryDocument document, string creationPath)
         {
+            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), GetTargetFolder(document.BasePrettyURL), CancerInfoSummaryContentType);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), creationPath, CancerInfoSummaryContentType);
             contentItemList.Add(contentItem);
 
             return contentItemList;
@@ -745,13 +780,15 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        private List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document)
+        private List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
         {
+            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
             ContentItemForCreating contentItem =
                 new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document),
-                    GetParentFolder(document.BasePrettyURL), CancerInfoSummaryLinkContentType);
+                    creationPath, CancerInfoSummaryLinkContentType);
             contentItemList.Add(contentItem);
 
             return contentItemList;
@@ -773,8 +810,10 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        private List<ContentItemForCreating> CreatePDQMediaLink(SummaryDocument document)
+        private List<ContentItemForCreating> CreatePDQMediaLink(SummaryDocument document, string creationPath)
         {
+            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
             int i;
@@ -783,7 +822,9 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 if (document.MediaLinkSectionList[i] != null)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1), GetTargetFolder(document.BasePrettyURL), MediaLinkContentType);
+                    ContentItemForCreating contentItem =
+                        new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1),
+                            creationPath, MediaLinkContentType);
                     contentItemList.Add(contentItem);
                 }
             }
@@ -1003,11 +1044,11 @@ namespace GKManagers.CMSDocumentProcessing
             switch (language)
             {
                 case Language.Spanish:
-                    languageCode= languageSpanish;
+                    languageCode = languageSpanish;
                     break;
                 case Language.English:
                 default:
-                    languageCode= languageEnglish;
+                    languageCode = languageEnglish;
                     break;
             }
 

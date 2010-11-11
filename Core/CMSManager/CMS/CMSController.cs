@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Web.Services.Protocols;
 
 using GKManagers.CMSManager.Configuration;
@@ -401,17 +402,29 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Moves a content item from one folder to another.
+        /// Moves a colletion of content items from one folder to another.
         /// </summary>
         /// <param name="sourcePath">The source folder path.</param>
         /// <param name="targetPath">The target folder path.</param>
-        /// <param name="id">The id.</param>
-        public void MoveContentItemFolder(string sourcePath, string targetPath, long[] id)
+        /// <param name="idcoll">The collection of tems to move.</param>
+        public void MoveContentItemFolder(string sourcePath, string targetPath, PercussionGuid[] idcoll)
+        {
+            long[] arr = Array.ConvertAll(idcoll, id => (long)id.ID);
+            MoveContentItemFolder(sourcePath, targetPath, arr);
+        }
+
+        /// <summary>
+        /// Moves a colletion of content items from one folder to another.
+        /// </summary>
+        /// <param name="sourcePath">The source folder path.</param>
+        /// <param name="targetPath">The target folder path.</param>
+        /// <param name="idcoll">The collection of tems to move.</param>
+        public void MoveContentItemFolder(string sourcePath, string targetPath, long[] idcoll)
         {
             sourcePath = siteRootPath + sourcePath;
             targetPath = siteRootPath + targetPath;
 
-            PSWSUtils.MoveFolderChildren(_contentService, targetPath, sourcePath, id);
+            PSWSUtils.MoveFolderChildren(_contentService, targetPath, sourcePath, idcoll);
         }
 
         /// <summary>
@@ -767,10 +780,10 @@ namespace NCI.WCM.CMSManager.CMS
 
         /// <summary>
         /// Creates an array of PercussionGuid objects from a list of objects containing
-        /// individual or collections of PercussionGuid objects.
+        /// individual or collections of long values or PercussionGuid objects.
         /// </summary>
-        /// <param name="potentialGuids">PercussionGuid objects. May be individual, PercussionGuid
-        /// objects, or collections which implement IEnumerable for PercussionGuid.</param>
+        /// <param name="potentialGuids">PercussionGuid objects. May be individual long values or
+        /// PercussionGuid objects, or collections which implement IEnumerable for long or PercussionGuid.</param>
         /// <returns></returns>
         public static PercussionGuid[] BuildGuidArray(params Object[] potentialGuids)
         {
@@ -786,8 +799,15 @@ namespace NCI.WCM.CMSManager.CMS
                     guidList.Add(item as PercussionGuid);
                 else if (item is IEnumerable<PercussionGuid>)
                     guidList.AddRange(item as IEnumerable<PercussionGuid>);
+                else if (item is long)
+                    guidList.Add(new PercussionGuid((long)item));
+                else if (item is IEnumerable<long>)
+                {
+                    IEnumerable<long> eTemp = item as IEnumerable<long>;
+                    guidList.AddRange(eTemp.Select(id => new PercussionGuid(id)));
+                }
                 else
-                    throw new ArgumentException("BuildGuidArray arguments must be either PercussionGuid or an IEnumerable<PercussionGuid> collection.");
+                    throw new ArgumentException("Arguments must be of type PercussionGuid, long, an IEnumerable<> collection of PercussionGuid or long.");
             }
 
             return guidList.ToArray();
