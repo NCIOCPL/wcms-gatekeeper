@@ -9,7 +9,7 @@ namespace NCI.WCM.CMSManager.CMS
     /// </summary>
     public class SectionToCmsIDMap
     {
-        Dictionary<string, long> _map = new Dictionary<string, long>();
+        Dictionary<string, PercussionGuid> _map = new Dictionary<string, PercussionGuid>();
 
         public SectionToCmsIDMap()
         {
@@ -17,10 +17,10 @@ namespace NCI.WCM.CMSManager.CMS
 
         public void AddSection(string sectionID, long itemID)
         {
-                _map.Add(sectionID, itemID);
+                _map.Add(sectionID, new PercussionGuid(itemID));
         }
 
-        public long this[string sectionKey]
+        public PercussionGuid this[string sectionKey]
         {
             get { return _map[sectionKey]; }
         }

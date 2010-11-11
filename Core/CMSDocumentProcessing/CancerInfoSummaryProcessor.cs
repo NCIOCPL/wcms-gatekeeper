@@ -224,14 +224,15 @@ namespace GKManagers.CMSDocumentProcessing
             // Add new cancer information summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
-
             // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
             ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
             ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
             List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[]{summaryItem, summaryLinkItem});
             List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
-            
+
             // TODO: Handle change of URL.
+
+
         }
 
         private delegate string SubDocumentIDDelegate<SubDocumentType>(SubDocumentType subDocument);
@@ -272,7 +273,7 @@ namespace GKManagers.CMSDocumentProcessing
                     if (itemIDMap.ContainsSectionKey(reference.Value))
                     {
                         string target = reference.Value;
-                        long dependent = PSItemUtils.GetID(itemIDMap[target]);
+                        long dependent = itemIDMap[target].ID;
 
                         attrib = html.CreateAttribute("sys_dependentid");
                         attrib.Value = dependent.ToString();
