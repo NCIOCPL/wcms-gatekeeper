@@ -2,18 +2,20 @@
 
 namespace NCI.WCM.CMSManager.CMS
 {
-    public class PercussionGuid
+    /// <summary>
+    /// Wrapper class for manipulating the bit-mapped long values Percussion uses
+    /// as GUIDs.  This type is immutable.
+    /// </summary>
+    public sealed class PercussionGuid
     {
-        public PercussionGuid()
-        {
-
-        }
+        // Percussion object type for user-defined content items.
+        public const int UserDefinedContentType = 101;
 
         public PercussionGuid(int id)
         {
             ID = id;
             Revision = -1;
-            Type = 101;
+            Type = UserDefinedContentType;
         }
 
         public PercussionGuid(long guid)
@@ -21,12 +23,12 @@ namespace NCI.WCM.CMSManager.CMS
             Guid = guid;
         }
 
-        public long Guid { get; set; }
+        public long Guid { get; private set; }
 
         public int ID
         {
             get { return (int)(Guid & 0xFFFFFFFFL); }
-            set
+            private set
             {
                 unchecked
                 {
@@ -39,7 +41,7 @@ namespace NCI.WCM.CMSManager.CMS
         public int Revision
         {
             get { return (int)(Guid >> 40); }
-            set
+            private set
             {
                 long mask = 0x000000FFFFFFFFFFL;
                 Guid = (mask & Guid) | (uint)value;
@@ -49,7 +51,7 @@ namespace NCI.WCM.CMSManager.CMS
         public int Type
         {
             get { return (int)(Guid >> 32) & 0xFF; }
-            set
+            private set
             {
                 unchecked
                 {
@@ -77,13 +79,34 @@ namespace NCI.WCM.CMSManager.CMS
                 return false;
             }
 
-            return Type == rhs.Type
-                && ID == rhs.ID;
+            return this == rhs;
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public static bool operator ==(PercussionGuid lhs, PercussionGuid rhs)
+        {
+            bool result;
+
+            if ((Object)lhs != null && (Object)rhs != null)
+            {
+                result = lhs.Type == rhs.Type
+                    && lhs.ID == rhs.ID;
+            }
+            else
+            {
+                result = (Object)lhs == (Object)rhs;
+            }
+
+            return result;
+        }
+
+        public static bool operator !=(PercussionGuid lhs, PercussionGuid rhs)
+        {
+            return !(lhs == rhs);
         }
 
     }

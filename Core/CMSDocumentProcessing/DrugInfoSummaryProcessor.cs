@@ -57,7 +57,7 @@ namespace GKManagers.CMSDocumentProcessing
             if (identifier == null)
             {
                 // Turn the list of item fields into a list of one item.
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL), DrugInfoSummaryContentType);
+                ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
                 List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
                 contentItemList.Add(contentItem);
 
@@ -232,9 +232,9 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="drugInfo">DrugInfoSummaryDocument object to map</param>
         /// <returns>A Dictionary of key/value pairs. Keys are the names of fields in the
         /// CMS content type.</returns>
-        private Dictionary<string, string> CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
+        private FieldSet CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
             string prettyURLName = drugInfo.PrettyURL.Substring(drugInfo.PrettyURL.LastIndexOf('/') + 1);
 
 

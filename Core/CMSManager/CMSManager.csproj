@@ -54,7 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CMS\ChildFieldSet.cs" />
     <Compile Include="CMS\CMSController.cs" />
+    <Compile Include="CMS\FieldSet.cs" />
     <Compile Include="CMS\FolderManager.cs" />
     <Compile Include="CMS\PercussionGuid.cs" />
     <Compile Include="CMS\PSItemUtils.cs" />

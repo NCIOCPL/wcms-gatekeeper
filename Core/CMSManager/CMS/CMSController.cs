@@ -184,10 +184,7 @@ namespace NCI.WCM.CMSManager.CMS
             foreach (ContentItemForCreating cmi in contentItems)
             {
                 {
-                    id = CreateItem(cmi.ContentType,
-                        cmi.Fields,
-                        cmi.TargetFolder,
-                        errorHandler);
+                    id = CreateItem(cmi.ContentType, cmi.Fields, cmi.ChildFieldList, cmi.TargetFolder, errorHandler);
                     idList.Add(id);
                 }
             }
@@ -200,17 +197,17 @@ namespace NCI.WCM.CMSManager.CMS
         /// </summary>
         /// <param name="contentType">Type of the content like druginfosummary,cancerinfosummary.</param>
         /// <param name="fields">The fields.</param>
+        /// <param name="childFieldList">Collection of ChildFieldSet objects.  May be null if the content
+        /// item has no child fieldsets.</param>
         /// <param name="targetFolder">The target folder in percussion.</param>
         /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
         /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
         /// will throw CMSInvalidFieldnameException with the invalid name.</param>
         /// <returns>Id for the the created item</returns>
-        public long CreateItem(string contentType, 
-            Dictionary<string, string> fields, 
-            string targetFolder, 
-            Action<string> invalidFieldnameHandler)
+        public long CreateItem(string contentType, Dictionary<string, string> newFieldValues, IEnumerable<ChildFieldSet> childFieldList, string targetFolder, Action<string> invalidFieldnameHandler)
         {
             // TODO: Merge this with the version of CreateContentItemList which accepts invalidFieldnameHandler.
+
 
             PSItem item = PSWSUtils.CreateItem(_contentService, contentType);
 
@@ -226,7 +223,7 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 // If no error handler supplied, then catch invalid field names here.
                 List<string> invalidFields = new List<string>();
-                MergeFieldValues(item, fields, fieldName => { invalidFields.Add(fieldName); });
+                MergeFieldValues(item.Fields, newFieldValues, fieldName => { invalidFields.Add(fieldName); });
                 if (invalidFields.Count != 0)
                 {
                     throw new
@@ -237,14 +234,44 @@ namespace NCI.WCM.CMSManager.CMS
             else
             {
                 // Pass the user-supplied handler
-                MergeFieldValues(item, fields, invalidFieldnameHandler);
+                MergeFieldValues(item.Fields, newFieldValues, invalidFieldnameHandler);
             }
 
             long id = PSWSUtils.SaveItem(_contentService, item);
+
+            // The base content item must be created before any child fields may be added.
+            if (childFieldList != null)
+            {
+                CreateChildItems(new PercussionGuid(id), childFieldList, invalidFieldnameHandler);
+            }
+            
             PSWSUtils.CheckinItem(_contentService, id);
             return id;
 
         }
+
+
+        private void CreateChildItems(PercussionGuid parentItemID,
+            IEnumerable<ChildFieldSet> childFieldList,
+            Action<string> invalidFieldnameHandler)
+        {
+            foreach (ChildFieldSet childField in childFieldList)
+            {
+                int entryCount = childField.Fields.Count;
+
+                if (entryCount > 0)
+                {
+                    PSChildEntry[] itemChildren =
+                        PSWSUtils.CreateChildEntries(_contentService, parentItemID.ID, childField.Name, entryCount);
+                    for (int i = 0; i < entryCount; i++)
+                    {
+                        MergeFieldValues(itemChildren[i].PSField, childField.Fields[i], invalidFieldnameHandler);
+                    }
+                    PSWSUtils.SaveChildEntries(_contentService, parentItemID.ID, childField.Name, itemChildren);
+                }
+            }
+        }
+
 
         public void CheckInItems(PercussionGuid[] itemIDList)
         {
@@ -300,7 +327,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// will throw CMSInvalidFieldnameException with the invalid name.</param>
         /// <returns>The ID of the content time which has been updated.</returns>
         private long UpdateItem(long id,
-            Dictionary<string, string> fields,
+            Dictionary<string, string> newFieldValues,
             Action<string> invalidFieldnameHandler)
         {
             // TODO: Merge this with the version of UpdateContentItemList which accepts invalidFieldnameHandler.
@@ -314,7 +341,7 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 // If no error handler supplied, then catch invalid field names here.
                 List<string> invalidFields = new List<string>();
-                MergeFieldValues(item, fields, fieldName => { invalidFields.Add(fieldName); });
+                MergeFieldValues(item.Fields, newFieldValues, fieldName => { invalidFields.Add(fieldName); });
                 if (invalidFields.Count != 0)
                 {
                     // Undo checkout before throwing error.
@@ -328,8 +355,10 @@ namespace NCI.WCM.CMSManager.CMS
             else
             {
                 // Pass the user-supplied handler
-                MergeFieldValues(item, fields, invalidFieldnameHandler);
+                MergeFieldValues(item.Fields, newFieldValues, invalidFieldnameHandler);
             }
+
+            // TODO: Add logic to update child fields.
 
             long idUpd = PSWSUtils.SaveItem(_contentService, item);
             PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
@@ -347,7 +376,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <remarks>If any of the fields named in fieldValueList don't exist in item.Fields, the field
         /// name is reported via invalidFieldnameHandler. If invalidFieldnameHandler is null, invalid
         /// field names result in CMSInvalidFieldnameException being thrown with the invalid name.</remarks>
-        private void MergeFieldValues(PSItem item,
+        private void MergeFieldValues(PSField[] itemFieldSet,
             Dictionary<string, string> fieldValueList,
             Action<string> invalidFieldnameHandler)
         {
@@ -361,7 +390,7 @@ namespace NCI.WCM.CMSManager.CMS
                 string targetName = kvp.Key;
                 string fieldValue = kvp.Value;
 
-                PSField itemField = Array.Find(item.Fields, field => { return field.name == targetName; });
+                PSField itemField = Array.Find(itemFieldSet, field => { return field.name == targetName; });
                 if (itemField != null)
                 {
                     PSFieldValue value = new PSFieldValue();

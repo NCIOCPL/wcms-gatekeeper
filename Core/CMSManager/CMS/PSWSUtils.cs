@@ -93,6 +93,30 @@ namespace NCI.WCM.CMSManager.CMS
             return items[0];
         }
 
+        public static PSChildEntry[] CreateChildEntries(contentSOAP contentSvc, long parentItemID, string fieldSetName, int count)
+        {
+            PSChildEntry[] entrylist;
+
+            CreateChildEntriesRequest req = new CreateChildEntriesRequest();
+            req.Id = parentItemID;
+            req.Name = fieldSetName;
+            req.Count = count;
+            entrylist = contentSvc.CreateChildEntries(req);
+
+            return entrylist;
+        }
+
+        public static void SaveChildEntries(contentSOAP contentSvc, long parentID, string fieldSetName, PSChildEntry[] childEntries)
+        {
+            SaveChildEntriesRequest req = new SaveChildEntriesRequest();
+
+            req.Id = parentID;
+            req.Name = fieldSetName;
+            req.PSChildEntry = childEntries;
+
+            contentSvc.SaveChildEntries(req);
+        }
+
         /// <summary>
         /// Checkin the specified Content Item.
         /// </summary>
@@ -112,7 +136,6 @@ namespace NCI.WCM.CMSManager.CMS
             }
 
         }
-
 
         public static void CheckInItemList(contentSOAP contentSvc, long[] idList)
         {

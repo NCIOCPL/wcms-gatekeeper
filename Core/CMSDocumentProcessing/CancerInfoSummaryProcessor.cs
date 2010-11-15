@@ -15,6 +15,11 @@ using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
 using NCI.WCM.CMSManager.PercussionWebSvc;
 
+// TODO: Move all the CreateXXXXXX content type methods into a single factory object.
+// As written, CancerInfoSummaryProcessor has way too many concerns, with too many methods
+// that aren't directly related to putting things into the CMS.
+// Take the document as an argument on the constructor, expose properties with collections
+// of strongly typed meta content types with a single base class
 
 namespace GKManagers.CMSDocumentProcessing
 {
@@ -572,25 +577,41 @@ namespace GKManagers.CMSDocumentProcessing
 
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            int i;
-
-            for (i = 0; i <= document.SectionList.Count - 1; i++)
+            ChildFieldSet subsectionList=null;
+ 
+            for (int i = 0; i <= document.SectionList.Count - 1; i++)
             {
                 if (document.SectionList[i].IsTopLevel == true)
                 {
-                    ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryPage(document, document.SectionList[i]), creationPath, CancerInfoSummaryPageContentType);
+                    FieldSet mainFields = CreateFieldValueMapPDQCancerInfoSummaryPage(document, document.SectionList[i]);
+                    subsectionList = new ChildFieldSet("contained_sections");
+                    ContentItemForCreating contentItem = new ContentItemForCreating(CancerInfoSummaryPageContentType, mainFields, creationPath);
+                    contentItem.ChildFieldList.Add(subsectionList);
+
                     contentItemList.Add(contentItem);
+                }
+                else
+                {
+                    // This is somewhat hacky, but it takes advantange of the fact that subsectionList is a reference
+                    // and still refers to the object that was added to the current instance of ContentItemForCreating.
+                    // It is not logically possible for a subsection to appear outside a top-level section.
+                    FieldSet subsection = new FieldSet();
+                    subsection.Add("section_id", document.SectionList[i].RawSectionID);
+                    subsectionList.Fields.Add(subsection);
                 }
             }
 
             return contentItemList;
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryPage(SummaryDocument summary, SummarySection summarySection)
+        private FieldSet CreateFieldValueMapPDQCancerInfoSummaryPage(SummaryDocument summary, SummarySection summarySection)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
             string html = summarySection.Html.OuterXml;
 
+            // TODO: Move Summary Ref logic out of the data layer.
+            // This kind of manipulation particularly shouldn't happen in the
+            // routine that creates field/value pairs!
             string prettyURLName = summarySection.PrettyUrl.Substring(summarySection.PrettyUrl.LastIndexOf('/') + 1);
             if (summarySection.Html.OuterXml.Contains("<SummaryRef"))
             {
@@ -598,13 +619,14 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
+            // This kind of manipulation particularly shouldn't happen in the
+            // routine that creates field/value pairs!
             if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
             {
                 string glossaryTermTag = "Summary-GlossaryTermRef";
                 BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             }
 
-            // TODO: Cleanup MediaHTML and TableSectionXML before we get this far.
             fields.Add("bodyfield", html);
             fields.Add("long_title", summarySection.Title);
             fields.Add("sys_title", summarySection.Title);
@@ -615,7 +637,6 @@ namespace GKManagers.CMSDocumentProcessing
             return fields;
         }
 
-
         private List<ContentItemForCreating> CreatePDQTableSections(SummaryDocument document, string creationPath)
         {
             // Content items may be re-created during an update, therefore we must pass the create path from the caller.
@@ -625,16 +646,16 @@ namespace GKManagers.CMSDocumentProcessing
 
             for (i = 0; i <= document.TableSectionList.Count - 1; i++)
             {
-                ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), creationPath, TableSectionContentType);
+                ContentItemForCreating contentItem = new ContentItemForCreating(TableSectionContentType, CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), creationPath);
                 contentItemList.Add(contentItem);
             }
 
             return contentItemList;
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
+        private FieldSet CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
             string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
 
             fields.Add("pretty_url_name", prettyURLName);
@@ -687,15 +708,15 @@ namespace GKManagers.CMSDocumentProcessing
 
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            ContentItemForCreating contentItem = new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummary(document), creationPath, CancerInfoSummaryContentType);
+            ContentItemForCreating contentItem = new ContentItemForCreating(CancerInfoSummaryContentType, CreateFieldValueMapPDQCancerInfoSummary(document), creationPath);
             contentItemList.Add(contentItem);
 
             return contentItemList;
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummary(SummaryDocument summary)
+        private FieldSet CreateFieldValueMapPDQCancerInfoSummary(SummaryDocument summary)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
             string prettyURLName = summary.BasePrettyURL.Substring(summary.BasePrettyURL.LastIndexOf('/') + 1);
 
             string TOC = BuildTableOfContents(summary);
@@ -787,16 +808,15 @@ namespace GKManagers.CMSDocumentProcessing
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
             ContentItemForCreating contentItem =
-                new ContentItemForCreating(CreateFieldValueMapPDQCancerInfoSummaryLink(document),
-                    creationPath, CancerInfoSummaryLinkContentType);
+                new ContentItemForCreating(CancerInfoSummaryLinkContentType, CreateFieldValueMapPDQCancerInfoSummaryLink(document), creationPath);
             contentItemList.Add(contentItem);
 
             return contentItemList;
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument summary)
+        private FieldSet CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument summary)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
 
             fields.Add("sys_title", summary.ShortTitle);
             fields.Add("long_title", summary.Title);
@@ -823,8 +843,7 @@ namespace GKManagers.CMSDocumentProcessing
                 if (document.MediaLinkSectionList[i] != null)
                 {
                     ContentItemForCreating contentItem =
-                        new ContentItemForCreating(CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1),
-                            creationPath, MediaLinkContentType);
+                        new ContentItemForCreating(MediaLinkContentType, CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1), creationPath);
                     contentItemList.Add(contentItem);
                 }
             }
@@ -832,9 +851,9 @@ namespace GKManagers.CMSDocumentProcessing
             return contentItemList;
         }
 
-        private Dictionary<string, string> CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
+        private FieldSet CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
         {
-            Dictionary<string, string> fields = new Dictionary<string, string>();
+            FieldSet fields = new FieldSet();
             fields.Add("inline_image_url", mediaLink.InlineImageUrl);
             fields.Add("popup_image_url", mediaLink.PopupImageUrl);
             if (string.IsNullOrEmpty(mediaLink.Caption))
@@ -919,6 +938,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void BuildSummaryRefLink(ref string html, int isGlossary)
         {
+            // TODO:  This doesn't belong in the data layer!!!!
             string startTag = "<SummaryRef";
             string endTag = "</SummaryRef>";
             int startIndex = html.IndexOf(startTag, 0);
@@ -1003,6 +1023,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <returns></returns>
         public void BuildGlossaryTermRefLink(ref string html, string tag)
         {
+            // TODO:  This doesn't belong in the data layer!!!!
             string startTag = "<a Class=\"" + tag + "\"";
             string endTag = "</a>";
             int startIndex = html.IndexOf(startTag, 0);
