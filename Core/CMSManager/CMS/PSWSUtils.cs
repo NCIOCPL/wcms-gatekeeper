@@ -282,15 +282,18 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Deletes a content item.
+        /// Deletes a list of content items.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
-        /// <param name="DeleteItemRequest">array of content item ids to be deleted.</param>
-        public static void DeleteItem(contentSOAP contentSvc, long[] DeleteItemId)
+        /// <param name="itemsToDelete">array of content item ids to be deleted.</param>
+        public static void DeleteItem(contentSOAP contentSvc, long[] itemsToDelete)
         {
             try
             {
-                contentSvc.DeleteItems(DeleteItemId);
+                if (itemsToDelete.Length > 0)
+                {
+                    contentSvc.DeleteItems(itemsToDelete);
+                }
             }
             catch (SoapException ex)
             {

@@ -420,13 +420,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         public void DeleteItemList(PercussionGuid[] itemList)
         {
-            int length = itemList.Length;
-            long[] rawIDs = new long[length];
-            for (int i = 0; i < length; i++)
-            {
-                rawIDs[i] = itemList[i].ID;
-            }
-
+            long[] rawIDs = Array.ConvertAll(itemList, item => (long)item.ID);
             PSWSUtils.DeleteItem(_contentService, rawIDs);
         }
 
