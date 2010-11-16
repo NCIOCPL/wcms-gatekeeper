@@ -418,6 +418,10 @@ namespace NCI.WCM.CMSManager.CMS
             PSWSUtils.DeleteItem(_contentService, new long[]{itemID});
         }
 
+        /// <summary>
+        /// Deletes the specified content item.
+        /// </summary>
+        /// <param name="itemList">Array of content item IDs to be deleted.</param>
         public void DeleteItemList(PercussionGuid[] itemList)
         {
             long[] rawIDs = Array.ConvertAll(itemList, item => (long)item.ID);
