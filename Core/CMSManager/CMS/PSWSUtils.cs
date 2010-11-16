@@ -97,24 +97,38 @@ namespace NCI.WCM.CMSManager.CMS
         {
             PSChildEntry[] entrylist;
 
-            CreateChildEntriesRequest req = new CreateChildEntriesRequest();
-            req.Id = parentItemID;
-            req.Name = fieldSetName;
-            req.Count = count;
-            entrylist = contentSvc.CreateChildEntries(req);
+            try
+            {
+                CreateChildEntriesRequest req = new CreateChildEntriesRequest();
+                req.Id = parentItemID;
+                req.Name = fieldSetName;
+                req.Count = count;
+                entrylist = contentSvc.CreateChildEntries(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in CreateChildEntries", ex);
+            }
 
             return entrylist;
         }
 
         public static void SaveChildEntries(contentSOAP contentSvc, long parentID, string fieldSetName, PSChildEntry[] childEntries)
         {
-            SaveChildEntriesRequest req = new SaveChildEntriesRequest();
+            try
+            {
+                SaveChildEntriesRequest req = new SaveChildEntriesRequest();
 
-            req.Id = parentID;
-            req.Name = fieldSetName;
-            req.PSChildEntry = childEntries;
+                req.Id = parentID;
+                req.Name = fieldSetName;
+                req.PSChildEntry = childEntries;
 
-            contentSvc.SaveChildEntries(req);
+                contentSvc.SaveChildEntries(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in SaveChildEntries", ex);
+            }
         }
 
         /// <summary>
