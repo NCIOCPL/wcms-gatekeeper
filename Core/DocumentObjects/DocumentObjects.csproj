@@ -60,6 +60,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NCILibrary.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b68440c3db501d2b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\NCILibrary\NCILibrary.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -92,6 +96,7 @@
     <Compile Include="GlossaryTerm\GlossaryTermDocument.cs" />
     <Compile Include="Media\MediaDocument.cs" />
     <Compile Include="DocumentHelper.cs" />
+    <Compile Include="Summary\SummaryReference.cs" />
     <Compile Include="Terminology\TerminologyMenu.cs" />
     <Compile Include="Protocol\ProtocolModality.cs" />
     <Compile Include="Organization\OrganizationDocument.cs" />

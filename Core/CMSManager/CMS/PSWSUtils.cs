@@ -269,9 +269,16 @@ namespace NCI.WCM.CMSManager.CMS
             PSItem[] items;
             try
             {
-                req.Id = idList;
-                req.IncludeFolderPath = true;
-                items = contentSvc.LoadItems(req);
+                if (idList.Length > 0)
+                {
+                    req.Id = idList;
+                    req.IncludeFolderPath = true;
+                    items = contentSvc.LoadItems(req);
+                }
+                else
+                {
+                    items = new PSItem[] { };
+                }
             }
             catch (SoapException ex)
             {

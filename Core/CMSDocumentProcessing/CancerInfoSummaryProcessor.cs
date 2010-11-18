@@ -11,6 +11,7 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
 using GKManagers.CMSManager.Configuration;
+
 using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
 using NCI.WCM.CMSManager.PercussionWebSvc;
@@ -33,6 +34,10 @@ namespace GKManagers.CMSDocumentProcessing
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
         const string InlineSlot = "sys_inline_variant";
+
+        const string InlineLinkSlotID = "103";
+        const string InlinImageSlotID="104";
+        const string InlineTemplateSlotID = "105";
 
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
         const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
@@ -146,6 +151,11 @@ namespace GKManagers.CMSDocumentProcessing
             ResolveInlineSlots(document.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
 
+            // Find the list of content items referenced by the summary sections.
+            // After the page items are created, these are used to create relationships.
+            List<List<PercussionGuid>> ReferencedItems = ResolveSummaryReferences(document);
+
+
             // Create the Cancer Info Summary item.
             List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
             summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
@@ -214,20 +224,23 @@ namespace GKManagers.CMSDocumentProcessing
             CMSController.DeleteItemList(oldPageIDs);
 
             // Create the new embeddable content items.
-            // Table sections
+            //   Table sections
             List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, existingItemPath);
             List<long> tableIDs = CMSController.CreateContentItemList(tableList);
 
             SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
             ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
 
-            // MediaLinks
+            //   MediaLinks
             List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, existingItemPath);
             List<long> mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
 
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
             ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
+            // Find the list of content items referenced by the summary sections.
+            // After the page items are created, these are used to create relationships.
+            List<List<PercussionGuid>> ReferencedItems = ResolveSummaryReferences(summary);
 
             // Create new Cancer Info Summary Page items
             long[] newSummaryPageIDList;
@@ -294,7 +307,6 @@ namespace GKManagers.CMSDocumentProcessing
             foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
             {
                 XmlDocument html = section.Html;
-
                 XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
                 foreach (XmlNode node in nodeList)
@@ -318,7 +330,7 @@ namespace GKManagers.CMSDocumentProcessing
                         attributeList.Append(attrib);
 
                         attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = "105";
+                        attrib.Value = InlineTemplateSlotID;
                         attributeList.Append(attrib);
 
                         attrib = html.CreateAttribute("sys_dependentvariantid");
@@ -327,6 +339,81 @@ namespace GKManagers.CMSDocumentProcessing
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Replaces SummaryRef placeholder tags with links to the individual summary sections.
+        /// The added links will point to the pretty URL of the top-level section, and optionally
+        /// end with a document fragment identifier.
+        /// </summary>
+        /// <param name="summary">A list of objects corresponding 1:1 to the collection of top-level sections.
+        /// Each object in the list is a (possibly empty) collection of PercussionGuid objects refererenced by
+        /// the corresponding top-leavel section.</param>
+        private List<List<PercussionGuid>> ResolveSummaryReferences(SummaryDocument summary)
+        {
+            List<List<PercussionGuid>> listOfLists = new List<List<PercussionGuid>>();
+
+            CancerInfoSummarySectionFinder finder = new CancerInfoSummarySectionFinder(CMSController);
+
+            foreach (SummarySection section in summary.SectionList.Where(item => item.IsTopLevel))
+            {
+                // Every section has a unique list of referenced items.  If no items are referenced,
+                // the list is empty, and this is OK.
+                List<PercussionGuid> referencedContentItems = new List<PercussionGuid>();
+                listOfLists.Add(referencedContentItems);
+
+                XmlDocument html = section.Html;
+                XmlNodeList nodeList = html.SelectNodes("//a[@inlinetype='SummaryRef']");
+
+                foreach (XmlNode node in nodeList)
+                {
+                    XmlAttributeCollection attributeList = node.Attributes;
+
+                    XmlAttribute reference = attributeList["objectId"];
+                    XmlAttribute attrib;
+
+                    if (summary.SummaryReferenceMap.ContainsKey(reference.Value))
+                    {
+                        SummaryReference details = summary.SummaryReferenceMap[reference.Value];
+                        PercussionGuid referencedItemRootID = GetCdrDocumentID(CancerInfoSummaryContentType, details.CdrID);
+
+                        // Self-reference.
+                        if (summary.DocumentID == details.CdrID)
+                        {
+                            // There's no need to create a reference list entry.  Those are only used for
+                            // detecting and updating external links.  An internal link isn't a problem
+                            // for those purposes.
+                            int pageNumber = finder.FindInternalPageContainingSection(summary, details.SectionID);
+                            string url = details.Url;
+                            if (pageNumber > 1)
+                                url += string.Format("Page{0}", pageNumber);
+                            url += string.Format("#Section{0}", details.SectionID);
+                            attrib = html.CreateAttribute("href");
+                            attrib.Value = url;
+                            attributeList.Append(attrib);
+                        }
+                        else if (details.IsSectionReference)
+                        {
+                            // Need to write a FindPageContainingSection() method for CancerInfoSummarySectionFinder.
+                            // Need the Page number.
+                            //      the page content ID.
+                            int pageNumber;
+                            PercussionGuid referencedItem;
+                            finder.FindPageContainingSection(referencedItemRootID, "", out pageNumber, out referencedItem);
+                        }
+                        else
+                        {
+                            // Link to a summary without a fragment.
+                            PercussionGuid referencedItemID = finder.FindFirstPage(referencedItemRootID);
+                            attrib = html.CreateAttribute("href");
+                            attrib.Value = details.Url;
+                            attributeList.Append(attrib);
+                        }
+                    }
+                }
+            }
+
+            return listOfLists;
         }
 
         /// <summary>

@@ -146,7 +146,7 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        private void ExtractPrettyURLReferences(XPathNavigator xNav, SummaryDocument summary)
+        private void ExtractSummaryReferences(XPathNavigator xNav, SummaryDocument summary)
         {
             string path = string.Empty;
             try
@@ -158,31 +158,38 @@ namespace GateKeeper.DataAccess.CDR
                 {
                     if (nodeIter.Current.HasAttributes)
                     {
-                        // Just add the reference for now...the corresponding value for the key will 
-                        // be populated later.
+                        // Look up the reference ID and URL.
+                        // TODO: Set up the "url" attribute in xPathManager.
                         string id = nodeIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.PrettyURLHref), string.Empty).Trim();
-                        if (!summary.PrettyUrlReferenceMap.ContainsKey(id))
+                        string url = nodeIter.Current.GetAttribute("url", string.Empty).Trim();
+                        if (!summary.SummaryReferenceMap.ContainsKey(id))
                         {
-                            summary.PrettyUrlReferenceMap.Add(id, string.Empty);
+                            //summary.SummaryReferenceMap.Add(id, string.Empty);
+                            SummaryReference reference = new SummaryReference(id, url);
+                            summary.SummaryReferenceMap.Add(id, reference);
                         }
                     }
                 }
 
-                path = xPathManager.GetXPath(SummaryXPath.Link);
-                nodeIter = xNav.Select(path);
-                while (nodeIter.MoveNext())
-                {
-                    if (nodeIter.Current.HasAttributes)
-                    {
-                        // Just add the reference for now...the corresponding value for the key will 
-                        // be populated later.
-                        string id = nodeIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.PrettyURLRef), string.Empty).Trim();
-                        if (!summary.PrettyUrlReferenceMap.ContainsKey(id))
-                        {
-                            summary.PrettyUrlReferenceMap.Add(id, string.Empty);
-                        }
-                    }
-                }
+                // Prior to 11/16/10, the SummaryReferenceMap (formerly PrettyURLReferencMap) was never actually
+                // used anywhere else.  So this was useless code to begin with.
+                // TODO: Delete this block once we're completely certain it's unneeeded.
+                //
+                //path = xPathManager.GetXPath(SummaryXPath.Link);
+                //nodeIter = xNav.Select(path);
+                //while (nodeIter.MoveNext())
+                //{
+                //    if (nodeIter.Current.HasAttributes)
+                //    {
+                //        // Just add the reference for now...the corresponding value for the key will 
+                //        // be populated later.
+                //        string id = nodeIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.PrettyURLRef), string.Empty).Trim();
+                //        if (!summary.SummaryReferenceMap.ContainsKey(id))
+                //        {
+                //            summary.SummaryReferenceMap.Add(id, string.Empty);
+                //        }
+                //    }
+                //}
             }
             catch (Exception e)
             {
@@ -726,7 +733,7 @@ namespace GateKeeper.DataAccess.CDR
                 ExtractRelations(xNav, summary);
 
                 // Handle summary references URL...
-                ExtractPrettyURLReferences(xNav, summary);
+                ExtractSummaryReferences(xNav, summary);
 
                 // Handle sections...
                 ExtractTopLevelSections(xNav, summary);

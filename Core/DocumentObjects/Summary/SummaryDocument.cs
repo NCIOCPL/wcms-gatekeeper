@@ -41,8 +41,7 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <example>"CDR000062727#_2" => "cancertopics/pdq/treatment/breast/patient#page2" <br/>
         /// "CDR000062727" => "cancertopics/pdq/treatment/breast/patient" ...etc
         /// </example>
-        // TODO: Move externalPrettyUrlReferenceMap to base class?
-        private Dictionary<string, string> _prettyUrlReferenceMap = new Dictionary<string, string>();
+        private Dictionary<string, SummaryReference> _summaryReferenceMap = new Dictionary<string, SummaryReference>();
         private bool _isActive = true;
 
         #endregion Fields
@@ -150,10 +149,10 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <example>"CDR000062727#_2" => "cancertopics/pdq/treatment/breast/patient#page2" <br/>
         /// "CDR000062727" => "cancertopics/pdq/treatment/breast/patient" ...etc
         /// </example>
-        public Dictionary<string, string> PrettyUrlReferenceMap
+        public Dictionary<string, SummaryReference> SummaryReferenceMap
         {
-            get { return _prettyUrlReferenceMap; }
-            internal set { _prettyUrlReferenceMap = value; }
+            get { return _summaryReferenceMap; }
+            //internal set { _summaryReferenceMap = value; }
         }
 
         /// <summary>
@@ -378,10 +377,10 @@ namespace GateKeeper.DocumentObjects.Summary
                 sb.Append(string.Format("{0} => {1} \n", key, this.PrettyUrlMap[key]));
             }
 
-            sb.Append("PrettyUrlReferenceMap = \n");
-            foreach (string key in this.PrettyUrlReferenceMap.Keys)
+            sb.Append("SummaryReferenceMap = \n");
+            foreach (string key in this.SummaryReferenceMap.Keys)
             {
-                sb.Append(string.Format("{0} => {1} \n", key, this.PrettyUrlReferenceMap[key]));
+                sb.Append(string.Format("{0} => {1} \n", key, this.SummaryReferenceMap[key]));
             }
 
             sb.Append("SectionList = \n");
