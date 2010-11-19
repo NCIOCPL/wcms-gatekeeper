@@ -151,7 +151,7 @@ namespace GKManagers
 
                             // Promotion to staging is multi-threaded. Everything else is multi-threaded.
 
-                            if (action == ProcessActionType.PromoteToStaging)
+                            if (action == ProcessActionType.PromoteToStaging && !suppressMultiThreading)
                             {
                                 ThreadPool.QueueUserWorkItem(workerThreads[docIndex].PromotionCallback,
                                     requestDataIDList[docIndex]);
