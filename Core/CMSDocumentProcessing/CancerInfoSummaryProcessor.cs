@@ -33,6 +33,7 @@ namespace GKManagers.CMSDocumentProcessing
         const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
+        const string SummaryRefSlot = "pdqCancerInformationSummaryRef";
         const string InlineSlot = "sys_inline_variant";
 
         const string InlineLinkSlotID = "103";
@@ -153,7 +154,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Find the list of content items referenced by the summary sections.
             // After the page items are created, these are used to create relationships.
-            List<List<PercussionGuid>> ReferencedItems = ResolveSummaryReferences(document);
+            List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(document);
 
 
             // Create the Cancer Info Summary item.
@@ -169,6 +170,8 @@ namespace GKManagers.CMSDocumentProcessing
             // Add summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
+            // Create relationships to other Cancer Information Sumamry Objects.
+            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedItems);
 
             //  Search for a CISLink in the parent folder.
             string parentPath = GetParentFolder(document.BasePrettyURL);
@@ -240,7 +243,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Find the list of content items referenced by the summary sections.
             // After the page items are created, these are used to create relationships.
-            List<List<PercussionGuid>> ReferencedItems = ResolveSummaryReferences(summary);
+            List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(summary);
 
             // Create new Cancer Info Summary Page items
             long[] newSummaryPageIDList;
@@ -251,6 +254,9 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Add new cancer information summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
+
+            // Create relationships to other Cancer Information Sumamry Objects.
+            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, referencedItems);
 
             // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
             ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
@@ -377,6 +383,12 @@ namespace GKManagers.CMSDocumentProcessing
                         SummaryReference details = summary.SummaryReferenceMap[reference.Value];
                         PercussionGuid referencedItemRootID = GetCdrDocumentID(CancerInfoSummaryContentType, details.CdrID);
 
+                        if (referencedItemRootID == null)
+                        {
+                            WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
+                            continue;
+                        }
+
                         // Self-reference.
                         if (summary.DocumentID == details.CdrID)
                         {
@@ -397,6 +409,7 @@ namespace GKManagers.CMSDocumentProcessing
                             // Need to write a FindPageContainingSection() method for CancerInfoSummarySectionFinder.
                             // Need the Page number.
                             //      the page content ID.
+                            continue;
                             int pageNumber;
                             PercussionGuid referencedItem;
                             finder.FindPageContainingSection(referencedItemRootID, "", out pageNumber, out referencedItem);
@@ -404,7 +417,12 @@ namespace GKManagers.CMSDocumentProcessing
                         else
                         {
                             // Link to a summary without a fragment.
+
+                            // Add the item to the list.
                             PercussionGuid referencedItemID = finder.FindFirstPage(referencedItemRootID);
+                            referencedContentItems.Add(referencedItemID);
+
+                            // Build the link.
                             attrib = html.CreateAttribute("href");
                             attrib.Value = details.Url;
                             attributeList.Append(attrib);
@@ -414,6 +432,34 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return listOfLists;
+        }
+
+        /// <summary>
+        /// Creates active assembly relationships between a list of content items and
+        /// the content items they refer to.
+        /// </summary>
+        /// <param name="pageIDList"></param>
+        /// <param name="referencedItems"></param>
+        /// <returns></returns>
+        private PSAaRelationship[] CreateExternalSummaryRelationships(long[] pageIDList,
+            List<List<PercussionGuid>> referencedItems)
+        {
+            int itemCount = pageIDList.Length;
+            for (int i = 0; i < itemCount; i++)
+            {
+                PercussionGuid[] guidList = referencedItems[i].ToArray();
+
+                // If the list entry for a given page contains references to other
+                // Cancer info summaries, then create AA relationships to them.
+                if (guidList.Length > 0)
+                {
+                    CMSController.CreateActiveAssemblyRelationships(pageIDList[i],
+                        Array.ConvertAll(guidList, percGuid => (long)percGuid.ID),
+                        SummaryRefSlot, SummarySectionSnippetTemplate);
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
