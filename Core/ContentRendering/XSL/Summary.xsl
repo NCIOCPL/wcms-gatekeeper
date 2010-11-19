@@ -203,14 +203,6 @@
     <a inlinetype="SummaryRef" objectId="{@href}">
       <xsl:copy-of select="text()"/>
     </a>
-    <div style="border: 1px solid green;">A SummaryRef goes here.<br />
-      href = <xsl:value-of select="@href"/><br />
-      url = <xsl:value-of select="@url"/><br />
-      text content:<br/>
-      <div style="border: 1px solid blue; margin: 5px;">
-        <xsl:copy-of select="text()"/>
-      </div>
-    </div>
   </xsl:template>
   
   <!--

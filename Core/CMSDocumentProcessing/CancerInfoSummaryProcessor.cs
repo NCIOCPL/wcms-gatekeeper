@@ -396,23 +396,26 @@ namespace GKManagers.CMSDocumentProcessing
                             // detecting and updating external links.  An internal link isn't a problem
                             // for those purposes.
                             int pageNumber = finder.FindInternalPageContainingSection(summary, details.SectionID);
-                            string url = details.Url;
-                            if (pageNumber > 1)
-                                url += string.Format("Page{0}", pageNumber);
-                            url += string.Format("#Section{0}", details.SectionID);
+                            string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
                             attrib = html.CreateAttribute("href");
                             attrib.Value = url;
                             attributeList.Append(attrib);
                         }
                         else if (details.IsSectionReference)
                         {
-                            // Need to write a FindPageContainingSection() method for CancerInfoSummarySectionFinder.
-                            // Need the Page number.
-                            //      the page content ID.
-                            continue;
+                            // Link to an external summary with a document fragment.
                             int pageNumber;
-                            PercussionGuid referencedItem;
-                            finder.FindPageContainingSection(referencedItemRootID, "", out pageNumber, out referencedItem);
+                            PercussionGuid referencedItemID;
+                            finder.FindPageContainingSection(referencedItemRootID, details.SectionID, out pageNumber, out referencedItemID);
+
+                            // Add the item to the list.
+                            referencedContentItems.Add(referencedItemID);
+
+                            // Build the link.
+                            string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
+                            attrib = html.CreateAttribute("href");
+                            attrib.Value = url;
+                            attributeList.Append(attrib);
                         }
                         else
                         {
@@ -432,6 +435,19 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return listOfLists;
+        }
+
+        private string BuildSummaryRefUrl(string baseUrl, int pageNumber, string sectionID)
+        {
+            string url;
+
+            // Page numbers are natural numbers (1, 2, 3...), not zero-based.
+            if (pageNumber > 1)
+                url = string.Format("{0}/Page{1}#Section{2}", baseUrl, pageNumber, sectionID);
+            else
+                url = string.Format("{0}/#Section{1}", baseUrl, sectionID);
+
+            return url;
         }
 
         /// <summary>
@@ -766,6 +782,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             // HACK: This relies on Percussion not setting anything else in the login session.
             fields.Add("sys_lang", GetLanguageCode(summary.Language));
+            fields.Add("top_sectionid", summarySection.RawSectionID);
 
             return fields;
         }

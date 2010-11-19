@@ -20,25 +20,48 @@ namespace NCI.WCM.CMSManager.CMS
             return ((ulong)itemID1 | idMask) == ((ulong)itemID2 | idMask);
         }
 
-        [Obsolete("use PercussionGuid", true)]
-        public static long GetID(long itemID1)
-        {
-            return (long)((ulong)itemID1 & idMask);
-        }
-
         public static string GetFieldValue(PSItem item, string fieldName)
         {
-            string fieldValue = null;
+            return GetFieldValue(item.Fields, fieldName);
+        }
 
-            // Find the named field within the PSItem's field collection.
+        public static string GetFieldValue(PSField[] fieldCollection, string fieldName)
+        {
+            string fieldValue = string.Empty;
+
             IEnumerable<PSField> namedField =
-                item.Fields.Where(field => field.name == fieldName);
-            if (namedField.Count() > 0)
+                fieldCollection.Where(field => field.name == fieldName);
+            if (namedField != null)
             {
-                PSFieldValue value = namedField.ElementAt(0).PSFieldValue[0];
-                fieldValue = value.RawData;
+                if (namedField.Count() > 0)
+                {
+                    PSFieldValue value = namedField.ElementAt(0).PSFieldValue[0];
+                    fieldValue = value.RawData;
+                }
             }
+
             return fieldValue;
+        }
+
+        public static string[] GetChildFieldValues(PSItem item, string collectionName, string subfieldName)
+        {
+            string[] foundValues = new string[] { };
+
+            if (item.Children != null && item.Children.Length > 0)
+            {
+                PSItemChildren targetedField = Array.Find(item.Children, childField => childField.Name == collectionName);
+                if (targetedField != null && targetedField.PSChildEntry!= null)
+                {
+                    List<string> resultBuilder = new List<string>();
+                    Array.ForEach(targetedField.PSChildEntry, childFieldset =>
+                    {
+                        resultBuilder.Add(GetFieldValue(childFieldset.PSField, subfieldName));
+                    });
+                    foundValues = resultBuilder.ToArray();
+                }
+            }
+
+            return foundValues;
         }
     }
 }

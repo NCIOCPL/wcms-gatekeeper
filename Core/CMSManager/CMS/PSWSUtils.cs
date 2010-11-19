@@ -273,6 +273,7 @@ namespace NCI.WCM.CMSManager.CMS
                 {
                     req.Id = idList;
                     req.IncludeFolderPath = true;
+                    req.IncludeChildren = true;
                     items = contentSvc.LoadItems(req);
                 }
                 else

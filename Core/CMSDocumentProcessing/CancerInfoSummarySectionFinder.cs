@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.XPath;
 
 using NCI.WCM.CMSManager.CMS;
@@ -55,13 +56,41 @@ namespace GKManagers.CMSDocumentProcessing
 
             for (int i = 0; i < pageItems.Length; i++)
             {
-                if (sectionID == PSItemUtils.GetFieldValue(pageItems[i], "top_sectionid"))
+                string foundValue = PSItemUtils.GetFieldValue(pageItems[i], "top_sectionid");
+                if (!string.IsNullOrEmpty(foundValue) && foundValue == sectionID)
                 {
                     pageNumber = i;
                     containingItem = pageIDs[i];
+                    break;
                 }
 
+                string[] fieldValues = PSItemUtils.GetChildFieldValues(pageItems[i], "contained_sections", "section_id");
+                if (fieldValues != null && fieldValues.Length > 0 && fieldValues.Contains(sectionID))
+                {
+                    pageNumber = i;
+                    containingItem = pageIDs[i];
+                    break;
+                }
+
+                // A "section number" can actually identify any block-level (?) element in the
+                // page HTML.  So, finally we check there.
+                string bodyField = PSItemUtils.GetFieldValue(pageItems[i], "bodyfield");
+                XmlDocument bodyHtml = new XmlDocument();
+                bodyHtml.LoadXml(bodyField);
+                XPathNavigator xNav = bodyHtml.CreateNavigator();
+                XPathNavigator node = xNav.SelectSingleNode(string.Format("//a[@name='Section{0}']", sectionID));
+                if (node != null)
+                {
+                    pageNumber = i;
+                    containingItem = pageIDs[i];
+                    break;
+                }
             }
+
+            // If a page number was found, adjust pageNumber to reflect natural numbers (1, 2, 3)
+            // instead of zero-based.
+            if (pageNumber != int.MinValue)
+                pageNumber++;
         }
 
         public int FindInternalPageContainingSection(SummaryDocument summary, string sectionID)
