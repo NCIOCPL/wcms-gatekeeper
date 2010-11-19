@@ -496,6 +496,22 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// Moves the designated content items to another state in the workflow by
+        /// performing the named transition.
+        /// </summary>
+        /// <param name="idList">A list of content items.</param>
+        /// <param name="triggerName">The unique trigger name associated with a
+        /// workflow transition.</param>
+        /// <remarks>All content items must belong the same workflow and be
+        /// in the same state.</remarks>
+        public void PerformWorkflowTransition(PercussionGuid[] idList, string triggerName)
+        {
+            long[] idLongVals = Array.ConvertAll(idList, id => (long)id.ID);
+            PerformWorkflowTransition(idLongVals, triggerName);
+        }
+
+
+        /// <summary>
         /// Retrieves a list of content items which own relationships to the content
         /// item identified by itemID.
         /// </summary>
