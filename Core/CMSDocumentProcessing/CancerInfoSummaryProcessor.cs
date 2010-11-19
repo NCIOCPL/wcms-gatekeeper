@@ -124,6 +124,40 @@ namespace GKManagers.CMSDocumentProcessing
             InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
         }
 
+        /// <summary>
+        /// Move the specified DrugInfoSummary document from Staging to Preview.
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public void PromoteToPreview(int documentID)
+        {
+            PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
+            PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
+            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
+            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+
+            // TODO: Decide on a strategy for moving Link vs. everything else.
+            // Move everything at once?  (Probably)
+
+            //TransitionItemsToPreview();
+        }
+
+        /// <summary>
+        /// Move the specified DrugInfoSummary document from Preview to Live.
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public void PromoteToLive(int documentID)
+        {
+            PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
+            PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
+            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
+            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+
+            // TODO: Decide on a strategy for moving Link vs. everything else.
+            // Move everything at once?  (Probably)
+
+            //TransitionItemsToLive();
+        }
+
 
         private void CreateNewCancerInformationSummary(SummaryDocument document)
         {
@@ -216,6 +250,8 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
+
+            // TODO: TransitionItemsToStaging(Entire Collection);
 
             PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
             string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);

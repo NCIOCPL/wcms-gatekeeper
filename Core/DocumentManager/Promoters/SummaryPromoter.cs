@@ -77,11 +77,9 @@ namespace GKManagers
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Staging, UserName);
-                }
+                // Remove from Staging does nothing.  This is by design.
+                // Attempting to remove the document at this stage would
+                // remove it from all stages.
             }
             else
             {
@@ -111,11 +109,16 @@ namespace GKManagers
             summary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Push summary document to the preview database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
+                // Save summary data into the Percussion CMS.
+                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
                 {
-                    summaryQuery.PushDocumentToPreview(summary, UserName);
+                    processor.PromoteToPreview(summary.DocumentID);
                 }
+                //// Push summary document to the preview database
+                //using (SummaryQuery summaryQuery = new SummaryQuery())
+                //{
+                //    summaryQuery.PushDocumentToPreview(summary, UserName);
+                //}
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
@@ -149,15 +152,19 @@ namespace GKManagers
             summary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Push summary document to the live database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
+                // Save summary data into the Percussion CMS.
+                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
                 {
-                    summaryQuery.PushDocumentToLive(summary, UserName);
+                    processor.PromoteToLive(summary.DocumentID);
                 }
+                //// Push summary document to the live database
+                //using (SummaryQuery summaryQuery = new SummaryQuery())
+                //{
+                //    summaryQuery.PushDocumentToLive(summary, UserName);
+                //}
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Preview does nothing at this point.
                 using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
                 {
                     processor.DeleteContentItem(summary.DocumentID);

@@ -72,7 +72,7 @@ namespace GKManagers.CMSDocumentProcessing
                 PSItem[] oldItem = CMSController.LoadContentItems(new long[] { identifier.ID });
 
                 // This is an existing item, we must therefore put it in an editable state.
-                TransitionItemsToStaging(new long[1] { identifier.ID });
+                TransitionItemsToStaging(new PercussionGuid[1] { identifier });
 
                 ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document));
                 List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
@@ -164,7 +164,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
 
-            TransitionItemsToPreview(new long[1]{identifier.ID});
+            TransitionItemsToPreview(new PercussionGuid[1] { identifier });
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
 
-            TransitionItemsToLive(new long[1] { identifier.ID });
+            TransitionItemsToLive(new PercussionGuid[1] { identifier });
         }
 
         #endregion

@@ -130,7 +130,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="idList">An array of ID values identifying content items to
         /// be moved</param>
-        protected void TransitionItemsToStaging(long[] idList)
+        protected void TransitionItemsToStaging(PercussionGuid[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
             WorkflowState oldState = GetWorkflowState(idList);
@@ -164,7 +164,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="idList">An array of ID values identifying content items to
         /// be moved</param>
-        protected void TransitionItemsToPreview(long[] idList)
+        protected void TransitionItemsToPreview(PercussionGuid[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
             WorkflowState oldState = GetWorkflowState(idList);
@@ -200,7 +200,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <remarks>Throws CMSWorkflowException if the targeted items are in the
         /// CDRStaging or CDRStagingUpdate states as these are not valid states from
         /// which to move to CDRLive.</remarks>
-        protected void TransitionItemsToLive(long[] idList)
+        protected void TransitionItemsToLive(PercussionGuid[] idList)
         {
             // GetWorkflowState() is guaranteed to return a valid state.
             WorkflowState oldState = GetWorkflowState(idList);
@@ -236,8 +236,10 @@ namespace GKManagers.CMSDocumentProcessing
         /// <remarks>Throws CMSWorkflowStateInferenceException if a workflow state cannot be
         /// determined. (e.g. If the designated items do not have a shared workflow state,
         /// or if the items belong to an unexpected workflow.  CancerGov_PDQ_Workflow is assumed.</remarks>
-        protected WorkflowState GetWorkflowState(long[] idList)
+        protected WorkflowState GetWorkflowState(PercussionGuid[] idGuids)
         {
+            long[] idList = Array.ConvertAll(idGuids, id => (long)id.ID);
+
             object state = CMSController.GetWorkflowState(idList, InferWorkflowState);
 
             if (state == null ||
