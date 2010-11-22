@@ -335,13 +335,33 @@ namespace NCI.WCM.CMSManager.CMS
 
                 contentSvc.MoveFolderChildren(moveFolder);
             }
-
             catch (SoapException ex)
             {
                 throw new CMSSoapException("Percussion Error in MoveFolderChildren.", ex);
             }
+        }
 
-            
+        /// <summary>
+        /// Deletes a collection of folders. Requires admin permissions in order to purge
+        /// folder contents.
+        /// </summary>
+        /// <param name="contentSvc">The proxy of the content service.</param>
+        /// <param name="idList">List of folder IDs to delete</param>
+        /// <param name="purgeItems">If true, folder contents are purged instead of being removed.
+        /// (Requires admin permssion.)</param>
+        public static void DeleteFolders(contentSOAP contentSvc, long[] idList, bool purgeItems)
+        {
+            try
+            {
+                DeleteFoldersRequest req = new DeleteFoldersRequest();
+                req.Id = idList;
+                req.PurgItems = purgeItems;
+                contentSvc.DeleteFolders(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in DeleteFolders.", ex);
+            }
         }
 
         /// <summary>

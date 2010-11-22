@@ -167,29 +167,14 @@ namespace GKManagers.CMSDocumentProcessing
             long[] summaryPageIDList;
             string createPath = GetTargetFolder(document.BasePrettyURL);
 
-            // Create the embeddable content items and resolve the item references.
-
-            // Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(document, createPath);
-            List<long> tableIDs = CMSController.CreateContentItemList(tableList);
-
-            SectionToCmsIDMap tableIDMap = BuildItemIDMap(document.TableSectionList,
-                delegate(SummarySection section) { return section.RawSectionID; }, tableIDs);
-            ResolveInlineSlots(document.SectionList, tableIDMap, TableSectionSnippetTemplate);
-
-            // MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(document, createPath);
-            List<long> mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
-
-            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(document.MediaLinkSectionList,
-                delegate(MediaLink link) { return link.Reference; }, mediaLinkIDs);
-            ResolveInlineSlots(document.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
-
+            // Create the sub-pages
+            List<long> tableIDs;
+            List<long> mediaLinkIDs;
+            CreateSubPages(document, createPath, out tableIDs, out mediaLinkIDs);
 
             // Find the list of content items referenced by the summary sections.
             // After the page items are created, these are used to create relationships.
-            List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(document);
-
+            List<List<PercussionGuid>> referencedSumamries = ResolveSummaryReferences(document);
 
             // Create the Cancer Info Summary item.
             List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
@@ -205,7 +190,7 @@ namespace GKManagers.CMSDocumentProcessing
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
             // Create relationships to other Cancer Information Sumamry Objects.
-            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedItems);
+            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedSumamries);
 
             //  Search for a CISLink in the parent folder.
             string parentPath = GetParentFolder(document.BasePrettyURL);
@@ -255,27 +240,13 @@ namespace GKManagers.CMSDocumentProcessing
 
             PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
             string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
+            string temporaryPath = string.Format("{0}/_UPD-{1}", existingItemPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
+            PSFolder tempFolder = CMSController.GuaranteeFolder(temporaryPath);
 
-            // Remove the old pages, table sections and medialink items.
-            // Assumes that there are never any non-summary links to individual pages.
-            // No links from other summaries to table sections and media links.
-            CMSController.DeleteItemList(oldSubItems);
-            CMSController.DeleteItemList(oldPageIDs);
-
-            // Create the new embeddable content items.
-            //   Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, existingItemPath);
-            List<long> tableIDs = CMSController.CreateContentItemList(tableList);
-
-            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
-            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
-
-            //   MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, existingItemPath);
-            List<long> mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
-
-            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
-            ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+            // Create the new sub-page items in a temporary location.
+            List<long> tableIDs;
+            List<long> mediaLinkIDs;
+            CreateSubPages(summary, temporaryPath, out tableIDs, out mediaLinkIDs);
 
             // Find the list of content items referenced by the summary sections.
             // After the page items are created, these are used to create relationships.
@@ -284,7 +255,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Create new Cancer Info Summary Page items
             long[] newSummaryPageIDList;
             List<long> idList;
-            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, existingItemPath);
+            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, temporaryPath);
             idList = CMSController.CreateContentItemList(summaryPageList);
             newSummaryPageIDList = idList.ToArray();
 
@@ -300,10 +271,74 @@ namespace GKManagers.CMSDocumentProcessing
             List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
             List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
 
+            // Remove the old pages, table sections and medialink items.
+            // Assumes that there are never any non-summary links to individual pages.
+            // No links from other summaries to table sections and media links.
+            CMSController.DeleteItemList(oldSubItems);
+            CMSController.DeleteItemList(oldPageIDs);
 
-            // Handle a change of URL.
+            // Move the new items into the main folder.
             PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList);
+            CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
+            CMSController.DeleteFolders(new PSFolder[] { tempFolder });
+
+            // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLink, componentIDs);
+        }
+
+        /// <summary>
+        /// Determines the set of active assembly relationships which come from other
+        /// content items.
+        /// </summary>
+        /// <param name="internalIdentifers">A collection of the content IDs which are
+        /// considered to be part of the content item.  The first item in the array
+        /// is assumed to be the root CancerInformationSummary object.</param>
+        /// <returns></returns>
+        private PSAaRelationship[] FindExternalRelationships(PercussionGuid[] internalIdentifers)
+        {
+            // The first item in the collection is always root.
+            PercussionGuid rootItem = internalIdentifers[0];
+
+            /// Find all the incoming relationships.  (Need to include inline links!)
+            PSAaRelationship[] incomingRelationship =
+                CMSController.FindIncomingActiveAssemblyRelationships(internalIdentifers);
+            List<PercussionGuid> externalOwners = new List<PercussionGuid>();
+
+            /// Eliminate the internal relationships.
+            Array.ForEach(incomingRelationship, relationship =>
+            {
+                // If the owner of this relationship isn't one of the objects making up the document,
+                // then add the relationship's owner to the list of external owners.
+                PercussionGuid owner = new PercussionGuid(relationship.ownerId);
+                if (Array.Find(internalIdentifers, guid => guid.ID == owner.ID) == null)
+                    externalOwners.Add(owner);
+            });
+
+            // Find the ID of any alternate audience versions and eliminate from the list.
+            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
+            externalOwners.RemoveAll(owner => alternateAudiences.Contains(owner));
+
+            return null;
+        }
+
+
+        private void CreateSubPages(SummaryDocument summary, string createPath,
+            out List<long> tableIDs, out List<long> mediaLinkIDs)
+        {
+            // Create the embeddable content items and resolve the item references.
+            // Table sections
+            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
+            tableIDs = CMSController.CreateContentItemList(tableList);
+
+            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
+            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
+
+            // MediaLinks
+            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
+            mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
+
+            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
+            ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
         }
 
         private void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
@@ -321,7 +356,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 oldPath = CMSController.GetPathInSite(keyItems[1]); // Link item.
                 newPath = GetParentFolder(targetURL);
-                CMSController.MoveContentItemFolder(oldPath, newPath, new long[] { summaryLinkItemID.ID });
+                CMSController.MoveContentItemFolder(oldPath, newPath, new PercussionGuid[] { summaryLinkItemID });
             }
         }
 
@@ -607,7 +642,7 @@ namespace GKManagers.CMSDocumentProcessing
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
                 PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-                // Creat a list of all content IDs making up the document.
+                // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
                 PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
 
@@ -624,6 +659,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="documentCmsIdentifier">The document's ID in the CMS.</param>
         protected void VerifyDocumentMayBeDeleted(PercussionGuid[] summaryIdentifers)
         {
+            // TODO: Modify this to call FindExternalRelationships().
+
             // The first item in the collection is always root.
             PercussionGuid rootItem = summaryIdentifers[0];
 
@@ -665,7 +702,6 @@ namespace GKManagers.CMSDocumentProcessing
                 throw new CMSCannotDeleteException(sb.ToString());
             }
         }
-
 
         /// <summary>
         /// Locates a Cancer Information Summary document's corresponding summary link item.

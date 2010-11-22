@@ -468,6 +468,17 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// Deletes a collection of folders. Any items contained in the folder are
+        /// removed from the content tree, but are not purged.
+        /// </summary>
+        /// <param name="folderInfo"></param>
+        public void DeleteFolders(PSFolder[] folderInfo)
+        {
+            long[] folderIDs = Array.ConvertAll(folderInfo, detail => detail.id);
+            PSWSUtils.DeleteFolders(_contentService, folderIDs, false);
+        }
+
+        /// <summary>
         /// Retrieves the shared workflow state of a list of content items.
         /// </summary>
         /// <param name="itemIDs">An array of content item IDs.</param>
