@@ -391,10 +391,16 @@ namespace GKManagers.CMSDocumentProcessing
 
                 CMSController.ReleaseFromEditing(checkedOutPageStatus.ToArray());
 
+                // At this point, we've created one relationship pair for each reference to a section. Some
+                // Summary pages may contain references to multiple sections contained in a single page,
+                // so we need to filter out the duplicates.
+                List<KeyValuePair<PercussionGuid, PercussionGuid>> filteredPairs = new List<KeyValuePair<PercussionGuid, PercussionGuid>>();
+                filteredPairs.AddRange(relationshipPairs.Distinct());
+
                 // Create the new relationships.  (Saved for last because CreateActiveAssemblyRelationships
                 // will Lock/Release the involved content items and that would conflict with the locks
                 // needed for the updates.
-                relationshipPairs.ForEach(
+                filteredPairs.ForEach(
                     kvp =>
                     {
                         CMSController.CreateActiveAssemblyRelationships(kvp.Key,
@@ -945,15 +951,6 @@ namespace GKManagers.CMSDocumentProcessing
             FieldSet fields = new FieldSet();
             string html = summarySection.Html.OuterXml;
 
-            // TODO: Move Summary Ref logic out of the data layer.
-            // This kind of manipulation particularly shouldn't happen in the
-            // routine that creates field/value pairs!
-            string prettyURLName = summarySection.PrettyUrl.Substring(summarySection.PrettyUrl.LastIndexOf('/') + 1);
-            if (summarySection.Html.OuterXml.Contains("<SummaryRef"))
-            {
-                BuildSummaryRefLink(ref html, 0);
-            }
-
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
             // This kind of manipulation particularly shouldn't happen in the
             // routine that creates field/value pairs!
@@ -1278,86 +1275,6 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-
-        private void BuildSummaryRefLink(ref string html, int isGlossary)
-        {
-            // TODO:  This doesn't belong in the data layer!!!!
-            string startTag = "<SummaryRef";
-            string endTag = "</SummaryRef>";
-            int startIndex = html.IndexOf(startTag, 0);
-            string sectionHTML = html;
-            while (startIndex >= 0)
-            {
-                // Devide the whole piece of string into three parts: a= first part; b = "<summaryref href="CDR0012342" url="/cander_topic/...HP/>..</summaryref>"; c = last part
-                int endIndex = sectionHTML.IndexOf(endTag) + endTag.Length;
-                string partA = sectionHTML.Substring(0, startIndex);
-                string partB = sectionHTML.Substring(startIndex, endIndex - startIndex);
-                string partC = sectionHTML.Substring(endIndex);
-
-                // Process partB
-                // Get the href, url, text between the tag
-                XmlDocument refDoc = new XmlDocument();
-                refDoc.LoadXml(partB);
-                XPathNavigator xNav = refDoc.CreateNavigator();
-                XPathNavigator link = xNav.SelectSingleNode("/SummaryRef");
-                string text = link.InnerXml;
-                string href = link.GetAttribute("href", string.Empty);
-                string url = link.GetAttribute("url", string.Empty).Trim();
-                if (url.EndsWith("/"))
-                {
-                    url = url.Substring(0, url.Length - 1);
-                }
-
-                // The following code is preserved just in case in the future we need to support
-                // prettyURL links in CDRPreview web service.
-                // Get prettyurl server if the PrettyURLController is not reside on the same server
-                // This is used for CDRPreview web service, GateKeeper should not have this setting.
-                // string prettyURLServer = ConfigurationManager.AppSettings["PrettyUrlServer"];
-                //if (prettyURLServer != null && prettyURLServer.Trim().Length > 0)
-                //    url = prettyURLServer + url;
-
-                // Get the section ID in href
-                int index = href.IndexOf("#");
-                string sectionID = string.Empty;
-                string prettyURL = url;
-                if (index > 0)
-                {
-                    sectionID = href.Substring(index + 2);
-                    prettyURL = url + "/" + sectionID + ".cdr#Section_" + sectionID;
-                }
-
-                //Create new link string
-                if (prettyURL.Trim().Length > 0)
-                {
-                    // The click on the summary link in the GlossaryTerm will open a new browser for summary document
-                    if (isGlossary == 1)
-                        partB = "<a class=\"SummaryRef\" href=\"" + prettyURL + "\" target=\"new\">" + text + "</a>";
-                    else
-                        partB = "<a class=\"SummaryRef\" href=\"" + prettyURL + "\">" + text + "</a>";
-                }
-                else
-                {
-                    throw new Exception("Retrieving SummaryRef url failed. SummaryRef=" + partB + ".");
-                }
-
-                // Combine
-                // Do not add extra space before the SummaryRef if following sign is lead before the link: ({[ or open ' "
-                if (Regex.IsMatch(partA.Trim(), "[({[/]$|[({[\\s]\'$|[({[\\s]\"$"))
-                    sectionHTML = partA.Trim() + partB;
-                else
-                    sectionHTML = partA.Trim() + " " + partB;
-
-                // Do not add extra space after the SummaryRef if following sign
-                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
-                if (Regex.IsMatch(partC.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']"))
-                    sectionHTML += partC.Trim();
-                else
-                    sectionHTML += " " + partC.Trim();
-
-                startIndex = sectionHTML.IndexOf(startTag, 0);
-            }
-            html = sectionHTML;
-        }
 
         // <summary>
         /// Taking care of the spaces around GlossaryTermRefLink
