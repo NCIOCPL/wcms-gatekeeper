@@ -84,7 +84,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Guid.GetHashCode();
         }
 
         public static bool operator ==(PercussionGuid lhs, PercussionGuid rhs)
