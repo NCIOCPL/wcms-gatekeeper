@@ -26,7 +26,7 @@ namespace GateKeeper.ContentRendering
         private Language _language;
 
         const string tablePlaceholder = @"
-<div inlinetype=""rxvariant"" objectId=""{0}"">
+<div inlinetype=""rxvariant"" objectid=""{0}"">
   Placeholder slot
 </div>";
 

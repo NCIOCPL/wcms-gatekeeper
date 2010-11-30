@@ -30,6 +30,8 @@ namespace GKManagers.CMSDocumentProcessing
 
         #region Constants
 
+        const int ShortTitleLength = 64;
+
         const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
@@ -189,7 +191,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Add summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
-            // Create relationships to other Cancer Information Sumamry Objects.
+            // Create relationships to other Cancer Information Summary Objects.
             PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedSumamries);
 
             //  Search for a CISLink in the parent folder.
@@ -232,7 +234,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Retrieve IDs for the summary and all its components. They will be needed
             // for both delete and for delete validation.
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, summary.DocumentID);
-            PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
+            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
@@ -258,16 +260,19 @@ namespace GKManagers.CMSDocumentProcessing
             List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, temporaryPath);
             idList = CMSController.CreateContentItemList(summaryPageList);
             newSummaryPageIDList = idList.ToArray();
+            PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
+
+            UpdateIncomingSummaryReferences(summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
 
             // Add new cancer information summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
-            // Create relationships to other Cancer Information Sumamry Objects.
+            // Create relationships to other Cancer Information Summary Objects.
             PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, referencedItems);
 
             // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
             ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
-            ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
+            ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLinkID.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
             List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
             List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
 
@@ -283,8 +288,121 @@ namespace GKManagers.CMSDocumentProcessing
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
             // Handle a potential change of URL.
-            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLink, componentIDs);
+            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
         }
+
+        private void UpdateIncomingSummaryReferences(PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+            PercussionGuid[] oldPageIDs, PercussionGuid[] newPageIDs)
+        {
+            PercussionGuid[] currentIDs = CMSController.BuildGuidArray(summaryRootID, oldPageIDs);
+            PSAaRelationship[] externalRelationships = FindExternalRelationships(currentIDs);
+
+            // FindExternalRelationships finds all CISummary relationships external to the items specified.
+            // We also want to ignore those from the SummaryLink and main Summary items.
+            List<PSAaRelationship> relationshipList = new List<PSAaRelationship>(externalRelationships);
+            relationshipList.RemoveAll(relationship =>
+            {
+                PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
+                return ownerID == summaryRootID
+                    || ownerID == summaryLinkID;
+            });
+
+            // Anything left at this point is a relationship to a CancerInfoSummaryPage object.
+            // NOTE: This assumes the only objects which can reference a CancerInfoSummaryPage
+            // are CancerInfoSummary objects and other CancerInfoSummaryPage objects.
+
+            if (relationshipList.Count > 0)
+            {
+                ItemCache itemStore = new ItemCache(CMSController);
+                PercussionGuid[] combinedList = CMSController.BuildGuidArray(oldPageIDs, newPageIDs, summaryRootID);
+
+                // Check out all relationship owners. We know they will be modified.
+                PercussionGuid[] itemsToCheckout = // Filter out duplicate item IDs.
+                    (from idValue in (from relationship in relationshipList select relationship.ownerId).Distinct()
+                    select new PercussionGuid(idValue)).ToArray();
+                    
+                PSItemStatus[] checkedOutPageStatus = CMSController.CheckOutForEditing(itemsToCheckout);
+
+                CancerInfoSummarySectionFinder finder = new CancerInfoSummarySectionFinder(CMSController);
+                itemStore.Preload(combinedList);
+                PSItem rootItem = itemStore.LoadContentItem(summaryRootID);
+                string basePath = CMSController.GetPathInSite(rootItem);
+
+                List<KeyValuePair<PercussionGuid, PercussionGuid>> relationshipPairs
+                                    = new List<KeyValuePair<PercussionGuid, PercussionGuid>>();
+
+                foreach (PSAaRelationship individual in relationshipList)
+                {
+                    PercussionGuid sourceID = new PercussionGuid(individual.ownerId);
+                    PercussionGuid oldTargetID = new PercussionGuid(individual.dependentId);
+                    PSItem oldTargetItem = itemStore.LoadContentItem(oldTargetID);
+                    PSItem sourceItem = itemStore.LoadContentItem(sourceID);
+
+                    string sourceBodyField = PSItemUtils.GetFieldValue(sourceItem, "bodyfield");
+                    XmlDocument body = new XmlDocument();
+                    body.LoadXml(sourceBodyField);
+                    XmlNodeList nodeList = body.SelectNodes("//a[@inlinetype='SummaryRef']");
+
+                    foreach (XmlNode node in nodeList)
+                    {
+                        // Find the section number
+                        XmlAttributeCollection attributeList = node.Attributes;
+                        XmlAttribute referenceAttribute = attributeList["objectid"];
+
+                        SummaryReference reference = new SummaryReference(referenceAttribute.Value, basePath);
+
+                        // Link is to a specific document fragment.
+                        if (reference.IsSectionReference)
+                        {
+                            int pageNumber;
+                            PercussionGuid referencedItemID;
+
+                            // Find the page number in the new list of sections.
+                            finder.FindPageContainingSection(newPageIDs, reference.SectionID, out pageNumber, out referencedItemID);
+
+                            // Rebuild the link.
+                            string url = BuildSummaryRefUrl(reference.Url, pageNumber, reference.SectionID);
+                            XmlAttribute href = attributeList["href"];
+                            href.Value = url;
+
+                            // Add the item to the list of references.
+                            relationshipPairs.Add(new KeyValuePair<PercussionGuid, PercussionGuid>(sourceID, referencedItemID));
+                        }
+                        else
+                        {
+                            // Links to the summary without a fragment. (page 1)
+
+                            // Find the page number in the new list of sections.
+                            PercussionGuid referencedItemID = finder.FindFirstPage(newPageIDs);
+
+                            // Add the item to the list of references.
+                            relationshipPairs.Add(new KeyValuePair<PercussionGuid, PercussionGuid>(sourceID, referencedItemID));
+
+                            // Rebuild the link. (URL may have changed)
+                            XmlAttribute href = attributeList["href"];
+                            href.Value = reference.Url;
+                        }
+                    }
+
+                    // Save the updated HTML.
+                    CMSController.SaveContentItems(new PSItem[] { sourceItem });
+                    itemStore.RemoveContentItem(sourceID); // Delete cached copy
+                }
+
+                CMSController.ReleaseFromEditing(checkedOutPageStatus.ToArray());
+
+                // Create the new relationships.  (Saved for last because CreateActiveAssemblyRelationships
+                // will Lock/Release the involved content items and that would conflict with the locks
+                // needed for the updates.
+                relationshipPairs.ForEach(
+                    kvp =>
+                    {
+                        CMSController.CreateActiveAssemblyRelationships(kvp.Key,
+                            new PercussionGuid[] { kvp.Value }, SummaryRefSlot, SummarySectionSnippetTemplate);
+                    });
+            }
+        }
+
 
         /// <summary>
         /// Determines the set of active assembly relationships which come from other
@@ -298,27 +416,24 @@ namespace GKManagers.CMSDocumentProcessing
         {
             // The first item in the collection is always root.
             PercussionGuid rootItem = internalIdentifers[0];
+            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
 
             /// Find all the incoming relationships.  (Need to include inline links!)
             PSAaRelationship[] incomingRelationship =
                 CMSController.FindIncomingActiveAssemblyRelationships(internalIdentifers);
-            List<PercussionGuid> externalOwners = new List<PercussionGuid>();
 
-            /// Eliminate the internal relationships.
-            Array.ForEach(incomingRelationship, relationship =>
+            List<PSAaRelationship> candidateRelationships = new List<PSAaRelationship>(incomingRelationship);
+
+            /// Filter out any incoming relationships we can identify.
+            candidateRelationships.RemoveAll(relationship =>
             {
-                // If the owner of this relationship isn't one of the objects making up the document,
-                // then add the relationship's owner to the list of external owners.
-                PercussionGuid owner = new PercussionGuid(relationship.ownerId);
-                if (Array.Find(internalIdentifers, guid => guid.ID == owner.ID) == null)
-                    externalOwners.Add(owner);
+                PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
+                return internalIdentifers.Contains(ownerID) // owner is part of the document.
+                    || alternateAudiences.Contains(ownerID);// owner is alternate audience version.
             });
 
-            // Find the ID of any alternate audience versions and eliminate from the list.
-            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
-            externalOwners.RemoveAll(owner => alternateAudiences.Contains(owner));
-
-            return null;
+            // Any remaining relationships are external
+            return candidateRelationships.ToArray();
         }
 
 
@@ -390,7 +505,7 @@ namespace GKManagers.CMSDocumentProcessing
                 {
                     XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectId"];
+                    XmlAttribute reference = attributeList["objectid"];
                     XmlAttribute attrib;
 
                     if (itemIDMap.ContainsSectionKey(reference.Value))
@@ -446,7 +561,7 @@ namespace GKManagers.CMSDocumentProcessing
                 {
                     XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectId"];
+                    XmlAttribute reference = attributeList["objectid"];
                     XmlAttribute attrib;
 
                     if (summary.SummaryReferenceMap.ContainsKey(reference.Value))
@@ -884,15 +999,21 @@ namespace GKManagers.CMSDocumentProcessing
 
             // The long_title field is required, but the DTD for table sections doesn't require them.
             // If there is no title, fill it in, but make it hidden.
+            string longTitle;
             if (string.IsNullOrEmpty(tableSection.Title))
             {
-                fields.Add("long_title", "Section: " + tableSection.RawSectionID);
+                longTitle= "Section: " + tableSection.RawSectionID;
                 fields.Add("showpagetitle", "false");
             }
             else
             {
-                fields.Add("long_title", tableSection.Title);
+                longTitle=tableSection.Title;
             }
+            fields.Add("long_title", longTitle);
+
+            // 64 characters long, subtract 3 for " - ", subtract length of table name.
+            int shortLength = (Math.Min(ShortTitleLength, longTitle.Length) - 3) - prettyURLName.Length;
+            fields.Add("short_title", string.Format("{0} - {1}", longTitle.Substring(0, shortLength), prettyURLName));
 
             fields.Add("inline_table", tableSection.Html.OuterXml);
             fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
@@ -946,8 +1067,8 @@ namespace GKManagers.CMSDocumentProcessing
             fields.Add("pretty_url_name", prettyURLName);
             fields.Add("long_title", summary.Title);
 
-            if (summary.Title.Length > 64)
-                fields.Add("short_title", summary.Title.Substring(1, 64));
+            if (summary.Title.Length > ShortTitleLength)
+                fields.Add("short_title", summary.Title.Substring(0, ShortTitleLength));
             else
                 fields.Add("short_title", summary.Title);
 

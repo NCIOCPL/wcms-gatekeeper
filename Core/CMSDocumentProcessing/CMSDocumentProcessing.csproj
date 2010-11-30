@@ -54,6 +54,7 @@
     <Compile Include="DrugInfoSummaryProcessor.cs" />
     <Compile Include="enums.cs" />
     <Compile Include="IDocumentProcessor.cs" />
+    <Compile Include="ItemCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

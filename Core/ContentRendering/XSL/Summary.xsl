@@ -200,7 +200,7 @@
 
   
   <xsl:template match="SummaryRef">
-    <a inlinetype="SummaryRef" objectId="{@href}">
+    <a inlinetype="SummaryRef" objectid="{@href}">
       <xsl:copy-of select="text()"/>
     </a>
   </xsl:template>
@@ -208,10 +208,10 @@
   <!--
     Renders a placeholder tag structure for MediaLinks.  The MediaLink data is
     gathered during the Extract step and the tag structure replaced by the CMS,
-    using the value of the objectID attribute.
+    using the value of the objectid attribute.
   -->
 	<xsl:template match="MediaLink">
-    <div inlinetype="rxvariant" objectId="{@ref}">
+    <div inlinetype="rxvariant" objectid="{@ref}">
       Placeholder slot
     </div>
 	</xsl:template>

@@ -191,20 +191,33 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Saves the specified Content Item to the repository.
+        /// Saves a Content Item to the repository.
         /// </summary>
         /// <param name="contentSvc">The proxy of the content service.</param>
         /// <param name="item">The Content Item to be saved.</param>
         /// <returns></returns>
+        [Obsolete("Use SaveItem(contentSOAP contentSvc, PSItem[] item)")]
         public static long SaveItem(contentSOAP contentSvc, PSItem item)
         {
             //TODO: Refactor SaveItem() and its callers to receive an array of PSItem objects.
-            SaveItemsResponse response = null;
+            PSItem[] itemArray = new PSItem[] { item };
+            return SaveItem(contentSvc, itemArray)[0];
+        }
+
+        /// <summary>
+        /// Saves a collection of Content Items to the repository.
+        /// </summary>
+        /// <param name="contentSvc">The proxy of the content service.</param>
+        /// <param name="item">An array of Content Items to be saved.</param>
+        /// <returns></returns>
+        public static long[] SaveItem(contentSOAP contentSvc, PSItem[] item)
+        {
+            SaveItemsResponse response;
 
             try
             {
                 SaveItemsRequest req = new SaveItemsRequest();
-                req.PSItem = new PSItem[] { item };
+                req.PSItem = item;
                 response = contentSvc.SaveItems(req);
             }
             catch (SoapException ex)
@@ -212,7 +225,7 @@ namespace NCI.WCM.CMSManager.CMS
                 throw new CMSSoapException("Percussion Error in SaveItem.", ex);
             }
 
-            return response.Ids[0];
+            return response.Ids;
         }
 
         /// <summary>

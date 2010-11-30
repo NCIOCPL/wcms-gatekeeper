@@ -621,6 +621,12 @@ namespace NCI.WCM.CMSManager.CMS
             return PSWSUtils.LoadItems(_contentService, itemIDList);
         }
 
+        public PercussionGuid[] SaveContentItems(PSItem[] itemList)
+        {
+            long[] returnIDs = PSWSUtils.SaveItem(_contentService, itemList);
+            return Array.ConvertAll(returnIDs, id => new PercussionGuid(id));
+        }
+
         /// <summary>
         /// Creates relationships between a parent object and a collection of child objects using a named
         /// slot and snippet template.
@@ -642,6 +648,36 @@ namespace NCI.WCM.CMSManager.CMS
                 throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
 
             relationships = PSWSUtils.CreateActiveAssemblyRelationships(_contentService, parentItemID, childItemIDList, slotName, snippetTemplateName);
+
+            PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
+
+            return relationships;
+        }
+
+        /// <summary>
+        /// Creates relationships between a parent object and a collection of child objects using a named
+        /// slot and snippet template.
+        /// </summary>
+        /// <param name="contentSvc">Instance of the Percussion content service.</param>
+        /// <param name="parentItemID">ID of the parent content item.</param>
+        /// <param name="childItemIDList">Array of child item IDs.</param>
+        /// <param name="slotName">Name of the slot which will contain the child items.</param>
+        /// <param name="snippetTemplateName">Name of the snippet template to use when rendering
+        /// the child items.</param>
+        /// <returns>An array of PSAaRelationship objects representing the created relationships.
+        /// The array is never null or empty</returns>
+        public PSAaRelationship[] CreateActiveAssemblyRelationships(PercussionGuid parentItemID, PercussionGuid[] childItemIDList, string slotName, string snippetTemplateName)
+        {
+            PSAaRelationship[] relationships;
+
+            long parentItemIDAsLong = parentItemID.ID;
+            long[] childItemIDListAsLong = Array.ConvertAll(childItemIDList, childId => (long)childId.ID);
+
+            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { parentItemIDAsLong });
+            if (!parentCheckoutStatus[0].didCheckout)
+                throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
+
+            relationships = PSWSUtils.CreateActiveAssemblyRelationships(_contentService, parentItemIDAsLong, childItemIDListAsLong, slotName, snippetTemplateName);
 
             PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
 
@@ -828,6 +864,20 @@ namespace NCI.WCM.CMSManager.CMS
             }
 
             return returnList;
+        }
+
+        public PSItemStatus[] CheckOutForEditing(PercussionGuid[] guidList)
+        {
+            long[] idList= Array.ConvertAll(guidList, guid=>(long)guid.ID);
+            return PSWSUtils.PrepareForEdit(_contentService, idList);
+        }
+
+        public void ReleaseFromEditing(PSItemStatus[] statusList)
+        {
+            if (statusList.Length > 0)
+            {
+                PSWSUtils.ReleaseFromEdit(_contentService, statusList);
+            }
         }
 
         #region Static Utility Methods

@@ -29,29 +29,47 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         /// <summary>
-        /// Finds the ID of the content item representing the first content item
-        /// in the Page Slot of a previously saved Cancer Information Summary.
+        /// Finds the ID of the content item representing the first page content item
+        /// in a previously saved Cancer Information Summary.
         /// </summary>
         /// <param name="root">The ID of the content item forming the summary document's root.</param>
-        /// <returns>PercussionGuid of the </returns>
+        /// <returns>PercussionGuid of the first page</returns>
         public PercussionGuid FindFirstPage(PercussionGuid root)
+        {
+            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
+            return FindFirstPage(pageIDs);
+        }
+
+        /// <summary>
+        /// Finds the ID of the content item representing the first page content item
+        /// in a previously saved Cancer Information Summary.
+        /// </summary>
+        /// <param name="pageIDs">The list of IDs for document's individual pages.
+        /// Assumed to be in page order.</param>
+        /// <returns>PercussionGuid of the first page</returns>
+        public PercussionGuid FindFirstPage(PercussionGuid[] pageIDs)
         {
             PercussionGuid first = null;
 
-            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
             if (pageIDs.Length > 0)
                 first = pageIDs[0];
 
             return first;
         }
 
+
         public void FindPageContainingSection(PercussionGuid root, string sectionID, out int pageNumber, out PercussionGuid containingItem)
+        {
+            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
+            FindPageContainingSection(pageIDs, sectionID, out pageNumber, out containingItem);
+        }
+
+        public void FindPageContainingSection(PercussionGuid[] pageIDs, string sectionID, out int pageNumber, out PercussionGuid containingItem)
         {
             // Force the out parameters to have values.
             pageNumber = int.MinValue;
             containingItem = null;
 
-            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
             PSItem[] pageItems = CMSController.LoadContentItems(pageIDs);
 
             for (int i = 0; i < pageItems.Length; i++)
