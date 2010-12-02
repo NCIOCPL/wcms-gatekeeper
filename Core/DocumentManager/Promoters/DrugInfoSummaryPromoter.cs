@@ -64,12 +64,22 @@ namespace GKManagers
                     processor.ProcessDocument(drugInfoSummary);
                 }
 
+                // Save drug info summary data into database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.SaveDocument(drugInfoSummary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Staging does nothing.  This is by design.
-                // Attempting to remove the document at this stage would
-                // remove it from all stages.
+                // By design, removing from Staging does nothing to Percussion. Attempting to remove the
+                // document at this stage would remove it from all stages.
+
+                // Remove drug info summary data from database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Staging, UserName);
+                }
             }
             else
             {
@@ -104,12 +114,23 @@ namespace GKManagers
                 {
                     processor.PromoteToPreview(drugInfoSummary.DocumentID);
                 }
+
+                // Push drug info summary document to the preview database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.PushDocumentToPreview(drugInfoSummary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Preview does nothing.  This is by design.
-                // Attempting to remove the document at this stage would
-                // remove it from all stages.
+                // By design, removing from Preview does nothing to Percussion. Attempting to remove the
+                // document at this stage would remove it from all stages.
+
+                // Remove drug info summary data from database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Preview, UserName);
+                }
             }
             else
             {
@@ -142,13 +163,24 @@ namespace GKManagers
                 {
                     processor.PromoteToLive(drugInfoSummary.DocumentID);
                 }
+
+                // Push drug info summary document to the live database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.PushDocumentToLive(drugInfoSummary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Preview does nothing at this point.
                 using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
                 {
                     processor.DeleteContentItem(drugInfoSummary.DocumentID);
+                }
+
+                // Remove drug info summary data from database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Live, UserName);
                 }
             }
             else

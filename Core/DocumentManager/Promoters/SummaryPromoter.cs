@@ -66,20 +66,23 @@ namespace GKManagers
                     processor.ProcessDocument(summary);
                 }
 
-                //// Save summary data into database
-                //// Don't delete this until after refactoring the render code.
-                //using (SummaryQuery summaryQuery = new SummaryQuery())
-                //{
-                //    // Remove from Staging does nothing.  This is by design.
-                //    // Attempting to remove the document at this stage would
-                //    // remove it from all stages.
-                //}
+                // Save summary metadata into database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.SaveDocument(summary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Staging does nothing.  This is by design.
+                // Remove from Staging does nothing in Percussion.  This is by design.
                 // Attempting to remove the document at this stage would
                 // remove it from all stages.
+
+                // Remove summary data from database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.DeleteDocument(summary, ContentDatabase.Staging, UserName);
+                }
             }
             else
             {
@@ -114,17 +117,23 @@ namespace GKManagers
                 {
                     processor.PromoteToPreview(summary.DocumentID);
                 }
-                //// Push summary document to the preview database
-                //using (SummaryQuery summaryQuery = new SummaryQuery())
-                //{
-                //    summaryQuery.PushDocumentToPreview(summary, UserName);
-                //}
+
+                // Push summary metadata to the preview database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.PushDocumentToPreview(summary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove from Preview does nothing.  This is by design.
-                // Attempting to remove the document at this stage would
-                // remove it from all stages.
+                // Remove from Preview does nothing in Percussion.  This is by design.
+                // Attempting to remove the document at this stage would it from all stages.
+
+                // Remove summary data from database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.DeleteDocument(summary, ContentDatabase.Preview, UserName);
+                }
             }
             else
             {
@@ -157,11 +166,11 @@ namespace GKManagers
                 {
                     processor.PromoteToLive(summary.DocumentID);
                 }
-                //// Push summary document to the live database
-                //using (SummaryQuery summaryQuery = new SummaryQuery())
-                //{
-                //    summaryQuery.PushDocumentToLive(summary, UserName);
-                //}
+                // Push summary metadata to the live database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.PushDocumentToLive(summary, UserName);
+                }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
@@ -169,11 +178,12 @@ namespace GKManagers
                 {
                     processor.DeleteContentItem(summary.DocumentID);
                 }
-                //// Remove summary data from database
-                //using (SummaryQuery summaryQuery = new SummaryQuery())
-                //{
-                //    summaryQuery.DeleteDocument(summary, ContentDatabase.Live, UserName);
-                //}
+
+                // Remove summary data from database
+                using (SummaryQuery summaryQuery = new SummaryQuery())
+                {
+                    summaryQuery.DeleteDocument(summary, ContentDatabase.Live, UserName);
+                }
             }
             else
             {
