@@ -25,6 +25,8 @@ namespace NCI.WCM.CMSManager.CMS
 
         public long Guid { get; private set; }
 
+        public static int GetID(long guid) { return (int)(guid & 0xFFFFFFFFL); }
+
         public int ID
         {
             get { return (int)(Guid & 0xFFFFFFFFL); }
@@ -38,6 +40,8 @@ namespace NCI.WCM.CMSManager.CMS
             }
         }
 
+        public static int GetRevision(long guid) { return (int)(guid >> 40); }
+
         public int Revision
         {
             get { return (int)(Guid >> 40); }
@@ -47,6 +51,8 @@ namespace NCI.WCM.CMSManager.CMS
                 Guid = (mask & Guid) | (uint)value;
             }
         }
+
+        public static int GetType(long guid) { return (int)(guid >> 32) & 0xFF; }
 
         public int Type
         {

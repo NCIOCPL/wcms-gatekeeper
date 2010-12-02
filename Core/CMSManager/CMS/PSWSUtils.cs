@@ -441,6 +441,18 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
 
+        public static void DeleteActiveAssemblyRelationships(contentSOAP contentSvc, long[] relationshipIDList)
+        {
+            try
+            {
+                contentSvc.DeleteContentRelations(relationshipIDList);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in DeleteActiveAssemblyRelationships().", ex);
+            }
+        }
+
         public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
         {
             return FindItemByFieldValues(contentSvc, contentType, null, fieldCriteria);

@@ -75,6 +75,7 @@ namespace GKManagers.CMSDocumentProcessing
         #region Internal Delegates
 
         private delegate string SubDocumentIDDelegate<SubDocumentType>(SubDocumentType subDocument);
+        private delegate void ItemTransitionDelegate(PercussionGuid[] itemList);
 
         #endregion
 
@@ -133,14 +134,13 @@ namespace GKManagers.CMSDocumentProcessing
         public void PromoteToPreview(int documentID)
         {
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
+
+            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
+
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            // TODO: Decide on a strategy for moving Link vs. everything else.
-            // Move everything at once?  (Probably)
-
-            //TransitionItemsToPreview();
+            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, pageIDs, subItems);
         }
 
         /// <summary>
@@ -150,14 +150,27 @@ namespace GKManagers.CMSDocumentProcessing
         public void PromoteToLive(int documentID)
         {
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLink = LocateSummaryLink(summaryRootID);
+            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            // TODO: Decide on a strategy for moving Link vs. everything else.
-            // Move everything at once?  (Probably)
+            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, pageIDs, subItems);
+        }
 
-            //TransitionItemsToLive();
+        private void PerformTransition(ItemTransitionDelegate transitionMethod,
+            PercussionGuid summaryRootID,
+            PercussionGuid summaryLinkID,
+            PercussionGuid[] pageIDs,
+            PercussionGuid[] subItems)
+        {
+            // Root item and Link must move independently of each other and everything else.
+            transitionMethod(new PercussionGuid[] { summaryRootID });
+            transitionMethod(new PercussionGuid[] { summaryLinkID });
+
+            // Pages and subPages are created new on each update and will therefore be in
+            // a different state than the root and link items.
+            PercussionGuid[] pageCollection = CMSController.BuildGuidArray(pageIDs, subItems);
+            transitionMethod(pageCollection);
         }
 
 
@@ -231,14 +244,15 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void UpdateCancerInformationSummary(SummaryDocument summary)
         {
-            // Retrieve IDs for the summary and all its components. They will be needed
-            // for both delete and for delete validation.
+            // Retrieve IDs for the summary and all its components.
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, summary.DocumentID);
             PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
-            // TODO: TransitionItemsToStaging(Entire Collection);
+            // Move the entire composite document to staging.
+            // This step is not required when creating items since creation takes place in staging.
+            PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
 
             PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
             string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
@@ -279,8 +293,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
             // No links from other summaries to table sections and media links.
-            CMSController.DeleteItemList(oldSubItems);
-            CMSController.DeleteItemList(oldPageIDs);
+            RemoveOldPages(oldPageIDs, oldSubItems);
 
             // Move the new items into the main folder.
             PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList);
@@ -289,6 +302,17 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
+        }
+
+
+        private void RemoveOldPages(PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems)
+        {
+            PercussionGuid[] combinedIDList = CMSController.BuildGuidArray(oldPageIDs, oldSubItems);
+
+            PSAaRelationship[] relationships = CMSController.FindIncomingActiveAssemblyRelationships(combinedIDList);
+            CMSController.DeleteActiveAssemblyRelationships(relationships, false);
+
+            CMSController.DeleteItemList(combinedIDList);
         }
 
         private void UpdateIncomingSummaryReferences(PercussionGuid summaryRootID, PercussionGuid summaryLinkID,

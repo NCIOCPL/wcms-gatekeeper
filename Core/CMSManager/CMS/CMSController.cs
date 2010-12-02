@@ -410,22 +410,31 @@ namespace NCI.WCM.CMSManager.CMS
 
 
         /// <summary>
-        /// Deletes the specified content item.
+        /// Deletes the specified content items.
         /// </summary>
         /// <param name="itemID">ID of the content item to be deleted.</param>
         public void DeleteItem(long itemID)
         {
-            PSWSUtils.DeleteItem(_contentService, new long[]{itemID});
+            DeleteItemList(new long[] { itemID });
         }
 
         /// <summary>
-        /// Deletes the specified content item.
+        /// Deletes the specified content items.
         /// </summary>
         /// <param name="itemList">Array of content item IDs to be deleted.</param>
         public void DeleteItemList(PercussionGuid[] itemList)
         {
             long[] rawIDs = Array.ConvertAll(itemList, item => (long)item.ID);
-            PSWSUtils.DeleteItem(_contentService, rawIDs);
+            DeleteItemList(rawIDs);
+        }
+
+        /// <summary>
+        /// Deletes the specified content items.
+        /// </summary>
+        /// <param name="itemID">ID of the content item to be deleted.</param>
+        private void DeleteItemList(long[] itemList)
+        {
+            PSWSUtils.DeleteItem(_contentService, itemList);
         }
 
         /// <summary>
@@ -582,8 +591,25 @@ namespace NCI.WCM.CMSManager.CMS
         /// items from IDList as a dependent.</returns>
         public PSAaRelationship[] FindIncomingActiveAssemblyRelationships(PercussionGuid[] IDList, string slotName, string templateName)
         {
+            long[] idArray = Array.ConvertAll(IDList, guid => (long)guid.ID);
+            return FindIncomingActiveAssemblyRelationships(idArray, slotName, templateName);
+        }
+
+        /// <summary>
+        /// Finds the active assembly relationships which a collection of content items depend on.
+        /// </summary>
+        /// <param name="IDList">An array of long values identifiying Percussion content items to be checked
+        /// for incoming active assembly relationships. Required.</param>
+        /// <param name="slotName">If specified, restricts the result set to relationships which
+        /// use the named slot.</param>
+        /// <param name="templateName">If specified, restricts the result set to relationships which
+        /// use the named snippet template.</param>
+        /// <returns>An array of zero or more PSAaRelationship objects having one or move
+        /// items from IDList as a dependent.</returns>
+        private PSAaRelationship[] FindIncomingActiveAssemblyRelationships(long[] IDList, string slotName, string templateName)
+        {
             PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
-            filter.Dependent = Array.ConvertAll(IDList, guid => (long)guid.ID);
+            filter.Dependent = IDList;
 
             if (!string.IsNullOrEmpty(slotName))
             {
@@ -641,7 +667,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// The array is never null or empty</returns>
         public PSAaRelationship[] CreateActiveAssemblyRelationships(long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName)
         {
-            PSAaRelationship[] relationships = null;
+            PSAaRelationship[] relationships;
 
             PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[]{parentItemID});
             if (!parentCheckoutStatus[0].didCheckout)
@@ -682,6 +708,25 @@ namespace NCI.WCM.CMSManager.CMS
             PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
 
             return relationships;
+        }
+
+        public void DeleteActiveAssemblyRelationships(PSAaRelationship[] relationships, bool alreadyInEditingState)
+        {
+            PSItemStatus[] parentCheckoutStatus = new PSItemStatus[] { };
+            long[] relationshipIDs = Array.ConvertAll(relationships, relationship => (long)PercussionGuid.GetID(relationship.id));
+
+            if (!alreadyInEditingState)
+            {
+                long[] parentItems = Array.ConvertAll(relationships, relationship => (long)PercussionGuid.GetID(relationship.ownerId));
+                parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, parentItems);
+            }
+
+            PSWSUtils.DeleteActiveAssemblyRelationships(_contentService, relationshipIDs);
+
+            if (!alreadyInEditingState)
+            {
+                PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
+            }
         }
 
         public PSRelationship CreateRelationship(long parentItemID, long childItemID, string relationshipType)
