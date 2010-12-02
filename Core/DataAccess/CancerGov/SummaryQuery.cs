@@ -119,16 +119,16 @@ namespace GateKeeper.DataAccess.CancerGov
                             Guid guid = Guid.Empty;
                             // If guid is empty, don't delete, create a warning 
                             GetDocumentIDs(ref documentID, ref guid, db);
-                            if (guid != Guid.Empty && IsDocumentActive(documentID, db))
-                                DeleteSummaryPreview(guid);
-                            else
-                            {
-                                // Give out warning message
-                                summary.WarningWriter("Database warning: Summary document could not be deleted in the preview database.  The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
-                                conn.Close();
-                                conn.Dispose();
-                                return;
-                            }
+                            //if (guid != Guid.Empty && IsDocumentActive(documentID, db))
+                            //    DeleteSummaryPreview(guid);
+                            //else
+                            //{
+                            //    // Give out warning message
+                            //    summary.WarningWriter("Database warning: Summary document could not be deleted in the preview database.  The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
+                            //    conn.Close();
+                            //    conn.Dispose();
+                            //    return;
+                            //}
                             break;
                         case ContentDatabase.Live:
                             db = this.LiveDBWrapper.SetDatabase();
@@ -136,16 +136,16 @@ namespace GateKeeper.DataAccess.CancerGov
                             Guid liveGuid = Guid.Empty;
                             // If guid is empty, don't delete, create a warning 
                             GetDocumentIDs(ref documentID, ref liveGuid, db);
-                            if (liveGuid != Guid.Empty && IsDocumentActive(documentID, db))
-                                PushToCancerGovLive(summary, true, userID);
-                            else
-                            {
-                                // Give out warning message
-                                summary.WarningWriter("Database warning: Summary document could not be deleted in the live database.   The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
-                                conn.Close();
-                                conn.Dispose();
-                                return;
-                            }
+                            //if (liveGuid != Guid.Empty && IsDocumentActive(documentID, db))
+                            //    PushToCancerGovLive(summary, true, userID);
+                            //else
+                            //{
+                            //    // Give out warning message
+                            //    summary.WarningWriter("Database warning: Summary document could not be deleted in the live database.   The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
+                            //    conn.Close();
+                            //    conn.Dispose();
+                            //    return;
+                            //}
                             break;
                         default:
                             throw new Exception("Database Error: Invalid database name. DatabaseName = " + databaseName.ToString());
@@ -196,7 +196,7 @@ namespace GateKeeper.DataAccess.CancerGov
                     PushToCDRPreview(summaryDoc.DocumentID, userID);
                     
                     // Push document to CancerGovStaging database
-                    PushToCancerGovPreview(summaryDoc.DocumentID, summaryDoc, userID);
+                    //PushToCancerGovPreview(summaryDoc.DocumentID, summaryDoc, userID);
                 }
                 else
                 {
@@ -222,10 +222,6 @@ namespace GateKeeper.DataAccess.CancerGov
                  {
                      // Push document to CDR Staging database
                      PushToCDRLive(summaryDoc.DocumentID, userID);
-
-                     // Push document to CancerGovStaging database
-                     bool isRemove = false;
-                     PushToCancerGovLive(summary, isRemove, userID);
                  }
                  else
                  {
@@ -569,36 +565,6 @@ namespace GateKeeper.DataAccess.CancerGov
          }
 
 
-         #region Delete Methods
-
-        /// <summary>
-        /// Call store procedure to delete summary document in CancerGovStaging database
-        /// </summary>
-        /// <param name="documentID"></param>
-        /// <returns></returns>
-        private void DeleteSummaryPreview(Guid documentGuid)
-        {
-            // Note: Don't need transaction for alll CancerGov related store procedure because the transaction is nested in store procedure
-            Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-            try
-            {
-                // SP: delete summary document from CancerGovStaging database
-                string spDeleteData = SPSummary.SP_Delete_View_Object;
-                using (DbCommand deleteCommand = db.GetStoredProcCommand(spDeleteData))
-                {
-                    deleteCommand.CommandType = CommandType.StoredProcedure;
-                    db.AddInParameter(deleteCommand, "@delObj", DbType.Guid, documentGuid);
-                    db.ExecuteNonQuery(deleteCommand);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Database Error: Deleting summary document in CancerGov preview database failed. Document GUID=" + documentGuid.ToString(), e);
-            }
-        }
-
-         #endregion
-
         #region Promote Methods
         /// <summary>
         /// Call store procedure to push summary document to CDR preview database
@@ -818,68 +784,6 @@ namespace GateKeeper.DataAccess.CancerGov
               conn.Dispose();
           }
       }
-
-         /// <summary>
-        /// Call store procedure to get summary document info from CDRStaging database
-        /// </summary>
-        /// <param name="documentID"></param>
-        /// <param name="isRemove"></param>
-       /// <param name="userID"></param>
-        /// <returns></returns>
-            // Push document to CancerGovStaging database
-        private void PushToCancerGovLive(Document summary, bool isRemove, string userID)
-        {
-            // Note: Don't need transaction for alll CancerGov related store procedure because the transaction is nested in store procedure
-            Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-            try
-            {
-                int documentID = summary.DocumentID;
-                // Get document guid & NCI view ID
-                Guid docGuid = Guid.Empty;
-                // If guid is empty, then it is a new documen to push.
-                GetDocumentIDs(ref documentID, ref docGuid, this.LiveDBWrapper.SetDatabase());
-                Guid nciViewID = GetNCIViewID(docGuid, db);
-                if (nciViewID == Guid.Empty)
-                    nciViewID = GetNCIViewID(docGuid, this.CancerGovDBWrapper.SetDatabase());
-
-                if (nciViewID != Guid.Empty)
-                {
-                    // SP: Call push summary document to push data to CancerGovStaging database
-                    string spUpdateStatusData = SPSummary.SP_Update_NCI_View_Status;
-                    using (DbCommand updateStatusCommand = db.GetStoredProcCommand(spUpdateStatusData))
-                    {
-                        updateStatusCommand.CommandType = CommandType.StoredProcedure;
-                        db.AddInParameter(updateStatusCommand, "@NCIViewID", DbType.Guid, nciViewID);
-                        // This value is set to "submit" according to the old gatekeeper
-                        db.AddInParameter(updateStatusCommand, "@Status", DbType.String, "SUBMIT");
-                        db.ExecuteNonQuery(updateStatusCommand);
-                    }
-
-                    string sPushToProduction = SPSummary.SP_Push_NCI_View_To_Production;
-                    using (DbCommand pushToLiveCommand = db.GetStoredProcCommand(sPushToProduction))
-                    {
-                        pushToLiveCommand.CommandType = CommandType.StoredProcedure;
-                        db.AddInParameter(pushToLiveCommand, "@NCIViewID", DbType.Guid, nciViewID);
-                        db.AddInParameter(pushToLiveCommand, "@UpdateUserID", DbType.String, userID);
-                        db.ExecuteNonQuery(pushToLiveCommand);
-                    }
-                }
-                else if (isRemove)
-                {
-                    // Give out warning message as information for internal debugging purpose.
-                    summary.InformationWriter("Database warning: Summary document could not be deleted in the CancerGov database.  The document's NCIViewID does not exist. cdrid = " + summary.DocumentID.ToString() + ".");
-                }
-                else
-                {
-                    throw new Exception ("Database Error: Retrieving NCIViewID from CancerGov database failed.  Document CDRID = " + documentID.ToString() + ".");
-                }
-                
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Database Error: Pushing summary document to CancerGov database failed. Document CDRID=" + summary.DocumentID.ToString(), e);
-            }
-        }
 
          /// <summary>
         /// Trim extra space between <br/> tag

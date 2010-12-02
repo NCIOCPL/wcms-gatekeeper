@@ -78,13 +78,13 @@ namespace GateKeeper.DataAccess.CancerGov
                                  Guid previewGuid = Guid.Empty;
                                  // If guid is empty, give warning, don't proceed.
                                  GetDocumentIDs(ref documentID, ref previewGuid, db);
-                                 if (previewGuid != Guid.Empty)
-                                    DeleteDrugInfoPreview(previewGuid);
-                                else
-                                {
-                                    // Give out warning message
-                                    drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in preview database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the preview database.");
-                                }
+                                // if (previewGuid != Guid.Empty)
+                                //    DeleteDrugInfoPreview(previewGuid);
+                                //else
+                                //{
+                                //    // Give out warning message
+                                //    drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in preview database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the preview database.");
+                                //}
                                  break;
                              }
                          case ContentDatabase.Live:
@@ -94,13 +94,13 @@ namespace GateKeeper.DataAccess.CancerGov
                                  Guid liveGuid = Guid.Empty;
                                  // If guid is empty, warning, don't proceed.
                                  GetDocumentIDs(ref documentID, ref liveGuid, db);
-                                 if (liveGuid != Guid.Empty)
-                                    DeleteDrugInfoLive(liveGuid);
-                                 else
-                                 {
-                                    // Give out warning message
-                                    drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in live database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the live database.");
-                                 }
+                                 //if (liveGuid != Guid.Empty)
+                                 //   DeleteDrugInfoLive(liveGuid);
+                                 //else
+                                 //{
+                                 //   // Give out warning message
+                                 //   drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in live database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the live database.");
+                                 //}
                                  break;
                              }
                         default:
@@ -146,9 +146,6 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     // Push document to CDR Staging database
                     PushToCDRPreview(drug.DocumentID, userID);
-
-                    // Push document to CancerGovStaging database
-                    PushToCancerGovPreview(drug.DocumentID, drug, userID);
                 }
                 else
                 {
@@ -170,9 +167,6 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     // Push document to CDR Staging database
                     PushToCDRLive(drug.DocumentID, userID);
-
-                    // Push document to CancerGovStaging database
-                    PushToCancerGovLive(drug.DocumentID, userID);
                 }
                 else
                 {
@@ -393,64 +387,6 @@ namespace GateKeeper.DataAccess.CancerGov
           }
       }
 
-      /// <summary>
-      /// Call store procedure to push drug info summary document to CancerGovStaging database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <param name="userID"></param>
-      /// <returns></returns>
-      private void PushToCancerGovPreview(int documentID, DrugInfoSummaryDocument drug, string userID)
-      {
-          // Note: Don't need transaction for alll CancerGov related store procedure
-          Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-          try
-          {
-              // SP: Call push drug info summary document to push data to CancerGovStaging database
-              string spPushData = SPDrugInfo.SP_PUSH_DRUG_INFO_TO_PREVIEW;
-              using (DbCommand pushCommand = db.GetStoredProcCommand(spPushData))
-              {
-                  pushCommand.CommandType = CommandType.StoredProcedure;
-                  db.AddInParameter(pushCommand, "@NCIViewID", DbType.Guid, null);
-                  if (drug.Title != null)
-                      drug.Title = drug.Title.Trim();
-                  db.AddInParameter(pushCommand, "@Title", DbType.String, drug.Title);
-                  // The maximum length of the short title should be 64 chars.
-                  if (drug.Title.Trim().Length > 64)
-                      db.AddInParameter(pushCommand, "@ShortTitle", DbType.String, drug.Title.Trim().Substring(0, 64));
-                  else
-                  {
-                      if (drug.Title != null)
-                          drug.Title = drug.Title.Trim();
-                      db.AddInParameter(pushCommand, "@ShortTitle", DbType.String, drug.Title);
-                  }
-                  if (drug.Description != null)
-                      drug.Description = drug.Description.Trim();
-                  db.AddInParameter(pushCommand, "@description", DbType.String, drug.Description);
-                  if (drug.Html != null)
-                      drug.Html = drug.Html.Trim();
-                  db.AddInParameter(pushCommand, "@data", DbType.String, drug.Html);
-                  db.AddInParameter(pushCommand, "@datasize", DbType.Int32, drug.Html.Length);
-                  db.AddInParameter(pushCommand, "@Expirationdate", DbType.DateTime, new DateTime(2100, 1, 1));
-                  if (drug.LastModifiedDate == DateTime.MinValue)
-                      db.AddInParameter(pushCommand, "@Releasedate", DbType.DateTime, null);
-                  else
-                    db.AddInParameter(pushCommand, "@Releasedate", DbType.DateTime, drug.LastModifiedDate);
-                  db.AddInParameter(pushCommand, "@posteddate", DbType.DateTime, drug.FirstPublishedDate);
-                  db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
-                  if (drug.PrettyURL != null)
-                      drug.PrettyURL = drug.PrettyURL.Trim();
-                  db.AddInParameter(pushCommand, "@proposedURL", DbType.String, drug.PrettyURL);
-                  db.AddInParameter(pushCommand, "@updateDate", DbType.DateTime, DateTime.Now);
-                  db.AddInParameter(pushCommand, "@DocumentID", DbType.Guid, drug.GUID);
-                  db.ExecuteNonQuery(pushCommand);
-              }
-          }
-          catch (Exception e)
-          {
-              throw new Exception("Database Error: Pushing drug info summary document to CancerGovStaging database failed. Document CDRID=" + documentID.ToString(), e);
-          }
-      }
-
        /// <summary>
       /// Call store procedure to retrieve drug info summary data from cdr staging database
       /// </summary>
@@ -502,95 +438,6 @@ namespace GateKeeper.DataAccess.CancerGov
               }
               return bSucceeded;
           }
-
-          
-      /// <summary>
-      /// Call store procedure to push drug info summary document to CancerGov database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <param name="userID"></param>
-      /// <returns></returns>
-      private void PushToCancerGovLive(int documentID, string userID)
-      {
-          // Note: Don't need transaction for alll CancerGov related store procedure because the transaction is nested in store procedure
-          Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-          try
-          {
-              // Get document guid
-              Guid docGuid = Guid.Empty;
-              // If guid is empty, throw an error, don't proceed.
-              GetDocumentIDs(ref documentID, ref docGuid, this.PreviewDBWrapper.SetDatabase());
-              Guid nciViewID = GetNCIViewID(docGuid, db);
-              if (nciViewID != Guid.Empty)
-              {
-                  // SP: Call push drug info summary document to push data to CancerGovStaging database
-                  string spPushData = SPDrugInfo.SP_PUSH_DRUG_INFO_TO_LIVE;
-                  using (DbCommand pushCommand = db.GetStoredProcCommand(spPushData))
-                  {
-                      pushCommand.CommandType = CommandType.StoredProcedure;
-                      db.AddInParameter(pushCommand, "@NCIViewID", DbType.Guid, nciViewID);
-                      db.AddInParameter(pushCommand, "@documentID", DbType.Guid, docGuid);
-                      db.AddInParameter(pushCommand, "@updateUserID", DbType.String, userID);
-                      db.ExecuteNonQuery(pushCommand);
-                  }
-              }
-          }
-          catch (Exception e)
-          {
-              throw new Exception("Database Error: Pushing drug info summary document to CancerGov database failed. Document CDRID=" + documentID.ToString(), e);
-          }
-      }
-
-       /// <summary>
-      /// Call store procedure to delete drug info summary document in CancerGovStaging database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <returns></returns>
-      private void  DeleteDrugInfoPreview(Guid documentGuid)
-      {
-          // Note: Don't need transaction for alll CancerGov related store procedure because the transaction is nested in store procedure
-          Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-          try
-          {
-              // SP: delete drug info summary document from CancerGovStaging database
-              string spDeleteData = SPDrugInfo.SP_DELETE_DRUG_INFO_IN_PREVIEW;
-              using (DbCommand deleteCommand = db.GetStoredProcCommand(spDeleteData))
-              {
-                  deleteCommand.CommandType = CommandType.StoredProcedure;
-                  db.AddInParameter(deleteCommand, "@DocumentID", DbType.Guid, documentGuid);
-                  db.ExecuteNonQuery(deleteCommand);
-              }
-          }
-          catch (Exception e)
-          {
-              throw new Exception("Database Error: Deleting drug info summary document in CancerGov preview database failed. Document GUID=" + documentGuid.ToString(), e);
-          }
-      }
-
-      /// <summary>
-      /// Call store procedure to delete drug info summary document in CancerGov database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <returns></returns>
-      private void DeleteDrugInfoLive(Guid documentGuid)
-      {
-          Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-          try
-          {
-              // SP: delete drug info from CancerGov database
-              string spDeleteData = SPDrugInfo.SP_DELETE_DRUG_INFO_IN_LIVE;
-              using (DbCommand DeleteCommand = db.GetStoredProcCommand(spDeleteData))
-              {
-                  DeleteCommand.CommandType = CommandType.StoredProcedure;
-                  db.AddInParameter(DeleteCommand, "@DocumentID", DbType.Guid, documentGuid);
-                  db.ExecuteNonQuery(DeleteCommand);
-              }
-          }
-          catch (Exception e)
-          {
-              throw new Exception("Database Error: Deleting drug info summary document in CancerGov live database failed. Document Guid=" + documentGuid.ToString(), e);
-          }
-      }
 
     #endregion
     }
