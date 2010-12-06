@@ -104,6 +104,8 @@ namespace NCI.WCM.CMSManager.CMS
                 _systemService = null;
                 _assemblyService = null;
                 _loginSessionContext = null;
+
+                GC.SuppressFinalize(this);
             }
         }
 

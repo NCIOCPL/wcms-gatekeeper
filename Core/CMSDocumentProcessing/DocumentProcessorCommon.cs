@@ -56,6 +56,7 @@ namespace GKManagers.CMSDocumentProcessing
             if (disposing)
             {
                 CMSController.Dispose();
+                GC.SuppressFinalize(this);
             }
         }
 
