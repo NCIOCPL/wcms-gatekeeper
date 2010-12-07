@@ -80,6 +80,52 @@ namespace NCI.WCM.CMSManager.CMS
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the CMSController class.
+        /// </summary>
+        public CMSController()
+        {
+            // Percussion system login and any other needed intitialization goes here.
+            // The login ID and password are loaded from the application's configuration file.
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+
+            string username = percussionConfig.ConnectionInfo.UserName.Value;
+            string password = percussionConfig.ConnectionInfo.Password.Value;
+            string community = percussionConfig.ConnectionInfo.Community.Value;
+
+            string host = percussionConfig.ConnectionInfo.Host.Value;
+            string port = percussionConfig.ConnectionInfo.Port.Value;
+            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
+
+            Login(username, password, community, host, port, protocol);
+
+            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CMSController class.
+        /// </summary>
+        public CMSController(string communityName)
+        {
+            // HACK: There should really be a mechanism for a single CMSController to address multiple communities
+            // without having to switch on the fly.  (Maintain multiple logins.)
+
+            // Percussion system login and any other needed intitialization goes here.
+            // The login ID and password are loaded from the application's configuration file.
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+
+            string username = percussionConfig.ConnectionInfo.UserName.Value;
+            string password = percussionConfig.ConnectionInfo.Password.Value;
+
+            string host = percussionConfig.ConnectionInfo.Host.Value;
+            string port = percussionConfig.ConnectionInfo.Port.Value;
+            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
+
+            Login(username, password, communityName, host, port, protocol);
+            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
+        }
+
+
         #region Disposable Pattern Members
 
         ~CMSController()
@@ -111,18 +157,6 @@ namespace NCI.WCM.CMSManager.CMS
 
         #endregion
 
-        /// <summary>
-        /// Initializes a new instance of the CMSController class.
-        /// </summary>
-        public CMSController()
-        {
-            // Percussion system login and any other needed intitialization goes here.
-            // The login ID and password are loaded from the application's configuration file.
-            Login();
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
-            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
-        }
-
         public TemplateNameManager TemplateNameManager
         {
             /*
@@ -143,17 +177,11 @@ namespace NCI.WCM.CMSManager.CMS
         /// <summary>
         /// Login to the Percussion session, set up services.
         /// </summary>
-        private void Login()
+        private void Login(string username, string password, string community, string host, string port, string protocol)
         {
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
-
-            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
-            string host = percussionConfig.ConnectionInfo.Host.Value;
-            string port = percussionConfig.ConnectionInfo.Port.Value;
 
             _securityService = PSWSUtils.GetSecurityService(protocol, host, port);
-            _loginSessionContext= PSWSUtils.Login(_securityService, percussionConfig.ConnectionInfo.UserName.Value,
-                  percussionConfig.ConnectionInfo.Password.Value, percussionConfig.ConnectionInfo.Community.Value, null);
+            _loginSessionContext = PSWSUtils.Login(_securityService, username, password, community, null);
 
             _contentService = PSWSUtils.GetContentService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
