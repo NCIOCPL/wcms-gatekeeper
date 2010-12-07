@@ -76,8 +76,11 @@ namespace NCI.WCM.CMSManager
     [global::System.Serializable]
     public class CMSSoapException : CMSException
     {
+        //public CMSSoapException(string message, SoapException inner)
+        //    : base(message + "\n\n" + inner.Detail.InnerXml.ToString()) { }
         public CMSSoapException(string message, SoapException inner)
-            : base(message + "\n\n" + inner.Detail.InnerXml.ToString())   {  }
+            : base(message + "\n\n" + inner.ToString()) { }
+
 
     }
     
