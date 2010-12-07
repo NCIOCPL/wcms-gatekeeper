@@ -53,6 +53,7 @@
     <Compile Include="DocumentProcessorCommon.cs" />
     <Compile Include="DrugInfoSummaryProcessor.cs" />
     <Compile Include="enums.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="ItemCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

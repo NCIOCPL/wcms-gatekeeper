@@ -39,7 +39,7 @@ namespace GKManagers.CMSDocumentProcessing
         const string InlineSlot = "sys_inline_variant";
 
         const string InlineLinkSlotID = "103";
-        const string InlinImageSlotID="104";
+        const string InlinImageSlotID = "104";
         const string InlineTemplateSlotID = "105";
 
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
@@ -181,6 +181,13 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid summaryRoot;
             long[] summaryPageIDList;
             string createPath = GetTargetFolder(document.BasePrettyURL);
+            string rootItemPrettyUrlName = GetSummaryPrettyUrlName(document.BasePrettyURL);
+
+            if (!PrettyUrlIsAvailable(createPath, rootItemPrettyUrlName))
+            {
+                throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.",
+                    createPath, rootItemPrettyUrlName));
+            }
 
             // Create the sub-pages
             List<long> tableIDs;
@@ -250,12 +257,28 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
+            // Doublecheck paths.
+            PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
+            string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
+            string newPath = GetTargetFolder(summary.BasePrettyURL);
+            string prettyUrlName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
+
+            if (!PrettyUrlIsSameDocument(summary.DocumentID, existingItemPath, prettyUrlName))
+            {
+                throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", existingItemPath, prettyUrlName));
+            }
+
+            if (!newPath.Equals(existingItemPath, StringComparison.InvariantCultureIgnoreCase)
+                && PrettyUrlPathIsOccupied(newPath))
+            {
+                throw new DocumentExistsException(string.Format("Path {0} is already in use.", newPath));
+            }
+
+
             // Move the entire composite document to staging.
             // This step is not required when creating items since creation takes place in staging.
             PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
 
-            PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
-            string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
             string temporaryPath = string.Format("{0}/_UPD-{1}", existingItemPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
             PSFolder tempFolder = CMSController.GuaranteeFolder(temporaryPath);
 
@@ -342,9 +365,10 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Check out all relationship owners. We know they will be modified.
                 PercussionGuid[] itemsToCheckout = // Filter out duplicate item IDs.
-                    (from idValue in (from relationship in relationshipList select relationship.ownerId).Distinct()
-                    select new PercussionGuid(idValue)).ToArray();
-                    
+                    (from idValue in
+                         (from relationship in relationshipList select relationship.ownerId).Distinct()
+                     select new PercussionGuid(idValue)).ToArray();
+
                 PSItemStatus[] checkedOutPageStatus = CMSController.CheckOutForEditing(itemsToCheckout);
 
                 CancerInfoSummarySectionFinder finder = new CancerInfoSummarySectionFinder(CMSController);
@@ -943,8 +967,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            ChildFieldSet subsectionList=null;
- 
+            ChildFieldSet subsectionList = null;
+
             for (int i = 0; i <= document.SectionList.Count - 1; i++)
             {
                 if (document.SectionList[i].IsTopLevel == true)
@@ -1023,12 +1047,12 @@ namespace GKManagers.CMSDocumentProcessing
             string longTitle;
             if (string.IsNullOrEmpty(tableSection.Title))
             {
-                longTitle= "Section: " + tableSection.RawSectionID;
+                longTitle = "Section: " + tableSection.RawSectionID;
                 fields.Add("showpagetitle", "false");
             }
             else
             {
-                longTitle=tableSection.Title;
+                longTitle = tableSection.Title;
             }
             fields.Add("long_title", longTitle);
 
@@ -1081,7 +1105,7 @@ namespace GKManagers.CMSDocumentProcessing
         private FieldSet CreateFieldValueMapPDQCancerInfoSummary(SummaryDocument summary)
         {
             FieldSet fields = new FieldSet();
-            string prettyURLName = summary.BasePrettyURL.Substring(summary.BasePrettyURL.LastIndexOf('/') + 1);
+            string prettyURLName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
 
             string TOC = BuildTableOfContents(summary);
 
@@ -1298,6 +1322,11 @@ namespace GKManagers.CMSDocumentProcessing
             return parent;
         }
 
+        private string GetSummaryPrettyUrlName(string prettyUrl)
+        {
+            string prettyURLName = prettyUrl.Substring(prettyUrl.LastIndexOf('/') + 1);
+            return prettyURLName;
+        }
 
 
         // <summary>

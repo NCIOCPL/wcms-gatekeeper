@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Web.Services.Protocols;
+using System.Xml;
 
 using NCI.WCM.CMSManager.PercussionWebSvc;
 using NCI.WCM.CMSManager;
@@ -18,6 +19,16 @@ namespace NCI.WCM.CMSManager.CMS
         /*
            Don't even *THINK* about adding any static fields to this class.
         */
+
+
+        #region Constants
+
+        const string errorNamespace = "urn:www.percussion.com/6.0.0/faults";
+        const string errorNamespacePrefix = "ns1";
+        const string errorResultPath = "//ns1:PSErrorResultsFault";
+        const string folderNotFoundErrorPath = "//ns1:PSError[@code='43']";
+
+        #endregion
 
 
         #region Content Service Methods
@@ -47,7 +58,7 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Finds the folder children.
+        /// Finds the content items residing in a folder.
         /// </summary>
         /// <param name="contentSvc">proxy of the content service</param>
         /// <param name="folderPath">The folder path.</param>
@@ -55,18 +66,101 @@ namespace NCI.WCM.CMSManager.CMS
         public static PSItemSummary[] FindFolderChildren(contentSOAP contentSvc,
             string folderPath)
         {
-            FindFolderChildrenRequest req = new FindFolderChildrenRequest();
+            PSItemSummary[] folderResults;
+
             try
             {
+                FindFolderChildrenRequest req = new FindFolderChildrenRequest();
                 req.Folder = new FolderRef();
                 req.Folder.Path = folderPath;
+                folderResults = contentSvc.FindFolderChildren(req);
             }
             catch (SoapException ex)
             {
                 throw new CMSSoapException("Percussion Error in FindFolderChildren.", ex);
             }
 
-            return contentSvc.FindFolderChildren(req);
+            return folderResults;
+        }
+
+        /// <summary>
+        /// Finds the content items residing in a folder.
+        /// </summary>
+        /// <param name="contentSvc">proxy of the content service</param>
+        /// <param name="folderID">ID fo the folder to check.</param>
+        /// <returns></returns>
+        public static PSItemSummary[] FindFolderChildren(contentSOAP contentSvc, int folderID)
+        {
+            PSItemSummary[] folderResults;
+
+            try
+            {
+                FindFolderChildrenRequest req = new FindFolderChildrenRequest();
+                req.Folder = new FolderRef();
+                req.Folder.Id = folderID;
+                folderResults = contentSvc.FindFolderChildren(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion Error in FindFolderChildren.", ex);
+            }
+
+            return folderResults;
+        }
+
+        public static PSFolder[] LoadFolders(contentSOAP contentSvc, string folderPath)
+        {
+            PSFolder[] returnItems;
+
+            // Loading a non-existant folder results in a SoapException,
+            // so we have to do some extra work to handle that possiblity.
+            try
+            {
+                LoadFoldersRequest req = new LoadFoldersRequest();
+                req.Path = new string[] { folderPath };
+                returnItems = contentSvc.LoadFolders(req);
+            }
+            catch (SoapException ex)
+            {
+                if (ConfirmFolderNotFoundError(ex.Detail))
+                {
+                    returnItems = null;
+                }
+                else
+                {
+                    // OK, that wasn't the error we expected.
+                    throw;
+                }
+            }
+
+            return returnItems;
+        }
+
+        /// <summary>
+        /// Parses the detail node of a SoapException to verify that the
+        /// error which occured really was a Folder Not Found error.
+        /// </summary>
+        /// <param name="errorDetail">Detail property from a SoapException.</param>
+        /// <returns>true or false depending on whether the error was
+        /// the Folder Not Found.</returns>
+        private static bool ConfirmFolderNotFoundError(XmlNode errorDetail)
+        {
+            bool errorConfirmed = false;
+
+            XmlNameTable names = new NameTable();
+            XmlNamespaceManager nameMgr = new XmlNamespaceManager(names);
+            nameMgr.AddNamespace(errorNamespacePrefix, errorNamespace);
+            XmlNode error = errorDetail.SelectSingleNode(errorResultPath, nameMgr);
+            if (error != null)
+            {
+                XmlNode errorCode = error.SelectSingleNode(folderNotFoundErrorPath, nameMgr);
+                if (errorCode != null)
+                {
+                    errorConfirmed = true;
+                }
+            }
+
+            return errorConfirmed;
         }
 
         /// <summary>
@@ -74,7 +168,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// </summary>
         /// <param name="contentSvc">proxy of the content service</param>
         /// <param name="contentType">Type of the content item(druginfosummary,pdqsummary,...).</param>
-        /// <returns></returns>
+        /// <returns>An empty content item with fields defined according to contentType.</returns>
         public static PSItem CreateItem(contentSOAP contentSvc, string contentType)
         {
             CreateItemsRequest request = new CreateItemsRequest();

@@ -50,14 +50,23 @@ namespace GKManagers.CMSDocumentProcessing
 
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
+
             // Are we updating an existing document? Or saving a new one?
             PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, document.DocumentID);
 
             // No identifier was returned, this is a new item.
             if (identifier == null)
             {
+                string targetPathName = GetTargetFolder(document.PrettyURL);
+                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
+
+                if (!PrettyUrlIsAvailable(targetPathName, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetPathName, prettyUrlName));
+                }
+
                 // Turn the list of item fields into a list of one item.
-                ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), GetTargetFolder(document.PrettyURL));
+                ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), targetPathName);
                 List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
                 contentItemList.Add(contentItem);
 
@@ -69,7 +78,22 @@ namespace GKManagers.CMSDocumentProcessing
             else
             {
                 // We're updating an existing item, go fetch it.
-                PSItem[] oldItem = CMSController.LoadContentItems(new long[] { identifier.ID });
+                PSItem[] oldItem = CMSController.LoadContentItems(new PercussionGuid[] { identifier });
+
+                // Doublecheck paths.
+                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
+                string oldPath = CMSController.GetPathInSite(oldItem[0]);
+                string targetFolder = GetTargetFolder(document.PrettyURL);
+
+                if (!PrettyUrlIsSameDocument(document.DocumentID, oldPath, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", oldPath, prettyUrlName));
+                }
+                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase)
+                    && !PrettyUrlIsAvailable(targetFolder, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetFolder, prettyUrlName));
+                }
 
                 // This is an existing item, we must therefore put it in an editable state.
                 TransitionItemsToStaging(new PercussionGuid[1] { identifier });
@@ -81,8 +105,6 @@ namespace GKManagers.CMSDocumentProcessing
                 idList = CMSController.UpdateContentItemList(contentItemList);
 
                 //Check if the Pretty URL changed if yes then move the content item to the new folder in percussion.
-                string targetFolder = GetTargetFolder(document.PrettyURL);
-                string oldPath = CMSController.GetPathInSite(oldItem[0]);
                 if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase))
                 {
                     long[] id = idList.ToArray();
@@ -224,6 +246,33 @@ namespace GKManagers.CMSDocumentProcessing
             return targetFolder;
         }
 
+        /// <summary>
+        /// Parses the pretty URL for a drug information summary item and returns the final
+        /// path section as the item name.  If no path separators are found, the entire
+        /// itemPath is treated as the pretty URL name.
+        /// </summary>
+        /// <param name="itemPath">Pretty URL of the drug info summary.</param>
+        /// <returns>The </returns>
+        private string GetPrettyUrlName(string itemPath)
+        {
+            string prettyURLName;
+
+            int lastIndex = itemPath.LastIndexOf('/');
+
+            // Handle trailing /
+            if (lastIndex == itemPath.Length)
+            {
+                itemPath = itemPath.Remove(lastIndex);
+                lastIndex = itemPath.LastIndexOf('/');
+            }
+
+            if (lastIndex >= 0)
+                prettyURLName = itemPath.Substring(lastIndex + 1);
+            else
+                prettyURLName = itemPath;
+
+            return prettyURLName;
+        }
 
         /// <summary>
         /// Creates a mapping of drug information summary data points and the fields used

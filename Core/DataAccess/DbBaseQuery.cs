@@ -5,7 +5,7 @@ using GateKeeper.Logging;
 
 namespace GateKeeper.DataAccess
 {
-    public class DbBaseQuery: IDisposable
+    public class DbBaseQuery : IDisposable
     {
         protected DataAccessManager dbManager = new DataAccessManager();
 
@@ -36,6 +36,7 @@ namespace GateKeeper.DataAccess
         /// <summary>
         /// Return CancerGov staging Database Wrapper
         /// </summary>
+        //[Obsolete("CancerGovStaging Database is going away.", true)]
         protected DbWrapper CancerGovDBWrapper
         {
             get
@@ -47,6 +48,7 @@ namespace GateKeeper.DataAccess
         /// <summary>
         /// Return CancerGov staging Database Wrapper
         /// </summary>
+        //[Obsolete("CancerGovStaging Database is going away.", true)]
         protected DbWrapper CancerGovStagingDBWrapper
         {
             get
@@ -95,28 +97,8 @@ namespace GateKeeper.DataAccess
                     dbManager = null;
                 }
             }
-            #if TIMER_LOG
-			    LogTime();
-            #endif
         }
 
-        //// //UNDONE: Temperary keep for future needs
-        //protected void Dispose(ArrayList dbItemsToDispose)
-        //{
-        //    foreach (IDisposable idispose in dbItemsToDispose)
-        //    {
-        //        try
-        //        {
-        //            idispose.Dispose();
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            throw new Exception("Exception occured in DocumentQuery " + this.GetType().Name + ".Dispose()", e);
-
-        //        }
-        //    }
-        //    dbItemsToDispose.Clear();
-        //}
         #endregion
     }
 }

@@ -7,6 +7,7 @@ using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using NCI.WCM.CMSManager;
 using NCI.WCM.CMSManager.CMS;
+using NCI.WCM.CMSManager.PercussionWebSvc;
 
 namespace GKManagers.CMSDocumentProcessing
 {
@@ -16,6 +17,12 @@ namespace GKManagers.CMSDocumentProcessing
     /// </summary>
     public abstract class DocumentProcessorCommon : IDisposable
     {
+        #region Constants
+
+        const string NavonType = "rffNavon";
+
+        #endregion
+
         #region Properties
 
         // Percussion control object, shared among all Document Processor types
@@ -323,6 +330,74 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return (object)state;
+        }
+
+        /// <summary>
+        /// Checks whether any content item exists at location path with its
+        /// pretty_url_name field set to prettyUrlName.
+        /// </summary>
+        /// <param name="path">Path to check for content items</param>
+        /// <param name="prettyUrlName">pretty_url_name field value to check.</param>
+        /// <returns>true if no item matches the parameters.</returns>
+        protected bool PrettyUrlIsAvailable(string path, string prettyUrlName)
+        {
+            PercussionGuid[] searchResults;
+
+            Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
+            fieldCriteria.Add("pretty_url_name", prettyUrlName);
+            searchResults = CMSController.SearchForContentItems(null, path, fieldCriteria);
+
+            return searchResults.Length == 0;
+        }
+
+        /// <summary>
+        /// Verifies that the CDR document at the location path is the one described
+        /// by the given criteria.
+        /// </summary>
+        /// <param name="cdrID">Expected document CDRID.</param>
+        /// <param name="path">Path to check for content items.</param>
+        /// <param name="prettyUrlName">pretty_url_name field value to check.</param>
+        /// <returns>true if the item is a match</returns>
+        protected bool PrettyUrlIsSameDocument(int cdrID, string path, string prettyUrlName)
+        {
+            PercussionGuid[] searchResults;
+
+            Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
+            fieldCriteria.Add("pretty_url_name", prettyUrlName);
+            fieldCriteria.Add("cdrid", cdrID.ToString());
+            searchResults = CMSController.SearchForContentItems(null, path, fieldCriteria);
+
+            return searchResults.Length == 1;
+        }
+
+        /// <summary>
+        /// Determines whether the named path contains anything other than a Navon.
+        /// </summary>
+        /// <param name="path">Path to check.</param>
+        /// <returns>True if the folder is empty. (Navons are ignored.)</returns>
+        protected bool PrettyUrlPathIsOccupied(string path)
+        {
+            bool emptyOrNonexistant = true;
+
+            bool folderExists = CMSController.FolderExists(path);
+            if (folderExists)
+            {
+                PSItemSummary[] items = CMSController.FindFolderChildren(path);
+                if (items.Length == 1) // Check whether it's a Navon.
+                {
+                    PSItem[] contentItem = CMSController.LoadContentItems(new PercussionGuid[] { new PercussionGuid(items[0].id) });
+                    if (contentItem[0].contentType.Equals(NavonType, StringComparison.InvariantCultureIgnoreCase))
+                        emptyOrNonexistant = true;
+                    else
+                        emptyOrNonexistant = false;
+                }
+                else if (items.Length > 1)
+                {
+                    emptyOrNonexistant = false;
+                }
+            }
+
+            return emptyOrNonexistant;
         }
     }
 }

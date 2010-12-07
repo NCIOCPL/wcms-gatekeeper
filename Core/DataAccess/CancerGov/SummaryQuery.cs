@@ -186,22 +186,12 @@ namespace GateKeeper.DataAccess.CancerGov
         /// <param name="documentID"></param>
         public override void PushDocumentToPreview(Document summary, string userID)
         {
-           // Call check of it is OK to Push
+            // Call check of it is OK to Push
             SummaryDocument summaryDoc = (SummaryDocument)summary;
             if (GetSummaryInfo(summaryDoc, this.StagingDBWrapper.SetDatabase()))
             {
-                if (IsOKToPush(summaryDoc.DocumentID, summaryDoc.PrettyURL, 1, summaryDoc.GUID, summaryDoc.ReplacementforDocumentGUID, ContentDatabase.Preview, DocumentType.Summary))
-                {
-                    // Push document to CDR Staging database
-                    PushToCDRPreview(summaryDoc.DocumentID, userID);
-                    
-                    // Push document to CancerGovStaging database
-                    //PushToCancerGovPreview(summaryDoc.DocumentID, summaryDoc, userID);
-                }
-                else
-                {
-                    throw new Exception("Database Error: Could not push document to preview database due to pretty URL duplication. Document CDRID=" + summary.DocumentID.ToString());
-                }
+                // Push document to CDR Staging database
+                PushToCDRPreview(summaryDoc.DocumentID, userID);
             }
             else
             {
@@ -215,23 +205,16 @@ namespace GateKeeper.DataAccess.CancerGov
         /// <param name="documentID"></param>
         public override void PushDocumentToLive(Document summary, string userID)
         {
-             SummaryDocument summaryDoc = (SummaryDocument)summary;
-             if (GetSummaryInfo(summaryDoc, this.PreviewDBWrapper.SetDatabase()))
-             {
-                 if (IsOKToPush(summaryDoc.DocumentID, summaryDoc.PrettyURL, 1, summary.GUID, summaryDoc.ReplacementforDocumentGUID, ContentDatabase.Live, DocumentType.Summary))
-                 {
-                     // Push document to CDR Staging database
-                     PushToCDRLive(summaryDoc.DocumentID, userID);
-                 }
-                 else
-                 {
-                     throw new Exception("Database Error: Could not push document to live database due to pretty URL duplication. Document CDRID=" + summary.DocumentID.ToString());
-                 }
-             }
-             else
-             {
-                 throw new Exception("Database Error: Retrieveing summary data from CDR staging database failed. Document CDRID=" + summary.DocumentID.ToString());
-             }
+            SummaryDocument summaryDoc = (SummaryDocument)summary;
+            if (GetSummaryInfo(summaryDoc, this.PreviewDBWrapper.SetDatabase()))
+            {
+                // Push document to CDR Staging database
+                PushToCDRLive(summaryDoc.DocumentID, userID);
+            }
+            else
+            {
+                throw new Exception("Database Error: Retrieveing summary data from CDR staging database failed. Document CDRID=" + summary.DocumentID.ToString());
+            }
         }
 
         #endregion

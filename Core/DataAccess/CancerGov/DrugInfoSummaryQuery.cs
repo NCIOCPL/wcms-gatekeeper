@@ -14,11 +14,11 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 namespace GateKeeper.DataAccess.CancerGov
 {
-      public class DrugInfoSummaryQuery : DocumentQuery
-      {
-          #region Public methods
-          public override bool SaveDocument(Document drugDocument,string userID)
-         {
+    public class DrugInfoSummaryQuery : DocumentQuery
+    {
+        #region Public methods
+        public override bool SaveDocument(Document drugDocument, string userID)
+        {
             bool bSuccess = true;
             Database db = this.StagingDBWrapper.SetDatabase();
             DbConnection conn = this.StagingDBWrapper.EnsureConnection();
@@ -55,7 +55,7 @@ namespace GateKeeper.DataAccess.CancerGov
             return bSuccess;
         }
 
-          public override void DeleteDocument(Document drugDocument, ContentDatabase databaseName, string userID)
+        public override void DeleteDocument(Document drugDocument, ContentDatabase databaseName, string userID)
         {
             try
             {
@@ -70,14 +70,14 @@ namespace GateKeeper.DataAccess.CancerGov
                         case ContentDatabase.Staging:
                             db = this.StagingDBWrapper.SetDatabase();
                             conn = this.StagingDBWrapper.EnsureConnection();
-                             break;
-                         case ContentDatabase.Preview:
-                             {
-                                 db = this.PreviewDBWrapper.SetDatabase();
-                                 conn = this.PreviewDBWrapper.EnsureConnection();
-                                 Guid previewGuid = Guid.Empty;
-                                 // If guid is empty, give warning, don't proceed.
-                                 GetDocumentIDs(ref documentID, ref previewGuid, db);
+                            break;
+                        case ContentDatabase.Preview:
+                            {
+                                db = this.PreviewDBWrapper.SetDatabase();
+                                conn = this.PreviewDBWrapper.EnsureConnection();
+                                Guid previewGuid = Guid.Empty;
+                                // If guid is empty, give warning, don't proceed.
+                                GetDocumentIDs(ref documentID, ref previewGuid, db);
                                 // if (previewGuid != Guid.Empty)
                                 //    DeleteDrugInfoPreview(previewGuid);
                                 //else
@@ -85,24 +85,24 @@ namespace GateKeeper.DataAccess.CancerGov
                                 //    // Give out warning message
                                 //    drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in preview database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the preview database.");
                                 //}
-                                 break;
-                             }
-                         case ContentDatabase.Live:
-                             {
-                                 db = this.LiveDBWrapper.SetDatabase();
-                                 conn = this.LiveDBWrapper.EnsureConnection();
-                                 Guid liveGuid = Guid.Empty;
-                                 // If guid is empty, warning, don't proceed.
-                                 GetDocumentIDs(ref documentID, ref liveGuid, db);
-                                 //if (liveGuid != Guid.Empty)
-                                 //   DeleteDrugInfoLive(liveGuid);
-                                 //else
-                                 //{
-                                 //   // Give out warning message
-                                 //   drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in live database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the live database.");
-                                 //}
-                                 break;
-                             }
+                                break;
+                            }
+                        case ContentDatabase.Live:
+                            {
+                                db = this.LiveDBWrapper.SetDatabase();
+                                conn = this.LiveDBWrapper.EnsureConnection();
+                                Guid liveGuid = Guid.Empty;
+                                // If guid is empty, warning, don't proceed.
+                                GetDocumentIDs(ref documentID, ref liveGuid, db);
+                                //if (liveGuid != Guid.Empty)
+                                //   DeleteDrugInfoLive(liveGuid);
+                                //else
+                                //{
+                                //   // Give out warning message
+                                //   drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in live database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the live database.");
+                                //}
+                                break;
+                            }
                         default:
                             throw new Exception("Database Error: Invalid database name. DatabaseName = " + databaseName.ToString());
                     }
@@ -117,7 +117,7 @@ namespace GateKeeper.DataAccess.CancerGov
                         ClearDocument(documentID, db, transaction, databaseName.ToString());
                         transaction.Commit();
                     }
-                     catch (Exception e)
+                    catch (Exception e)
                     {
                         transaction.Rollback();
                         throw new Exception("Database Error: Deleteing drug info summary document in " + databaseName.ToString() + " failed. Document CDRID=" + documentID.ToString(), e);
@@ -136,42 +136,13 @@ namespace GateKeeper.DataAccess.CancerGov
             }
         }
 
-          public override void PushDocumentToPreview(Document drugDocument, string userID)
+        public override void PushDocumentToPreview(Document drugDocument, string userID)
         {
             // Call check of it is OK to Push
             DrugInfoSummaryDocument drug = (DrugInfoSummaryDocument)drugDocument;
             if (GetDocumentData(drug, this.StagingDBWrapper.SetDatabase()))
             {
-                if (IsOKToPush(drug.DocumentID, drug.PrettyURL, 0, drug.GUID, Guid.Empty, ContentDatabase.Preview, DocumentType.DrugInfoSummary))
-                {
-                    // Push document to CDR Staging database
-                    PushToCDRPreview(drug.DocumentID, userID);
-                }
-                else
-                {
-                    throw new Exception("Database Error: Could not push document to preview database due to pretty URL duplication. Document CDRID=" + drug.DocumentID.ToString());
-                }
-            }
-            else
-            {
-                throw new Exception("Database Error: Retrieveing drug info summary data from CDR staging database failed. Document CDRID=" + drug.DocumentID.ToString());
-            }
-         }
-
-          public override void PushDocumentToLive(Document drugDocument, string userID)
-        {
-             DrugInfoSummaryDocument drug = (DrugInfoSummaryDocument)drugDocument;
-            if (GetDocumentData(drug, this.PreviewDBWrapper.SetDatabase()))
-            {
-                if (IsOKToPush(drug.DocumentID, drug.PrettyURL, 0, drug.GUID, Guid.Empty, ContentDatabase.Live, DocumentType.DrugInfoSummary))
-                {
-                    // Push document to CDR Staging database
-                    PushToCDRLive(drug.DocumentID, userID);
-                }
-                else
-                {
-                    throw new Exception("Database Error: Could not push document to live database due to pretty URL duplication. Document CDRID=" + drug.DocumentID.ToString());
-                }
+                PushToCDRPreview(drug.DocumentID, userID);
             }
             else
             {
@@ -179,18 +150,33 @@ namespace GateKeeper.DataAccess.CancerGov
             }
         }
 
-          /// <summary>
+        public override void PushDocumentToLive(Document drugDocument, string userID)
+        {
+            DrugInfoSummaryDocument drug = (DrugInfoSummaryDocument)drugDocument;
+            if (GetDocumentData(drug, this.PreviewDBWrapper.SetDatabase()))
+            {
+                // Push document to CDR Staging database
+                PushToCDRLive(drug.DocumentID, userID);
+            }
+            else
+            {
+                throw new Exception("Database Error: Retrieveing drug info summary data from CDR staging database failed. Document CDRID=" + drug.DocumentID.ToString());
+            }
+        }
+
+        /// <summary>
         /// Change <tag /> to be <tag></tag> for content to be displayed in Firefox correctly
         /// </summary>
         /// <param name="html">reference string</param>
         /// <returns>html</returns>
-          public void ReformatHTMLEndTag(ref string html)
-          {
-                ReplaceEndTag(ref html);
-          }
+        public void ReformatHTMLEndTag(ref string html)
+        {
+            ReplaceEndTag(ref html);
+        }
+
         #endregion
 
-    #region Private methods
+        #region Private methods
         /// <summary>
         /// Call store procedure to clear existing drug info summary data in database
         /// </summary>
@@ -225,7 +211,7 @@ namespace GateKeeper.DataAccess.CancerGov
         /// <param name="transaction"></param>
         /// <param name="userID"></param>
         /// <returns></returns>
-          private void SaveDrugInfoSummary(DrugInfoSummaryDocument drugDoc, Database db, DbTransaction transaction, string userID)
+        private void SaveDrugInfoSummary(DrugInfoSummaryDocument drugDoc, Database db, DbTransaction transaction, string userID)
         {
             try
             {
@@ -271,31 +257,31 @@ namespace GateKeeper.DataAccess.CancerGov
         /// </summary>
         /// <param name="Html"></param
         /// <returns>Reformated HTML string</returns>
-          private string AdjustString(string Html)
-          {
-              Html = Html.Replace("border=\"0\" />", "border=\"0\"></img>");
-              Html = Html.Replace("<br />", "<br/>");
-              Html = Html.Replace("<td valign=\"top\" width=\"25%\" />", "<td valign=\"top\" width=\"25%\"></td>");
-              Html = Html.Replace(" />", "></a>");
-              string glossaryTermTag = "Summary-GlossaryTermRef";
-              if (Html.Contains(glossaryTermTag))
-              {
-                  BuildGlossaryTermRefLink(ref Html, glossaryTermTag);
-              }
-              return Html;
-          }
+        private string AdjustString(string Html)
+        {
+            Html = Html.Replace("border=\"0\" />", "border=\"0\"></img>");
+            Html = Html.Replace("<br />", "<br/>");
+            Html = Html.Replace("<td valign=\"top\" width=\"25%\" />", "<td valign=\"top\" width=\"25%\"></td>");
+            Html = Html.Replace(" />", "></a>");
+            string glossaryTermTag = "Summary-GlossaryTermRef";
+            if (Html.Contains(glossaryTermTag))
+            {
+                BuildGlossaryTermRefLink(ref Html, glossaryTermTag);
+            }
+            return Html;
+        }
 
-       /// <summary>
-       /// Call store procedure to push drug info summary document to CDR preview database
-       /// </summary>
-       /// <param name="documentID"></param>
-       /// <param name="userID"></param>
-       /// <returns></returns>
-      private void PushToCDRPreview(int documentID, string userID)
-      {
-           Database db = this.StagingDBWrapper.SetDatabase();
-           DbConnection conn = this.StagingDBWrapper.EnsureConnection();
-           DbTransaction transaction = conn.BeginTransaction();
+        /// <summary>
+        /// Call store procedure to push drug info summary document to CDR preview database
+        /// </summary>
+        /// <param name="documentID"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        private void PushToCDRPreview(int documentID, string userID)
+        {
+            Database db = this.StagingDBWrapper.SetDatabase();
+            DbConnection conn = this.StagingDBWrapper.EnsureConnection();
+            DbTransaction transaction = conn.BeginTransaction();
 
             try
             {
@@ -327,118 +313,118 @@ namespace GateKeeper.DataAccess.CancerGov
             }
             catch (Exception e)
             {
-               throw new Exception("Database Error: Pushing drug info summary document to CDR preview database failed. Document CDRID=" + documentID.ToString(), e);
+                throw new Exception("Database Error: Pushing drug info summary document to CDR preview database failed. Document CDRID=" + documentID.ToString(), e);
             }
             finally
             {
                 conn.Close();
                 conn.Dispose();
             }
-      }
+        }
 
-      /// <summary>
-      /// Call store procedure to push drug info summary document to CDR live database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <param name="userID"></param>
-      /// <returns></returns>
-      private void PushToCDRLive(int documentID, string userID)
-      {
-          Database db = this.PreviewDBWrapper.SetDatabase();
-          DbConnection conn = this.PreviewDBWrapper.EnsureConnection();
-          DbTransaction transaction = conn.BeginTransaction();
+        /// <summary>
+        /// Call store procedure to push drug info summary document to CDR live database
+        /// </summary>
+        /// <param name="documentID"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        private void PushToCDRLive(int documentID, string userID)
+        {
+            Database db = this.PreviewDBWrapper.SetDatabase();
+            DbConnection conn = this.PreviewDBWrapper.EnsureConnection();
+            DbTransaction transaction = conn.BeginTransaction();
 
-          try
-          {
-              try
-              {
-                  // SP: Call push drug info summary document
-                  string spPushData = SPDrugInfo.SP_PUSH_DRUG_INFO;
-                  using (DbCommand pushCommand = db.GetStoredProcCommand(spPushData))
-                  {
-                      pushCommand.CommandType = CommandType.StoredProcedure;
-                      db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, documentID);
-                      db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
-                      db.ExecuteNonQuery(pushCommand, transaction);
-                      transaction.Commit();
-                  }
-              }
-              catch (Exception e)
-              {
-                  transaction.Rollback();
-                  throw new Exception("Database Error: Store procedure dbo.usp_PushExtractedDrugInfoSummaryData failed at push to live database", e);
-              }
-              finally
-              {
-                  transaction.Dispose();
-              }
+            try
+            {
+                try
+                {
+                    // SP: Call push drug info summary document
+                    string spPushData = SPDrugInfo.SP_PUSH_DRUG_INFO;
+                    using (DbCommand pushCommand = db.GetStoredProcCommand(spPushData))
+                    {
+                        pushCommand.CommandType = CommandType.StoredProcedure;
+                        db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, documentID);
+                        db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
+                        db.ExecuteNonQuery(pushCommand, transaction);
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Database Error: Store procedure dbo.usp_PushExtractedDrugInfoSummaryData failed at push to live database", e);
+                }
+                finally
+                {
+                    transaction.Dispose();
+                }
 
-              // SP: Call push document 
-              PushDocument(documentID, db, ContentDatabase.Live.ToString());
-          }
-          catch (Exception e)
-          {
+                // SP: Call push document 
+                PushDocument(documentID, db, ContentDatabase.Live.ToString());
+            }
+            catch (Exception e)
+            {
                 throw new Exception("Database Error: Pushing drug info summary document to CDR live database failed. Document CDRID=" + documentID.ToString(), e);
-          }
-          finally
-          {
-              conn.Close();
-              conn.Dispose();
-          }
-      }
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
 
-       /// <summary>
-      /// Call store procedure to retrieve drug info summary data from cdr staging database
-      /// </summary>
-      /// <param name="documentID"></param>
-      /// <param name="userID"></param>
-      /// <returns>Flag of if the getting document succeeded</returns>
-          private bool GetDocumentData(DrugInfoSummaryDocument drug, Database db)
-          {
-              // Get document data
-              IDataReader reader = null;
-              bool bSucceeded = true;
-              try
-              {
-                  string spGetData = SPDrugInfo.SP_GET_DRUG_INFO;
-                  using (DbCommand getCommand = db.GetStoredProcCommand(spGetData))
-                  {
-                      getCommand.CommandType = CommandType.StoredProcedure;
-                      db.AddInParameter(getCommand, "@DrugInfoSummaryID", DbType.Int32, drug.DocumentID);
-                      reader = db.ExecuteReader(getCommand);
+        /// <summary>
+        /// Call store procedure to retrieve drug info summary data from cdr staging database
+        /// </summary>
+        /// <param name="documentID"></param>
+        /// <param name="userID"></param>
+        /// <returns>Flag of if the getting document succeeded</returns>
+        private bool GetDocumentData(DrugInfoSummaryDocument drug, Database db)
+        {
+            // Get document data
+            IDataReader reader = null;
+            bool bSucceeded = true;
+            try
+            {
+                string spGetData = SPDrugInfo.SP_GET_DRUG_INFO;
+                using (DbCommand getCommand = db.GetStoredProcCommand(spGetData))
+                {
+                    getCommand.CommandType = CommandType.StoredProcedure;
+                    db.AddInParameter(getCommand, "@DrugInfoSummaryID", DbType.Int32, drug.DocumentID);
+                    reader = db.ExecuteReader(getCommand);
 
-                      if (reader.Read())
-                      {
-                          drug.Title = reader["Title"].ToString();
-                          drug.Description = reader["Description"].ToString();
-                          drug.PrettyURL = reader["PrettyURL"].ToString();
-                          drug.Html = reader["HTMLData"].ToString();
-                          if (reader["DateFirstPublished"].ToString().Length > 0)
-                              drug.FirstPublishedDate = DateTime.Parse(reader["DateFirstPublished"].ToString());
-                          if (reader["DateLastModified"].ToString().Length > 0)
-                              drug.LastModifiedDate = DateTime.Parse(reader["DateLastModified"].ToString());
-                          else
-                              drug.LastModifiedDate = DateTime.MinValue;
-                          drug.TerminologyLink = Int32.Parse(reader["TerminologyLink"].ToString());
-                          drug.GUID = (Guid)reader["documentGUID"];
-                      }
-                      else
-                          bSucceeded = false;
-                  }
-              }
-              catch (Exception e)
-              {
-                  bSucceeded = false;
-                  throw new Exception("Database Error: Retrieveing drug info summary data from CDR staging database failed. Document CDRID=" + drug.DocumentID.ToString(), e);
-              }
-              finally
-              {
-                  reader.Close();
-                  reader.Dispose();
-              }
-              return bSucceeded;
-          }
+                    if (reader.Read())
+                    {
+                        drug.Title = reader["Title"].ToString();
+                        drug.Description = reader["Description"].ToString();
+                        drug.PrettyURL = reader["PrettyURL"].ToString();
+                        drug.Html = reader["HTMLData"].ToString();
+                        if (reader["DateFirstPublished"].ToString().Length > 0)
+                            drug.FirstPublishedDate = DateTime.Parse(reader["DateFirstPublished"].ToString());
+                        if (reader["DateLastModified"].ToString().Length > 0)
+                            drug.LastModifiedDate = DateTime.Parse(reader["DateLastModified"].ToString());
+                        else
+                            drug.LastModifiedDate = DateTime.MinValue;
+                        drug.TerminologyLink = Int32.Parse(reader["TerminologyLink"].ToString());
+                        drug.GUID = (Guid)reader["documentGUID"];
+                    }
+                    else
+                        bSucceeded = false;
+                }
+            }
+            catch (Exception e)
+            {
+                bSucceeded = false;
+                throw new Exception("Database Error: Retrieveing drug info summary data from CDR staging database failed. Document CDRID=" + drug.DocumentID.ToString(), e);
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
+            }
+            return bSucceeded;
+        }
 
-    #endregion
+        #endregion
     }
 }
