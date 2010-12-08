@@ -27,12 +27,7 @@
         <asp:Button ID="btnResetLiveCache" runat="server" Text="Reset Live Cache" OnClick="btnResetLiveCache_Click" />
             <asp:Button ID="btnResetPreviewCache" runat="server" Text="Reset Preview Cache" OnClick="btnResetPreviewCache_Click" /><br /><br />
         <br />
-        <strong>Pretty URL Management</strong><br /><br />
-       <asp:Button ID="btnResetCGPU" runat="server" Text="Reset CancerGov Pretty URL" OnClick="btnResetCGPU_Click" />
-       <asp:Button ID="btnResetCGSPU" runat="server" Text="Reset CancerGovStagingPretty URL" OnClick="btnResetCGSPU_Click" />
-        <br />
-        <br />
-      
+
          <table  id="ImportDoc" runat="server" width="520">
          <tr>
             <th colspan="2" align="left">

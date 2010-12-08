@@ -260,59 +260,6 @@ namespace GateKeeper.DataAccess
         }
 
         /// <summary>
-        /// Call store procedure to check if the summary/drug info summary document is OK to be deleted
-        /// </summary>
-        /// <param name="documentID"></param>
-        /// <returns></returns>
-        protected bool IsOKToDelete(int documentID, DocumentType docType)
-        {
-            bool isOK = true;
-            if (docType == DocumentType.Summary || docType == DocumentType.DrugInfoSummary)
-            {
-                Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-                IDataReader reader = null;
-                try
-                {
-                    Database stagingDB = this.StagingDBWrapper.SetDatabase();
-                    Guid guid = Guid.Empty;
-                    GetDocumentIDs(ref documentID, ref guid, stagingDB);
-                    string spViewDependencies = SPCommon.SP_GET_NCI_VIEW_DEPENDENCY;
-                    using (DbCommand viewDepenciesCommand = db.GetStoredProcCommand(spViewDependencies))
-                    {
-                        viewDepenciesCommand.CommandType = CommandType.StoredProcedure;
-                        db.AddInParameter(viewDepenciesCommand, "@DocumentGUID", DbType.Guid, guid);
-                        reader = db.ExecuteReader(viewDepenciesCommand);
-
-                        if (reader.Read())
-                        {
-                            string bestBet = reader["bestbet"].ToString();
-                            string views = reader["nciview"].ToString();
-                            if (bestBet.Trim().Length > 0 || views.Trim().Length > 0)
-                            {
-                                string error = "Database Error: Document ID = " + documentID.ToString() + " can not be deleted due to its dependency relationship in other tables. The reference conflict list(s) is as following.";
-                                if (bestBet.Trim().Length > 0)
-                                    error += " Bestbets: " + bestBet + ".";
-                                if (views.Trim().Length > 0)
-                                    error += " NCIViews: " + views + ".";
-                                throw new Exception(error);
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Database Error: ", e);
-                }
-                finally
-                {
-                    reader.Close();
-                    reader.Dispose();
-                }
-            }
-            return isOK;
-        }
-
-        // <summary>
         /// This method is called for string comparison purpose to replace the <tag /> with <tag></tag> format
         /// </summary>
         /// <param name="documentID"></param>

@@ -266,28 +266,12 @@ namespace GKManagers
                 action == ProcessActionType.PromoteToLive)
             {
                 // Shortcut for multiple types.
-                DocumentTypeFlag prettyUrlTypes = DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary |
-                                                    DocumentTypeFlag.Protocol | DocumentTypeFlag.CTGovProtocol;
                 DocumentTypeFlag protocolCacheTypes = DocumentTypeFlag.Protocol | DocumentTypeFlag.CTGovProtocol;
 
                 // Which database does the cache live on?
                 ContentDatabase contentDB;
                 using (ProtocolQuery query = new ProtocolQuery())
                 {
-
-                    // Reset the PrettyURL update flag if any document type in the job uses pretty urls.
-                    if (documentTypeTracker.Contains(prettyUrlTypes))
-                    {
-                        if (action == ProcessActionType.PromoteToPreview)
-                            contentDB = ContentDatabase.CancerGovStaging;
-                        else
-                            contentDB = ContentDatabase.CancerGov;
-
-                        BatchManager.AddBatchHistoryEntry(batchInfo.BatchID, batchInfo.UserName,
-                            string.Format("Resetting Pretty URL Flag on {0} database.", contentDB));
-                        query.ResetPrettyURLFlag(contentDB);
-                    }
-
                     // Clear the protocol cache if any protocol documents were promoted.
                     if (documentTypeTracker.Contains(protocolCacheTypes))
                     {

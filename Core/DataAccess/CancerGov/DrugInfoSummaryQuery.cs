@@ -61,9 +61,8 @@ namespace GateKeeper.DataAccess.CancerGov
             {
                 // Check if the document ID is referenced else where
                 int documentID = drugDocument.DocumentID;
-                if (IsOKToDelete(documentID, DocumentType.DrugInfoSummary))
-                {
-                    Database db;
+
+                Database db;
                     DbConnection conn;
                     switch (databaseName)
                     {
@@ -78,13 +77,6 @@ namespace GateKeeper.DataAccess.CancerGov
                                 Guid previewGuid = Guid.Empty;
                                 // If guid is empty, give warning, don't proceed.
                                 GetDocumentIDs(ref documentID, ref previewGuid, db);
-                                // if (previewGuid != Guid.Empty)
-                                //    DeleteDrugInfoPreview(previewGuid);
-                                //else
-                                //{
-                                //    // Give out warning message
-                                //    drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in preview database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the preview database.");
-                                //}
                                 break;
                             }
                         case ContentDatabase.Live:
@@ -94,13 +86,6 @@ namespace GateKeeper.DataAccess.CancerGov
                                 Guid liveGuid = Guid.Empty;
                                 // If guid is empty, warning, don't proceed.
                                 GetDocumentIDs(ref documentID, ref liveGuid, db);
-                                //if (liveGuid != Guid.Empty)
-                                //   DeleteDrugInfoLive(liveGuid);
-                                //else
-                                //{
-                                //   // Give out warning message
-                                //   drugDocument.WarningWriter("Database warning: DrugInfoSummary document can not be deleted in live database.  Can not find document with cdrid = " + drugDocument.DocumentID.ToString() + " in the live database.");
-                                //}
                                 break;
                             }
                         default:
@@ -128,7 +113,6 @@ namespace GateKeeper.DataAccess.CancerGov
                         conn.Close();
                         conn.Dispose();
                     }
-                }
             }
             catch (Exception e)
             {

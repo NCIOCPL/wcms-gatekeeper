@@ -102,76 +102,53 @@ namespace GateKeeper.DataAccess.CancerGov
             try
             {
                 int documentID = summary.DocumentID;
-                // Check if the document ID is referenced else where
-                if (IsOKToDelete(documentID, DocumentType.Summary))
+
+                Database db;
+                DbConnection conn;
+                switch (databaseName)
                 {
-                    Database db;
-                    DbConnection conn;
-                    switch (databaseName)
-                    {
-                        case ContentDatabase.Staging:
-                            db = this.StagingDBWrapper.SetDatabase();
-                            conn = this.StagingDBWrapper.EnsureConnection();
-                            break;
-                        case ContentDatabase.Preview:
-                            db = this.PreviewDBWrapper.SetDatabase();
-                            conn = this.PreviewDBWrapper.EnsureConnection();
-                            Guid guid = Guid.Empty;
-                            // If guid is empty, don't delete, create a warning 
-                            GetDocumentIDs(ref documentID, ref guid, db);
-                            //if (guid != Guid.Empty && IsDocumentActive(documentID, db))
-                            //    DeleteSummaryPreview(guid);
-                            //else
-                            //{
-                            //    // Give out warning message
-                            //    summary.WarningWriter("Database warning: Summary document could not be deleted in the preview database.  The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
-                            //    conn.Close();
-                            //    conn.Dispose();
-                            //    return;
-                            //}
-                            break;
-                        case ContentDatabase.Live:
-                            db = this.LiveDBWrapper.SetDatabase();
-                            conn = this.LiveDBWrapper.EnsureConnection();
-                            Guid liveGuid = Guid.Empty;
-                            // If guid is empty, don't delete, create a warning 
-                            GetDocumentIDs(ref documentID, ref liveGuid, db);
-                            //if (liveGuid != Guid.Empty && IsDocumentActive(documentID, db))
-                            //    PushToCancerGovLive(summary, true, userID);
-                            //else
-                            //{
-                            //    // Give out warning message
-                            //    summary.WarningWriter("Database warning: Summary document could not be deleted in the live database.   The document either does not exist or is not active. cdrid = " + summary.DocumentID.ToString() + ".");
-                            //    conn.Close();
-                            //    conn.Dispose();
-                            //    return;
-                            //}
-                            break;
-                        default:
-                            throw new Exception("Database Error: Invalid database name. DatabaseName = " + databaseName.ToString());
-                    }
-                    DbTransaction transaction = conn.BeginTransaction();
+                    case ContentDatabase.Staging:
+                        db = this.StagingDBWrapper.SetDatabase();
+                        conn = this.StagingDBWrapper.EnsureConnection();
+                        break;
+                    case ContentDatabase.Preview:
+                        db = this.PreviewDBWrapper.SetDatabase();
+                        conn = this.PreviewDBWrapper.EnsureConnection();
+                        Guid guid = Guid.Empty;
+                        // If guid is empty, don't delete, create a warning 
+                        GetDocumentIDs(ref documentID, ref guid, db);
+                        break;
+                    case ContentDatabase.Live:
+                        db = this.LiveDBWrapper.SetDatabase();
+                        conn = this.LiveDBWrapper.EnsureConnection();
+                        Guid liveGuid = Guid.Empty;
+                        // If guid is empty, don't delete, create a warning 
+                        GetDocumentIDs(ref documentID, ref liveGuid, db);
+                        break;
+                    default:
+                        throw new Exception("Database Error: Invalid database name. DatabaseName = " + databaseName.ToString());
+                }
+                DbTransaction transaction = conn.BeginTransaction();
 
-                    try
-                    {
-                        // SP: Clear extracted data
-                        ClearSummaryData(documentID, db, transaction);
+                try
+                {
+                    // SP: Clear extracted data
+                    ClearSummaryData(documentID, db, transaction);
 
-                        // SP: Clear document
-                        ClearDocument(documentID, db, transaction, databaseName.ToString());
-                        transaction.Commit();
-                    }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Database Error: Deleting summary document in " + databaseName.ToString() + " failed. Document CDRID=" + documentID.ToString(), e);
-                    }
-                    finally
-                    {
-                        transaction.Dispose();
-                        conn.Close();
-                        conn.Dispose();
-                    }
+                    // SP: Clear document
+                    ClearDocument(documentID, db, transaction, databaseName.ToString());
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Database Error: Deleting summary document in " + databaseName.ToString() + " failed. Document CDRID=" + documentID.ToString(), e);
+                }
+                finally
+                {
+                    transaction.Dispose();
+                    conn.Close();
+                    conn.Dispose();
                 }
             }
             catch (Exception e)
@@ -599,56 +576,6 @@ namespace GateKeeper.DataAccess.CancerGov
                 conn.Dispose();
             }
         }
-
-        /// <summary>
-        /// Call store procedure to push summary document to CancerGovStaging database
-        /// </summary>
-        /// <param name="documentID"></param>
-        /// <param name="userID"></param>
-        /// <returns></returns>
-        private void PushToCancerGovPreview(int documentID, SummaryDocument summary,  string userID)
-        {
-            // Get document information
-            // Note: Don't need transaction for alll CancerGov related store procedure
-            Database db = this.CancerGovStagingDBWrapper.SetDatabase();
-            try
-            {
-                // SP: Call store procedure to push summary document to CancerGovStaging database
-                string spUpdateViewData = SPSummary.SP_Update_NCI_View_And_ViewObject;
-                using (DbCommand updateCommand = db.GetStoredProcCommand(spUpdateViewData))
-                {
-                    updateCommand.CommandType = CommandType.StoredProcedure;
-                    db.AddInParameter(updateCommand, "@DocumentGUID", DbType.Guid, summary.GUID);
-                    db.AddInParameter(updateCommand, "@replacementforDocumentGUID", DbType.Guid, summary.ReplacementforDocumentGUID);
-                    db.AddInParameter(updateCommand, "@RelatedDocumentGUID", DbType.Guid, summary.RelatedDocumentGUID);
-                    db.AddInParameter(updateCommand, "@OtherLanguageDocumentGUID", DbType.Guid, summary.OtherLanguageDocumentGUID);
-                    db.AddInParameter(updateCommand, "@Title", DbType.String, summary.Title.Trim());
-                    // The maximum length of the short title should be 64 chars.
-                    if (summary.ShortTitle.Trim().Length > 64)
-                        db.AddInParameter(updateCommand, "@ShortTitle", DbType.String, summary.ShortTitle.Trim().Substring(0, 64));
-                    else
-                        db.AddInParameter(updateCommand, "@ShortTitle", DbType.String, summary.ShortTitle.Trim());
-
-                    db.AddInParameter(updateCommand, "@Description", DbType.String, summary.Description.Trim());
-                    db.AddInParameter(updateCommand, "@Audience", DbType.String, summary.AudienceType.Trim());
-                    if (summary.Language == Language.English)
-                        db.AddInParameter(updateCommand, "@Language", DbType.String, Language.English.ToString().Trim());
-                    else if (summary.Language == Language.Spanish)
-                        db.AddInParameter(updateCommand, "@Language", DbType.String, Language.Spanish.ToString().Trim());
-                    db.AddInParameter(updateCommand, "@ExpirationDate", DbType.DateTime, DateTime.Parse("1/1/2100"));
-                    db.AddInParameter(updateCommand, "@ReleaseDate", DbType.DateTime, DateTime.Now);
-                    db.AddInParameter(updateCommand, "@PostedDate", DbType.DateTime, DateTime.Now);
-                    db.AddInParameter(updateCommand, "@DisplayDateMode", DbType.String, "None");
-                    db.AddInParameter(updateCommand, "@BasePrettyURL", DbType.String, summary.BasePrettyURL.Trim());
-                    db.AddInParameter(updateCommand, "@UpdateUserID", DbType.String, userID);
-                    db.ExecuteNonQuery(updateCommand);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Database Error: Pushing summary document to CancerGovStaging database failed. Document CDRID=" + documentID.ToString(), e);
-            }
-         }
 
         /// <summary>
         /// Call store procedure to get summary document info from CDRStaging database

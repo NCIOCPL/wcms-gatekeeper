@@ -32,11 +32,13 @@ namespace GateKeeper.DataAccess
         /// <summary>
         /// CancerGov QC environment.
         /// </summary>
+        [Obsolete("The CancerGovStaging Database is no longer in use.", true)]
         CancerGovStaging,
 
         /// <summary>
         /// CancerGov live production environment.
         /// </summary>
+        [Obsolete("The CancerGov Database is no longer in use.", true)]
         CancerGov,
     }
 }

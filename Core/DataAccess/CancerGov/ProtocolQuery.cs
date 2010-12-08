@@ -85,34 +85,6 @@ namespace GateKeeper.DataAccess.CancerGov
             }
         }
 
-         /// <summary>
-        /// Method to clear the protocol search cache.
-        /// </summary>
-        /// <param name="environment"></param>
-        public void ResetPrettyURLFlag(ContentDatabase databaseName)
-        {
-           if (databaseName != ContentDatabase.CancerGov && databaseName != ContentDatabase.CancerGovStaging)
-            {
-                    throw new Exception("Reset pretty URL not support for the" + databaseName.ToString());
-            }
-
-            Database db = DatabaseFactory.CreateDatabase(databaseName.ToString());
-            string storedProcedureName = "usp_UpdatePrettyURLFlag";
-
-            using (DbCommand cmd = db.GetStoredProcCommand(storedProcedureName))
-            {
-                try
-                {
-                    cmd.CommandType= CommandType.StoredProcedure;
-                    //QueryWrapper.ExecuteNonQuery(db, cmd);
-                    db.ExecuteNonQuery(cmd);
-                }
-                catch 
-                {
-                    throw;
-                }
-            }
-        }
         /// <summary>
         /// Call store procedures to save protocol document into database
         /// </summary>

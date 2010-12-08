@@ -36,7 +36,7 @@ namespace GateKeeper.DataAccess
         /// <summary>
         /// Return CancerGov staging Database Wrapper
         /// </summary>
-        //[Obsolete("CancerGovStaging Database is going away.", true)]
+        [Obsolete("The CancerGov Database is no longer in use.", true)]
         protected DbWrapper CancerGovDBWrapper
         {
             get
@@ -48,7 +48,7 @@ namespace GateKeeper.DataAccess
         /// <summary>
         /// Return CancerGov staging Database Wrapper
         /// </summary>
-        //[Obsolete("CancerGovStaging Database is going away.", true)]
+        [Obsolete("The CancerGovStaging Database is no longer in use.", true)]
         protected DbWrapper CancerGovStagingDBWrapper
         {
             get

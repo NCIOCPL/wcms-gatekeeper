@@ -97,16 +97,6 @@ namespace GateKeeperAdmin.Administrator
             ClearCache(ContentDatabase.Preview);
         }
 
-        protected void btnResetCGPU_Click(object sender, EventArgs e)
-        {
-            ResetPU(ContentDatabase.CancerGov);
-        }
-
-        protected void btnResetCGSPU_Click(object sender, EventArgs e)
-        {
-            ResetPU(ContentDatabase.CancerGovStaging);
-        }
-
         protected void btnAbort_Click(object sender, EventArgs e)
         {
             if (sender != null && ((Button)sender).CommandArgument != null)
@@ -125,22 +115,6 @@ namespace GateKeeperAdmin.Administrator
                 ProtocolQuery query = new ProtocolQuery();
                 query.ClearSearchCache(db);
                 this.lblStatus.Text = "Succeeded in clearing Search Cache for " + db.ToString();
-            }
-            catch (Exception ex)
-            {
-                this.lblStatus.Text = ex.Message;
-            }
-        }
-
-        private void ResetPU(ContentDatabase db)
-        {
-            this.lblStatus.Text = string.Empty;
-
-            try
-            {
-                ProtocolQuery query = new ProtocolQuery();
-                query.ResetPrettyURLFlag(db);
-                this.lblStatus.Text = "Succeeded in resetting pretty url for " + db.ToString();
             }
             catch (Exception ex)
             {
