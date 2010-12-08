@@ -77,7 +77,8 @@
   <ItemGroup>
     <Compile Include="DocMgrLogBuilder.cs" />
     <Compile Include="DocumentManager.cs" />
-    <Compile Include="DocumentCacheSupervisor.cs" />
+    <Compile Include="DocumentTypeTracker.cs" />
+    <Compile Include="DocumentTypeFlag.cs" />
     <Compile Include="Promoters\CTGovProtocolPromoter.cs" />
     <Compile Include="Promoters\DocumentPromoterBase.cs" />
     <Compile Include="DocumentPromoterFactory.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="PromotionWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Promoters\SpecificDocumentPromoter.cs" />
+    <Compile Include="SynchronizedIDQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Class Diagrams\DocumentManager.cd" />
