@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="DocMgrLogBuilder.cs" />
     <Compile Include="DocumentManager.cs" />
+    <Compile Include="DocumentTypeFlagMapper.cs" />
     <Compile Include="DocumentTypeTracker.cs" />
     <Compile Include="DocumentTypeFlag.cs" />
     <Compile Include="Promoters\CTGovProtocolPromoter.cs" />

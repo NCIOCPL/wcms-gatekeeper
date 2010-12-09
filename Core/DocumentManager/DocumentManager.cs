@@ -29,6 +29,14 @@ namespace GKManagers
 
         #endregion
 
+        #region Constants
+
+        // Shortcut for the multiple document types which are maintained in the CMS.
+        const DocumentTypeFlag CmsManagedTypes =
+            DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary;
+
+        #endregion
+
         #region Properties
 
         public static bool ProcessingIsAllowed
@@ -47,13 +55,11 @@ namespace GKManagers
         public static void PromoteBatch(int batchID, string userName)
         {
             // Used to get threads back in sync.
-            ManualResetEvent[] synchronizer = null;
-            PromotionWorker[] workerThreads = null;
+            //ManualResetEvent[] synchronizer = null;
+            //PromotionWorker[] workerThreads = null;
 
             // Used for tracking the collected document types in the batch.
             DocumentTypeTracker documentTypeTracker = null;
-
-            SetThreadPoolSize();
 
             if (batchID < 1)
                 throw new ArgumentException("batchID");
@@ -90,18 +96,22 @@ namespace GKManagers
             {
                 foreach (ProcessActionType action in actionList)
                 {
-                    /// Allocate arrays of objects for synchronizing threads and holding the
-                    /// objects the threads will run on.  Creating the objects in arrays even
-                    /// though some passes are single threaded allows us to avoid the complexity
-                    /// of maintaining multiple paths for identical logic.
-                    synchronizer = new ManualResetEvent[requestDataIDList.Count];
-                    workerThreads = new PromotionWorker[requestDataIDList.Count];
+                    // Determine whether multi-threading is allowed in this pass.
+                    // Only promotion to staging is ever multi-threaded. Everything else is multi-threaded.
+                    bool useMultiThreading;
+                    if (action == ProcessActionType.PromoteToStaging && !suppressMultiThreading)
+                        useMultiThreading = true;
+                    else
+                        useMultiThreading = false;
 
                     // Get a new type tracker for each promotion action.
                     documentTypeTracker = new DocumentTypeTracker();
 
                     BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
                         string.Format("Start promotion to {0}", ActionToLocation(action)));
+
+                    SynchronizedIDQueue queueForRegularDocs = new SynchronizedIDQueue();
+                    SynchronizedIDQueue queueForCmsDocs = new SynchronizedIDQueue();
 
                     for (int docIndex = 0; docIndex < requestDataIDList.Count; ++docIndex)
                     {
@@ -130,12 +140,6 @@ namespace GKManagers
                         // Keep track of what type of document is being promoted.
                         documentTypeTracker.AddDocumentType(docData.CDRDocType);
 
-                        /// Start synchronzier as signalled so it doesn't block when promotion is skipped.
-                        /// We don't know whether the synchronizer will actually be needed until after we
-                        /// check whether the document should be promoted.  If the document is to be
-                        /// promoted, the synchronizer will be reset at that time.
-                        synchronizer[docIndex] = new ManualResetEvent(true);
-
                         // Status map must be reloaded for each iteration through the list of
                         // promotion levels.
                         if (statusMap == null)
@@ -144,23 +148,21 @@ namespace GKManagers
                         // Is it OK to promote the document?
                         if (IsDocumentOKToPromote(action, batchID, docData, locationMap, statusMap))
                         {
-                            synchronizer[docIndex].Reset();
-                            workerThreads[docIndex] = new PromotionWorker(synchronizer[docIndex], 
-                                batchID, action, validationRequired, currentBatch.UserName, xPathManager,
-                                locationMap, statusMap);
+                            DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
 
-                            // Promotion to staging is multi-threaded. Everything else is multi-threaded.
-
-                            if (action == ProcessActionType.PromoteToStaging && !suppressMultiThreading)
+                            if (useMultiThreading)
                             {
-                                ThreadPool.QueueUserWorkItem(workerThreads[docIndex].PromotionCallback,
-                                    requestDataIDList[docIndex]);
+                                // Place documents in the appropriate queue.
+                                if (DocumentTypeFlagUtil.FlagsOverlap(docTypeFlag, CmsManagedTypes))
+                                    queueForCmsDocs.Enqueue(requestDataIDList[docIndex]);
+                                else
+                                    queueForRegularDocs.Enqueue(requestDataIDList[docIndex]);
                             }
                             else
                             {
-                                workerThreads[docIndex].PromotionCallback(requestDataIDList[docIndex]);
+                                // For single threading, use one queue.
+                                queueForRegularDocs.Enqueue(requestDataIDList[docIndex]);
                             }
-
                         }
                         else
                         {
@@ -170,19 +172,13 @@ namespace GKManagers
                         }
                     }
 
-                    // Wait for all promotions at one level to finish before starting another.
-                    WaitForAllThreads(synchronizer);
+                    // Run the individual promotions.
+                    PromoteQueuedDocuments(batchID, action, validationRequired, currentBatch.UserName, xPathManager,
+                        locationMap, statusMap, useMultiThreading, queueForRegularDocs, queueForCmsDocs,
+                        out promotionWasSuccessful);
 
                     // Update the document location map's group list to reflect promotions.
                     locationMap.RefreshGroupPresence();
-
-                    // Check for promotion failures by examining all the worker thread objects.
-                    foreach (PromotionWorker worker in workerThreads)
-                    {
-                        // Worker is null if the document couldn't be promoted.
-                        if (worker == null || !worker.PromotionSucceeded)
-                            promotionWasSuccessful = false;
-                    }
 
                     // Update caches
                     UpdateDocumentCacheAndPrettyUrls(documentTypeTracker, action, currentBatch);
@@ -212,7 +208,7 @@ namespace GKManagers
                 // Mark batch complete and remove from queue.
                 BatchManager.CompleteBatch(currentBatch, currentBatch.UserName);
 
-                // Run roution to clean up the unused modality 
+                // Run routine to clean up the unused modality 
                 BatchManager.CleanupUnusedModality(currentBatch.BatchID, currentBatch.UserName, actionList);
             }
             else
@@ -227,6 +223,66 @@ namespace GKManagers
                     "PromototionCompleteWithErrors", message);
             }
 
+        }
+
+        private static void PromoteQueuedDocuments(int batchID, ProcessActionType action, bool validationRequired,
+            string userName, DocumentXPathManager xPathManager, DocumentVersionMap locationMap,
+            DocumentStatusMap statusMap, bool allowMultiThreading, SynchronizedIDQueue queueForRegularDocs,
+            SynchronizedIDQueue queueForCmsDocs, out bool promotionWasSuccessful)
+        {
+            // Determine number of threads to allow.
+            int workerThreadCount = Strings.ToInt(ConfigurationManager.AppSettings["MaxWorkerThreads"], 4);
+
+            SetThreadPoolSize();
+
+            if (allowMultiThreading)
+            {
+                // For multi-threading, require at least one thread per queue.
+                if (workerThreadCount < 2)
+                    workerThreadCount = 2;
+            }
+            else
+            {
+                // Single threaded only gets one thread.
+                workerThreadCount = 1;
+            }
+
+            PromotionWorker[] workerThreads = new PromotionWorker[workerThreadCount];
+
+            // Allocate synchronizers as non-signalled (blocking).
+            ManualResetEvent[] synchronizers = new ManualResetEvent[workerThreadCount];
+            for (int i = 0; i < workerThreadCount; i++)
+                synchronizers[i] = new ManualResetEvent(false);
+
+            if (allowMultiThreading)
+            {
+                // We are guaranteed to have at least two threads in this case.
+                // First worker thread always uses the CMS queue.
+                workerThreads[0] = new PromotionWorker(synchronizers[0], queueForCmsDocs, batchID, action,
+                    validationRequired, userName, xPathManager, locationMap, statusMap);
+                for (int i = 1; i < workerThreadCount; i++)
+                {
+                    workerThreads[i] = new PromotionWorker(synchronizers[i], queueForRegularDocs, batchID, action,
+                        validationRequired, userName, xPathManager, locationMap, statusMap);
+                }
+            }
+            else
+            {   
+                // Single-threaded
+                workerThreads[0] = new PromotionWorker(synchronizers[0], queueForRegularDocs, batchID, action,
+                    validationRequired, userName, xPathManager, locationMap, statusMap);
+            }
+
+            // Start all worker threads
+            Array.ForEach(workerThreads, thread => ThreadPool.QueueUserWorkItem(thread.PromotionCallback));
+
+            WaitForAllThreads(synchronizers);
+
+            // Promotion success is determined by ANDing the success status of
+            // all the worker threads.
+            bool allSuccessful = true;  // out parameters aren't allowed in lambdas, so we need a temp.
+            Array.ForEach(workerThreads, thread => allSuccessful &= thread.AllPromotionsSucceeded);
+            promotionWasSuccessful = allSuccessful;
         }
 
         /// <summary>
@@ -305,13 +361,10 @@ namespace GKManagers
         private static void LaunchCMSPublishing(DocumentTypeTracker documentTypeTracker,
                 ProcessActionType action, Batch batchInfo)
         {
-            // Shortcut for the multiple document types which are maintained in the CMS.
-            DocumentTypeFlag cmsManagedTypes =
-                DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary;
 
             // Publishing only takes place for Preview & Live. There's nothing to do on Staging.
             if ((action == ProcessActionType.PromoteToPreview || action == ProcessActionType.PromoteToLive)
-                && documentTypeTracker.Contains(cmsManagedTypes))
+                && documentTypeTracker.Contains(CmsManagedTypes))
             {
                 CMSController controller = new CMSController();
 

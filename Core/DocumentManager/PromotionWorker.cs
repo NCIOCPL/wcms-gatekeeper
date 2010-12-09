@@ -15,9 +15,8 @@ namespace GKManagers
 
         #endregion
 
-        private bool _promotionSucceeded = false;
-
         private ManualResetEvent _doneEvent;
+        private SynchronizedIDQueue _idQueue;
         private int _batchID;
         private ProcessActionType _action;
         private bool _validationNeeded;
@@ -32,9 +31,14 @@ namespace GKManagers
 
         #region Properties
 
-        public bool PromotionSucceeded
+        public bool AllPromotionsSucceeded { get; private set; }
+
+        /// <summary>
+        /// Determines whether the thread is allowed to continue running.
+        /// </summary>
+        private bool OKToContinueRunning
         {
-            get { return _promotionSucceeded; }
+            get { return !_systemIsKnownToBeCrashing; }
         }
 
         #endregion
@@ -51,21 +55,25 @@ namespace GKManagers
         /// <param name="locationMap"></param>
         /// <param name="statusMap"></param>
         public PromotionWorker(
-            ManualResetEvent doneEvent, 
+            ManualResetEvent doneEvent,
+            SynchronizedIDQueue idQueue, 
             int batchID, 
             ProcessActionType action,
             bool mustValidate,
             string userName, 
             DocumentXPathManager xPathManager, 
             DocumentVersionMap locationMap, 
-            DocumentStatusMap statusMap )
+            DocumentStatusMap statusMap)
         {
             // Value types.
             _action = action;
             _batchID = batchID;
             _validationNeeded = mustValidate;
 
-            // References to external objects.  (Single instances of these objects are shared by
+            // One ID Queue per thread.
+            _idQueue = idQueue;
+
+            // References to shared external objects.  (Single instances of these objects are shared by
             // all threads.)
             _doneEvent = doneEvent;
             _locationMap = locationMap;
@@ -74,13 +82,27 @@ namespace GKManagers
             _xPathManager = xPathManager;
         }
 
-        public void PromotionCallback(Object threadContext)
+        public void PromotionCallback(Object unused)
         {
-            int requestDataID = (int)threadContext;
+            int requestDataID;// = (int)threadContext;
+
+            while (_idQueue.Count > 0 && OKToContinueRunning)
+            {
+                requestDataID = _idQueue.Dequeue();
+                Promote(requestDataID);
+            }
+
+            _doneEvent.Set();
+        }
+
+        private void Promote(int requestDataID)
+        {
             RequestData docData;
 
             try
             {
+                bool promotionSucceeded;
+
                 docData = RequestManager.LoadRequestDataByID(requestDataID);
 
                 bool documentValid = true;
@@ -92,7 +114,7 @@ namespace GKManagers
                     DocumentPromoterBase documentPromoter =
                         DocumentPromoterFactory.Create(docData, _batchID, _action, _userName);
                     documentPromoter.Promote(_xPathManager);
-                    _promotionSucceeded = documentPromoter.PromotionWasSuccessful;
+                    promotionSucceeded = documentPromoter.PromotionWasSuccessful;
                     documentPromoter = null;
                 }
                 else
@@ -100,10 +122,10 @@ namespace GKManagers
                     RequestManager.MarkDocumentWithErrors(docData.RequestDataID);
                     RequestManager.AddRequestDataHistoryEntry(docData.RequestID, docData.RequestDataID,
                         _batchID, "Failed DTD validation, not promoted.", RequestDataHistoryType.Error);
-                    _promotionSucceeded = false;
+                    promotionSucceeded = false;
                 }
 
-                if (_promotionSucceeded)
+                if (promotionSucceeded)
                 {
                     // Keep the document map up to date so we don't have to reload it.
                     // CDRDocumentLocation table gets updated in PromoterBase.
@@ -112,7 +134,9 @@ namespace GKManagers
                     updater = null;
                 }
 
-                _doneEvent.Set();
+                // Update global status for whether all documents in this thread
+                // have been successfully promoted.
+                AllPromotionsSucceeded &= promotionSucceeded;
             }
             catch (Exception ex)
             {
@@ -128,17 +152,6 @@ namespace GKManagers
                     throw;
                 }
             }
-            finally
-            {
-                // Clean up
-                docData = null;
-                _doneEvent = null;
-                _locationMap = null;
-                _statusMap = null;
-                _userName = null;
-                _xPathManager = null;
-            }
-
         }
 
         /// <summary>
