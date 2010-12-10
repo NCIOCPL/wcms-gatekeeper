@@ -1009,7 +1009,13 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             fields.Add("bodyfield", html);
-            fields.Add("long_title", summarySection.Title);
+
+            string longTitle = summarySection.Title;
+            fields.Add("long_title", longTitle);
+
+            int shortLength = Math.Min(ShortTitleLength, longTitle.Length);
+            fields.Add("short_title", longTitle.Substring(0, shortLength));
+            
             fields.Add("sys_title", summarySection.Title);
 
             // HACK: This relies on Percussion not setting anything else in the login session.
