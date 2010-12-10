@@ -181,7 +181,9 @@ namespace GKManagers
                     locationMap.RefreshGroupPresence();
 
                     // Update caches
-                    UpdateDocumentCacheAndPrettyUrls(documentTypeTracker, action, currentBatch);
+                    UpdateDocumentCache(documentTypeTracker, action, currentBatch);
+
+                    LaunchCMSPublishing(documentTypeTracker, action, currentBatch);
 
                     BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
                         string.Format("Finish promotion to {0}", ActionToLocation(action)));
@@ -314,7 +316,7 @@ namespace GKManagers
         /// Used to determine which environment should be updated.</param>
         /// <param name="batchInfo">Batch object containing metadata for the
         /// promotion batch.</param>
-        private static void UpdateDocumentCacheAndPrettyUrls(DocumentTypeTracker documentTypeTracker,
+        private static void UpdateDocumentCache(DocumentTypeTracker documentTypeTracker,
                 ProcessActionType action, Batch batchInfo)
         {
             // Caches only exists on Preview & Live. There's nothing to do on Staging.
@@ -378,6 +380,8 @@ namespace GKManagers
                     target = CMSController.CMSPublishingTarget.CDRLive;
                 }
 
+                BatchManager.AddBatchHistoryEntry(batchInfo.BatchID, batchInfo.UserName,
+                    string.Format("Begin CMS publishing for stage {0}: {1}", action, target));
                 controller.StartPublishing(target);
             }
         }
