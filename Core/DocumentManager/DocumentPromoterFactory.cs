@@ -67,7 +67,6 @@ namespace GKManagers
                      throw new NotImplementedException(string.Format("Encountered the unknown document type: {0}.",
                             dataBlock.CDRDocType));
                      // promoter = new SpecificDocumentPromoter(dataBlock, batchID, action, userName);
-                    break;
             }
 
             return promoter;
