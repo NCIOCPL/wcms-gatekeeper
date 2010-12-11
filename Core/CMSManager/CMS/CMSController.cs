@@ -48,7 +48,7 @@ namespace NCI.WCM.CMSManager.CMS
          */
         securitySOAP _securityService;
 
-        /**
+         /**
          * The content service instance; used to perform operations defined in
          * the content services. It is initialized by login().
          */
@@ -144,7 +144,11 @@ namespace NCI.WCM.CMSManager.CMS
             // Free managed resources.
             if (disposing)
             {
-                PSWSUtils.Logout(_securityService, _loginSessionContext.sessionId);
+                //The _loginSessionContext may be null under certain circumstances, so
+                //we must check.
+                if (_loginSessionContext != null)
+                    PSWSUtils.Logout(_securityService, _loginSessionContext.sessionId);
+
                 _securityService = null;
                 _contentService = null;
                 _systemService = null;
