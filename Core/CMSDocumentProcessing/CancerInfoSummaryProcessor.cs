@@ -1115,7 +1115,10 @@ namespace GKManagers.CMSDocumentProcessing
 
             string TOC = BuildTableOfContents(summary);
 
-            fields.Add("pretty_url_name", prettyURLName);
+            // Explicitly set pretty_url_name to null so the CI Summary will be
+            // the folder's default document.
+            fields.Add("pretty_url_name", null);
+
             fields.Add("long_title", summary.Title);
 
             if (summary.Title.Length > ShortTitleLength)
