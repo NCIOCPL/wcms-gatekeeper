@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Services.Protocols;
 using System.Xml;
 
+using GKManagers.CMSManager.Configuration;
 using NCI.WCM.CMSManager.PercussionWebSvc;
 
 namespace NCI.WCM.CMSManager.CMS
@@ -23,6 +24,11 @@ namespace NCI.WCM.CMSManager.CMS
         const string errorResultPath = "//ns1:PSErrorResultsFault";
         const string folderNotFoundErrorPath = "//ns1:PSError[@code='43']";
 
+        const string NavonContentType = "rffNavon";
+
+        /* Semi-constants */
+        readonly string NavonPublicTransitionName;
+
         #endregion
 
 
@@ -36,6 +42,8 @@ namespace NCI.WCM.CMSManager.CMS
         private static Dictionary<string, PSFolder> _folderCollection = new Dictionary<string, PSFolder>();
 
         private contentSOAP _contentService = null;
+
+        private systemSOAP _systemService = null;
 
         #endregion
 
@@ -54,9 +62,13 @@ namespace NCI.WCM.CMSManager.CMS
         /// The public constructor.
         /// </summary>
         /// <param name="contentService">Reference to the Percussion content Service.</param>
-        internal FolderManager(contentSOAP contentService)
+        internal FolderManager(contentSOAP contentService, systemSOAP systemService)
         {
             _contentService = contentService;
+            _systemService = systemService;
+
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            NavonPublicTransitionName = percussionConfig.NavonPublicTransition.Value;
         }
 
         #endregion
@@ -102,6 +114,8 @@ namespace NCI.WCM.CMSManager.CMS
         private PSFolder ForceFolderToExist(string folderPath)
         {
             PSFolder returnItem;
+
+            // TODO: Rewrite to use  PSWSUtils.LoadFolders()
 
             returnItem = GetExistingFolder(folderPath);
 
@@ -203,7 +217,20 @@ namespace NCI.WCM.CMSManager.CMS
             req.Path = parentFolder;
             req.Name = newFolderName;
             AddFolderResponse resp = _contentService.AddFolder(req);
+
+            // Folder is newly created, move the Navon to Public.
+            MakeNavonPublic(folderPath);
+
             return resp.PSFolder;
+        }
+
+        private void MakeNavonPublic(string folderPath)
+        {
+            // Get the Navon's content ID.
+            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
+            if (searchResults.Length < 1)
+                throw new CMSOperationalException(string.Format("Created folder {0}, but no Navon was found.", folderPath));
+            PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
         }
     }
 }

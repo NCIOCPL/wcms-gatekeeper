@@ -65,6 +65,7 @@
     <Compile Include="CMS\TemplateNameManager.cs" />
     <Compile Include="Configuration\ConnectionInfo.cs" />
     <Compile Include="Configuration\ContentType.cs" />
+    <Compile Include="Configuration\NavonPublicTransitionElement.cs" />
     <Compile Include="Configuration\pdqCancerInfoSummaryElement.cs" />
     <Compile Include="Configuration\PDQCancerInfoSummaryLinkElement.cs" />
     <Compile Include="Configuration\PDQCancerInfoSummaryPage.cs" />

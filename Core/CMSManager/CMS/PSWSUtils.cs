@@ -556,52 +556,78 @@ namespace NCI.WCM.CMSManager.CMS
         {
             PSSearchResults[] results;
 
-            FindItemsRequest req = new FindItemsRequest();
+            // The contentSvc.FindItems() method will throw a low-level error if the folder doesn't exist.
+            // For our purposes, if caller specifies that the item must exist in a non-existant
+            // path, then the item doesn't exist.
 
-            // Basic set up.
-            req.PSSearch = new PSSearch();
-            req.PSSearch.useExternalSearchEngine = false;
-            req.PSSearch.useDbCaseSensitivity = false;
-            req.PSSearch.PSSearchParams = new PSSearchParams();
-
-            // Search for specific content types.
-            if (!string.IsNullOrEmpty(contentType))
+            // Before doing the other work, require either searchPath is empty, or else it contains
+            // a valid path.  (If searchPath is null/empty, the second test won't be performed.)
+            if (string.IsNullOrEmpty(searchPath) || FolderExists(contentSvc, searchPath))
             {
-                req.PSSearch.PSSearchParams.ContentType = contentType;
-            }
+                FindItemsRequest req = new FindItemsRequest();
 
-            // Search in path
-            if (!string.IsNullOrEmpty(searchPath))
-            {
-                req.PSSearch.PSSearchParams.FolderFilter = new PSSearchParamsFolderFilter();
-                req.PSSearch.PSSearchParams.FolderFilter.includeSubFolders = true;
-                req.PSSearch.PSSearchParams.FolderFilter.Value = searchPath;
-            }
+                // Basic set up.
+                req.PSSearch = new PSSearch();
+                req.PSSearch.useExternalSearchEngine = false;
+                req.PSSearch.useDbCaseSensitivity = false;
+                req.PSSearch.PSSearchParams = new PSSearchParams();
 
-            // Search for fields
-            if (fieldCriteria != null && fieldCriteria.Count > 0)
-            {
-                req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count];
-                int offset = 0;
-                foreach (KeyValuePair<string, string> pair in fieldCriteria)
+                // Search for specific content types.
+                if (!string.IsNullOrEmpty(contentType))
                 {
-                    req.PSSearch.PSSearchParams.Parameter[offset] = new PSSearchField();
-                    req.PSSearch.PSSearchParams.Parameter[offset].name = pair.Key;
-                    req.PSSearch.PSSearchParams.Parameter[offset].Value = pair.Value;
-                    req.PSSearch.PSSearchParams.Parameter[offset].Operator = operatorTypes.equal;
+                    req.PSSearch.PSSearchParams.ContentType = contentType;
+                }
+
+                // Search in path
+                if (!string.IsNullOrEmpty(searchPath))
+                {
+                    req.PSSearch.PSSearchParams.FolderFilter = new PSSearchParamsFolderFilter();
+                    req.PSSearch.PSSearchParams.FolderFilter.includeSubFolders = true;
+                    req.PSSearch.PSSearchParams.FolderFilter.Value = searchPath;
+                }
+
+                // Search for fields
+                if (fieldCriteria != null && fieldCriteria.Count > 0)
+                {
+                    req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count];
+                    int offset = 0;
+                    foreach (KeyValuePair<string, string> pair in fieldCriteria)
+                    {
+                        req.PSSearch.PSSearchParams.Parameter[offset] = new PSSearchField();
+                        req.PSSearch.PSSearchParams.Parameter[offset].name = pair.Key;
+                        req.PSSearch.PSSearchParams.Parameter[offset].Value = pair.Value;
+                        req.PSSearch.PSSearchParams.Parameter[offset].Operator = operatorTypes.equal;
+                    }
+                }
+
+                try
+                {
+                    results = contentSvc.FindItems(req);
+                }
+                catch (SoapException ex)
+                {
+                    throw new CMSSoapException("Percussion error in FindItemByFieldValues.", ex);
                 }
             }
-
-            try
+            else
             {
-                results = contentSvc.FindItems(req);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion error in FindItemByFieldValues.", ex);
+                results = new PSSearchResults[] { };
             }
 
             return results;
+        }
+
+        public static bool FolderExists(contentSOAP contentSvc, string folderPath)
+        {
+            bool result;
+
+            PSFolder[] folderCheck = LoadFolders(contentSvc, folderPath);
+            if (folderCheck == null)
+                result = false;
+            else
+                result = true;
+
+            return result;
         }
 
         #endregion

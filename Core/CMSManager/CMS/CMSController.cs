@@ -175,7 +175,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         public FolderManager FolderManager
         {
-            get { return new FolderManager(_contentService); }
+            get { return new FolderManager(_contentService, _systemService); }
         }
 
         /// <summary>
@@ -540,6 +540,16 @@ namespace NCI.WCM.CMSManager.CMS
         public PSItemSummary[] FindFolderChildren(string path)
         {
             return PSWSUtils.FindFolderChildren(_contentService, siteRootPath + path);
+        }
+
+        /// <summary>
+        /// Checks whether a CMS folder path exists.
+        /// </summary>
+        /// <param name="path">A site-relative folder path. (/CancerTopics, not //sites/CancerGov/CancerTopics)</param>
+        /// <returns>True if the folder exists, false otherwise.</returns>
+        public bool FolderExists(string path)
+        {
+            return PSWSUtils.FolderExists(_contentService, siteRootPath + path);
         }
 
         /// <summary>

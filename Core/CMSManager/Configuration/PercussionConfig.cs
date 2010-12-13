@@ -42,6 +42,11 @@ namespace GKManagers.CMSManager.Configuration
             get { return (RepublishEditionListElement)base["liveRepublishEditionList"]; }
         }
 
+        [ConfigurationProperty("navonPublicTransitionName")]
+        public NavonPublicTransitionElement NavonPublicTransition
+        {
+            get { return (NavonPublicTransitionElement)base["navonPublicTransitionName"]; }
+        }
     }
 
     public class ProtocolElement : ConfigurationElement
