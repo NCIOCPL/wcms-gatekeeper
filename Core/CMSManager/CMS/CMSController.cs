@@ -537,6 +537,11 @@ namespace NCI.WCM.CMSManager.CMS
             PSWSUtils.DeleteFolders(_contentService, folderIDs, false);
         }
 
+        /// <summary>
+        /// Finds the content items contained in a folder.
+        /// </summary>
+        /// <param name="path">Path to the folder being investigated.</param>
+        /// <returns>A collection of zero or more objects describing the folder's contents.</returns>
         public PSItemSummary[] FindFolderChildren(string path)
         {
             return PSWSUtils.FindFolderChildren(_contentService, siteRootPath + path);
