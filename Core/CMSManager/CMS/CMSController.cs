@@ -511,22 +511,6 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Determines whether folderPath Exists.
-        /// </summary>
-        /// <param name="folderPath">Path to check</param>
-        /// <returns>True if the folder exists.</returns>
-        public bool FolderExists(string folderPath)
-        {
-            bool found = false;
-
-            PSFolder[] folders = PSWSUtils.LoadFolders(_contentService, siteRootPath + folderPath);
-            if (folders != null && folders.Length > 0)
-                found = true;
-
-            return found;
-        }
-
-        /// <summary>
         /// Deletes a collection of folders. Any items contained in the folder are
         /// removed from the content tree, but are not purged.
         /// </summary>

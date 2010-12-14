@@ -619,15 +619,14 @@ namespace NCI.WCM.CMSManager.CMS
 
         public static bool FolderExists(contentSOAP contentSvc, string folderPath)
         {
-            bool result;
+            bool found = false;
 
-            PSFolder[] folderCheck = LoadFolders(contentSvc, folderPath);
-            if (folderCheck == null)
-                result = false;
-            else
-                result = true;
+            PSFolder[] folders = PSWSUtils.LoadFolders(contentSvc, folderPath);
+            if (folders != null && folders.Length > 0)
+                found = true;
 
-            return result;
+            return found;
+
         }
 
         #endregion
