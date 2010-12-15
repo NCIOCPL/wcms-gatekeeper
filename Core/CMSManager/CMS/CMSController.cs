@@ -601,6 +601,10 @@ namespace NCI.WCM.CMSManager.CMS
             // Check for any relationships.
             PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
             filter.Dependent = new long[1] { itemID };
+
+            // Only return relationships for the most recent revision.
+            filter.limitToEditOrCurrentOwnerRevision = true;
+
             PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
 
             // If incoming relationships exist, load the relevant content items.
@@ -664,6 +668,9 @@ namespace NCI.WCM.CMSManager.CMS
         {
             PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
             filter.Dependent = IDList;
+
+            // Only return relationships for the most recent revision.
+            filter.limitToEditOrCurrentOwnerRevision = true;
 
             if (!string.IsNullOrEmpty(slotName))
             {
