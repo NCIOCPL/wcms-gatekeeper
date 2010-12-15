@@ -332,9 +332,6 @@ namespace GKManagers.CMSDocumentProcessing
         {
             PercussionGuid[] combinedIDList = CMSController.BuildGuidArray(oldPageIDs, oldSubItems);
 
-            PSAaRelationship[] relationships = CMSController.FindIncomingActiveAssemblyRelationships(combinedIDList);
-            CMSController.DeleteActiveAssemblyRelationships(relationships, false);
-
             CMSController.DeleteItemList(combinedIDList);
         }
 

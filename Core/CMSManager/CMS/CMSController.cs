@@ -940,6 +940,9 @@ namespace NCI.WCM.CMSManager.CMS
             // Check for any relationships.
             PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
 
+            // Only return relationships for the most recent revision.
+            filter.limitToEditOrCurrentOwnerRevision = true;
+
             // Was an owner specified?
             if (owner != null)
             {
