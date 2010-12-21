@@ -61,6 +61,9 @@ namespace GKManagers.CMSDocumentProcessing
         public void FindPageContainingSection(PercussionGuid root, string sectionID, out int pageNumber, out PercussionGuid containingItem)
         {
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
+            if (pageIDs.Length <= 0)
+                throw new EmptySlotException(string.Format("Slot unexpectedly empty for content item {0}.", root));
+
             FindPageContainingSection(pageIDs, sectionID, out pageNumber, out containingItem);
         }
 
