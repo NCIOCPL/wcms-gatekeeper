@@ -253,12 +253,24 @@ namespace GKManagers.CMSDocumentProcessing
         {
             // Retrieve IDs for the summary and all its components.
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, summary.DocumentID);
-            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
+            PercussionGuid summaryLinkID;
+            try
+            {
+                summaryLinkID = LocateSummaryLink(summaryRootID);
+            }
+            catch (FolderAssociationException ex)
+            {
+                throw new FolderAssociationException(string.Format("Content item {0} has no path, CDRID = {1}.",
+                    summaryRootID, summary.DocumentID), ex);
+            }
+
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
             // Doublecheck paths.
             PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
+            VerifyItemHasPath(summaryRootItem[0], summary.DocumentID);
+
             string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
             string newPath = GetTargetFolder(summary.BasePrettyURL);
             string prettyUrlName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
@@ -505,6 +517,33 @@ namespace GKManagers.CMSDocumentProcessing
 
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
             ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+        }
+
+        /// <summary>
+        /// Helper method to verify that an existing content items belongs to a folder path, any folder path.
+        /// Throws FolderAssociationException if item is not associated with a folder.
+        /// </summary>
+        /// <param name="item">The content item to be checked for a path.</param>
+        private void VerifyItemHasPath(PSItem item)
+        {
+            VerifyItemHasPath(item, null);
+        }
+
+        private void VerifyItemHasPath(PSItem item, int? documentID)
+        {
+            if (item == null)
+                throw new ArgumentNullException("Argument 'item' must not be null.");
+
+            if (item.Folders == null || item.Folders.Length == 0)
+            {
+                string message;
+                if (documentID == null)
+                    message = string.Format("Content item {0} has no path.", new PercussionGuid(item.id));
+                else
+                    message = string.Format("Content item {0} has no path, CDRID = {1}", new PercussionGuid(item.id), documentID);
+
+                throw new FolderAssociationException(message);
+            }
         }
 
         private void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
@@ -882,6 +921,8 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid summaryLinkID = null;
 
             PSItem[] rootItem = CMSController.LoadContentItems(new long[] { rootItemID.ID });
+            VerifyItemHasPath(rootItem[0]);
+
             string linkPath = GetParentFolder(CMSController.GetPathInSite(rootItem[0]));
             PercussionGuid[] searchList =
                 CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, linkPath, null);
@@ -1230,9 +1271,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            int i;
-
-            for (i = 0; i <= document.MediaLinkSectionList.Count - 1; i++)
+            for (int i = 0; i < document.MediaLinkSectionList.Count; i++)
             {
                 if (document.MediaLinkSectionList[i] != null)
                 {
@@ -1402,7 +1441,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         private string MediaLinkIDAccessor(MediaLink link)
         {
-            return link.Reference;
+            return link.Id;
         }
     }
 }

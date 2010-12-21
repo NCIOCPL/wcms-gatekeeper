@@ -211,7 +211,7 @@
     using the value of the objectid attribute.
   -->
 	<xsl:template match="MediaLink">
-    <div inlinetype="rxvariant" objectid="{@ref}">
+    <div inlinetype="rxvariant" objectid="{@id}">
       Placeholder slot
     </div>
 	</xsl:template>

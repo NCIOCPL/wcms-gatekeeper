@@ -17,7 +17,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         public void AddSection(string sectionID, long itemID)
         {
-                _map.Add(sectionID, new PercussionGuid(itemID));
+            _map.Add(sectionID, new PercussionGuid(itemID));
         }
 
         public PercussionGuid this[string sectionKey]

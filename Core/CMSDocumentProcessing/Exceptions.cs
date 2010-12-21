@@ -40,4 +40,20 @@ namespace GKManagers.CMSDocumentProcessing
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSDocumentProcessing namespace when an error occurs
+    /// with a content item's association to a folder.
+    /// </summary>
+    [global::System.Serializable]
+    public class FolderAssociationException : DocumentProcessingException
+    {
+        public FolderAssociationException() { }
+        public FolderAssociationException(string message) : base(message) { }
+        public FolderAssociationException(string message, Exception inner) : base(message, inner) { }
+        protected FolderAssociationException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }
