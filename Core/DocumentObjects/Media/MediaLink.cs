@@ -117,7 +117,7 @@ namespace GateKeeper.DocumentObjects.Media
         public string Caption
         {
             get { return _caption; }
-            internal set { _caption = value; }
+            set { _caption = value; }
         }
 
         /// <summary>

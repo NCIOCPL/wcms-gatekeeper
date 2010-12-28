@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -565,6 +566,7 @@ namespace GateKeeper.ContentRendering
                  * 
                  */
 
+                RenderMediaLinkCaptions(summary.MediaLinkSectionList);
             }
             catch (Exception e)
             {
@@ -630,6 +632,30 @@ namespace GateKeeper.ContentRendering
                     tableNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
                 }
 
+            }
+        }
+
+        private void RenderMediaLinkCaptions(List<MediaLink> mediaLinkCollection)
+        {
+            // HACK:  What we're doing here is running an XSL transform for each MediaLink's
+            // caption using the stylesheet which is already in memory for Summary documents.
+
+            foreach (MediaLink item in mediaLinkCollection)
+            {
+                StringBuilder sb = new StringBuilder();
+                StringWriter sw = new System.IO.StringWriter(sb);
+                
+                // Create temporary XML document to transform with the loaded XSL.
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(string.Format("<Para id=\"InternalUse\">{0}</Para>", item.Caption));
+                Render(doc.CreateNavigator(), sw);
+
+                // Reload temp doc with the output from the transform.
+                doc.LoadXml(sw.ToString());
+
+                // Replace item caption with the transformed version.
+                XmlNode caption = doc.SelectSingleNode("//P[@__id='InternalUse']");
+                item.Caption = caption.InnerXml;
             }
         }
 
