@@ -730,7 +730,7 @@ namespace NCI.WCM.CMSManager.CMS
         {
             PSAaRelationship[] relationships;
 
-            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[]{parentItemID});
+            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { parentItemID });
             if (!parentCheckoutStatus[0].didCheckout)
                 throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
 
@@ -740,6 +740,22 @@ namespace NCI.WCM.CMSManager.CMS
 
             return relationships;
         }
+
+        public PSAaRelationship[] CreateActiveAssemblyRelationships(long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName, int index)
+        {
+            PSAaRelationship[] relationships;
+
+            PSItemStatus[] parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { parentItemID });
+            if (!parentCheckoutStatus[0].didCheckout)
+                throw new CMSOperationalException(string.Format("Unable to perform a checkout for item with CMS content item {0}.", parentItemID));
+
+            relationships = PSWSUtils.CreateActiveAssemblyRelationships(_contentService, parentItemID, childItemIDList, slotName, snippetTemplateName, index);
+
+            PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
+
+            return relationships;
+        }
+
 
         /// <summary>
         /// Creates relationships between a parent object and a collection of child objects using a named

@@ -524,6 +524,31 @@ namespace NCI.WCM.CMSManager.CMS
                 req.Slot = slotName;
                 req.Template = snippetTemplateName;
 
+
+                results = contentSvc.AddContentRelations(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in CreateActiveAssemblyRelationships().", ex);
+            }
+
+            return results;
+        }
+
+        public static PSAaRelationship[] CreateActiveAssemblyRelationships(contentSOAP contentSvc,
+            long parentItemID, long[] childItemIDList, string slotName, string snippetTemplateName, int index)
+        {
+            PSAaRelationship[] results = null;
+            try
+            {
+                AddContentRelationsRequest req = new AddContentRelationsRequest();
+                req.Id = parentItemID;
+                req.RelatedId = childItemIDList;
+                req.Slot = slotName;
+                req.Template = snippetTemplateName;
+                req.Index = index;
+
+
                 results = contentSvc.AddContentRelations(req);
             }
             catch (SoapException ex)
