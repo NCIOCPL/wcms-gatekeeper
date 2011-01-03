@@ -311,7 +311,7 @@ namespace GKManagers.CMSDocumentProcessing
             newSummaryPageIDList = idList.ToArray();
             PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
 
-            UpdateIncomingSummaryReferences(summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
+            UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
 
             // Add new cancer information summary pages into the page slot.
             PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
@@ -347,7 +347,17 @@ namespace GKManagers.CMSDocumentProcessing
             CMSController.DeleteItemList(combinedIDList);
         }
 
-        private void UpdateIncomingSummaryReferences(PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+        /// <summary>
+        /// Modifies summary references from other Cancer Info Summaries to link to the document's
+        /// new pages instead of the old ones.
+        /// </summary>
+        /// <param name="targetCDRID">The CDR ID of the document currently being processed.  IOW,
+        /// the one being referred to (not the one to be updated).</param>
+        /// <param name="summaryRootID">PercussionGuid of the composite document's root CancerInfoSummary content item.</param>
+        /// <param name="summaryLinkID">PercussionGuid of the composite document's root CancerInfoSummaryLink content item.</param>
+        /// <param name="oldPageIDs">Array of PercussionGuids for the old pages.</param>
+        /// <param name="newPageIDs">Array of PercussionGuids for the new pages.</param>
+        private void UpdateIncomingSummaryReferences(int targetCDRID, PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
             PercussionGuid[] oldPageIDs, PercussionGuid[] newPageIDs)
         {
             PercussionGuid[] currentIDs = CMSController.BuildGuidArray(summaryRootID, oldPageIDs);
@@ -398,8 +408,9 @@ namespace GKManagers.CMSDocumentProcessing
                     string sourceBodyField = PSItemUtils.GetFieldValue(sourceItem, "bodyfield");
                     XmlDocument body = new XmlDocument();
                     body.LoadXml(sourceBodyField);
-                    XmlNodeList nodeList = body.SelectNodes("//a[@inlinetype='SummaryRef']");
 
+                    // Find all summary references contained in the source document.
+                    XmlNodeList nodeList = body.SelectNodes("//a[@inlinetype='SummaryRef']");
                     foreach (XmlNode node in nodeList)
                     {
                         // Find the section number
@@ -407,6 +418,10 @@ namespace GKManagers.CMSDocumentProcessing
                         XmlAttribute referenceAttribute = attributeList["objectid"];
 
                         SummaryReference reference = new SummaryReference(referenceAttribute.Value, basePath);
+
+                        // If the reference doesn't refer to this document, then skip it.
+                        if (reference.CdrID != targetCDRID)
+                            continue;
 
                         // Link is to a specific document fragment.
                         if (reference.IsSectionReference)
@@ -1047,6 +1062,9 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             fields.Add("bodyfield", html);
+
+            // TODO: Implement table of contents.
+            fields.Add("table_of_contents", (string.IsNullOrEmpty(summarySection.TOC) ? null : summarySection.TOC));
 
             string longTitle = summarySection.Title;
             fields.Add("long_title", longTitle);
