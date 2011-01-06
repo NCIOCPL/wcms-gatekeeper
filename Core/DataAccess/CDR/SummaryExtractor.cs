@@ -224,12 +224,12 @@ namespace GateKeeper.DataAccess.CDR
                 string title = string.Empty;
                 if (titleNode != null)
                 {
-                    title = titleNode.InnerXml.Replace("<Subscript>", "<Sub>");
-                    title = title.Replace("</Subscript>", "</Sub>");
+                    title = titleNode.InnerXml.Replace("<Subscript>", "<sub>");
+                    title = title.Replace("</Subscript>", "</sub>");
                     title = title.Replace("<Emphasis>", "<i>");
                     title = title.Replace("</Emphasis>", "</i>");
                 }
-                summarySection.Title = title;
+                summarySection.Title = title.Trim();
                 summarySection.SectionType = SummarySectionType.SummarySection;
                 summarySection.Level = DocumentHelper.GetLevel(sectionNav);
                 summarySection.Priority = priority;

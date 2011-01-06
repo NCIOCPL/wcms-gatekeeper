@@ -56,4 +56,21 @@ namespace GKManagers.CMSDocumentProcessing
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSDocumentProcessing namespace when a document's
+    /// English version of a document doesn't exist prior to creating an alternate language
+    /// version.
+    /// </summary>
+    [global::System.Serializable]
+    public class EnglishVersionNotFoundException : DocumentProcessingException
+    {
+        public EnglishVersionNotFoundException() { }
+        public EnglishVersionNotFoundException(string message) : base(message) { }
+        public EnglishVersionNotFoundException(string message, Exception inner) : base(message, inner) { }
+        protected EnglishVersionNotFoundException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

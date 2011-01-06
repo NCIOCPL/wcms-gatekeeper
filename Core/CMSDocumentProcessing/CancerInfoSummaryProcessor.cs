@@ -135,7 +135,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
 
-            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
+            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
@@ -150,7 +150,7 @@ namespace GKManagers.CMSDocumentProcessing
         public void PromoteToLive(int documentID)
         {
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLinkID = LocateSummaryLink(summaryRootID);
+            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
@@ -188,6 +188,10 @@ namespace GKManagers.CMSDocumentProcessing
                 throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.",
                     createPath, rootItemPrettyUrlName));
             }
+
+            // 
+            VerifyEnglishLanguageVersion(document);
+
 
             // Create the sub-pages
             List<long> tableIDs;
@@ -256,7 +260,7 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid summaryLinkID;
             try
             {
-                summaryLinkID = LocateSummaryLink(summaryRootID);
+                summaryLinkID = LocateExistingSummaryLink(summaryRootID);
             }
             catch (FolderAssociationException ex)
             {
@@ -818,6 +822,25 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         /// <summary>
+        /// Verifies that the English version of a document exists before attempting
+        /// to create an alternage language version.
+        /// </summary>
+        /// <param name="summary">Reference to a CancerInformationSummary object.</param>
+        private void VerifyEnglishLanguageVersion(SummaryDocument summary)
+        {
+            // No need to validate if the document is in English.
+            if (summary.Language == Language.Spanish)
+            {
+                // If this SummaryRelation did not exist, we would not know the document was in Spanish.
+                SummaryRelation relationship = summary.RelationList.Find(relation => relation.RelationType == SummaryRelationType.SpanishTranslationOf);
+                PercussionGuid englishItem = GetCdrDocumentID(CancerInfoSummaryContentType, relationship.RelatedSummaryID);
+                if (englishItem == null)
+                    throw new EnglishVersionNotFoundException(
+                        string.Format("Document {0} must exist before its translation may be added.", relationship.RelatedSummaryID));
+            }
+        }
+
+        /// <summary>
         /// Creates a Translation relationship between the Spanish and English versions of
         /// the CancerInformationSummary document.
         /// </summary>
@@ -838,7 +861,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 PercussionGuid englishItem = GetCdrDocumentID(CancerInfoSummaryContentType, relationship.RelatedSummaryID);
                 if (englishItem == null)
-                    throw new CMSOperationalException(string.Format("Document {0} must exist before its translation may be added.", relationship.RelatedSummaryID));
+                    throw new EnglishVersionNotFoundException(string.Format("Document {0} must exist before its translation may be added.", relationship.RelatedSummaryID));
 
                 CMSController.CreateRelationship(rootID.ID, englishItem.ID, CMSController.TranslationRelationshipType);
             }
@@ -858,7 +881,7 @@ namespace GKManagers.CMSDocumentProcessing
             // No further work is required.
             if (rootItem != null)
             {
-                PercussionGuid summaryLink = LocateSummaryLink(rootItem);
+                PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
                 PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
@@ -928,7 +951,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="rootItemID">The CMS ID of a CancerInformationSummary object.</param>
         /// <returns>The CMS ID of the matching CancerInformationSummaryLink object</returns>
-        private PercussionGuid LocateSummaryLink(PercussionGuid rootItemID)
+        private PercussionGuid LocateExistingSummaryLink(PercussionGuid rootItemID)
         {
             // TODO: Rewrite this to find all incoming Active Assembly relationships
             // which use the Patient or HealtProfessional slots with the link template.
