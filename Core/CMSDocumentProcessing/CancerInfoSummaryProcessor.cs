@@ -1118,9 +1118,19 @@ namespace GKManagers.CMSDocumentProcessing
             }
             fields.Add("long_title", longTitle);
 
-            // 64 characters long, subtract 3 for " - ", subtract length of table name.
-            int shortLength = (Math.Min(ShortTitleLength, longTitle.Length) - 3) - prettyURLName.Length;
-            fields.Add("short_title", string.Format("{0} - {1}", longTitle.Substring(0, shortLength), prettyURLName));
+            // Short title is a maximum of 64 characters long,
+            // Need to allow three characters for the " - " and the length of prettyURLName.
+            int decorationLength = Math.Min(3 + prettyURLName.Length, ShortTitleLength);
+            int shortLength = Math.Min(ShortTitleLength, longTitle.Length);
+            string shortTitleLead;
+            if ((shortLength + decorationLength) > ShortTitleLength)
+            {
+                int copyLength = ShortTitleLength - decorationLength;
+                shortTitleLead = longTitle.Substring(0, copyLength);
+            }
+            else
+                shortTitleLead = longTitle;
+            fields.Add("short_title", string.Format("{0} - {1}", shortTitleLead, prettyURLName));
 
             fields.Add("inline_table", tableSection.Html.OuterXml);
             fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
