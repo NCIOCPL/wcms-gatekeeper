@@ -863,7 +863,7 @@ namespace GKManagers.CMSDocumentProcessing
                 if (englishItem == null)
                     throw new EnglishVersionNotFoundException(string.Format("Document {0} must exist before its translation may be added.", relationship.RelatedSummaryID));
 
-                CMSController.CreateRelationship(rootID.ID, englishItem.ID, CMSController.TranslationRelationshipType);
+                CMSController.CreateRelationship(englishItem.ID, rootID.ID, CMSController.TranslationRelationshipType);
             }
         }
 
