@@ -229,7 +229,7 @@ namespace NCI.WCM.CMSManager.CMS
             // Get the Navon's content ID.
             PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
             if (searchResults.Length < 1)
-                throw new CMSOperationalException(string.Format("Created folder {0}, but no Navon was found.", folderPath));
+                throw new CMSOperationalException(string.Format("Navon not found for folder {0}.", folderPath));
             PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
         }
     }

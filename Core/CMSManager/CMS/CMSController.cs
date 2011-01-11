@@ -78,6 +78,8 @@ namespace NCI.WCM.CMSManager.CMS
 
         private string siteRootPath = string.Empty;
 
+        private Dictionary<string, PercussionGuid> communityCollection = new Dictionary<string, PercussionGuid>();
+
         #endregion
 
         /// <summary>
@@ -178,6 +180,11 @@ namespace NCI.WCM.CMSManager.CMS
             get { return new FolderManager(_contentService, _systemService); }
         }
 
+        public Dictionary<string, PercussionGuid> Community
+        {
+            get { return communityCollection; }
+        }
+
         /// <summary>
         /// Login to the Percussion session, set up services.
         /// </summary>
@@ -193,6 +200,11 @@ namespace NCI.WCM.CMSManager.CMS
                 _securityService.PSAuthenticationHeaderValue);
             _assemblyService = PSWSUtils.GetAssemblyService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
+
+            foreach (PSCommunity item in _loginSessionContext.Communities)
+            {
+                communityCollection.Add(item.name, new PercussionGuid(item.id));
+            }
         }
 
         /// <summary>
