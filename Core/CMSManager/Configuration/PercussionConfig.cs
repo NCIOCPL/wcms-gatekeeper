@@ -174,7 +174,7 @@ namespace GKManagers.CMSManager.Configuration
 
     public class TimeoutElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", IsRequired = false)]
+        [ConfigurationProperty("value", DefaultValue = 100000, IsRequired = false)]
         public int Value
         {
             get
