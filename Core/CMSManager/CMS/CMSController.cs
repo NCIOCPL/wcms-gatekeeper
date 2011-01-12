@@ -179,6 +179,11 @@ namespace NCI.WCM.CMSManager.CMS
             get { return new TemplateNameManager(_assemblyService); }
         }
 
+        public SlotNameManager SlotNameManager
+        {
+            get { return new SlotNameManager(_assemblyService); }
+        }
+
         public FolderManager FolderManager
         {
             get { return new FolderManager(_contentService, _systemService); }

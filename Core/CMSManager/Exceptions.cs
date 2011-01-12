@@ -134,6 +134,22 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the SlotNameManager
+    /// is unable to locate an expected slot.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSMissingSlotException : CMSException
+    {
+        public CMSMissingSlotException() { }
+        public CMSMissingSlotException(string message) : base(message) { }
+        public CMSMissingSlotException(string message, Exception inner) : base(message, inner) { }
+        protected CMSMissingSlotException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
     /// Thrown by methods in the NCI.WCM.CMSManager namespace when an attempt is made to
     /// set a content item field which does not exist.
     /// </summary>

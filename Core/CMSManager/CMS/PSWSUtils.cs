@@ -800,6 +800,24 @@ namespace NCI.WCM.CMSManager.CMS
             return templateData;
         }
 
+        public static PSTemplateSlot[] LoadSlots(assemblySOAP assemblySvc)
+        {
+            PSTemplateSlot[] slotData;
+
+            try
+            {
+                LoadSlotsRequest req = new LoadSlotsRequest();
+                slotData = assemblySvc.LoadSlots(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in LoadSlots", ex);
+            }
+
+
+            return slotData;
+        }
+
         #endregion
 
         #region Security Service Methods
