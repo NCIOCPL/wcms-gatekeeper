@@ -79,5 +79,16 @@ namespace GKManagers.CMSManager.Configuration
             }
             
         }
+
+        [ConfigurationProperty("timeout")]
+        public TimeoutElement Timeout
+        {
+            get
+            {
+                return (TimeoutElement)base["timeout"];
+            }
+
+        }
+
     }
 }

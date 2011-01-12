@@ -99,7 +99,7 @@ namespace NCI.WCM.CMSManager.CMS
             string port = percussionConfig.ConnectionInfo.Port.Value;
             string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
 
-            int timeout = 100000; // percussionConfig.Timeout;
+            int timeout = percussionConfig.ConnectionInfo.Timeout.Value;   //100000; // percussionConfig.Timeout;
 
             Login(username, password, community, host, port, protocol, timeout);
 
@@ -125,7 +125,7 @@ namespace NCI.WCM.CMSManager.CMS
             string port = percussionConfig.ConnectionInfo.Port.Value;
             string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
 
-            int timeout = 100000; // percussionConfig.Timeout;
+            int timeout = percussionConfig.ConnectionInfo.Timeout.Value;  //100000; // percussionConfig.Timeout;
 
             Login(username, password, communityName, host, port, protocol, timeout);
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;

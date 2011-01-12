@@ -171,4 +171,22 @@ namespace GKManagers.CMSManager.Configuration
         }
 
     }
+
+    public class TimeoutElement : ConfigurationElement
+    {
+        [ConfigurationProperty("value", IsRequired = false)]
+        public int Value
+        {
+            get
+            {
+                return (int)this["value"];
+            }
+            set
+            {
+                this["value"] = value;
+            }
+        }
+
+    }
+
 }
