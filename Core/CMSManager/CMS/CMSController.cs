@@ -99,7 +99,9 @@ namespace NCI.WCM.CMSManager.CMS
             string port = percussionConfig.ConnectionInfo.Port.Value;
             string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
 
-            Login(username, password, community, host, port, protocol);
+            int timeout = 100000; // percussionConfig.Timeout;
+
+            Login(username, password, community, host, port, protocol, timeout);
 
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
         }
@@ -123,7 +125,9 @@ namespace NCI.WCM.CMSManager.CMS
             string port = percussionConfig.ConnectionInfo.Port.Value;
             string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
 
-            Login(username, password, communityName, host, port, protocol);
+            int timeout = 100000; // percussionConfig.Timeout;
+
+            Login(username, password, communityName, host, port, protocol, timeout);
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
         }
 
@@ -188,7 +192,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <summary>
         /// Login to the Percussion session, set up services.
         /// </summary>
-        private void Login(string username, string password, string community, string host, string port, string protocol)
+        private void Login(string username, string password, string community, string host, string port, string protocol, int timeout)
         {
 
             _securityService = PSWSUtils.GetSecurityService(protocol, host, port);
@@ -200,6 +204,11 @@ namespace NCI.WCM.CMSManager.CMS
                 _securityService.PSAuthenticationHeaderValue);
             _assemblyService = PSWSUtils.GetAssemblyService(protocol, host, port, _securityService.CookieContainer,
                 _securityService.PSAuthenticationHeaderValue);
+
+            _securityService.Timeout = timeout;
+            _contentService.Timeout = timeout;
+            _systemService.Timeout = timeout;
+            _assemblyService.Timeout = timeout;
 
             foreach (PSCommunity item in _loginSessionContext.Communities)
             {
