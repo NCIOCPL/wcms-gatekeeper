@@ -537,6 +537,21 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// GuaranteeFolder that a folder exists, creating it if it doesn't
+        /// already exist.
+        /// </summary>
+        /// <param name="folderPath">The folder path.</param>
+        /// <param name="makeNavonPublic">Set true to immediately make the Navon public (default behavior),
+        /// or false to leave the Navon in its default state.</param>
+        /// <returns>A PSFolder object containing details of the folder.</returns>
+        /// <remarks>The folder path argument will have the path to the site root
+        /// prepended before the attempt is made to create it.</remarks>
+        public PSFolder GuaranteeFolder(string folderPath, bool makeNavonPublic)
+        {
+            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, makeNavonPublic);
+        }
+
+        /// <summary>
         /// Deletes a collection of folders. Any items contained in the folder are
         /// removed from the content tree, but are not purged.
         /// </summary>

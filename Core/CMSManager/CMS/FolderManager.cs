@@ -45,6 +45,12 @@ namespace NCI.WCM.CMSManager.CMS
 
         private systemSOAP _systemService = null;
 
+        // The default behavior for Folder Manager is to move Navons
+        // to the public state immediately after creating the folder.
+        // This behavior may be overridden by calling GuaranteeFolder
+        // with makeNavonPublic set to false;
+        private bool _makeNavonPublic = true;
+
         #endregion
 
         #region Constructors
@@ -72,6 +78,22 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         #endregion
+
+        /// <summary>
+        /// Threadsafe mechanism for loading folder information and guaranteeing
+        /// the folder exists.
+        /// </summary>
+        /// <param name="folderPath">The desired folder path.</param>
+        /// <param name="makeNavonPublic">Set true to immediately make the Navon public (default behavior),
+        /// or false to leave the Navon in its default state.</param>
+        /// <returns>A PSFolder object containing details of the folder.</returns>
+        /// <remarks>The folder path specified must be fully qualified with the //Sites/ folder
+        /// and the base of the specific site. e.g. //Sites/CancerGov.</remarks>
+        public PSFolder GuaranteeFolder(string folderPath, bool makeNavonPublic)
+        {
+            _makeNavonPublic = makeNavonPublic;
+            return GuaranteeFolder(folderPath);
+        }
 
         /// <summary>
         /// Threadsafe mechanism for loading folder information and guaranteeing
@@ -219,7 +241,10 @@ namespace NCI.WCM.CMSManager.CMS
             AddFolderResponse resp = _contentService.AddFolder(req);
 
             // Folder is newly created, move the Navon to Public.
-            MakeNavonPublic(folderPath);
+            if (_makeNavonPublic)
+            {
+                MakeNavonPublic(folderPath);
+            }
 
             return resp.PSFolder;
         }
