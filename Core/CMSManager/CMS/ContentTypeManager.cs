@@ -8,32 +8,32 @@ using NCI.WCM.CMSManager.PercussionWebSvc;
 namespace NCI.WCM.CMSManager.CMS
 {
 
-    public class TemplateNameManager
+    public class ContentTypeManager
     {
         /// <summary>
         /// Danger! This is a deliberately static member. This dictionary
         /// is shared across *all* instances of TemplateNameManager.  It is
         /// only updated the first time the constructor is executed.
         /// </summary>
-        private static Dictionary<string, PercussionGuid> _templateMap = null;
+        private static Dictionary<string, PercussionGuid> _contentTypeMap = null;
 
         private object lockObject = new object();
 
-        private assemblySOAP _assemblyService = null;
+        private contentSOAP _contentService = null;
 
         #region Constructor and Initialization
 
-        internal TemplateNameManager(assemblySOAP assemblyService)
+        internal ContentTypeManager(contentSOAP contentService)
         {
-            _assemblyService = assemblyService;
+            _contentService = contentService;
 
-            if (_templateMap == null)
+            if (_contentTypeMap == null)
             {
                 // Lock the container for possible updating.
                 lock (lockObject)
                 {
                     // Was the map loaded while we waited for the lock?
-                    if (_templateMap == null)
+                    if (_contentTypeMap == null)
                     {
                         LoadTemplateIDMap();
                     }
@@ -43,19 +43,19 @@ namespace NCI.WCM.CMSManager.CMS
 
         private void LoadTemplateIDMap()
         {
-            PSAssemblyTemplate[] templateData = PSWSUtils.LoadAssemblyTemplates(_assemblyService);
+            PSContentTypeSummary[] contentTypeData = PSWSUtils.LoadContentTypes(_contentService);
 
-            _templateMap = new Dictionary<string, PercussionGuid>();
-            Array.ForEach(templateData, template =>
+            _contentTypeMap = new Dictionary<string, PercussionGuid>();
+            Array.ForEach(contentTypeData, contentType =>
             {
-                _templateMap.Add(template.name, new PercussionGuid(template.id));
+                _contentTypeMap.Add(contentType.name, new PercussionGuid(contentType.id));
             });
         }
 
         #endregion
 
         /// <summary>
-        /// Find the ID matching a given template name.
+        /// Find the ID matching a given content type name.
         /// </summary>
         /// <param name="key">Content type name to search for.  Case sensitive. (rffNavon != rffnavon)</param>
         /// <returns></returns>
@@ -63,10 +63,10 @@ namespace NCI.WCM.CMSManager.CMS
         {
             get
             {
-                if (!_templateMap.ContainsKey(key))
-                    throw new CMSMissingTemplateException(string.Format("Unknown template name: {0}.", key));
+                if (!_contentTypeMap.ContainsKey(key))
+                    throw new CMSMissingContentTypeException(string.Format("Unknown contentType name: {0}.", key));
 
-                return _templateMap[key];
+                return _contentTypeMap[key];
             }
         }
 
@@ -81,12 +81,11 @@ namespace NCI.WCM.CMSManager.CMS
         {
             get
             {
-                if (!_templateMap.ContainsValue(reverseKey))
-                    throw new CMSMissingContentTypeException(string.Format("Unknown template name: {0}.", reverseKey));
+                if(!_contentTypeMap.ContainsValue(reverseKey))
+                    throw new CMSMissingContentTypeException(string.Format("Unknown contentType name: {0}.", reverseKey));
 
-                return _templateMap.First(kvp => kvp.Value == reverseKey).Key;
+                return _contentTypeMap.First(kvp => kvp.Value == reverseKey).Key;
             }
         }
-
     }
 }

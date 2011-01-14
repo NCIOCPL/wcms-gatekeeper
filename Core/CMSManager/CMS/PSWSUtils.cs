@@ -108,6 +108,23 @@ namespace NCI.WCM.CMSManager.CMS
             return folderResults;
         }
 
+        public static PSContentTypeSummary[] LoadContentTypes(contentSOAP contentSvc)
+        {
+            PSContentTypeSummary[] contentData;
+
+            try
+            {
+                LoadContentTypesRequest req = new LoadContentTypesRequest();
+                req.Name = null;
+                contentData = contentSvc.LoadContentTypes(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in PSContentTypeSummary", ex);
+            }
+            return contentData;
+        }
+
         public static PSFolder[] LoadFolders(contentSOAP contentSvc, string folderPath)
         {
             PSFolder[] returnItems;

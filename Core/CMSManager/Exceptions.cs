@@ -134,7 +134,23 @@ namespace NCI.WCM.CMSManager
     }
 
     /// <summary>
-    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the SlotNameManager
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the ContentTypeManager
+    /// is unable to locate an expected content type.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSMissingContentTypeException : CMSException
+    {
+        public CMSMissingContentTypeException() { }
+        public CMSMissingContentTypeException(string message) : base(message) { }
+        public CMSMissingContentTypeException(string message, Exception inner) : base(message, inner) { }
+        protected CMSMissingContentTypeException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Thrown by methods in the NCI.WCM.CMSManager namespace when the SlotManager
     /// is unable to locate an expected slot.
     /// </summary>
     [global::System.Serializable]

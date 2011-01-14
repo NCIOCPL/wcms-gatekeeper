@@ -172,16 +172,21 @@ namespace NCI.WCM.CMSManager.CMS
             /*
              * At a glance, lazy-loading like this seems dangerous. But the TemplateNameManager
              * property can only be accessed from an instance of CMSController. Because the constructor
-             * calls Login, the _assemblyService can be used safely.  The only danger is if someone
+             * calls Login, the _contentService can be used safely.  The only danger is if someone
              * tries using the property after CMController has been disposed, but that requires a high
              * degree of not knowing what you're doing.
              */
             get { return new TemplateNameManager(_assemblyService); }
         }
 
-        public SlotNameManager SlotNameManager
+        public ContentTypeManager ContentTypeManager
         {
-            get { return new SlotNameManager(_assemblyService); }
+            get { return new ContentTypeManager(_contentService); }
+        }
+
+        public SlotManager SlotManager
+        {
+            get { return new SlotManager(_assemblyService, ContentTypeManager, TemplateNameManager); }
         }
 
         public FolderManager FolderManager
