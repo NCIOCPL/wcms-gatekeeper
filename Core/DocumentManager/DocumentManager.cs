@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading;
+using System.Xml;
+using System.Xml.XPath;
 
 using GateKeeper.Common;
 using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.DocumentObjects;
 using GKManagers.BusinessObjects;
 
 using NCI.WCM.CMSManager.CMS;
@@ -112,6 +115,7 @@ namespace GKManagers
 
                     SynchronizedIDQueue queueForRegularDocs = new SynchronizedIDQueue();
                     SynchronizedIDQueue queueForCmsDocs = new SynchronizedIDQueue();
+                    List<int> delayedSummaryIDList = new List<int>();
 
                     for (int docIndex = 0; docIndex < requestDataIDList.Count; ++docIndex)
                     {
@@ -150,7 +154,12 @@ namespace GKManagers
                         {
                             DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
 
-                            if (useMultiThreading)
+                            if (docTypeFlag == DocumentTypeFlag.Summary
+                                && SummaryIsATranslation(docData))
+                            {
+                                delayedSummaryIDList.Add(requestDataIDList[docIndex]);
+                            }
+                            else if (useMultiThreading)
                             {
                                 // Place documents in the appropriate queue.
                                 if (DocumentTypeFlagUtil.FlagsOverlap(docTypeFlag, CmsManagedTypes))
@@ -171,6 +180,17 @@ namespace GKManagers
                             promotionWasSuccessful = false;
                         }
                     }
+
+                    // Merge delayed summaries back into the appropriate queue.
+                    if (useMultiThreading)
+                    {
+                        delayedSummaryIDList.ForEach(summaryID => queueForCmsDocs.Enqueue(summaryID));
+                    }
+                    else
+                    {
+                        delayedSummaryIDList.ForEach(summaryID => queueForRegularDocs.Enqueue(summaryID));
+                    }
+
 
                     // Run the individual promotions.
                     PromoteQueuedDocuments(batchID, action, validationRequired, currentBatch.UserName, xPathManager,
@@ -224,7 +244,6 @@ namespace GKManagers
                 DocMgrLogBuilder.Instance.CreateInformation(typeof(DocumentManager),
                     "PromototionCompleteWithErrors", message);
             }
-
         }
 
         private static void PromoteQueuedDocuments(int batchID, ProcessActionType action, bool validationRequired,
@@ -285,6 +304,30 @@ namespace GKManagers
             bool allSuccessful = true;  // out parameters aren't allowed in lambdas, so we need a temp.
             Array.ForEach(workerThreads, thread => allSuccessful &= thread.AllPromotionsSucceeded);
             promotionWasSuccessful = allSuccessful;
+        }
+
+        /// <summary>
+        /// Determines whether processing of a Summary document must be delayed.
+        /// </summary>
+        /// <param name="docData">Meta-data for the RequestData object representing the sumamry.</param>
+        /// <returns>True if the Summary </returns>
+        /// <remarks>Translations of Summary documents contain references to the English versions,
+        /// but not the other way around.  As a result, these summaries must be processed after
+        /// all English versions.
+        /// 
+        /// Having this logic here completely violates the abstraction of "We're just moving documents."
+        /// </remarks>
+        private static bool SummaryIsATranslation(RequestDataInfo docData)
+        {
+            RequestData data = RequestManager.LoadRequestDataByID(docData.RequestDataID);
+            XmlDocument summaryDoc = data.DocumentData;
+            XPathNavigator xNav = summaryDoc.CreateNavigator();
+            Language lang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, "/Summary/SummaryMetaData/SummaryLanguage"));
+
+            if (lang == Language.English)
+                return false;
+            else
+                return true;
         }
 
         /// <summary>
