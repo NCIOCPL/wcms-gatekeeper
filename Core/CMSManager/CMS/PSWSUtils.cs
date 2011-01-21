@@ -249,17 +249,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="id">The ID of the Content Item to be checked in.</param>
         public static void CheckinItem(contentSOAP contentSvc, long id)
         {
-            CheckinItemsRequest req = new CheckinItemsRequest();
-            try
-            {
-                req.Id = new long[] { id };
-                contentSvc.CheckinItems(req);
-            }
-            catch (SoapException ex)
-            {
-                throw new CMSSoapException("Percussion Error in CheckinItem.", ex);
-            }
-
+            CheckInItemList(contentSvc, new long[] { id });
         }
 
         public static void CheckInItemList(contentSOAP contentSvc, long[] idList)
