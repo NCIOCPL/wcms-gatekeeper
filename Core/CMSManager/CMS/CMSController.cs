@@ -245,13 +245,22 @@ namespace NCI.WCM.CMSManager.CMS
             Action<string> errorHandler)
         {
             List<long> idList = new List<long>();
-            long id;
-            foreach (ContentItemForCreating cmi in contentItems)
+
+            try
             {
+                foreach (ContentItemForCreating cmi in contentItems)
                 {
-                    id = CreateItem(cmi.ContentType, cmi.Fields, cmi.ChildFieldList, cmi.TargetFolder, errorHandler);
-                    idList.Add(id);
+                    {
+                        long id = CreateItem(cmi.ContentType, cmi.Fields, cmi.ChildFieldList, cmi.TargetFolder, errorHandler);
+                        idList.Add(id);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // If an error occurs, rollback item creation.
+                DeleteItemList(idList.ToArray());
+                throw;
             }
 
             return idList;

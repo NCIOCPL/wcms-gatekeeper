@@ -176,85 +176,103 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void CreateNewCancerInformationSummary(SummaryDocument document)
         {
-            List<long> idList;
+            // List of items to delete if unable to create the entire document.
+            List<PercussionGuid> rollbackList = new List<PercussionGuid>();
 
-            PercussionGuid summaryRoot;
-            long[] summaryPageIDList;
-            string createPath = GetTargetFolder(document.BasePrettyURL);
-            string rootItemPrettyUrlName = GetSummaryPrettyUrlName(document.BasePrettyURL);
-
-            if (!PrettyUrlIsAvailable(createPath, rootItemPrettyUrlName))
+            try
             {
-                throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.",
-                    createPath, rootItemPrettyUrlName));
+                PercussionGuid summaryRoot;
+                long[] summaryPageIDList;
+                string createPath = GetTargetFolder(document.BasePrettyURL);
+                string rootItemPrettyUrlName = GetSummaryPrettyUrlName(document.BasePrettyURL);
+
+                if (!PrettyUrlIsAvailable(createPath, rootItemPrettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.",
+                        createPath, rootItemPrettyUrlName));
+                }
+
+                VerifyEnglishLanguageVersion(document);
+
+
+                // Create the sub-pages
+                List<long> tableIDs;
+                List<long> mediaLinkIDs;
+                CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
+
+                // Find the list of content items referenced by the summary sections.
+                // After the page items are created, these are used to create relationships.
+                List<List<PercussionGuid>> referencedSumamries = ResolveSummaryReferences(document);
+
+                // Create the Cancer Info Summary item.
+                List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
+                summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
+                rollbackList.Add(summaryRoot);
+
+
+                //Create Cancer Info Summary Page items
+                List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document, createPath);
+                List<long> pageRawIDList = CMSController.CreateContentItemList(summaryPageList);
+                summaryPageIDList = pageRawIDList.ToArray();
+                rollbackList.AddRange(CMSController.BuildGuidArray(pageRawIDList));
+
+                // Add summary pages into the page slot.
+                PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
+
+                // Create relationships to other Cancer Information Summary Objects.
+                PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedSumamries);
+
+                //  Search for a CISLink in the parent folder.
+                string parentPath = GetParentFolder(document.BasePrettyURL);
+                PercussionGuid[] searchList =
+                    CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, parentPath, null);
+
+                // TODO: Turn AudienceType into an enum during Extract.
+                string slotName;
+                if (document.AudienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
+                    slotName = PatientVersionLinkSlot;
+                else
+                    slotName = HealthProfVersionLinkSlot;
+
+                PercussionGuid summaryLink;
+                if (searchList.Length == 0)
+                {
+                    // If a summary link doesn't exist, create a new one.
+                    string linkItemPath = GetParentFolder(document.BasePrettyURL);
+                    List<ContentItemForCreating> summaryLinkList = CreatePDQCancerInfoSummaryLink(document, linkItemPath);
+                    List<long> linkRawIDList = CMSController.CreateContentItemList(summaryLinkList);
+                    summaryLink = new PercussionGuid(linkRawIDList[0]);
+                    rollbackList.Add(summaryLink);
+                    CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                }
+                else
+                {
+                    // If the summary link does exist, add this summary to the appropriate slot.
+                    summaryLink = searchList[0];
+                    CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                }
+
+
+                // Find the Patient or Health Professional version and create a relationship.
+                LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
+
+                LinkToAlternateLanguageVersion(document, summaryRoot);
             }
-
-            // 
-            VerifyEnglishLanguageVersion(document);
-
-
-            // Create the sub-pages
-            List<long> tableIDs;
-            List<long> mediaLinkIDs;
-            CreateSubPages(document, createPath, out tableIDs, out mediaLinkIDs);
-
-            // Find the list of content items referenced by the summary sections.
-            // After the page items are created, these are used to create relationships.
-            List<List<PercussionGuid>> referencedSumamries = ResolveSummaryReferences(document);
-
-            // Create the Cancer Info Summary item.
-            List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
-            summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
-
-
-            //Create Cancer Info Summary Page items
-            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document, createPath);
-            idList = CMSController.CreateContentItemList(summaryPageList);
-            summaryPageIDList = idList.ToArray();
-
-            // Add summary pages into the page slot.
-            PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
-
-            // Create relationships to other Cancer Information Summary Objects.
-            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedSumamries);
-
-            //  Search for a CISLink in the parent folder.
-            string parentPath = GetParentFolder(document.BasePrettyURL);
-            PercussionGuid[] searchList =
-                CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, parentPath, null);
-
-            // TODO: Turn AudienceType into an enum during Extract.
-            string slotName;
-            if (document.AudienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
-                slotName = PatientVersionLinkSlot;
-            else
-                slotName = HealthProfVersionLinkSlot;
-
-            PercussionGuid summaryLink;
-            if (searchList.Length == 0)
+            catch (Exception)
             {
-                // If a summary link doesn't exist, create a new one.
-                string linkItemPath = GetParentFolder(document.BasePrettyURL);
-                List<ContentItemForCreating> summaryLinkList = CreatePDQCancerInfoSummaryLink(document, linkItemPath);
-                idList = CMSController.CreateContentItemList(summaryLinkList);
-                summaryLink = new PercussionGuid(idList[0]);
-                CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
+                if (rollbackList.Count > 0)
+                {
+                    CMSController.DeleteItemList(rollbackList.ToArray());
+                }
+                throw;
             }
-            else
-            {
-                // If the summary link does exist, add this summary to the appropriate slot.
-                summaryLink = searchList[0];
-                CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
-            }
-
-            // Find the Patient or Health Professional version and create a relationship.
-            LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
-
-            LinkToAlternateLanguageVersion(document, summaryRoot);
         }
 
         private void UpdateCancerInformationSummary(SummaryDocument summary)
         {
+            // For undoing failed updates.
+            List<PercussionGuid> rollbackList = new List<PercussionGuid>();
+
             // Retrieve IDs for the summary and all its components.
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, summary.DocumentID);
             PercussionGuid summaryLinkID;
@@ -290,44 +308,61 @@ namespace GKManagers.CMSDocumentProcessing
                 throw new DocumentExistsException(string.Format("Path {0} is already in use.", newPath));
             }
 
-
-            // Move the entire composite document to staging.
-            // This step is not required when creating items since creation takes place in staging.
-            PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
-
+            // Temporary location for creating new content items without deleting the old.
             string temporaryPath = string.Format("{0}/_UPD-{1}", existingItemPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
-            PSFolder tempFolder = CMSController.GuaranteeFolder(temporaryPath);
+            PSFolder tempFolder = null;
 
-            // Create the new sub-page items in a temporary location.
+            // Raw content IDs for new content items.
             List<long> tableIDs;
             List<long> mediaLinkIDs;
-            CreateSubPages(summary, temporaryPath, out tableIDs, out mediaLinkIDs);
-
-            // Find the list of content items referenced by the summary sections.
-            // After the page items are created, these are used to create relationships.
-            List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(summary);
-
-            // Create new Cancer Info Summary Page items
             long[] newSummaryPageIDList;
-            List<long> idList;
-            List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, temporaryPath);
-            idList = CMSController.CreateContentItemList(summaryPageList);
-            newSummaryPageIDList = idList.ToArray();
-            PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
 
-            UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
+            try
+            {
+                // Move the entire composite document to staging.
+                // This step is not required when creating items since creation takes place in staging.
+                PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
 
-            // Add new cancer information summary pages into the page slot.
-            PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
+                tempFolder = CMSController.GuaranteeFolder(temporaryPath);
 
-            // Create relationships to other Cancer Information Summary Objects.
-            PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, referencedItems);
+                // Create the new sub-page items in a temporary location.
+                CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
-            // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
-            ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
-            ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLinkID.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
-            List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
-            List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
+                // Find the list of content items referenced by the summary sections.
+                // After the page items are created, these are used to create relationships.
+                List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(summary);
+
+                // Create new Cancer Info Summary Page items
+                List<long> idList;
+                List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, temporaryPath);
+                idList = CMSController.CreateContentItemList(summaryPageList);
+                newSummaryPageIDList = idList.ToArray();
+                PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
+                rollbackList.AddRange(newPageIDs);
+
+                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
+
+                // Add new cancer information summary pages into the page slot.
+                PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
+
+                // Create relationships to other Cancer Information Summary Objects.
+                PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, referencedItems);
+
+                // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
+                ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
+                ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLinkID.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
+                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
+                List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
+            }
+            catch (Exception)
+            {
+                // In the event of an error while updating attempt to cleanup.
+                CMSController.DeleteItemList(rollbackList.ToArray());
+                if (tempFolder != null)
+                    CMSController.DeleteFolders(new PSFolder[] { tempFolder });
+
+                throw;
+            }
 
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
@@ -520,12 +555,14 @@ namespace GKManagers.CMSDocumentProcessing
 
 
         private void CreateSubPages(SummaryDocument summary, string createPath,
+            List<PercussionGuid> rollbackList,
             out List<long> tableIDs, out List<long> mediaLinkIDs)
         {
             // Create the embeddable content items and resolve the item references.
             // Table sections
             List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
             tableIDs = CMSController.CreateContentItemList(tableList);
+            rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
 
             SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
             ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
@@ -533,6 +570,7 @@ namespace GKManagers.CMSDocumentProcessing
             // MediaLinks
             List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
             mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
+            rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
 
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
             ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
