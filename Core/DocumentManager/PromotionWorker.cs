@@ -88,8 +88,15 @@ namespace GKManagers
 
             while (_idQueue.Count > 0 && OKToContinueRunning)
             {
-                requestDataID = _idQueue.Dequeue();
-                Promote(requestDataID);
+                lock (_idQueue)
+                {
+                    if (_idQueue.Count > 0)
+                        requestDataID = _idQueue.Dequeue();
+                    else
+                        requestDataID = int.MinValue;
+                }
+                if (requestDataID != int.MinValue)
+                    Promote(requestDataID);
             }
 
             _doneEvent.Set();
