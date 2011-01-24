@@ -469,7 +469,41 @@ namespace NCI.WCM.CMSManager.CMS
                 {
                     PSFieldValue value = new PSFieldValue();
                     value.RawData = fieldValue;
-                    itemField.PSFieldValue = new PSFieldValue[] { value };
+                    if (targetName == "date_display_mode")
+                    {
+                        PSFieldValue v1 = new PSFieldValue();
+                        PSFieldValue v2 = new PSFieldValue();
+                        PSFieldValue v3 = new PSFieldValue();
+                        switch (fieldValue)
+                        {
+                            case "3":
+                                v1.RawData = "1";
+                                v2.RawData = "2";
+                                itemField.PSFieldValue = new PSFieldValue[] { v1, v2 };
+                                break;
+                            case "5":
+                                v1.RawData = "1";
+                                v2.RawData = "4";
+                                itemField.PSFieldValue = new PSFieldValue[] { v1, v2 };
+                                break;
+                            case "6":
+                                v1.RawData = "2";
+                                v2.RawData = "4";
+                                itemField.PSFieldValue = new PSFieldValue[] { v1, v2 };
+                                break;
+                            case "7":
+                                v1.RawData = "1";
+                                v2.RawData = "2";
+                                v3.RawData = "4";
+                                itemField.PSFieldValue = new PSFieldValue[] { v1, v2, v3 };
+                                break;
+                            default:
+                                itemField.PSFieldValue = new PSFieldValue[] { value };
+                                break;
+                        }
+                    }
+                    else
+                        itemField.PSFieldValue = new PSFieldValue[] { value };
                 }
                 else
                 {
