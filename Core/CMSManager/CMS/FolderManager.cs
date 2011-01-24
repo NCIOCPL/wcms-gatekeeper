@@ -241,21 +241,21 @@ namespace NCI.WCM.CMSManager.CMS
             AddFolderResponse resp = _contentService.AddFolder(req);
 
             // Folder is newly created, move the Navon to Public.
-            if (_makeNavonPublic)
-            {
-                MakeNavonPublic(folderPath);
-            }
+            //if (_makeNavonPublic)
+            //{
+            //    MakeNavonPublic(folderPath);
+            //}
 
             return resp.PSFolder;
         }
 
         private void MakeNavonPublic(string folderPath)
         {
-            // Get the Navon's content ID.
-            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
-            if (searchResults.Length < 1)
-                throw new CMSOperationalException(string.Format("Navon not found for folder {0}.", folderPath));
-            PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
+            //// Get the Navon's content ID.
+            //PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
+            //if (searchResults.Length < 1)
+            //    throw new CMSOperationalException(string.Format("Navon not found for folder {0}.", folderPath));
+            //PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
         }
     }
 }
