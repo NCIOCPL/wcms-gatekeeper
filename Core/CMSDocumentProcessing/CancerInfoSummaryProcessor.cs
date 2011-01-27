@@ -565,21 +565,27 @@ namespace GKManagers.CMSDocumentProcessing
             out List<long> tableIDs, out List<long> mediaLinkIDs)
         {
             // Create the embeddable content items and resolve the item references.
-            // Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
-            tableIDs = CMSController.CreateContentItemList(tableList);
-            rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
 
-            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
-            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
-
-            // MediaLinks
+            // Create the MediaLinks
             List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
             mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
             rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
 
+            // Resolve MediaLink inline slots within the pages.
             SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
             ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+
+            // Resolve MediaLink references within table sections.
+            ResolveTableSectionMediaLinkInlineSlots(summary.TableSectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+
+            // Create the Table sections
+            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
+            tableIDs = CMSController.CreateContentItemList(tableList);
+            rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
+
+            // Resolve Table inline slots within the pages.
+            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
+            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
         }
 
         /// <summary>
@@ -665,6 +671,88 @@ namespace GKManagers.CMSDocumentProcessing
                     {
                         string target = reference.Value;
                         long dependent = itemIDMap[target].ID;
+
+                        attrib = html.CreateAttribute("sys_dependentid");
+                        attrib.Value = dependent.ToString();
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("contenteditable");
+                        attrib.Value = "false";
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("rxinlineslot");
+                        attrib.Value = InlineTemplateSlotID;
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("sys_dependentvariantid");
+                        attrib.Value = snippetTemplate.ID.ToString();
+                        attributeList.Append(attrib);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves medialink inline slots contained within table sections
+        /// </summary>
+        /// <param name="tableSectionList"></param>
+        /// <param name="mediaLinkIDMap"></param>
+        /// <param name="templateName"></param>
+        private void ResolveTableSectionMediaLinkInlineSlots(List<SummarySection> tableSectionList, SectionToCmsIDMap mediaLinkIDMap, string templateName)
+        {
+            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+
+            // NOTE: Unlike ResolveInlineSlots for SummarySection lists, this has no where clause.
+            foreach (SummarySection section in tableSectionList)
+            {
+                XmlDocument html = section.Html;
+                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+
+                foreach (XmlNode node in nodeList)
+                {
+                    XmlAttributeCollection attributeList = node.Attributes;
+
+                    XmlAttribute reference = attributeList["objectid"];
+                    XmlAttribute attrib;
+
+                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+                    {
+                        string target = reference.Value;
+                        long dependent = mediaLinkIDMap[target].ID;
+
+                        attrib = html.CreateAttribute("sys_dependentid");
+                        attrib.Value = dependent.ToString();
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("contenteditable");
+                        attrib.Value = "false";
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("rxinlineslot");
+                        attrib.Value = InlineTemplateSlotID;
+                        attributeList.Append(attrib);
+
+                        attrib = html.CreateAttribute("sys_dependentvariantid");
+                        attrib.Value = snippetTemplate.ID.ToString();
+                        attributeList.Append(attrib);
+                    }
+                }
+
+                // Lather, rinse and repeast for the full-size HTML.
+                html = section.StandaloneHTML;
+                nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+
+                foreach (XmlNode node in nodeList)
+                {
+                    XmlAttributeCollection attributeList = node.Attributes;
+
+                    XmlAttribute reference = attributeList["objectid"];
+                    XmlAttribute attrib;
+
+                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+                    {
+                        string target = reference.Value;
+                        long dependent = mediaLinkIDMap[target].ID;
 
                         attrib = html.CreateAttribute("sys_dependentid");
                         attrib.Value = dependent.ToString();
