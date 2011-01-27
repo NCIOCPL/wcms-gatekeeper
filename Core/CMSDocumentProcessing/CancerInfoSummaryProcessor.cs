@@ -403,13 +403,19 @@ namespace GKManagers.CMSDocumentProcessing
             PSAaRelationship[] externalRelationships = FindExternalRelationships(currentIDs);
 
             // FindExternalRelationships finds all CISummary relationships external to the items specified.
-            // We also want to ignore those from the SummaryLink and main Summary items.
+            // We also want to ignore references from the SummaryLink, the main Summary item, and any
+            // relationships with the main summary item as the dependent (only references to individual pages
+            // need to be updated and this is completely dependent on the assumption that there will never a
+            // link from an external item directly to a page.
             List<PSAaRelationship> relationshipList = new List<PSAaRelationship>(externalRelationships);
             relationshipList.RemoveAll(relationship =>
             {
                 PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
-                return ownerID == summaryRootID
-                    || ownerID == summaryLinkID;
+                PercussionGuid dependent = new PercussionGuid(relationship.dependentId);
+                return ownerID == summaryRootID     // Filter out links from root and summary link
+                    || ownerID == summaryLinkID
+                    || dependent == summaryRootID  // Filter out relationships which own the root or link.
+                    || dependent == summaryLinkID;
             });
 
             // Anything left at this point is a relationship to a CancerInfoSummaryPage object.
