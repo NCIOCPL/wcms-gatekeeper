@@ -1128,13 +1128,31 @@ namespace GKManagers.CMSDocumentProcessing
         private PercussionGuid[] LocateMediaLinksAndTableSections(PercussionGuid[] pageIDList)
         {
             List<PercussionGuid> subItems = new List<PercussionGuid>();
+
+            // Locate media links and tables as immediate children of the pages.
             Array.ForEach(pageIDList, pageID =>
             {
                 PercussionGuid[] items = CMSController.SearchForItemsInSlot(pageID, InlineSlot);
                 subItems.AddRange(items);
             });
 
-            return subItems.ToArray();
+
+            // Locate sub-items as childlren of each other.
+            // E.g. a TableSection contains a MediaLink.
+            HashSet<PercussionGuid> lowerItems = new HashSet<PercussionGuid>();
+            subItems.ForEach(subItem =>
+            {
+                PercussionGuid[] items = CMSController.SearchForItemsInSlot(subItem, InlineSlot);
+                Array.ForEach(items, item =>
+                {
+                    if (!lowerItems.Contains(item))
+                        lowerItems.Add(item);
+                });
+            });
+
+            subItems.AddRange(lowerItems);
+
+            return subItems.Distinct().ToArray();
         }
 
         /// <summary>
