@@ -173,8 +173,8 @@
 					<xsl:when test="../@Compact ='No'">
 						<LI class="{$ListType}">
 							<xsl:apply-templates/>
+              <p></p>
 						</LI>
-            <p></p>
 					</xsl:when>
 					<xsl:otherwise>
 						<LI class="{$ListType}">
@@ -188,8 +188,8 @@
 					<xsl:when test="../@Compact ='No'">
 						<DD>
 							<xsl:apply-templates/>
+              <p></p>
 						</DD>
-						<p></p>
 					</xsl:when>
 					<xsl:otherwise>
 						<DD>

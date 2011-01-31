@@ -168,7 +168,7 @@ namespace GateKeeper.ContentRendering
         /// Handles references to the table enlarge HTML.
         /// </summary>
         /// <param name="sourceTableSectionNav">Navigator that points to table section: <a name="Section_130"><table...</param>
-        private void ProcessTableForStandalone(XPathNavigator sourceTableSectionNav)
+        private void ProcessTableForStandalone(XPathNavigator sourceTableSectionNav, out string referenceSection)
         {
             try
             {
@@ -204,7 +204,8 @@ namespace GateKeeper.ContentRendering
                 string formattedReferenceSection = FormatReferences(referenceSectionNav, referenceLinks);
 
                 // Add re-formatted references ordered list to the bottom of the table enlarge section...
-                sourceTableSectionNav.InnerXml = tableSection + formattedReferenceSection;
+                sourceTableSectionNav.InnerXml = tableSection;
+                referenceSection = formattedReferenceSection;
             }
             catch (Exception e)
             {
@@ -516,6 +517,21 @@ namespace GateKeeper.ContentRendering
                             // Move back to the original position.
                             sectionNav.MoveToPrevious();
                         }
+                        else
+                        {
+                            // HACK:  This is a hack in the absolute worst sense.  By the time a
+                            // top-level section gets here, the title isn't present in the rendered
+                            // HTML and can't be fished out of the XML to replace any markup in the existing title.
+                            // Prior to the WCM rollout, the bad XML was just dumped into the database
+                            // and later sent to the browser where it was simply ignored.  That doesn't work
+                            // with WCM, Percussion's use of Tidy detects the tag and refuses to save
+                            // the document.  So we're left with the hack of stripping out a non-HTML tag
+                            // and at least not having it look any worse than before.
+                            if (!string.IsNullOrEmpty(section.Title))
+                            {
+                                section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
+                            }
+                        }
 
                         // Build the Table Of Contents for the section
                         BuildTOC(summary, section);
@@ -590,7 +606,8 @@ namespace GateKeeper.ContentRendering
             }
 
             // Format the table enlarge (put into a separate section during extraction)
-            ProcessTableForStandalone(sectionNav);
+            string referenceSection;
+            ProcessTableForStandalone(sectionNav, out referenceSection);
 
             // Save the unmodified results of the transform into the Html property
             tableSection.Html.LoadXml(sectionNav.OuterXml);
@@ -611,7 +628,7 @@ namespace GateKeeper.ContentRendering
             html = html.Replace("Class=\"Summary-GlossaryTermRef-Small\"", "Class=\"Summary-GlossaryTermRef\"");
             html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
             html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
-            html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + "</a>";
+            html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + referenceSection + "</a>";
             tableSection.StandaloneHTML.LoadXml(html);
 
             if (title.Trim().Length > 0)
