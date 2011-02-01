@@ -835,6 +835,15 @@ namespace GKManagers.CMSDocumentProcessing
                             PercussionGuid referencedItemID;
                             finder.FindPageContainingSection(referencedItemRootID, details.SectionID, out pageNumber, out referencedItemID);
 
+                            if (referencedItemID == null)
+                            {
+                                string message =
+                                    string.Format("Unable to resolve section {0} in document with CDRID={1}.",
+                                    details.SectionID, details.CdrID);
+                                WarningWriter(message);
+                                continue;
+                            }
+                            
                             // Add the item to the list.
                             referencedContentItems.Add(referencedItemID);
 
@@ -850,6 +859,14 @@ namespace GKManagers.CMSDocumentProcessing
 
                             // Add the item to the list.
                             PercussionGuid referencedItemID = finder.FindFirstPage(referencedItemRootID);
+
+                            if (referencedItemID == null)
+                            {
+                                WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
+                                continue;
+                            }
+
+
                             referencedContentItems.Add(referencedItemID);
 
                             // Build the link.
