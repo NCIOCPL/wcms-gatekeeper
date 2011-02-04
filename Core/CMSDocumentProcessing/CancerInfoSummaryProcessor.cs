@@ -120,7 +120,7 @@ namespace GKManagers.CMSDocumentProcessing
             else
             {
                 InformationWriter(string.Format("Update existing content item for document CDRID = {0}.", document.DocumentID));
-                UpdateCancerInformationSummary(document);
+                UpdateCancerInformationSummary(document, identifier);
             }
 
 
@@ -252,7 +252,6 @@ namespace GKManagers.CMSDocumentProcessing
                     CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
                 }
 
-
                 // Find the Patient or Health Professional version and create a relationship.
                 LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
 
@@ -268,13 +267,12 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
-        private void UpdateCancerInformationSummary(SummaryDocument summary)
+        private void UpdateCancerInformationSummary(SummaryDocument summary, PercussionGuid summaryRootID)
         {
             // For undoing failed updates.
             List<PercussionGuid> rollbackList = new List<PercussionGuid>();
 
-            // Retrieve IDs for the summary and all its components.
-            PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, summary.DocumentID);
+            // Retrieve IDs for the summary's components.
             PercussionGuid summaryLinkID;
             try
             {
@@ -958,7 +956,7 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] otherAudienceVersion =
                 CMSController.SearchForItemsInSlot(summaryLinkID, theirSlotName);
 
-            // 3. If the slot contains a content item, it must be of the opposite audience type.
+            // 3. If the slot in the summary link contains a content item, it must be of the opposite audience type.
             if (otherAudienceVersion.Length > 0)
             {
                 // Link from this item to the alternate version.
@@ -1294,33 +1292,27 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("pretty_url_name", prettyURLName);
 
-            // The long_title field is required, but the DTD for table sections doesn't require them.
-            // If there is no title, fill it in, but make it hidden.
-            string longTitle;
-            if (string.IsNullOrEmpty(tableSection.Title))
-            {
-                longTitle = "Section: " + tableSection.RawSectionID;
-                fields.Add("showpagetitle", "false");
-            }
-            else
-            {
-                longTitle = tableSection.Title;
-            }
-            fields.Add("long_title", longTitle);
+            string summaryTitle = summary.Title;
+            fields.Add("long_title", summaryTitle);
 
             // Short title is a maximum of 64 characters long,
             // Need to allow three characters for the " - " and the length of prettyURLName.
             int decorationLength = Math.Min(3 + prettyURLName.Length, ShortTitleLength);
-            int shortLength = Math.Min(ShortTitleLength, longTitle.Length);
+            int shortLength = Math.Min(ShortTitleLength, summaryTitle.Length);
             string shortTitleLead;
             if ((shortLength + decorationLength) > ShortTitleLength)
             {
                 int copyLength = ShortTitleLength - decorationLength;
-                shortTitleLead = longTitle.Substring(0, copyLength);
+                shortTitleLead = summaryTitle.Substring(0, copyLength);
             }
             else
-                shortTitleLead = longTitle;
+                shortTitleLead = summaryTitle;
             fields.Add("short_title", string.Format("{0} - {1}", shortTitleLead, prettyURLName));
+
+            if (!string.IsNullOrEmpty(tableSection.Title))
+            {
+                fields.Add("table_title", tableSection.Title);
+            }
 
             fields.Add("inline_table", tableSection.Html.OuterXml);
             fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
