@@ -52,6 +52,8 @@ where:
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("I fall down and go boom.");
+                Console.ReadKey();
             }
 
         }
