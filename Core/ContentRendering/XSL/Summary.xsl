@@ -257,13 +257,14 @@
 			<xsl:element name="A">
 				<xsl:choose>
 					<xsl:when test="@ProtocolID !=''">
-						<xsl:attribute name="href">/search/viewclinicaltrials.aspx?version=&#xD;
-							<xsl:choose>
-								<xsl:when test="/Summary/SummaryMetaData/SummaryAudience= 'Patients'">patient&#xD;</xsl:when>
-								<xsl:otherwise>healthprofessional&#xD;</xsl:otherwise>
-							</xsl:choose>
-							&amp;cdrid=<xsl:value-of select="number(substring-after(@ProtocolID,'CDR'))"/>
-						</xsl:attribute>
+            <xsl:variable name="audience">
+              <xsl:choose>
+                <xsl:when test="/Summary/SummaryMetaData/SummaryAudience= 'Patients'">patient</xsl:when>
+                <xsl:otherwise>healthprofessional</xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
+
+            <xsl:attribute name="href">/clinicaltrials/search/view?version=<xsl:value-of select="$audience"/>&amp;cdrid=<xsl:value-of select="number(substring-after(@ProtocolID,'CDR'))"/></xsl:attribute>
 						<span class="Summary-Citation-PUBMED">[PDQ Clinical Trial]</span>
 					</xsl:when>
 					<xsl:when test="@PMID !=''">
@@ -302,15 +303,16 @@
 	</xsl:template>
 	
 	<xsl:template match="ProtocolRef">
+    <xsl:variable name="audience">
+      <xsl:choose>
+        <xsl:when test="/Summary/SummaryMetaData/SummaryAudience= 'Patients'">patient</xsl:when>
+        <xsl:otherwise>healthprofessional</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    
 		<xsl:element name="A">
 			<xsl:attribute name="Class">Summary-ProtocolRef</xsl:attribute>
-			<xsl:attribute name="href">/search/viewclinicaltrials.aspx?version=&#xD;
-				<xsl:choose>
-					<xsl:when test="/Summary/SummaryMetaData/SummaryAudience= 'Patients'">patient&#xD;</xsl:when>
-					<xsl:otherwise>healthprofessional&#xD;</xsl:otherwise>
-				</xsl:choose>
-				&amp;cdrid=<xsl:value-of select="number(substring-after(@href,'CDR'))"/>
-			</xsl:attribute>
+			<xsl:attribute name="href">/clinicaltrials/search/view?version=<xsl:value-of select="$audience"/>&amp;cdrid=<xsl:value-of select="number(substring-after(@href,'CDR'))"/></xsl:attribute>
 			<xsl:value-of select="."/>
 		</xsl:element>
 		<xsl:if test="following-sibling::node()">
