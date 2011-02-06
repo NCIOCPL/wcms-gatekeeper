@@ -174,8 +174,7 @@ namespace GateKeeper.ContentRendering
             {
                 string tableSection = sourceTableSectionNav.InnerXml;
 
-                // TODO:REMOVE- Comment out this line for string comparison purpose.
-                //tableSection = Regex.Replace(tableSection, "<span class=\"Summary-Table-Caption\">      <b>.+?</b>    </span>", "", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                // Remove the table's title.
                 int indexStart = tableSection.IndexOf("<span");
                 int indexEnd = tableSection.IndexOf("</span>");
                 if (indexStart > 0 && indexEnd > 0)
@@ -184,6 +183,7 @@ namespace GateKeeper.ContentRendering
                     string secondStr = tableSection.Substring(indexEnd + 7);
                     tableSection = firstStr + secondStr;
                 }
+
                 tableSection = tableSection.Replace("width=\"90%\"", "width=\"100%\"");
                 tableSection = tableSection.Replace(">Enlarge<", "><");
                 tableSection = tableSection.Replace(">Ampliar<", "><");
