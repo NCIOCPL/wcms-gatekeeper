@@ -1543,7 +1543,11 @@ namespace GKManagers.CMSDocumentProcessing
         {
             FieldSet fields = new FieldSet();
             fields.Add("inline_image_url", mediaLink.InlineImageUrl);
+            fields.Add("inline_image_width", mediaLink.InlineImageWidth.ToString());
+
             fields.Add("popup_image_url", mediaLink.PopupImageUrl);
+            fields.Add("popup_image_width", mediaLink.PopupImageWidth.ToString());
+
             if (string.IsNullOrEmpty(mediaLink.Caption))
             {
                 fields.Add("caption_text", null);

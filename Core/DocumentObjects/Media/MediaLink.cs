@@ -169,12 +169,30 @@ namespace GateKeeper.DocumentObjects.Media
         }
 
         /// <summary>
+        /// Gets the width of the inline image.
+        /// </summary>
+        /// <value>The width of the inline image.</value>
+        public int InlineImageWidth
+        {
+            get { return DeterminePixelSize(); }
+        }
+
+        /// <summary>
         /// URL to use when referencing the image file from within a pop-up.
         /// The URL is relative to the base location where Media documents are stored.
         /// </summary>
         public string PopupImageUrl
         {
             get { return string.Format("CDR{0}-750.jpg", ReferencedCdrID); }
+        }
+
+        /// <summary>
+        /// Gets the width of the popup image.
+        /// </summary>
+        /// <value>The width of the popup image.</value>
+        public int PopupImageWidth
+        {
+            get { return 750; }
         }
 
         #endregion
