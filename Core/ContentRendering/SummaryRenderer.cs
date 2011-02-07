@@ -256,7 +256,7 @@ namespace GateKeeper.ContentRendering
                         }
 
                         // Get the section title
-                        XPathNavigator titleNav = tableSectionIter.Current.SelectSingleNode(".//table/span/b");
+                        XPathNavigator titleNav = tableSectionIter.Current.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
                         // Set the section title
                         string title = string.Empty;
                         if (titleNav != null)
@@ -594,7 +594,7 @@ namespace GateKeeper.ContentRendering
         private void RewriteAndExtractTableXml(SummarySection tableSection, XPathNavigator sectionNav)
         {
             // Get the section title
-            XPathNavigator titleNav = sectionNav.SelectSingleNode("./table/span/b");
+            XPathNavigator titleNav = sectionNav.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
 
 
             // Set the section title

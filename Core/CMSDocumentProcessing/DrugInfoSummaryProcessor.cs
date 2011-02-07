@@ -312,6 +312,10 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("sys_title", prettyURLName);
 
+            // HACK: This relies on Percussion not setting anything else in the login session.
+            // Drug Info summaries are only in English
+            fields.Add("sys_lang", LanguageEnglish);
+
             return fields;
         }
 

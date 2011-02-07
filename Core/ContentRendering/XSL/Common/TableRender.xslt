@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:msxsl="urn:schemas-microsoft-com:xslt" exclude-result-prefixes="msxsl"
->
+    xmlns:msxsl="urn:schemas-microsoft-com:xslt" exclude-result-prefixes="msxsl">
     <xsl:output method="xml" indent="yes"/>
  
     <xsl:template name="TableRender">
@@ -43,16 +42,20 @@
       </xsl:variable>
       
       <p />
+
+      <!-- HACK: Code in SummaryRenderer.ProcessTableForStandalone is dependent on this being
+       the first span.-->
+      <xsl:if test="Title !=''">
+        <xsl:for-each select="Title">
+          <span class="Summary-Table-Caption">
+            <b>
+              <xsl:apply-templates/>
+            </b>
+          </span>
+        </xsl:for-each>
+      </xsl:if>
+
       <table Rules="{$trules}" Frame="{$tframe}" Border="{$border}" valign="top" cellspacing="0" cellpadding="5" width="100%">
-        <xsl:if test="Title !=''">
-          <xsl:for-each select="Title">
-            <span class="Summary-Table-Caption">
-              <b>
-                <xsl:apply-templates/>
-              </b>
-            </span>
-          </xsl:for-each>
-        </xsl:if>
 
         <COLGROUP>
           <xsl:for-each select="TGroup/ColSpec">

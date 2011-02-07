@@ -48,11 +48,9 @@ namespace GKManagers.CMSDocumentProcessing
         const string SummarySectionSnippetTemplate = "pdqSnCancerInformationSummaryPage";
         const string TableSectionSnippetTemplate = "pdqSnTableSection";
 
-        const string languageEnglish = "en-us";
-        const string languageSpanish = "es-us";
-
         // TODO: Seriously, the AudienceType string needs to be changed to an Enum.
         const string PatientAudience = "Patients";
+        const string HealthProfAudience = "HealthProfessional";
 
         #endregion
 
@@ -253,7 +251,7 @@ namespace GKManagers.CMSDocumentProcessing
                 }
 
                 // Find the Patient or Health Professional version and create a relationship.
-                LinkToAlternateAudienceVersion(summaryRoot, document.AudienceType);
+                LinkRootItemToAlternateAudienceVersion(summaryRoot, document.AudienceType);
 
                 LinkToAlternateLanguageVersion(document, summaryRoot);
             }
@@ -921,51 +919,98 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         /// <summary>
-        /// Determines whether the specified Cancer Information Summary document is a Health Professional
-        /// or Patient version, attempts to locate the alternate one, and if it exists, creates a relationship
-        /// with it.
+        /// Creates a relationship between the specified Cancer Information Summary document 
+        /// and its alternate audience version, if one exists.
         /// </summary>
         /// <param name="documentID">Identifier for the content item to connect with its alternate version.</param>
         /// <param name="audienceType">Audience type value for the current content item.</param>
-        private void LinkToAlternateAudienceVersion(PercussionGuid documentID, string audienceType)
+        private void LinkRootItemToAlternateAudienceVersion(PercussionGuid documentID, string audienceType)
         {
             // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
-            PSItem[] parentItems = CMSController.LoadLinkingContentItems(documentID.ID);
-            PSItem summaryLink =
-                Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
-            if (summaryLink == null)
-                throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", documentID.ToString()));
+            PercussionGuid summaryLinkID = FindSummaryLink(documentID);
 
-            PercussionGuid summaryLinkID = new PercussionGuid(summaryLink.id);
-
-
-            // 2. Search the link item for child items in the other audience type's slot.
+            // Set up slot names and "other audience" search critera.
             string theirSlotName;   // Slot to search for alternate version.
             string mySlotName;      // Slot to store this item in.
+            string otherAudience;
             if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
             {
                 mySlotName = PatientVersionLinkSlot;
                 theirSlotName = HealthProfVersionLinkSlot;
+                otherAudience = HealthProfAudience;
             }
             else
             {
                 mySlotName = HealthProfVersionLinkSlot;
                 theirSlotName = PatientVersionLinkSlot;
+                otherAudience = PatientAudience;
             }
 
-            PercussionGuid[] otherAudienceVersion =
-                CMSController.SearchForItemsInSlot(summaryLinkID, theirSlotName);
+            // 3. Search the link item for child items in the other audience type's slot.
+            PercussionGuid otherAudienceVersion = FindAudienceVersion(summaryLinkID, otherAudience);
 
-            // 3. If the slot in the summary link contains a content item, it must be of the opposite audience type.
-            if (otherAudienceVersion.Length > 0)
+            // 4. If the slot in the summary link contains a content item, it must be of the opposite audience type.
+            if (otherAudienceVersion != null)
             {
                 // Link from this item to the alternate version.
-                CMSController.CreateActiveAssemblyRelationships(documentID.ID, new long[] { otherAudienceVersion[0].ID }, theirSlotName, AudienceTabSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(documentID.ID, new long[] { otherAudienceVersion.ID }, theirSlotName, AudienceTabSnippetTemplate);
 
                 // Link from the alternate version back to this one.
                 // TODO: Delete any existing relationships in that slot.
-                CMSController.CreateActiveAssemblyRelationships(otherAudienceVersion[0].ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
+                CMSController.CreateActiveAssemblyRelationships(otherAudienceVersion.ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
             }
+        }
+
+        private void LinkTableSectionsToAlternateAudienceVersion()
+        {
+        }
+
+        /// <summary>
+        /// Finds the SummaryLink content item for a CancerInfoSummary root item.
+        /// </summary>
+        /// <param name="summaryRootID">Content ID of the CancerInfoSummary root item.</param>
+        /// <returns>The PercussionGuid of the parent SummaryLink node.</returns>
+        private PercussionGuid FindSummaryLink(PercussionGuid summaryRootID)
+        {
+            // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
+            PSItem[] parentItems = CMSController.LoadLinkingContentItems(summaryRootID.ID);
+            PSItem summaryLink =
+                Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
+            if (summaryLink == null)
+                throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", summaryRootID.ToString()));
+
+            return new PercussionGuid(summaryLink.id);
+        }
+
+        /// <summary>
+        /// Locates a specific audience version of a summary.
+        /// </summary>
+        /// <param name="summaryLink">ID of the summary's parent SummaryLink node.</param>
+        /// <param name="audienceType">Audience type to load.</param>
+        /// <returns>The ID of the root Summary content item for the specified audience.
+        /// Null if no qualifying Summary version is found.</returns>
+        private PercussionGuid FindAudienceVersion(PercussionGuid summaryLink, string audienceType)
+        {
+            PercussionGuid summaryRoot = null;
+
+            string containingSlot;
+
+            // Determine which slot to use.
+            if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
+                containingSlot = PatientVersionLinkSlot;
+            else if (audienceType.Equals(HealthProfAudience, StringComparison.InvariantCultureIgnoreCase))
+                containingSlot = HealthProfVersionLinkSlot;
+            else
+                throw new ArgumentException(string.Format("Argument audienceType must be {0} or {1}.", PatientAudience, HealthProfAudience));
+
+            // Look for a summary item in the slot.
+            PercussionGuid[] searchResults = CMSController.SearchForItemsInSlot(summaryLink, containingSlot);
+            if (searchResults.Length>0)
+            {
+                summaryRoot = searchResults[0];
+            }
+
+            return summaryRoot;
         }
 
         /// <summary>
@@ -1633,11 +1678,11 @@ namespace GKManagers.CMSDocumentProcessing
             switch (language)
             {
                 case Language.Spanish:
-                    languageCode = languageSpanish;
+                    languageCode = LanguageSpanish;
                     break;
                 case Language.English:
                 default:
-                    languageCode = languageEnglish;
+                    languageCode = LanguageEnglish;
                     break;
             }
 

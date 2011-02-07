@@ -21,6 +21,9 @@ namespace GKManagers.CMSDocumentProcessing
 
         const string NavonType = "rffNavon";
 
+        protected string LanguageEnglish { get { return "en-us"; } }
+        protected string LanguageSpanish { get { return "es-us"; } }
+
         #endregion
 
         #region Properties
