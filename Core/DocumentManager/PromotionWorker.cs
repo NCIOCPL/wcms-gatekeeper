@@ -31,6 +31,7 @@ namespace GKManagers
 
         #region Properties
 
+        // Initialized in constructor.
         public bool AllPromotionsSucceeded { get; private set; }
 
         /// <summary>
@@ -80,6 +81,8 @@ namespace GKManagers
             _statusMap = statusMap;
             _userName = userName;
             _xPathManager = xPathManager;
+
+            AllPromotionsSucceeded = true;
         }
 
         public void PromotionCallback(Object unused)
