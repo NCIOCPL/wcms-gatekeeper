@@ -1437,6 +1437,8 @@ namespace GKManagers.CMSDocumentProcessing
                 fields.Add("date_first_published", summary.FirstPublishedDate.ToString());
             }
 
+            fields.Add("date_display_mode", "2");
+
             fields.Add("cdrid", summary.DocumentID.ToString());
             fields.Add("summary_type", summary.Type);
 

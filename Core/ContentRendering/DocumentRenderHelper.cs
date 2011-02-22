@@ -27,7 +27,7 @@ namespace GateKeeper.ContentRendering
 
         #region Public Static Methods
 
-        static public string ProcessMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable, bool bInList)
+        static public string ProcessMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable)
         {
              // Check if the alt and image info is available 
             if (mediaLink.Alt.Length == 0 || mediaLink.ReferencedCdrID == 0)

@@ -47,7 +47,7 @@ namespace GateKeeper.ContentRendering
                     {
                         if (ml.Language == lang)
                         {
-                            ml.Html = DocumentRenderHelper.ProcessMediaLink(ml, true, false, false);
+                            ml.Html = DocumentRenderHelper.ProcessMediaLink(ml, true, false);
                         }
                     }
 

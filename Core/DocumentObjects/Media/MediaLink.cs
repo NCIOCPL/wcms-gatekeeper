@@ -26,6 +26,7 @@ namespace GateKeeper.DocumentObjects.Media
         private Language _language = Language.English;
         private bool _isThumb = false;
         private bool _isInline = false;
+        private bool _displayEnlargeLink = true;
         private int _mediaDocumentID = 0;
         private long _minWidth = 0;
 
@@ -63,7 +64,17 @@ namespace GateKeeper.DocumentObjects.Media
         public bool Inline
         {
             get { return _isInline; }
-            internal set { _isInline = value; }
+            private set { _isInline = value; }
+        }
+
+        /// <summary>
+        /// Reports whether the media link is intended to display
+        /// with an "Enlarge" link.
+        /// </summary>
+        public bool DisplayEnlargeLink
+        {
+            get { return _displayEnlargeLink; }
+            private set { _displayEnlargeLink = value; }
         }
 
         /// <summary>
@@ -208,13 +219,13 @@ namespace GateKeeper.DocumentObjects.Media
         /// <param name="language"></param>
         /// <param name="isThumb"></param>
         /// <param name="xml"></param>
-        public MediaLink(string reference, int cdrID, string alt, bool isInline, long minWidth, string size, string ID, 
-                        string caption, int mediaDocumentID, Language language, bool isThumb, XmlDocument xml)
+        public MediaLink(string reference, int cdrID, string alt, bool isInline, bool displayEnlargeLink, long minWidth, string size, string ID, string caption, int mediaDocumentID, Language language, bool isThumb, XmlDocument xml)
         {
             this._reference = reference;
             this._referencedCdrDocumentID = cdrID;
             this._alt = alt;
-            this._isInline = _isInline;
+            this._isInline = isInline;
+            this._displayEnlargeLink = displayEnlargeLink;
             this._minWidth = minWidth;
             this._size = size;
             this._ID = ID;

@@ -379,76 +379,76 @@ namespace GateKeeper.ContentRendering
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        [Obsolete("Don't use this method! MediaLink data is now being extracted in (duh!) Extract.")]
-        private void BuildMediaLink(XPathNavigator xNav, SummaryDocument summary)
-        {
-            try
-            {
-                XPathNavigator mediaLink = xNav.SelectSingleNode(".//MediaLink");
-                if (mediaLink != null)
-                {
-                    string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, "id");
-                    string thumb = DocumentHelper.GetAttribute(mediaLink, "thumb");
-                    bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
-                    string imgRef = DocumentHelper.GetAttribute(mediaLink, "ref");
-                    string alt = DocumentHelper.GetAttribute(mediaLink, "alt");
-                    bool isInline = false;
-                    string inLine = DocumentHelper.GetAttribute(mediaLink, "inline");
-                    if (inLine.ToUpper().Equals("YES"))
-                        isInline = true;
-                    string width = DocumentHelper.GetAttribute(mediaLink, "MinWidth");
-                    long minWidth = -1;
-                    if ((width != null) && (width.Length > 0))
-                        minWidth = long.Parse(width);
-                    string size = DocumentHelper.GetAttribute(mediaLink, "size");
-                    if (size.Equals(String.Empty))
-                        size = "not-set";
+        //[Obsolete("Don't use this method! MediaLink data is now being extracted in (duh!) Extract.")]
+        //private void BuildMediaLink(XPathNavigator xNav, SummaryDocument summary)
+        //{
+        //    try
+        //    {
+        //        XPathNavigator mediaLink = xNav.SelectSingleNode(".//MediaLink");
+        //        if (mediaLink != null)
+        //        {
+        //            string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, "id");
+        //            string thumb = DocumentHelper.GetAttribute(mediaLink, "thumb");
+        //            bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
+        //            string imgRef = DocumentHelper.GetAttribute(mediaLink, "ref");
+        //            string alt = DocumentHelper.GetAttribute(mediaLink, "alt");
+        //            bool isInline = false;
+        //            string inLine = DocumentHelper.GetAttribute(mediaLink, "inline");
+        //            if (inLine.ToUpper().Equals("YES"))
+        //                isInline = true;
+        //            string width = DocumentHelper.GetAttribute(mediaLink, "MinWidth");
+        //            long minWidth = -1;
+        //            if ((width != null) && (width.Length > 0))
+        //                minWidth = long.Parse(width);
+        //            string size = DocumentHelper.GetAttribute(mediaLink, "size");
+        //            if (size.Equals(String.Empty))
+        //                size = "not-set";
 
-                    XmlDocument mediaXml = new XmlDocument();
-                    mediaXml.LoadXml(mediaLink.OuterXml);
+        //            XmlDocument mediaXml = new XmlDocument();
+        //            mediaXml.LoadXml(mediaLink.OuterXml);
 
-                    XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
-                    Language capLang = Language.English;
-                    string caption = string.Empty;
-                    if (captionNode != null)
-                    {
-                        capLang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetAttribute(mediaLink, "language"));
-                        caption = captionNode.InnerXml;
-                        // Check if the media language is the same as the summary language, if not, log an warning
-                        if (capLang != summary.Language)
-                        {
-                            summary.WarningWriter("Media Link Warning: The media link language does not match the language defined in summary! Summary ID=" + summary.DocumentID + " MediaLinkID=" + mediaLinkID + ".");
-                        }
-                    }
-                    // Find media link's parent node
-                    bool isInTable = false;
-                    bool isInList = false;
-                    // Is the media link embeded in table?
-                    XPathNavigator tableNode = mediaLink.SelectSingleNode("./parent::td");
-                    if (tableNode != null)
-                        isInTable = true;
-                    // Is the media link embeded in list?
-                    XPathNavigator listNode = mediaLink.SelectSingleNode("./parent::LI");
-                    if (listNode != null)
-                        isInList = true;
-                    int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
+        //            XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
+        //            Language capLang = Language.English;
+        //            string caption = string.Empty;
+        //            if (captionNode != null)
+        //            {
+        //                capLang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetAttribute(mediaLink, "language"));
+        //                caption = captionNode.InnerXml;
+        //                // Check if the media language is the same as the summary language, if not, log an warning
+        //                if (capLang != summary.Language)
+        //                {
+        //                    summary.WarningWriter("Media Link Warning: The media link language does not match the language defined in summary! Summary ID=" + summary.DocumentID + " MediaLinkID=" + mediaLinkID + ".");
+        //                }
+        //            }
+        //            // Find media link's parent node
+        //            bool isInTable = false;
+        //            bool isInList = false;
+        //            // Is the media link embeded in table?
+        //            XPathNavigator tableNode = mediaLink.SelectSingleNode("./parent::td");
+        //            if (tableNode != null)
+        //                isInTable = true;
+        //            // Is the media link embeded in list?
+        //            XPathNavigator listNode = mediaLink.SelectSingleNode("./parent::LI");
+        //            if (listNode != null)
+        //                isInList = true;
+        //            int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
 
-                    MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
-                    string test = "<MediaHTML>" + DocumentRenderHelper.ProcessMediaLink(link, false, isInTable, isInList) + "</MediaHTML>";
-                    mediaLink.OuterXml = test;
-                    BuildMediaLink(xNav, summary);
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Building media link failed.", e);
-            }
+        //            MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+        //            string test = "<MediaHTML>" + DocumentRenderHelper.ProcessMediaLink(link, false, isInTable, isInList) + "</MediaHTML>";
+        //            mediaLink.OuterXml = test;
+        //            BuildMediaLink(xNav, summary);
+        //        }
+        //        else
+        //        {
+        //            return;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Building media link failed.", e);
+        //    }
 
-        }
+        //}
 
         /// <summary>
         /// Return the maximun priority number

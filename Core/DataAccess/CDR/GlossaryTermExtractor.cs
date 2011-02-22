@@ -176,9 +176,14 @@ namespace GateKeeper.DataAccess.CDR
 
                     string alt = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaAlt));
                     bool isInline = false;
+                    bool showEnlargeLink = true; // Not used for MediaLink in glossary terms, but this is approximately the correct logic.
+                                                 // Should really be a rendering decision based on parent node.
                     string inLine = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaInline));
                     if (inLine.ToUpper().Equals("YES"))
+                    {
                         isInline = true;
+                        showEnlargeLink = false;
+                    }
                     string width = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaMidWidth));
                     long minWidth = -1;
                     if ((width != null) && (width.Length > 0))
@@ -216,8 +221,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                         {
-                            MediaLink mediaLink = new MediaLink(imgRef, cdrId, alt, isInline, minWidth, size, mediaLinkID, langCapMap[lang],
-                                mediaDocumentID, lang, isThumb, mediaXml);
+                            MediaLink mediaLink = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, langCapMap[lang], mediaDocumentID, lang, isThumb, mediaXml);
                             glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(mediaLink);
                         }
                         else

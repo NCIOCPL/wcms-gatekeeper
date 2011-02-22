@@ -17,6 +17,13 @@ namespace NCI.WCM.CMSManager.CMS
     /// </summary>
     public class FolderManager
     {
+        public enum NavonAction
+        {
+            None = 0,       // Leave Navons in their initial state.
+            Suppress = 1,   // Suppress Navon. (Delete immediately)
+            MakePublic = 2  // Move Navon to Public
+        }
+
         #region Constants
 
         const string errorNamespace = "urn:www.percussion.com/6.0.0/faults";
@@ -44,12 +51,6 @@ namespace NCI.WCM.CMSManager.CMS
         private contentSOAP _contentService = null;
 
         private systemSOAP _systemService = null;
-
-        // The default behavior for Folder Manager is to move Navons
-        // to the public state immediately after creating the folder.
-        // This behavior may be overridden by calling GuaranteeFolder
-        // with makeNavonPublic set to false;
-        private bool _makeNavonPublic = true;
 
         #endregion
 
@@ -84,15 +85,12 @@ namespace NCI.WCM.CMSManager.CMS
         /// the folder exists.
         /// </summary>
         /// <param name="folderPath">The desired folder path.</param>
-        /// <param name="makeNavonPublic">Set true to immediately make the Navon public (default behavior),
-        /// or false to leave the Navon in its default state.</param>
         /// <returns>A PSFolder object containing details of the folder.</returns>
         /// <remarks>The folder path specified must be fully qualified with the //Sites/ folder
         /// and the base of the specific site. e.g. //Sites/CancerGov.</remarks>
-        public PSFolder GuaranteeFolder(string folderPath, bool makeNavonPublic)
+        public PSFolder GuaranteeFolder(string folderPath)
         {
-            _makeNavonPublic = makeNavonPublic;
-            return GuaranteeFolder(folderPath);
+            return GuaranteeFolder(folderPath, NavonAction.None);
         }
 
         /// <summary>
@@ -100,10 +98,11 @@ namespace NCI.WCM.CMSManager.CMS
         /// the folder exists.
         /// </summary>
         /// <param name="folderPath">The desired folder path.</param>
+        /// <param name="navonAction">Action to perform on the folder's Navon.</param>
         /// <returns>A PSFolder object containing details of the folder.</returns>
         /// <remarks>The folder path specified must be fully qualified with the //Sites/ folder
         /// and the base of the specific site. e.g. //Sites/CancerGov.</remarks>
-        public PSFolder GuaranteeFolder(string folderPath)
+        public PSFolder GuaranteeFolder(string folderPath, NavonAction navonAction)
         {
             if (folderPath == null)
                 throw new ArgumentNullException("folderPath");
@@ -118,7 +117,7 @@ namespace NCI.WCM.CMSManager.CMS
                     // the lock?
                     if (!_folderCollection.ContainsKey(folderPath))
                     {
-                        PSFolder folderInfo = ForceFolderToExist(folderPath);
+                        PSFolder folderInfo = ForceFolderToExist(folderPath, navonAction);
                         _folderCollection.Add(folderPath, folderInfo);
                     }
                 }
@@ -128,12 +127,30 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// Threadsafe mechanism for loading folder information and guaranteeing
+        /// the folder exists.
+        /// </summary>
+        /// <param name="folderPath">The desired folder path.</param>
+        /// <param name="makeNavonPublic">Set true to immediately make the Navon public (default behavior),
+        /// or false to leave the Navon in its default state.</param>
+        /// <returns>A PSFolder object containing details of the folder.</returns>
+        /// <remarks>The folder path specified must be fully qualified with the //Sites/ folder
+        /// and the base of the specific site. e.g. //Sites/CancerGov.</remarks>
+        [Obsolete("Use GuaranteeFolder(string folderPath, NavonAction navonAction) instead.")]
+        public PSFolder GuaranteeFolder(string folderPath, bool makeNavonPublic)
+        {
+            return GuaranteeFolder(folderPath, makeNavonPublic ? NavonAction.MakePublic : NavonAction.None);
+        }
+
+
+        /// <summary>
         /// Attempts to load a folder's information. If the folder doesn't
         /// exist, create it.
         /// </summary>
         /// <param name="folderPath">Folder which is to be created.</param>
+        /// <param name="navonAction">Action to perform on the folder's Navon.</param>
         /// <returns></returns>
-        private PSFolder ForceFolderToExist(string folderPath)
+        private PSFolder ForceFolderToExist(string folderPath, NavonAction navonAction)
         {
             PSFolder returnItem;
 
@@ -143,7 +160,7 @@ namespace NCI.WCM.CMSManager.CMS
 
             if (returnItem == null)
             {
-                returnItem = CreateNewFolder(folderPath);
+                returnItem = CreateNewFolder(folderPath, navonAction);
             }
 
             return returnItem;
@@ -216,8 +233,9 @@ namespace NCI.WCM.CMSManager.CMS
         /// PSFolder object.
         /// </summary>
         /// <param name="folderPath">Path of the folder to be created.</param>
+        /// <param name="navonAction">Action to perform on the folder's Navon.</param>
         /// <returns>PSFolder object detailing the new folder.</returns>
-        private PSFolder CreateNewFolder(string folderPath)
+        private PSFolder CreateNewFolder(string folderPath, NavonAction navonAction)
         {
             int splitPoint = folderPath.LastIndexOfAny(new char[] { '/', '\\' });
             string parentFolder = folderPath.Substring(0, splitPoint);
@@ -233,29 +251,38 @@ namespace NCI.WCM.CMSManager.CMS
             // It turns out the lock is smart and only applies to *other* threads.
             // When the current execution encounters the lock, it's able to continue.
             // Ref: ms-help://MS.VSCC.v90/MS.MSDNQTR.v90.en/dv_csref/html/656da1a4-707e-4ef6-9c6e-6d13b646af42.htm
-            GuaranteeFolder(parentFolder);
+            GuaranteeFolder(parentFolder, navonAction);
 
             AddFolderRequest req = new AddFolderRequest();
             req.Path = parentFolder;
             req.Name = newFolderName;
             AddFolderResponse resp = _contentService.AddFolder(req);
 
-            // Folder is newly created, move the Navon to Public.
-            //if (_makeNavonPublic)
-            //{
-            //    MakeNavonPublic(folderPath);
-            //}
+            // Folder is newly created, update Navon
+            switch (navonAction)
+            {
+                case NavonAction.Suppress:
+                    break;
+
+                case NavonAction.MakePublic:
+                    MakeNavonPublic(folderPath);
+                    break;
+
+                case NavonAction.None:
+                default:
+                    break;
+            }
 
             return resp.PSFolder;
         }
 
         private void MakeNavonPublic(string folderPath)
         {
-            //// Get the Navon's content ID.
-            //PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
-            //if (searchResults.Length < 1)
-            //    throw new CMSOperationalException(string.Format("Navon not found for folder {0}.", folderPath));
-            //PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
+            // Get the Navon's content ID.
+            PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, NavonContentType, folderPath, null);
+            if (searchResults.Length < 1)
+                throw new CMSOperationalException(string.Format("Navon not found for folder {0}.", folderPath));
+            PSWSUtils.TransitionItems(_systemService, new long[] { PercussionGuid.GetID(searchResults[0].id) }, NavonPublicTransitionName);
         }
     }
 }
