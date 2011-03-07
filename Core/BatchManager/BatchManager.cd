@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GKManagers.DataAccess.BatchMapper">
+    <Position X="3.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataAccess\BatchMapper.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAABCAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.BatchManager">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>BatchManager.cs</FileName>
+      <HashCode>ABAAAAAAEQAAAAgICAARAAAAAEAAAAAAEQAACAEAQEY=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.DataAccess.BatchQuery">
+    <Position X="0.5" Y="4.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>DataAccess\BatchQuery.cs</FileName>
+      <HashCode>AAAAAAAAEQAAAAgAiAIBAAAAAEAAgAAAEAAgSAAAQAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

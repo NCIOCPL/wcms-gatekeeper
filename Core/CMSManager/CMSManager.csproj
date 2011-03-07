@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NCI.WCM.CMSManager</RootNamespace>
+    <AssemblyName>CMSManager</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CMS\ChildFieldSet.cs" />
+    <Compile Include="CMS\CMSController.cs" />
+    <Compile Include="CMS\ContentTypeManager.cs" />
+    <Compile Include="CMS\ContentTypeToTemplateInfo.cs" />
+    <Compile Include="CMS\FieldSet.cs" />
+    <Compile Include="CMS\FolderManager.cs" />
+    <Compile Include="CMS\PercussionGuid.cs" />
+    <Compile Include="CMS\PSItemUtils.cs" />
+    <Compile Include="CMS\ContentItemForUpdating.cs" />
+    <Compile Include="CMS\ContentItemForCreating.cs" />
+    <Compile Include="CMS\SlotInfo.cs" />
+    <Compile Include="CMS\SlotManager.cs" />
+    <Compile Include="CMS\TemplateNameManager.cs" />
+    <Compile Include="Configuration\ConnectionInfo.cs" />
+    <Compile Include="Configuration\ContentType.cs" />
+    <Compile Include="Configuration\NavonPublicTransitionElement.cs" />
+    <Compile Include="Configuration\pdqCancerInfoSummaryElement.cs" />
+    <Compile Include="Configuration\PDQCancerInfoSummaryLinkElement.cs" />
+    <Compile Include="Configuration\PDQCancerInfoSummaryPage.cs" />
+    <Compile Include="Configuration\PDQDrugInfoSummaryElement.cs" />
+    <Compile Include="Configuration\PDQMediaLinkElement.cs" />
+    <Compile Include="Configuration\PDQTableSectionElement.cs" />
+    <Compile Include="Configuration\RepublishEditions.cs" />
+    <Compile Include="CMS\SectionToCmsIDMap.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Configuration\PercussionConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="CMS\PSWSUtils.cs" />
+    <Compile Include="Web References\PercussionWebSvc\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PercussionWSDL\assembly\assembly.wsdl" />
+    <None Include="PercussionWSDL\assembly\assembly.xsd" />
+    <None Include="PercussionWSDL\assembly\assemblyServices.xsd" />
+    <None Include="PercussionWSDL\BasicObjects.xsd" />
+    <None Include="PercussionWSDL\common.xsd" />
+    <None Include="PercussionWSDL\ContentEditorLocalDef.xsd" />
+    <None Include="PercussionWSDL\ContentEditorSharedDef.xsd" />
+    <None Include="PercussionWSDL\ContentEditorSystemDef.xsd" />
+    <None Include="PercussionWSDL\content\content.wsdl" />
+    <None Include="PercussionWSDL\content\content.xsd" />
+    <None Include="PercussionWSDL\content\contentServices.xsd" />
+    <None Include="PercussionWSDL\faults.xsd" />
+    <None Include="PercussionWSDL\rhythmyx.wsdl" />
+    <None Include="PercussionWSDL\security\security.wsdl" />
+    <None Include="PercussionWSDL\security\security.xsd" />
+    <None Include="PercussionWSDL\security\securityServices.xsd" />
+    <None Include="PercussionWSDL\system\system.wsdl" />
+    <None Include="PercussionWSDL\system\system.xsd" />
+    <None Include="PercussionWSDL\system\systemServices.xsd" />
+    <None Include="PercussionWSDL\ui\ui.wsdl" />
+    <None Include="PercussionWSDL\ui\ui.xsd" />
+    <None Include="PercussionWSDL\ui\uiServices.xsd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\PercussionWebSvc\AddFolderResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\assembly.wsdl" />
+    <None Include="Web References\PercussionWebSvc\assembly.xsd" />
+    <None Include="Web References\PercussionWebSvc\assemblyServices.xsd" />
+    <None Include="Web References\PercussionWebSvc\BasicObjects.xsd" />
+    <None Include="Web References\PercussionWebSvc\common.xsd" />
+    <None Include="Web References\PercussionWebSvc\content.wsdl" />
+    <None Include="Web References\PercussionWebSvc\content.xsd" />
+    <None Include="Web References\PercussionWebSvc\ContentEditorLocalDef.xsd" />
+    <None Include="Web References\PercussionWebSvc\ContentEditorSharedDef.xsd" />
+    <None Include="Web References\PercussionWebSvc\ContentEditorSystemDef.xsd" />
+    <None Include="Web References\PercussionWebSvc\contentServices.xsd" />
+    <None Include="Web References\PercussionWebSvc\CreateRelationshipResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\faults.xsd" />
+    <None Include="Web References\PercussionWebSvc\FilterByRuntimeVisibilityResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\FindDependentsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\FindFolderPathResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\FindOwnersResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\FindPathIdsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\GetAllowedTransitionsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\GetAssemblyUrlsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\LoginResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSAaRelationship.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSAction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSAssemblyTemplate.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSAuditTrail.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSAutoTranslation.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSChildEntry.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSCommunity.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSContentTypeSummary.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSDisplayFormat.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSFolder.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSItem.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSItemStatus.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSItemSummary.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSKeyword.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSLocale.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSRelationship.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSRevisions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSRole.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSSearchDef.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSSearchResults.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSTemplateSlot.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSViewDef.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\PSWorkflow.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\PercussionWebSvc\RelationshipConfigSummary.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\rhythmyx.wsdl" />
+    <None Include="Web References\PercussionWebSvc\SaveFoldersResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\SaveItemsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\security.wsdl" />
+    <None Include="Web References\PercussionWebSvc\security.xsd" />
+    <None Include="Web References\PercussionWebSvc\securityServices.xsd" />
+    <None Include="Web References\PercussionWebSvc\system.wsdl" />
+    <None Include="Web References\PercussionWebSvc\system.xsd" />
+    <None Include="Web References\PercussionWebSvc\systemServices.xsd" />
+    <None Include="Web References\PercussionWebSvc\TransitionItemsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\PercussionWebSvc\ui.wsdl" />
+    <None Include="Web References\PercussionWebSvc\ui.xsd" />
+    <None Include="Web References\PercussionWebSvc\uiServices.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="C:\WCMTeam\trunk\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\PercussionWebSvc\</RelPath>
+      <UpdateFromURL>C:\WCMTeam\trunk\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>CMSManager_PercussionWebSvc_assembly</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

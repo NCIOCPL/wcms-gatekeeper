@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Comment CommentText="Business object representation; &#xD;&#xA;This class represents a document object and is used by extract/rendering/persistence classes.">
+    <Position X="3.882" Y="0.5" Height="0.6" Width="2.648" />
+  </Comment>
+  <Comment CommentText="Extraction classes; &#xD;&#xA;Classes to extract a business object from input XML.">
+    <Position X="9" Y="0.5" Height="0.622" Width="1.785" />
+  </Comment>
+  <Comment CommentText="Persistence class; &#xD;&#xA;Class that contains calls to document specific stored procedures.">
+    <Position X="7" Y="13.966" Height="0.569" Width="2.108" />
+  </Comment>
+  <Comment CommentText="Rendering class; Render class supplies the Xsl to the base class and also overrides the default render functionality if necessary.">
+    <Position X="1" Y="13.966" Height="0.694" Width="1.934" />
+  </Comment>
+  <Comment CommentText="Workflow class; &#xD;&#xA;This class is used by the workflow manager (constructed via a factory) to delegate the workflow/processing functions.">
+    <Position X="1" Y="20" Height="0.788" Width="2.337" />
+  </Comment>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolDocument">
+    <Position X="0.75" Y="4.75" Width="3.25" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="ProtocolType" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ModalityList" />
+      <Property Name="ContactInfoList" />
+      <Property Name="DrugList" />
+      <Property Name="ProtocolSectionList" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolDrug">
+    <Position X="6.75" Y="6.75" Width="2.75" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolContactInfo">
+    <Position X="6.75" Y="9.25" Width="3" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolModality">
+    <Position X="3.5" Y="10.25" Width="2.5" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolSection">
+    <Position X="6.75" Y="4.25" Width="5" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.ProtocolRenderer">
+    <Position X="1" Y="17.75" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.DocumentRenderer">
+    <Position X="1" Y="15" Width="3.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DocumentQuery">
+    <Position X="7" Y="15" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CancerGov.ProtocolQuery">
+    <Position X="7" Y="20" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.ProtocolExtractor">
+    <Position X="9" Y="1.25" Width="4" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.CTGovProtocolExtractor">
+    <Position X="9" Y="2.75" Width="4.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DataAccessManager">
+    <Position X="1" Y="21" Width="3.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="GateKeeper.DocumentObjects.Protocol.ProtocolType">
+    <Position X="6.75" Y="2.75" Width="1.25" />
+    <TypeIdentifier />
+  </Enum>
+</ClassDiagram>

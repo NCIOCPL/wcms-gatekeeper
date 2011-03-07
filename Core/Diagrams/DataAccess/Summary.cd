@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Comment CommentText="Business object representation; &#xD;&#xA;This class represents a document object and is used by extract/rendering/persistence classes.">
+    <Position X="3.844" Y="0.5" Height="0.6" Width="2.648" />
+  </Comment>
+  <Comment CommentText="Rendering class; Render class supplies the Xsl to the base class and also overrides the default render functionality if necessary.">
+    <Position X="1.4" Y="12.415" Height="0.694" Width="1.934" />
+  </Comment>
+  <Comment CommentText="Persistence class; &#xD;&#xA;Class that contains calls to document specific stored procedures.">
+    <Position X="7.573" Y="9.305" Height="0.569" Width="2.108" />
+  </Comment>
+  <Comment CommentText="Extraction class; &#xD;&#xA;Class to extract a business object from input XML.">
+    <Position X="1.516" Y="9.441" Height="0.622" Width="1.785" />
+  </Comment>
+  <Comment CommentText="Workflow class; &#xD;&#xA;This class is used by the workflow manager (constructed via a factory) to delegate the workflow/processing functions.">
+    <Position X="7.242" Y="18.547" Height="0.788" Width="2.337" />
+  </Comment>
+  <Comment CommentText="Note: Level 4 and 5 sections contain document elements that can be the target of hyper links and must be resolved to the document pretty URL.">
+    <Position X="4.541" Y="4.427" Height="0.969" Width="1.7" />
+  </Comment>
+  <Class Name="GateKeeper.DocumentObjects.Summary.SummarySection">
+    <Position X="6.75" Y="5" Width="2.5" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Summary.SummaryDocument">
+    <Position X="0.5" Y="4" Width="3.5" />
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="SectionList" />
+      <Property Name="Level4SectionList" />
+      <Property Name="Level5SectionList" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="DocumentType" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.SummaryRenderer">
+    <Position X="1.25" Y="16" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.DocumentRenderer">
+    <Position X="0.5" Y="13.25" Width="4" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.SummaryExtractor">
+    <Position X="0.5" Y="10.25" Width="4.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DocumentQuery">
+    <Position X="7" Y="10.25" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CancerGov.SummaryQuery">
+    <Position X="7" Y="15.25" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DataAccessManager">
+    <Position X="6.5" Y="19.5" Width="3.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="GateKeeper.DocumentObjects.AudienceType">
+    <Position X="6.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="GateKeeper.DocumentObjects.DocumentType">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+</ClassDiagram>

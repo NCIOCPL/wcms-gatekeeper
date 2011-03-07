@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/content/content.wsdl" filename="content.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/assembly/assembly.wsdl" filename="assembly.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/security/security.wsdl" filename="security.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/system/system.wsdl" filename="system.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/assembly/assemblyServices.xsd" filename="assemblyServices.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/faults.xsd" filename="faults.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/assembly/assembly.xsd" filename="assembly.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/security/security.xsd" filename="security.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ui/ui.xsd" filename="ui.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/rhythmyx.wsdl" filename="rhythmyx.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ui/ui.wsdl" filename="ui.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/common.xsd" filename="common.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/security/securityServices.xsd" filename="securityServices.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ui/uiServices.xsd" filename="uiServices.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/system/system.xsd" filename="system.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ContentEditorSharedDef.xsd" filename="ContentEditorSharedDef.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/system/systemServices.xsd" filename="systemServices.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/content/content.xsd" filename="content.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ContentEditorSystemDef.xsd" filename="ContentEditorSystemDef.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/BasicObjects.xsd" filename="BasicObjects.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/content/contentServices.xsd" filename="contentServices.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///C:/WCMTeam/trunk/GateKeeper/Core/CMSManager/PercussionWSDL/ContentEditorLocalDef.xsd" filename="ContentEditorLocalDef.xsd" />
+  </Results>
+</DiscoveryClientResultsFile>

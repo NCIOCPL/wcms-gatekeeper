@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.DocumentObjects.Protocol.AlternateProtocolID">
+    <Position X="2.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\AlternateProtocolID.cs</FileName>
+      <HashCode>AAAAAEAABAAAAAQEAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolContactInfo">
+    <Position X="2.75" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolContactInfo.cs</FileName>
+      <HashCode>wAABCBAQCIAAAEAMAPAiSIIAAsJAJiAaAAABJAYCAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolDocument">
+    <Position X="5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolDocument.cs</FileName>
+      <HashCode>JMARhkkFkwAAGUKUEsBAAACACIAAAJUAAEAyAAABBYo=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolDrug">
+    <Position X="7.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolDrug.cs</FileName>
+      <HashCode>AAAAMIAAAAAAAgAEEAAAAAQgAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolModality">
+    <Position X="7.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolModality.cs</FileName>
+      <HashCode>IAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolSection">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolSection.cs</FileName>
+      <HashCode>AAAACAAAAAAAAAAEAAAEAIBBAAAABAAQAAAAAAAQAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.ProtocolTitle">
+    <Position X="7.25" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolTitle.cs</FileName>
+      <HashCode>AAAAAAAAgIAAAEAEAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Protocol.TypeOfCancer">
+    <Position X="7.25" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\TypeOfCancer.cs</FileName>
+      <HashCode>EAAAAAIAAAAAAQAEAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GateKeeper.DocumentObjects.Protocol.ProtocolSectionType">
+    <Position X="0.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolSection.cs</FileName>
+      <HashCode>AACiCAKAAABAIAQCAUAAAAAEAAMggAIAAJAAAQCAAAQ=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GateKeeper.DocumentObjects.Protocol.ProtocolType">
+    <Position X="9.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GateKeeper.DocumentObjects.Protocol.PhaseType">
+    <Position X="9.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Protocol\ProtocolPhase.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAADBAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>

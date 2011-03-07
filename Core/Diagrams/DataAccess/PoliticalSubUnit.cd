@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Comment CommentText="Business object representation; &#xD;&#xA;This class represents a document object and is used by extract/rendering/persistence classes.">
+    <Position X="4.318" Y="0.552" Height="0.6" Width="2.648" />
+  </Comment>
+  <Comment CommentText="Extraction class; &#xD;&#xA;Class to extract a business object from input XML.">
+    <Position X="5.25" Y="2.25" Height="0.622" Width="1.785" />
+  </Comment>
+  <Comment CommentText="Persistence class; &#xD;&#xA;Class that contains calls to document specific stored procedures.">
+    <Position X="5" Y="6.5" Height="0.569" Width="2.108" />
+  </Comment>
+  <Comment CommentText="Note: PoliticalSubUnit is not pre-rendered">
+    <Position X="0.5" Y="7.187" Height="0.537" Width="1.934" />
+  </Comment>
+  <Comment CommentText="Workflow class; &#xD;&#xA;This class is used by the workflow manager (constructed via a factory) to delegate the workflow/processing functions.">
+    <Position X="0.509" Y="8.991" Height="0.788" Width="2.337" />
+  </Comment>
+  <Class Name="GateKeeper.DocumentObjects.PoliticalSubUnit.PoliticalSubUnitDocument">
+    <Position X="1" Y="4.5" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DocumentQuery">
+    <Position X="5" Y="7.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.PoliticalSubUnitExtractor">
+    <Position X="5.25" Y="3.25" Width="4.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DataAccessManager">
+    <Position X="0.5" Y="10.25" Width="3.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CancerGov.PoliticalSubUnitQuery">
+    <Position X="5" Y="12.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+</ClassDiagram>

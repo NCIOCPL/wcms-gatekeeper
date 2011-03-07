@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Comment CommentText="Note: Genetics professional documents are not pre-rendered">
+    <Position X="1.039" Y="8.487" Height="0.458" Width="2.085" />
+  </Comment>
+  <Comment CommentText="Business object representation; &#xD;&#xA;This class represents a document object and is used by extract/rendering/persistence classes.">
+    <Position X="4.75" Y="0.75" Height="0.6" Width="2.815" />
+  </Comment>
+  <Comment CommentText="Extraction class; &#xD;&#xA;Class to extract a business object from input XML.">
+    <Position X="1.057" Y="9.445" Height="0.622" Width="1.785" />
+  </Comment>
+  <Comment CommentText="Persistence class; &#xD;&#xA;Class that contains calls to document specific stored procedures.">
+    <Position X="8.339" Y="9.099" Height="0.569" Width="2.108" />
+  </Comment>
+  <Comment CommentText="Workflow class; &#xD;&#xA;This class is used by the workflow manager (constructed via a factory) to delegate the workflow/processing functions.">
+    <Position X="1" Y="12.25" Height="0.788" Width="2.337" />
+  </Comment>
+  <Class Name="GateKeeper.DocumentObjects.GeneticsProfessional.GeneticsProfessionalDocument">
+    <Position X="0.75" Y="5.25" Width="4.25" />
+    <TypeIdentifier />
+    <ShowAsCollectionAssociation>
+      <Property Name="PracticeLocations" />
+      <Property Name="FamilyCancerSyndromes" />
+    </ShowAsCollectionAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GeneticsProfessional.FamilyCancerSyndrome">
+    <Position X="8.5" Y="6.75" Width="3" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.GeneticsProfessional.PracticeLocation">
+    <Position X="8.5" Y="4.25" Width="2.25" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="GateKeeper.DocumentObjects.Document">
+    <Position X="1.25" Y="0.75" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DocumentQuery">
+    <Position X="7.5" Y="10" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CancerGov.GenProfQuery">
+    <Position X="7.5" Y="14.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.CDR.GeneticsProfessionalExtractor">
+    <Position X="1" Y="10.25" Width="4.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GateKeeper.DataAccess.DataAccessManager">
+    <Position X="1" Y="13.25" Width="3.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+</ClassDiagram>

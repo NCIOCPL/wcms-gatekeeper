@@ -1,0 +1,987 @@
+<Protocol id="CDR0000067377" LegacyPDQID="14576">
+	<ProtocolIDs>
+		<PrimaryID>
+			<IDString>BIOVEST-BV301</IDString>
+		</PrimaryID>
+		<OtherID>
+			<IDType>NCI alternate</IDType>
+			<IDString>NCI-00-C-0050M</IDString>
+		</OtherID>
+		<OtherID>
+			<IDType>Alternate</IDType>
+			<IDString>NCI-92</IDString>
+		</OtherID>
+		<OtherID>
+			<IDType>Alternate</IDType>
+			<IDString>NCI-9900.v6</IDString>
+		</OtherID>
+		<OtherID>
+			<IDType>Alternate</IDType>
+			<IDString>NCI-00-C-0050N</IDString>
+		</OtherID>
+		<OtherID>
+			<IDType>Alternate</IDType>
+			<IDString>NCI-05-C-0031</IDString>
+		</OtherID>
+		<OtherID>
+			<IDType>ClinicalTrials.gov ID</IDType>
+			<IDString>NCT00096577</IDString>
+		</OtherID>
+	</ProtocolIDs>
+	<ProtocolSponsor>NCI</ProtocolSponsor>
+	<ProtocolSponsor>Pharmaceutical/Industry</ProtocolSponsor>
+	<PDQProtocolTitle Audience="Professional">Phase III Randomized Study of Keyhole Limpet Hemocyanin and Sargramostim (GM-CSF) With or Without Autologous Lymphoma-Derived Idiotype-Specific Vaccination After Standard Cyclophosphamide, Doxorubicin, Etoposide, and Prednisone in Patients With Stage II-IV Follicular Lymphoma </PDQProtocolTitle>
+	<PDQProtocolTitle Audience="Patient">Cyclophosphamide, Doxorubicin, Etoposide, and Prednisone Followed by Vaccine Therapy Plus Sargramostim in Treating Patients With Stage II, Stage III, or Stage IV Follicular Lymphoma</PDQProtocolTitle>
+	<ProtocolAbstract>
+		<Professional>
+			<Objectives>
+				<OrderedList Style="URoman" id="_1">
+					<ListTitle>Primary</ListTitle>
+					<ListItem>Compare the safety and efficacy of keyhole limpet hemocyanin and sargramostim (GM-CSF) with or without autologous lymphoma-derived idiotype-specific vaccination (Id vaccine), in terms of clinical disease-free survival (DFS), in patients with stage II-IV follicular lymphoma who achieve first complete remission (CR) after standard cyclophosphamide, doxorubicin, etoposide, and prednisone.
+</ListItem>
+				</OrderedList>
+				<OrderedList Style="URoman" id="_48">
+					<ListTitle>Secondary</ListTitle>
+					<ListItem>Determine the ability of Id vaccine to produce a molecular CR in patients with a clinical CR but with polymerase chain reaction evidence of residual disease after standard chemotherapy.
+</ListItem>
+					<ListItem>Determine the impact of Id vaccine on molecular DFS in these patients.
+</ListItem>
+					<ListItem>Assess the ability of Id vaccine to generate an immunologic response against autologous tumor in these patients.
+</ListItem>
+					<ListItem>Compare the overall survival of patients with CR after standard chemotherapy who are then treated with keyhole limpet hemocyanin and GM-CSF with or without Id vaccine.</ListItem>
+					<ListItem>Determine the safety of Id vaccine administered with GM-CSF over a 6-month period in these patients.</ListItem>
+				</OrderedList>
+			</Objectives>
+			<Outcome OutcomeType="Primary">Disease-free survival by CT scan at 1 month and  every 3 months for 1 year and then every 6 months following study completion 
+</Outcome>
+			<Outcome OutcomeType="Secondary">Molecular complete response  by BCL-2 gene rearrangement at 1 month following study completion 
+</Outcome>
+			<Outcome OutcomeType="Secondary">Immune response by T-cell assays at baseline, pretreatment, and posttreatment 
+</Outcome>
+			<Outcome OutcomeType="Secondary">Overall survival by CT scan at 1 month and every 3 months for 1 year and then  every 6 months following study completion</Outcome>
+			<Outline>
+				<Para id="_2">This is a randomized, double-blind, multicenter study. 
+Patients are stratified according to risk group (0-2 vs 3-4) and number of 
+chemotherapy courses required to achieve complete remission (CR) or unconfirmed CR (CRu) (fewer 
+than 8 vs at least 8).</Para>
+				<Para id="_3">Patients receive standard cyclophosphamide IV over 30 minutes, 
+doxorubicin IV over 5 minutes, and etoposide IV over 1 hour on days 1 and 8 
+and oral prednisone on days 1-14. Treatment repeats every 4 weeks for at least 
+6 courses in the absence of disease progression or unacceptable toxicity. 
+Patients with CR or CRu after course 4 or 6 receive 2 additional courses past 
+CR. Patents without CR or CRu after course 8 but with disease that is 
+continuing to respond receive additional courses without doxorubicin until CR 
+or CRu is achieved. Patients whose disease has been stable for 2 courses 
+without attaining CR or CRu or who develop disease progression are taken off 
+study.</Para>
+				<Para id="_4">Beginning 6-12 months after completion of chemotherapy, patients who 
+achieve CR or CRu are randomized to 1 of 2 treatment arms.</Para>
+				<ItemizedList Compact="No" Style="bullet" id="_40">
+					<ListItem>
+						<Emphasis>
+							<Strong>Arm I:</Strong>
+						</Emphasis> Patients receive autologous lymphoma idiotype vaccine and keyhole 
+limpet hemocyanin (KLH) subcutaneously (SC) on day 1 and sargramostim (GM-CSF) 
+SC on days 1-4 of months 1, 2, 3, 4, and 6.</ListItem>
+					<ListItem>
+						<Emphasis>
+							<Strong>Arm II:</Strong>
+						</Emphasis> Patients receive KLH and GM-CSF as in arm I.</ListItem>
+				</ItemizedList>
+				<Para id="_7">After completion of study treatment, patients are followed periodically.</Para>
+			</Outline>
+			<EntryCriteria>
+				<DiseaseCharacteristics>
+					<ItemizedList Compact="No" Style="bullet" id="_38">
+						<ListItem>Histologically confirmed stage II*, III, or IV follicular center cell lymphoma<ItemizedList Style="dash" id="_39">
+								<ListItem> Small cleaved cell, mixed cell, or large cell with 
+centrocytes</ListItem>
+								<ListItem> Surface IgM or IgG phenotype with monoclonal heavy and 
+light chain by flow
+  cytometry
+</ListItem>
+								<ListItem> Grade I-IIIa</ListItem>
+							</ItemizedList>
+							<Para id="_45">
+								<Note>*Stage II disease must have bulky adenopathy (greater than 5 cm in 
+diameter)</Note>
+							</Para>
+						</ListItem>
+						<ListItem>Must have one of the following as a source of lymphoma cells for vaccine production:<ItemizedList Style="dash" id="_43">
+								<ListItem>Single peripheral lymph node that is greater than 2 cm and accessible for
+biopsy/harvest</ListItem>
+								<ListItem>Single abdominal lymph node that is greater than 2 cm and accessible for laparoscopic biopsy</ListItem>
+								<ListItem>Lymphoma cells circulating in peripheral blood, malignant pleural effusion, or malignant ascites if adequate number of cells (more than 10<Superscript>9</Superscript>) are present</ListItem>
+							</ItemizedList>
+						</ListItem>
+						<ListItem>No prior or concurrent primary or secondary CNS lymphoma</ListItem>
+					</ItemizedList>
+				</DiseaseCharacteristics>
+				<PatientCharacteristics>
+					<ItemizedList Style="bullet" id="_18">
+						<ListTitle>Age:</ListTitle>
+						<ListItem>18 and over</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_19">
+						<ListTitle>Performance status:</ListTitle>
+						<ListItem>ECOG 0-1 (unless directly related to lymphoma)</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_20">
+						<ListTitle>Life expectancy:</ListTitle>
+						<ListItem>More than 1 year</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_21">
+						<ListTitle>Hematopoietic:</ListTitle>
+						<ListItem>Not specified</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_22">
+						<ListTitle>Hepatic:</ListTitle>
+						<ListItem>Bilirubin no greater than 1.5 mg/dL (unless due to lymphoma or 
+Gilbert's disease)</ListItem>
+						<ListItem>SGOT/SGPT less than 3.5 times upper limit of 
+normal</ListItem>
+						<ListItem>Hepatitis B surface antigen negative</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_23">
+						<ListTitle>Renal:</ListTitle>
+						<ListItem>Creatinine less than 1.5 mg/dL (unless due to 
+lymphoma)</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_24">
+						<ListTitle>Other:</ListTitle>
+						<ListItem>HIV negative</ListItem>
+						<ListItem>Not pregnant or nursing</ListItem>
+						<ListItem>Negative pregnancy test</ListItem>
+						<ListItem>Fertile patients must use effective contraception</ListItem>
+						<ListItem>No active infection</ListItem>
+						<ListItem>No other unrelated (nonlymphomatous) neoplasm within the past 10 years  except nonmelanoma skin cancer or carcinoma in situ of the 
+cervix<ItemizedList Style="dash" id="_44">
+								<ListItem>Prior diagnosis of malignancy more than 10 years ago allowed at physician's discretion</ListItem>
+							</ItemizedList>
+						</ListItem>
+						<ListItem>No medical or psychiatric condition that would preclude 
+study compliance</ListItem>
+					</ItemizedList>
+				</PatientCharacteristics>
+				<PriorConcurrentTherapy>
+					<ItemizedList Style="bullet" id="_25">
+						<ListTitle>Biologic therapy:</ListTitle>
+						<ListItem>No prior biologic therapy</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_26">
+						<ListTitle>Chemotherapy:</ListTitle>
+						<ListItem>No prior chemotherapy</ListItem>
+						<ListItem>No other concurrent chemotherapy</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_27">
+						<ListTitle>Endocrine therapy:</ListTitle>
+						<ListItem>Prior prednisone for no more than 2 months duration 
+allowed</ListItem>
+						<ListItem>No concurrent dexamethasone<ItemizedList Style="dash" id="_46">
+								<ListItem>Concurrent steroids for no more than 2 weeks duration for an 
+unrelated medical condition allowed</ListItem>
+							</ItemizedList>
+						</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_28">
+						<ListTitle>Radiotherapy:</ListTitle>
+						<ListItem>Prior radiotherapy to 1 or 2 sites allowed</ListItem>
+						<ListItem>No prior total body irradiation</ListItem>
+						<ListItem>No concurrent radiotherapy</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_29">
+						<ListTitle>Surgery:</ListTitle>
+						<ListItem>Not specified</ListItem>
+					</ItemizedList>
+					<ItemizedList Style="bullet" id="_30">
+						<ListTitle>Other:</ListTitle>
+						<ListItem>No other concurrent therapy for lymphoma</ListItem>
+						<ListItem>Concurrent nonsteroidal anti-inflammatory drugs for no more 
+than 2 weeks duration for an unrelated medical condition allowed 
+</ListItem>
+					</ItemizedList>
+				</PriorConcurrentTherapy>
+			</EntryCriteria>
+			<ProjectedAccrual>
+				<Para id="_31">A total of 563 patients will be accrued for this study within 5 years.</Para>
+			</ProjectedAccrual>
+			<ProfessionalDisclaimer>
+				<Para id="_ProtHPDisclaimer_5">
+					<Strong>Note:</Strong> The purpose of most clinical trials listed in this database is to test new cancer treatments, or new methods of diagnosing, screening, or preventing cancer.  Because all potentially harmful side effects are not known before a trial is conducted, dose and schedule modifications may be required for participants if they develop side effects from the treatment or test.  The therapy or test described in this clinical trial is intended for use by clinical oncologists in carefully structured settings, and may not prove to be more effective than standard treatment.  A responsible investigator associated with this clinical trial should be consulted before using this protocol.</Para>
+			</ProfessionalDisclaimer>
+		</Professional>
+		<Patient>
+			<Rationale>
+				<Para id="_33">
+					<GlossaryTermRef href="CDR0000348921">Drugs</GlossaryTermRef> used in <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef>, such as <GlossaryTermRef href="CDR0000045253">cyclophosphamide</GlossaryTermRef>, <GlossaryTermRef href="CDR0000045140">doxorubicin</GlossaryTermRef>, and <GlossaryTermRef href="CDR0000045189">etoposide</GlossaryTermRef>, use different ways to stop <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>
+					<GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> from dividing so they stop growing or die. <GlossaryTermRef href="CDR0000045938">Vaccines</GlossaryTermRef> may make the body build an <GlossaryTermRef href="CDR0000045722">immune response</GlossaryTermRef> to kill cancer cells. <GlossaryTermRef href="CDR0000045649">Colony-stimulating factors</GlossaryTermRef> such as <GlossaryTermRef href="CDR0000045304">sargramostim</GlossaryTermRef> increase the number of <GlossaryTermRef href="CDR0000046356">immune cells</GlossaryTermRef> found in <GlossaryTermRef href="CDR0000045622">bone marrow</GlossaryTermRef> or <GlossaryTermRef href="CDR0000046011">peripheral blood</GlossaryTermRef>. It is not yet known which treatment <GlossaryTermRef href="CDR0000045864">regimen</GlossaryTermRef> is more effective for <GlossaryTermRef href="CDR0000045148">follicular lymphoma</GlossaryTermRef>.</Para>
+			</Rationale>
+			<Purpose>
+				<Para id="_34">This <GlossaryTermRef href="CDR0000045858">randomized</GlossaryTermRef>
+					<GlossaryTermRef href="CDR0000045833">phase III trial</GlossaryTermRef> is studying <GlossaryTermRef href="CDR0000045650">combination chemotherapy</GlossaryTermRef>, sargramostim, and <GlossaryTermRef href="CDR0000386223">vaccine therapy</GlossaryTermRef> to see how well they work compared to combination chemotherapy and sargramostim alone in treating patients with <GlossaryTermRef href="CDR0000045907">stage II</GlossaryTermRef>, <GlossaryTermRef href="CDR0000045908">stage III</GlossaryTermRef>, or <GlossaryTermRef href="CDR0000045909">stage IV follicular lymphoma</GlossaryTermRef>.</Para>
+			</Purpose>
+			<EligibilityText>
+				<Para id="_49">
+					<GlossaryTermRef href="CDR0000346518">Eligibility criteria</GlossaryTermRef> include the following:</Para>
+				<ItemizedList Style="bullet" id="_35">
+					<ListItem>At least 18 years old</ListItem>
+					<ListItem>No <GlossaryTermRef href="CDR0000045643">CNS</GlossaryTermRef>
+						<GlossaryTermRef href="CDR0000045368">lymphoma</GlossaryTermRef>
+					</ListItem>
+					<ListItem>No previous <GlossaryTermRef href="CDR0000045617">biological therapy</GlossaryTermRef>, chemotherapy, or <GlossaryTermRef href="CDR0000045930">total-body irradiation</GlossaryTermRef>
+					</ListItem>
+					<ListItem>No more than 2 months of <GlossaryTermRef href="CDR0000045492">prednisone</GlossaryTermRef>
+						<GlossaryTermRef href="CDR0000044737">therapy</GlossaryTermRef>
+					</ListItem>
+				</ItemizedList>
+				<Para id="_EligibilityDisclaimer_3">Final eligibility for a clinical trial is determined by the health professionals conducting the trial. For more details about the eligibility requirements for this trial and the treatment or intervention, refer to the <ExternalRef xref="http://www.cancer.gov/clinicaltrials/BIOVEST-BV301">Health Professional version</ExternalRef> of the trial summary.</Para>
+			</EligibilityText>
+			<TreatmentIntervention>
+				<Para id="_36">Patients will receive <GlossaryTermRef href="CDR0000045738">infusions</GlossaryTermRef> of cyclophosphamide, doxorubicin, and etoposide on days 1 and 8 plus prednisone by mouth for 2 weeks. Treatment will be repeated every 4 weeks. Six to 12 months after completing chemotherapy, patients in <GlossaryTermRef href="CDR0000045651">complete remission</GlossaryTermRef> will be randomly assigned to receive one of two vaccines. Patients will receive an <GlossaryTermRef href="CDR0000044678">injection</GlossaryTermRef> of the vaccine on day 1 and injections of sargramostim on days 1-4. Treatment will be repeated at 1, 2, 3, 4, and 6 months. </Para>
+				<Para id="_50">After finishing treatment, patients will be evaluated periodically.</Para>
+			</TreatmentIntervention>
+			<PatientDisclaimer>
+				<Para id="_ProtPatientDisclaimer_4">
+					<Strong>Important:</Strong>
+				</Para>
+				<Para id="_ProtPatientDisclaimer_2">If you are interested in participating in a clinical trial, contact your doctor for a referral or call a trial contact person listed below. You may see the same contact person listed at more than one site, however, if you call the number listed you can ask to speak to the study coordinator or person involved with the specific trial you are interested in. If you have questions about cancer or clinical trials, call the Cancer Information Service at 1-800-4-CANCER (1-800-422-6237). General information about clinical trials, including risks, benefits, and costs, can be found on
+
+<ExternalRef xref="http://cancer.gov/clinicaltrials">NCI's Web site</ExternalRef>.</Para>
+			</PatientDisclaimer>
+		</Patient>
+	</ProtocolAbstract>
+	<ProtocolDetail>
+		<StudyType>Clinical trial</StudyType>
+		<StudyCategory>
+			<StudyCategoryName>Treatment</StudyCategoryName>
+			<Intervention>
+				<InterventionType ref="CDR0000040692">colony-stimulating factor therapy</InterventionType>
+				<InterventionTypeParent ref="CDR0000041550">cytokine therapy</InterventionTypeParent>
+				<InterventionTypeParent ref="CDR0000040815">biological  therapy</InterventionTypeParent>
+				<InterventionNameLink ref="CDR0000040566">sargramostim</InterventionNameLink>
+			</Intervention>
+			<Intervention>
+				<InterventionType ref="CDR0000038996">tumor cell derivative vaccine</InterventionType>
+				<InterventionTypeParent ref="CDR0000041557">vaccine therapy</InterventionTypeParent>
+				<InterventionTypeParent ref="CDR0000040815">biological  therapy</InterventionTypeParent>
+				<InterventionNameLink ref="CDR0000043554">autologous tumor cell vaccine</InterventionNameLink>
+			</Intervention>
+			<Intervention>
+				<InterventionType ref="CDR0000038997">non-specific immune-modulator therapy</InterventionType>
+				<InterventionTypeParent ref="CDR0000040815">biological  therapy</InterventionTypeParent>
+				<InterventionNameLink ref="CDR0000040566">sargramostim</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000041836">keyhole limpet hemocyanin</InterventionNameLink>
+			</Intervention>
+			<Intervention>
+				<InterventionType ref="CDR0000038581">combination therapy</InterventionType>
+				<InterventionNameLink ref="CDR0000042026">cyclophosphamide/doxorubicin/etoposide/prednisone</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000043653">autologous tumor cell vaccine/keyhole limpet hemocyanin/sargramostim</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000038313">keyhole limpet hemocyanin/sargramostim</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000257064">cyclophosphamide/etoposide/prednisone</InterventionNameLink>
+			</Intervention>
+			<Intervention>
+				<InterventionType ref="CDR0000039455">chemotherapy</InterventionType>
+				<InterventionNameLink ref="CDR0000038860">doxorubicin hydrochloride</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000039207">etoposide</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000042487">prednisone</InterventionNameLink>
+				<InterventionNameLink ref="CDR0000039748">cyclophosphamide</InterventionNameLink>
+			</Intervention>
+		</StudyCategory>
+		<StudyDesign>Randomized</StudyDesign>
+		<StudyDesign>Controlled</StudyDesign>
+		<StudyDesign>Double blind</StudyDesign>
+	</ProtocolDetail>
+	<Eligibility>
+		<HealthyVolunteers>No</HealthyVolunteers>
+		<LowAge>18</LowAge>
+		<HighAge>120</HighAge>
+		<AgeText>18 and over</AgeText>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040525">stage III grade 1 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038316">grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042742">indolent, stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040481">stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040526">stage III grade 2 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038359">grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042742">indolent, stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040481">stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040528">stage III grade 3 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038381">grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042748">aggressive, stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040481">stage III adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042760">aggressive, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040538">stage IV grade 1 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038316">grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042749">indolent, stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040482">stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040539">stage IV grade 2 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038359">grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042749">indolent, stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040482">stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000040541">stage IV grade 3 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000038381">grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042752">aggressive, stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040482">stage IV adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042760">aggressive, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042717">contiguous stage II grade 1 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040512">stage II grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038316">grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042716">indolent, contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042715">contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000371750">indolent, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042718">contiguous stage II grade 2 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040513">stage II grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038359">grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042716">indolent, contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042715">contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000371750">indolent, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042719">contiguous stage II grade 3 follicular  lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040515">stage II grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038381">grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042721">aggressive, contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042715">contiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000373801">aggressive, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042760">aggressive, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042731">noncontiguous stage II grade 1 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040512">stage II grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038316">grade 1 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042730">indolent, noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042729">noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000371750">indolent, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042732">noncontiguous stage II grade 2 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040513">stage II grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038359">grade 2 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042730">indolent, noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042729">noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000371750">indolent, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042758">indolent, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+		<Diagnosis>
+			<SpecificDiagnosis ref="CDR0000042733">noncontiguous stage II grade 3 follicular lymphoma</SpecificDiagnosis>
+			<DiagnosisParent ref="CDR0000040515">stage II grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038381">grade 3 follicular lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042800">adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000038957">non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041429">lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000039800">hematopoietic/lymphoid cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042736">aggressive, noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042729">noncontiguous stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000040480">stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000373801">aggressive, stage II adult non-Hodgkin's lymphoma</DiagnosisParent>
+			<DiagnosisParent ref="CDR0000042760">aggressive, adult non-Hodgkin's lymphoma</DiagnosisParent>
+		</Diagnosis>
+	</Eligibility>
+	<PublishedResults>Neelapu SS, Gause BL, Nikcevich DA, et al.: Vaccine therapy of follicular lymphoma in first remission: long-term follow-up of phase II results and high rate of chemotherapy-induced complete remissions in a controlled, randomized phase III trial. [Abstract] Blood  102 (11 Pt 1): A-4953, 2003.</PublishedResults>
+	<ProtocolPhase>Phase III</ProtocolPhase>
+	<ExpectedEnrollment>563</ExpectedEnrollment>
+	<ProtocolSpecialCategory>NIH Clinical Center trial</ProtocolSpecialCategory>
+	<ProtocolAdminInfo>
+		<CurrentProtocolStatus>Active</CurrentProtocolStatus>
+		<ProtocolLeadOrg>
+			<LeadOrgName ref="CDR0000396828">BioVest International, Incorporated</LeadOrgName>
+			<LeadOrgRole>Primary</LeadOrgRole>
+			<LeadOrgProtocolID>BIOVEST-BV301</LeadOrgProtocolID>
+			<LeadOrgProtocolStatus>
+				<StatusName>Active</StatusName>
+				<StatusDate>2006-01-18</StatusDate>
+			</LeadOrgProtocolStatus>
+			<LeadOrgPersonnel>
+				<ProtPerson ref="CDR0000485241#_1">
+					<PersonNameInformation>
+						<GivenName>Bill</GivenName>
+						<SurName>Calhoun</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Protocol chair</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Accentia Biopharmaceuticals</OrganizationName>
+							<PostalAddress>
+								<Street>12th Floor</Street>
+								<Street>450 Park Avenue</Street>
+								<City>New York</City>
+								<PoliticalSubUnitName ref="CDR0000043889">New York</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>10016</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>212-686-4100 ext. 8651</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</LeadOrgPersonnel>
+		</ProtocolLeadOrg>
+		<ProtocolSites>
+			<ProtocolSite ref="CDR0000029115" sitetype="Organization">
+				<SiteName>Abramson Cancer Center of the University of Pennsylvania</SiteName>
+				<ProtPerson ref="CDR0000004446#F1">
+					<PersonNameInformation>
+						<GivenName>Stephen</GivenName>
+						<MiddleInitial>John</MiddleInitial>
+						<SurName>Schuster</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Abramson Cancer Center of the University of Pennsylvania</OrganizationName>
+							<PostalAddress>
+								<Street>Hematology/Oncology Division</Street>
+								<Street>Sixteen Penn Tower</Street>
+								<Street>3400 Spruce Street</Street>
+								<City>Philadelphia</City>
+								<PoliticalSubUnitName ref="CDR0000043895">Pennsylvania</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>19104-4283</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>215-662-4712</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000030436" sitetype="Organization">
+				<SiteName>Cancer and Blood Disease Center</SiteName>
+				<ProtPerson ref="CDR0000269152#_1">
+					<PersonNameInformation>
+						<GivenName>Gustavo</GivenName>
+						<SurName>Fonseca</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Cancer and Blood Disease Center</OrganizationName>
+							<PostalAddress>
+								<Street>521 North Lecanto Highway</Street>
+								<City>Lecanto</City>
+								<PoliticalSubUnitName ref="CDR0000043866">Florida</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>34461</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>352-746-0707</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000031576" sitetype="Organization">
+				<SiteName>Duke Comprehensive Cancer Center</SiteName>
+				<ProtPerson ref="CDR0000025228#_1">
+					<PersonNameInformation>
+						<GivenName>Jon</GivenName>
+						<MiddleInitial>P.</MiddleInitial>
+						<SurName>Gockerman</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Duke Comprehensive Cancer Center</OrganizationName>
+							<PostalAddress>
+								<Street>301 MSRB</Street>
+								<Street>Box 3843 DUMC</Street>
+								<City>Durham</City>
+								<PoliticalSubUnitName ref="CDR0000043890">North Carolina</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>27710</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>919-681-4769</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000036623" sitetype="Organization">
+				<SiteName>H. Lee Moffitt Cancer Center and Research Institute at University of South Florida</SiteName>
+				<ProtPerson ref="CDR0000445372#_1">
+					<PersonNameInformation>
+						<GivenName>Gregoire</GivenName>
+						<SurName>Bergier</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>H. Lee Moffitt Cancer Center and Research Institute at University of South Florida</OrganizationName>
+							<PostalAddress>
+								<Street>12902 Magnolia Drive</Street>
+								<City>Tampa</City>
+								<PoliticalSubUnitName ref="CDR0000043866">Florida</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>33612-9497</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>813-745-8391</Phone>
+							<Email>bergieg@moffitt.usf.edu</Email>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000035306" sitetype="Organization">
+				<SiteName>M.D. Anderson Cancer Center at University of Texas</SiteName>
+				<ProtPerson ref="CDR0000022431#_1">
+					<PersonRole>Clinical Trials Office - M.D. Anderson Cancer Center </PersonRole>
+					<Contact>
+						<ContactDetail>
+							<PostalAddress>
+								<City>Houston</City>
+								<PoliticalSubUnitName ref="CDR0000043900">Texas</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>77030-4009</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>713-792-3245</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000034236" sitetype="Organization">
+				<SiteName>Maryland Hematology/Oncology Associates</SiteName>
+				<ProtPerson ref="CDR0000417840#_1">
+					<PersonNameInformation>
+						<GivenName>Myo</GivenName>
+						<SurName>Min</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Maryland Hematology/Oncology Associates</OrganizationName>
+							<PostalAddress>
+								<Street>Suite 211</Street>
+								<Street>8114 Sandpiper Circle</Street>
+								<City>Baltimore</City>
+								<PoliticalSubUnitName ref="CDR0000043877">Maryland</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>21236</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>410-687-5300</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000036629" sitetype="Organization">
+				<SiteName>National Naval Medical Center</SiteName>
+				<ProtPerson ref="CDR0000017755#_1">
+					<PersonNameInformation>
+						<GivenName>Brian </GivenName>
+						<MiddleInitial>P.</MiddleInitial>
+						<SurName>Monahan</SurName>
+						<ProfessionalSuffix>MD, FACP</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>National Naval Medical Center</OrganizationName>
+							<PostalAddress>
+								<Street>8901 Wisconsin Avenue</Street>
+								<City>Bethesda</City>
+								<PoliticalSubUnitName ref="CDR0000043877">Maryland</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>20889-5000</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>240-453-8877</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000027842" sitetype="Organization">
+				<SiteName>NCI - Center for Cancer Research</SiteName>
+				<ProtPerson ref="CDR0000466343#_1">
+					<PersonRole>Clinical Trials Office - NCI - Center for Cancer Research</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<PostalAddress>
+								<City>Bethesda</City>
+								<PoliticalSubUnitName ref="CDR0000043877">Maryland</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>20892</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>888-624-1937</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000028099" sitetype="Organization">
+				<SiteName>North Mississippi Hematology and Oncology Associates, Limited</SiteName>
+				<ProtPerson ref="CDR0000377151#_1">
+					<PersonNameInformation>
+						<GivenName>Christopher</GivenName>
+						<MiddleInitial>C.</MiddleInitial>
+						<SurName>Croot</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>North Mississippi Hematology and Oncology Associates, Limited</OrganizationName>
+							<PostalAddress>
+								<Street>Suite 2</Street>
+								<Street>990 South Madison Street</Street>
+								<City>Tupelo</City>
+								<PoliticalSubUnitName ref="CDR0000043881">Mississippi</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>38801</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>662-844-9166</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000030731" sitetype="Organization">
+				<SiteName>NYU Cancer Institute at New York University Medical Center</SiteName>
+				<ProtPerson ref="CDR0000017272#F3">
+					<PersonNameInformation>
+						<GivenName>Franco</GivenName>
+						<MiddleInitial>M.</MiddleInitial>
+						<SurName>Muggia</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>NYU Cancer Institute at New York University Medical Center</OrganizationName>
+							<PostalAddress>
+								<Street>550 First Avenue</Street>
+								<City>New York</City>
+								<PoliticalSubUnitName ref="CDR0000043889">New York</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>10016</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>212-263-5466</Phone>
+							<Email>muggif01@gcrc.med.nyu.edu</Email>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000034957" sitetype="Organization">
+				<SiteName>Physicians East, PA - Quadrangle</SiteName>
+				<ProtPerson ref="CDR0000008782#F1">
+					<PersonRole>Clinical Trials Office - Physicians East - Quadrangle</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<PostalAddress>
+								<City>Greenville</City>
+								<PoliticalSubUnitName ref="CDR0000043890">North Carolina</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>27834</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>919-752-4610</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000033067" sitetype="Organization">
+				<SiteName>PPD, Incorporated </SiteName>
+				<ProtPerson>
+					<PersonRole>Toll free number for inquiry on additional site locations</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<PostalAddress>
+								<Street>3151 South 17th Street</Street>
+								<City>Wilmington</City>
+								<PoliticalSubUnitName ref="CDR0000043890">North Carolina</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>28412</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<TollFreePhone>877-654-6052</TollFreePhone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000033505" sitetype="Organization">
+				<SiteName>Puget Sound Cancer Centers - Seattle</SiteName>
+				<ProtPerson ref="CDR0000012688#F1">
+					<PersonNameInformation>
+						<GivenName>David</GivenName>
+						<MiddleInitial>E.</MiddleInitial>
+						<SurName>Dong</SurName>
+						<ProfessionalSuffix>MD, PhD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Puget Sound Cancer Centers - Seattle</OrganizationName>
+							<PostalAddress>
+								<Street>Suite G-16</Street>
+								<Street>1560 North 115th Street</Street>
+								<City>Seattle</City>
+								<PoliticalSubUnitName ref="CDR0000043904">Washington</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>98133</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>206-365-8252</Phone>
+							<Email>david.dong@usoncology.com</Email>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000029500" sitetype="Organization">
+				<SiteName>Robert H. Lurie Comprehensive Cancer Center at Northwestern University</SiteName>
+				<ProtPerson ref="CDR0000009439#F5">
+					<PersonNameInformation>
+						<GivenName>Jane</GivenName>
+						<MiddleInitial>N.</MiddleInitial>
+						<SurName>Winter</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Robert H. Lurie Comprehensive Cancer Center at Northwestern University</OrganizationName>
+							<PostalAddress>
+								<Street>Galter Pavilion, Room 21-100</Street>
+								<Street>675 North Saint Clair Street</Street>
+								<City>Chicago</City>
+								<PoliticalSubUnitName ref="CDR0000043870">Illinois</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>60611</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>312-695-4538</Phone>
+							<Email>j-winter@northwestern.edu</Email>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000031804" sitetype="Organization">
+				<SiteName>St. Mary's - Duluth Clinic Cancer Center</SiteName>
+				<ProtPerson ref="CDR0000269268#_1">
+					<PersonNameInformation>
+						<GivenName>Daniel</GivenName>
+						<SurName>Nickevich</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>St. Mary's - Duluth Clinic Cancer Center</OrganizationName>
+							<PostalAddress>
+								<Street>400 East 3rd Street</Street>
+								<City>Duluth</City>
+								<PoliticalSubUnitName ref="CDR0000043880">Minnesota</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>55805-1983</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>218-786-3635</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000030712" sitetype="Organization">
+				<SiteName>Tufts-NEMC Cancer Center</SiteName>
+				<ProtPerson ref="CDR0000483757#_1">
+					<PersonNameInformation>
+						<GivenName>Andreas</GivenName>
+						<SurName>Klein</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Tufts-NEMC Cancer Center</OrganizationName>
+							<PostalAddress>
+								<Street>750 Washington Street</Street>
+								<City>Boston</City>
+								<PoliticalSubUnitName ref="CDR0000043878">Massachusetts</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>02111</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>617-636-2520</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000032457" sitetype="Organization">
+				<SiteName>Warren Grant Magnuson Clinical Center - NCI Clinical Studies Support</SiteName>
+				<ProtPerson>
+					<PersonRole>NCI Clinical Studies Support</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<PostalAddress>
+								<City>Bethesda</City>
+								<PoliticalSubUnitName ref="CDR0000043877">Maryland</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>20892-1182</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>888-NCI-1937</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000423319" sitetype="Organization">
+				<SiteName>Westchester Surgical Oncology at Westchester Medical Center</SiteName>
+				<ProtPerson ref="CDR0000000953#_1">
+					<PersonNameInformation>
+						<GivenName>Tauseef</GivenName>
+						<SurName>Ahmed</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Westchester Surgical Oncology at Westchester Medical Center</OrganizationName>
+							<PostalAddress>
+								<Street>Suite 2107</Street>
+								<Street>19 Bradhurst Avenue</Street>
+								<City>Hawthorne</City>
+								<PoliticalSubUnitName ref="CDR0000043889">New York</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>10532</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>914-493-7508</Phone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+			<ProtocolSite ref="CDR0000029085" sitetype="Organization">
+				<SiteName>Winship Cancer Institute of Emory University</SiteName>
+				<ProtPerson ref="CDR0000301883#_1">
+					<PersonNameInformation>
+						<GivenName>Christopher</GivenName>
+						<SurName>Flowers</SurName>
+						<ProfessionalSuffix>MD</ProfessionalSuffix>
+					</PersonNameInformation>
+					<PersonRole>Principal investigator</PersonRole>
+					<Contact>
+						<ContactDetail>
+							<OrganizationName>Winship Cancer Institute of Emory University</OrganizationName>
+							<PostalAddress>
+								<Street>Building B, Suite B6138</Street>
+								<Street>1365    Clifton Road NE</Street>
+								<City>Atlanta</City>
+								<PoliticalSubUnitName ref="CDR0000043867">Georgia</PoliticalSubUnitName>
+								<CountryName ref="CDR0000043753">U.S.A.</CountryName>
+								<PostalCode_ZIP>30322</PostalCode_ZIP>
+								<PostalCodePosition>after PoliticalSubUnit_State</PostalCodePosition>
+							</PostalAddress>
+							<Phone>404-778-1900</Phone>
+							<TollFreePhone>888-946-7447</TollFreePhone>
+						</ContactDetail>
+					</Contact>
+				</ProtPerson>
+			</ProtocolSite>
+		</ProtocolSites>
+	</ProtocolAdminInfo>
+	<RegistryInfo>
+		<ProtocolTitle Type="Official">Randomized Trial of Patient-Specific Vaccination with Conjugated Follicular Lymphoma-Derived Idiotype (FNHLId1) with Local GM-CSF in First Complete Remission</ProtocolTitle>
+		<DateSubmittedtoPDQ>1999-12-29</DateSubmittedtoPDQ>
+		<ClinicalTrialsGovID xref="http://clinicaltrials.gov/ct/show/NCT00096577">NCT00096577</ClinicalTrialsGovID>
+	</RegistryInfo>
+	<DateFirstPublished>2000-02-01</DateFirstPublished>
+	<DateLastModified>2006-07-13</DateLastModified>
+	<DateLastVerified>2006-05-22</DateLastVerified>
+</Protocol>

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GKManagers.BusinessObjects.RequestData">
+    <Position X="0.5" Y="6.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\RequestData.cs</FileName>
+      <HashCode>AAAAAAQAAACAAAAAAAAAAABAAAAAAAAAAAACAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.BusinessObjects.RequestDataFactory">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\RequestDataFactory.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.BusinessObjects.Request">
+    <Position X="3" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Request.cs</FileName>
+      <HashCode>YXAgAIAUE8MgEAQEAABhICAAAEQAAIAAAABQAEAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.BusinessObjects.SummaryRequestData">
+    <Position X="0.5" Y="9" Width="2" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\SummaryRequestData.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GKManagers.BusinessObjects.RequestDataInfo">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\RequestDataInfo.cs</FileName>
+      <HashCode>oGVAAAAUAAAAAAQAQCIAAABAAABAEAAQICBIEAAAAEA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GKManagers.BusinessObjects.RequestDataActionType">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestDataEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestDataDependentStatusType">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestDataEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAAQAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestDataLocationType">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestDataEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAACAAAAAAAABAAAAAAAAAAAQAAAABAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestPublicationType">
+    <Position X="8.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestEnumerations.cs</FileName>
+      <HashCode>QAAAAAAAEAQAAAAAIAAABAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.CDRDocumentType">
+    <Position X="6.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestDataEnumerations.cs</FileName>
+      <HashCode>AACCgAAAEAAAAAAAIAACAABAAAAAAgAAEAAABAAgIgQ=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestDataStatusType">
+    <Position X="4.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestDataEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAAQAAAAAAABAAAAAAAAAAAAABAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestStatusType">
+    <Position X="4.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAQAAAAIAAAAAAAAAAAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GKManagers.BusinessObjects.RequestTargetType">
+    <Position X="6.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessObjects\Enums\RequestEnumerations.cs</FileName>
+      <HashCode>AAAAAAAAEAAAACAAAAAAAAAAAAAAAAAAAAQAAAABAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>

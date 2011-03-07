@@ -1,0 +1,73 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="AdminToolMasterPage.master.cs" Inherits="GateKeeperAdmin.AdminToolMasterPage" %>
+<%@ Register TagPrefix="UC" TagName="LoginCtr" Src="UserControls\LoginControl.ascx" %>
+<%@ Register TagPrefix="UC" TagName="TabsCtr" Src="UserControls\TabsControl.ascx" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Gatekeeper Admin Tool</title>
+    <asp:contentplaceholder id="ContentPlaceHolderHead" runat="server">
+    </asp:contentplaceholder>
+<link href="stylesheets/gatekeeper.css" rel="stylesheet" type="text/css"  runat="server"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<script language="JavaScript" type="text/javascript" src='<%=ResolveUrl("~/Scripts/CommonScripts.js")%>'></script>
+</head>
+<body>
+
+<form id="MasterForm" runat="server"> 
+
+<div class="gk-container">
+<!-- start nci banner -->
+<div class="gk-header">
+	 <div class="gk-bannerwrap">
+			<div class="gk-banner-left"><a href="http://www.cancer.gov/"><asp:Image runat="server" ImageUrl="~/images/banner-nci.gif" AlternateText="National Cancer Institute" Width="290" Height="36"  BorderWidth="0"  ToolTip="National Cancer Institute" /></a></div>
+			<div class="gk-banner-right"><asp:Image runat="server" ImageUrl="~/images/banner-cancergov.gif" AlternateText="National Cancer Institute" Width="274" Height="36" BorderWidth="0"  usemap="#ncibanner" ToolTip="National Cancer Institute" /></div>
+		</div>
+
+<!-- start gate keeper masthead -->
+<div class="masthead"><asp:HyperLink NavigateUrl="~/Home.aspx" ID="lnkHome" runat="server"><asp:Image runat="server" ImageUrl="~/images/masthead-gatekeeper.jpg" AlternateText="GateKeeper" width="900" height="69" borderWidth="0" ToolTip="GateKeeper" /></asp:HyperLink></div>
+		
+<!-- tabs -->
+        <UC:TabsCtr id="NavTabControl" runat="server"/>
+<!-- start right column of main navigation  -->	
+
+<!-- start login table -->
+        <UC:LoginCtr id="LoginCtr" runat="server" />
+</div>
+<div class="gk-content-wrap">
+<div class="gk-content">
+<!-- Master page Content Place Holder-->
+
+        <asp:ContentPlaceHolder ID="ContentPlaceHolderMaster" runat="server">
+        </asp:ContentPlaceHolder>
+<!-- End Master page Content Place Holder-->
+</div>
+</div>
+   
+ 
+<!-- start footer here -->
+	<div id="gk-footer">
+		<div class="gk-footer-bkg">
+		<div align="right">
+			<ul class="gk-footer-nav">
+				<li><asp:HyperLink ID="HomeTab" NavigateUrl="~/Home.aspx" ToolTip="Home" runat="server">Home</asp:HyperLink> &nbsp;|&nbsp;</li>
+				<li><asp:HyperLink NavigateUrl="~/RequestHistory/RequestHistory.aspx" ToolTip="Request History" id="ReqHistTab" runat="server">Request History</asp:HyperLink> &nbsp;|&nbsp;</li>
+				<li><asp:HyperLink NavigateUrl="~/ProcessingActivities/Activities.aspx" ToolTip="Processing Activities" id="ActivitiesTab" runat="server">Processing Activities</asp:HyperLink> &nbsp;|&nbsp;</li>
+				<li><asp:HyperLink NavigateUrl="~/Reports/ViewReports.aspx" ToolTip="Data Reports" id="ReportsTab" runat="server">Data Reports</asp:HyperLink>  &nbsp;|&nbsp;</li>
+				<li><asp:HyperLink NavigateUrl="~/Administrator/Default.aspx" ToolTip="Administrators" id="AdminTab" runat="server">Administrators</asp:HyperLink></li>
+			</ul>
+		</div>
+		<div class="gk-footer-right"><a href="/Home.aspx"><asp:Image ID="Image1" runat="server" ImageUrl="~/images/gk-footer-logo.gif"  AlternateText="GateKeeper" title="GateKeeper" width="146" height="25"  borderwidth="0"  vspace="2" /></a></div>
+	</div>
+<!-- end footer navigation -->      
+</div> 
+<map name="ncibanner" id="ncibanner">
+    <area shape="rect" coords="0,10,176,34" href="http://www.nih.gov/" alt="U.S. National Institutes of Health" title="U.S. National Institutes of Health" />
+    <area shape="rect" coords="178,11,273,34" href="http://www.cancer.gov/" alt="www.cancer.gov" title="www.cancer.gov" />
+</map>
+</div>
+</form>
+
+</body>
+</html>

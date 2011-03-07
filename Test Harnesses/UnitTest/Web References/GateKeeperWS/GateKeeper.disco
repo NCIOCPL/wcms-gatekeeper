@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://localhost/GateKeeperWS/GateKeeper.asmx?wsdl" docRef="http://localhost/GateKeeperWS/GateKeeper.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://localhost/GateKeeperWS/GateKeeper.asmx" xmlns:q1="http://www.cancer.gov/webservices/" binding="q1:GateKeeperSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://localhost/GateKeeperWS/GateKeeper.asmx" xmlns:q2="http://www.cancer.gov/webservices/" binding="q2:GateKeeperSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

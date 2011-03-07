@@ -1,0 +1,80 @@
+<CTGovProtocol id="CDR0000363917">
+  <RequiredHeader>
+    <DownloadDate>Information obtained from ClinicalTrials.gov on 2005-12-09</DownloadDate>
+    <LinkText xref="http://clinicaltrials.gov/show/NCT00080015">Link to the current ClinicalTrials.gov record.</LinkText>
+  </RequiredHeader>
+  <IDInfo>
+    <OrgStudyID>Ipsen Protocol 2-91-52990-708</OrgStudyID>
+    <NCTID>NCT00080015</NCTID>
+  </IDInfo>
+  <BriefTitle>Diflomotecan (BN80915) Administered Once Every 3 Weeks in Treating Patients With Sensitive Small Cell Lung Cancer (SCLC)</BriefTitle>
+  <Sponsors>
+    <PDQSponsorship>Pharmaceutical/Industry</PDQSponsorship>
+    <LeadSponsor ref="CDR0000453373">Beaufour Ipsen International SNC</LeadSponsor>
+    <OverallOfficial>
+      <GivenName>Thierry</GivenName>
+      <MiddleInitial>Le</MiddleInitial>
+      <SurName>Chevalier</SurName>
+      <ProfessionalSuffix>MD</ProfessionalSuffix>
+      <Role>Principal Investigator</Role>
+      <Affiliation>Institut Gustave Roussy, Villejuif, Paris, France</Affiliation>
+    </OverallOfficial>
+  </Sponsors>
+  <BriefSummary>
+    <Para>This is a Phase II, open-label, multicenter, single-arm, exploratory “proof of concept” study. Diflomotecan (7 mg fixed dose) will be administered as a 20-minute IV infusion once every 3 weeks in patients with sensitive small cell lung cancer (SCLC) with progressive disease after first-line treatment with a platinum-based regimen.</Para>
+</BriefSummary>
+  <CTEntryCriteria>
+    <Para>Main Inclusion Criteria:</Para>
+    <ItemizedList Style="bullet">
+      <ListItem>Documented small cell lung cancer (SCLC)</ListItem>
+    </ItemizedList>
+    <ItemizedList Style="bullet">
+      <ListItem>Measurable disease</ListItem>
+    </ItemizedList>
+    <ItemizedList Style="bullet">
+      <ListItem>One line of previous chemotherapy, including any platinum analogue, and excluding any camptothecin analogues, with objective response and relapsed no less than 3 months</ListItem>
+    </ItemizedList>
+    <Para>Main Exclusion Criteria:</Para>
+    <ItemizedList Style="bullet">
+      <ListItem>Uncontrollable brain metastasis</ListItem>
+    </ItemizedList>
+    <ItemizedList Style="bullet">
+      <ListItem>Treated with an investigational drug within 30 days</ListItem>
+    </ItemizedList>
+  </CTEntryCriteria>
+  <CTGovDisclaimer>Information about this trial is from the ClinicalTrials.gov database. The versions designated for health professionals and patients contain 
+the same text. Minor
+changes may be made to the ClinicalTrials.gov record to standardize the names of study sponsors, sites, and
+contacts. Cancer.gov only lists sites that are recruiting patients for active trials, whereas ClinicalTrials.gov lists all sites for all trials. Questions and comments regarding the presented information should
+be directed to ClinicalTrials.gov.</CTGovDisclaimer>
+  <CurrentProtocolStatus>Closed</CurrentProtocolStatus>
+  <ProtocolPhase>Phase II</ProtocolPhase>
+  <ProtocolDetail>
+    <StudyType>Clinical trial</StudyType>
+    <StudyCategory>
+      <StudyCategoryName>Treatment</StudyCategoryName>
+      <Intervention>
+        <InterventionType ref="CDR0000039455">chemotherapy</InterventionType>
+        <InterventionNameLink ref="CDR0000372902">diflomotecan</InterventionNameLink>
+      </Intervention>
+    </StudyCategory>
+  </ProtocolDetail>
+  <Eligibility>
+    <HealthyVolunteers>No</HealthyVolunteers>
+    <LowAge>18</LowAge>
+    <HighAge>120</HighAge>
+    <AgeText>18 and over</AgeText>
+    <Diagnosis>
+      <SpecificDiagnosis ref="CDR0000037831">recurrent small cell lung cancer</SpecificDiagnosis>
+      <DiagnosisParent ref="CDR0000040962">small cell lung cancer</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000040209">lung cancer</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000039286">thorax/respiratory cancer</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000043666">body system/site cancer</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000041060">cancer</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000040460">adult solid tumor</DiagnosisParent>
+      <DiagnosisParent ref="CDR0000040461">solid tumor</DiagnosisParent>
+    </Diagnosis>
+  </Eligibility>
+  <VerificationDate>August 2005</VerificationDate>
+  <LastChangedDate>December 8, 2005</LastChangedDate>
+</CTGovProtocol>

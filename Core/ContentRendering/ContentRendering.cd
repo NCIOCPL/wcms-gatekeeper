@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GateKeeper.ContentRendering.DocumentRenderer">
+    <Position X="5.75" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <FileName>DocumentRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.TerminologyRenderer">
+    <Position X="2.25" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>TerminologyRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.DrugInfoSummaryRenderer">
+    <Position X="11.25" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>DrugInfoSummaryRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.GenProfRenderer">
+    <Position X="1.5" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>GenProfRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.GlossaryTermRenderer">
+    <Position X="8" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>GlossaryTermRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.MediaRenderer">
+    <Position X="4.75" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>MediaRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.ProtocolRenderer">
+    <Position X="8" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>ProtocolRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GateKeeper.ContentRendering.SummaryRenderer">
+    <Position X="4.75" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>SummaryRenderer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>
