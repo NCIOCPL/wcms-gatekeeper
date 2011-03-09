@@ -170,7 +170,7 @@ namespace NCI.WCM.CMSManager.CMS
         public TemplateNameManager TemplateNameManager
         {
             /*
-             * At a glance, lazy-loading like this seems dangerous. But the TemplateNameManager
+             * At a glance, lazy-loading like this seems likely to load repeatedly. But the TemplateNameManager
              * property can only be accessed from an instance of CMSController. Because the constructor
              * calls Login, the _contentService can be used safely.  The only danger is if someone
              * tries using the property after CMController has been disposed, but that requires a high

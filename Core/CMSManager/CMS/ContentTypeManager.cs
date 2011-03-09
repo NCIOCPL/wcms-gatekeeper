@@ -48,7 +48,10 @@ namespace NCI.WCM.CMSManager.CMS
             _contentTypeMap = new Dictionary<string, PercussionGuid>();
             Array.ForEach(contentTypeData, contentType =>
             {
-                _contentTypeMap.Add(contentType.name, new PercussionGuid(contentType.id));
+                if (!_contentTypeMap.ContainsKey(contentType.name))
+                {
+                    _contentTypeMap.Add(contentType.name, new PercussionGuid(contentType.id));
+                }
             });
         }
 

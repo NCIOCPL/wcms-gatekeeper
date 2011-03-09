@@ -48,7 +48,10 @@ namespace NCI.WCM.CMSManager.CMS
             _templateMap = new Dictionary<string, PercussionGuid>();
             Array.ForEach(templateData, template =>
             {
-                _templateMap.Add(template.name, new PercussionGuid(template.id));
+                if (!_templateMap.ContainsKey(template.name))
+                {
+                    _templateMap.Add(template.name, new PercussionGuid(template.id));
+                }
             });
         }
 

@@ -62,16 +62,15 @@ namespace NCI.WCM.CMSManager.CMS
                         = new ContentTypeToTemplateInfo(contentTypeName, contentTypeID, templateName, templateID);
                     info.AllowedContentTemplatePairs.Add(pairData);
                 }
-                _slotMap.Add(slot.name, info);
+
+                if (!_slotMap.ContainsKey(slot.name))
+                {
+                    _slotMap.Add(slot.name, info);
+                }
             }
         }
 
         #endregion
-
-        private void foo()
-        {
-            return;
-        }
 
         public SlotInfo this[string key]
         {
