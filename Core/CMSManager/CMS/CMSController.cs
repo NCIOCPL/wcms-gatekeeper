@@ -579,9 +579,23 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>A PSFolder object containing details of the folder.</returns>
         /// <remarks>The folder path argument will have the path to the site root
         /// prepended before the attempt is made to create it.</remarks>
+        [Obsolete("Use GuaranteeFolder(string folderPath, NavonAction navonAction) instead.")]
         public PSFolder GuaranteeFolder(string folderPath)
         {
-            return FolderManager.GuaranteeFolder(siteRootPath + folderPath);
+            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, FolderManager.NavonAction.None);
+        }
+
+        /// <summary>
+        /// GuaranteeFolder that a folder exists, creating it if it doesn't
+        /// already exist.
+        /// </summary>
+        /// <param name="folderPath">The folder path.</param>
+        /// <returns>A PSFolder object containing details of the folder.</returns>
+        /// <remarks>The folder path argument will have the path to the site root
+        /// prepended before the attempt is made to create it.</remarks>
+        public PSFolder GuaranteeFolder(string folderPath, FolderManager.NavonAction navonAction)
+        {
+            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, navonAction);
         }
 
         /// <summary>

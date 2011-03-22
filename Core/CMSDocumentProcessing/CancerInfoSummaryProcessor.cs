@@ -192,6 +192,8 @@ namespace GKManagers.CMSDocumentProcessing
 
                 VerifyEnglishLanguageVersion(document);
 
+                // Create the folder where the content items are to be created and set the Navon to public.
+                CMSController.GuaranteeFolder(createPath, FolderManager.NavonAction.MakePublic);
 
                 // Create the sub-pages
                 List<long> tableIDs;
@@ -319,7 +321,8 @@ namespace GKManagers.CMSDocumentProcessing
                 // This step is not required when creating items since creation takes place in staging.
                 PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
 
-                tempFolder = CMSController.GuaranteeFolder(temporaryPath);
+                // Create the new folder, but don't publish the navon.  This is deliberate.
+                tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
 
                 // Create the new sub-page items in a temporary location.
                 CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
@@ -621,7 +624,7 @@ namespace GKManagers.CMSDocumentProcessing
             if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
             {
                 // Move the CancerInformationSummary and all its components. The link item is moved separately.
-                CMSController.GuaranteeFolder(newPath);
+                CMSController.GuaranteeFolder(newPath, FolderManager.NavonAction.MakePublic);
                 CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
 
                 oldPath = CMSController.GetPathInSite(keyItems[1]); // Link item.

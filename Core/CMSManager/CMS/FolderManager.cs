@@ -20,8 +20,8 @@ namespace NCI.WCM.CMSManager.CMS
         public enum NavonAction
         {
             None = 0,       // Leave Navons in their initial state.
-            Suppress = 1,   // Suppress Navon. (Delete immediately)
-            MakePublic = 2  // Move Navon to Public
+            MakePublic = 1, // Move Navon to Public
+            // FUTURE: Suppress = 2    // Suppress Navon. (Delete immediately)
         }
 
         #region Constants
@@ -261,8 +261,9 @@ namespace NCI.WCM.CMSManager.CMS
             // Folder is newly created, update Navon
             switch (navonAction)
             {
-                case NavonAction.Suppress:
-                    break;
+                // FUTURE.
+                //case NavonAction.Suppress:
+                //    break;
 
                 case NavonAction.MakePublic:
                     MakeNavonPublic(folderPath);

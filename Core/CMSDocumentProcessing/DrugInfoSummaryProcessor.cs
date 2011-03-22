@@ -65,6 +65,9 @@ namespace GKManagers.CMSDocumentProcessing
                     throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetPathName, prettyUrlName));
                 }
 
+                // Create the folder where the content item is to be created and set the Navon to public.
+                CMSController.GuaranteeFolder(targetPathName, FolderManager.NavonAction.MakePublic);
+
                 // Turn the list of item fields into a list of one item.
                 ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), targetPathName);
                 List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
@@ -109,7 +112,7 @@ namespace GKManagers.CMSDocumentProcessing
                 {
                     long[] id = idList.ToArray();
 
-                    CMSController.GuaranteeFolder(targetFolder);
+                    CMSController.GuaranteeFolder(targetFolder, FolderManager.NavonAction.MakePublic);
                     CMSController.MoveContentItemFolder(oldPath, targetFolder, id);
                 }
 
