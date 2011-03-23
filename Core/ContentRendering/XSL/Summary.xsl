@@ -97,7 +97,10 @@
 	
 	<xsl:template name="SectionDetails">
 		<xsl:if test="name(..) = 'Summary'">
-				<xsl:if test="count(descendant-or-self::KeyPoint) != 0">
+
+      <!-- If the section contains keypoints at any level, build up a list with
+           appropriate nesting by recursively walking the SummarySection hierarchy. -->
+        <xsl:if test="count(descendant-or-self::KeyPoint) != 0">
 				<table cellSpacing="0" cellPadding="0" width="100%" align="center" border="1">
 					<tr>
 						<td class="Summary-SummarySection-Keypoint-Title">
@@ -113,58 +116,93 @@
 					<tr>
 						<td>
 						<img src="/images/spacer.gif" width="1" height="5" alt="" border="0" />
-						<ul Class="Summary-SummarySection-KeyPoint-UL-Bullet">
-							<xsl:for-each  select="descendant-or-self::KeyPoint">
-								<xsl:choose>
-									<xsl:when test="count(ancestor::SummarySection) = 2">
-										<li Class="Summary-SummarySection-KeyPoint-LI">
-											<xsl:element name="a">
-												<xsl:attribute name="href">#Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
-												<xsl:apply-templates/>
-											</xsl:element>
-										</li>
-									</xsl:when>
-									<xsl:when test="count(ancestor::SummarySection) = 3">
-										<ul Class="Summary-SummarySection-KeyPoint-UL-Dash">
-											<li Class="Summary-SummarySection-KeyPoint-LI">
-												<xsl:element name="a">
-													<xsl:attribute name="href">#Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
-													<xsl:apply-templates/>
-												</xsl:element>
-											</li>
-										</ul>			
-									</xsl:when>
-									<xsl:when test="count(ancestor::SummarySection) = 4">
-										<li Class="Summary-SummarySection-KeyPoint-LI">
-											<xsl:element name="a">
-												<xsl:attribute name="href">#Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
-												<xsl:apply-templates/>
-											</xsl:element>
-										</li>
-									</xsl:when>
-									<xsl:otherwise>
-										<ul Class="Summary-SummarySection-KeyPoint-UL-Dash">
-											<li Class="Summary-SummarySection-KeyPoint-LI">
-												<xsl:element name="a">
-													<xsl:attribute name="href">#Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
-													<xsl:apply-templates/>
-												</xsl:element>
-											</li>
-										</ul>			
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:for-each>
-						</ul>
+
+              <!-- Current node is a top-level SummarySection.  Keypoints are normally
+                   found one-per sub-section, and generally none-at-all at the outermost
+                   level of SummarySection tags. -->
+              <xsl:choose>
+
+                <!-- Normal case, top-level section has no keypoints -->
+                <xsl:when test="count(KeyPoint) = 0">
+                  <xsl:apply-templates select="." mode="build-keypoint-list" />
+                </xsl:when>
+
+                <!-- Unusual case, roll-up the top-level section's keypoints. -->
+                <xsl:otherwise>
+                  <ul class="Summary-SummarySection-KeyPoint-UL-Dash">
+                    <xsl:for-each select="KeyPoint">
+                      <li class="Summary-SummarySection-KeyPoint-LI">
+                        <xsl:apply-templates select="." mode="build-keypoint-list" />
+                        <xsl:if test="position() = last()">
+                          <!-- Current node is a KeyPoint in the for-each, so we need to go up a level
+                               to pass the topmost section into the keypoint building list. -->
+                          <xsl:apply-templates select=".." mode="build-keypoint-list" />
+                        </xsl:if>
+                      </li>
+                    </xsl:for-each>
+                  </ul>
+                </xsl:otherwise>
+              </xsl:choose>
+              
 						<img src="/images/spacer.gif" width="1" height="5" alt="" border="0" />
 						</td>
 					</tr>	
 				</table>
 				</xsl:if>
-			</xsl:if>
-			<xsl:apply-templates/>
+		</xsl:if>
+		<xsl:apply-templates/>
 
 	</xsl:template>
-	
+
+  <!-- Match Summary Sections, but only when we're building a list of keypoints. -->
+  <xsl:template match="SummarySection" mode="build-keypoint-list">
+
+    <!-- Current node is a summary section, does it contain subsections with keypoints? -->
+    <xsl:choose>
+
+      <!-- Has Keypoints -->
+      <xsl:when test="count(SummarySection/KeyPoint) > 0">
+        <ul>
+          <!-- Set the bullet-point style according to the level of nesting. -->
+          <xsl:attribute name="class">
+            <xsl:choose>
+              <xsl:when test="count(ancestor::SummarySection) = 0">Summary-SummarySection-KeyPoint-UL-Bullet</xsl:when>
+              <xsl:otherwise>Summary-SummarySection-KeyPoint-UL-Dash</xsl:otherwise>
+            </xsl:choose>
+          </xsl:attribute>
+
+          <!-- Roll-up the keypoints from the next level of sub-sections. -->
+          <xsl:for-each select="SummarySection">
+            <xsl:choose>
+              <xsl:when test="count(KeyPoint) > 0">
+                <li class="Summary-SummarySection-KeyPoint-LI">
+                  <xsl:apply-templates select="KeyPoint" mode="build-keypoint-list" />
+                  <xsl:apply-templates select="."        mode="build-keypoint-list" />
+                </li>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:apply-templates select="." mode="build-keypoint-list" />
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </ul>
+      </xsl:when>
+
+      <!-- No Keypoints, process keypoints in sub-sections -->
+      <xsl:otherwise>
+        <xsl:apply-templates select="SummarySection" mode="build-keypoint-list" />
+      </xsl:otherwise>
+    </xsl:choose>
+
+  </xsl:template>
+
+  <xsl:template match="KeyPoint" mode="build-keypoint-list">
+    <xsl:element name="a">
+      <xsl:attribute name="href">#Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+  
 	<xsl:template match="Title">
 		<xsl:if test="count(ancestor::SummarySection) = 1">
 			<!--Span class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></Span-->
