@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Harnesses", "Test Harn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDRPreviewWS", "App\CDRPreviewWS\CDRPreviewWS.csproj", "{F7373C8D-4281-4E80-A47D-8C57BF2E9032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManager", "App\ProcessManager\ProcessManager.csproj", "{33DF8825-A034-40FB-BEC6-A5BC19D7A6E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManager", "App\ProcMgr\ProcessManager.csproj", "{33DF8825-A034-40FB-BEC6-A5BC19D7A6E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSvc", "App\WebSvc\WebSvc.csproj", "{FDBDA2DB-A4EC-40AF-93A8-682B26DD7066}"
 EndProject
