@@ -73,4 +73,20 @@ namespace GKManagers.CMSDocumentProcessing
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by methods in the GKManagers.CMSDocumentProcessing namespace when a document
+    /// is unable to be updated.
+    /// </summary>
+    [global::System.Serializable]
+    public class CannotUpdateException : Exception
+    {
+        public CannotUpdateException() { }
+        public CannotUpdateException(string message) : base(message) { }
+        public CannotUpdateException(string message, Exception inner) : base(message, inner) { }
+        protected CannotUpdateException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

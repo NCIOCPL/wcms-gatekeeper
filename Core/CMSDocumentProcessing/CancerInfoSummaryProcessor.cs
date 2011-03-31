@@ -67,6 +67,8 @@ namespace GKManagers.CMSDocumentProcessing
         readonly private string MediaLinkContentType;
         readonly private string TableSectionContentType;
 
+        readonly private string[] SummaryContentTypes;
+
         #endregion
 
 
@@ -87,6 +89,10 @@ namespace GKManagers.CMSDocumentProcessing
             CancerInfoSummaryLinkContentType = PercussionConfig.ContentType.PDQCancerInfoSummaryLink.Value;
             MediaLinkContentType = PercussionConfig.ContentType.PDQMediaLink.Value;
             TableSectionContentType = PercussionConfig.ContentType.PDQTableSection.Value;
+
+            SummaryContentTypes = new String[] {CancerInfoSummaryContentType, CancerInfoSummaryPageContentType,
+                                           CancerInfoSummaryLinkContentType, MediaLinkContentType,
+                                           TableSectionContentType};
         }
 
         #region IDocumentProcessor Members
@@ -287,11 +293,18 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] oldPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] oldSubItems = LocateMediaLinksAndTableSections(oldPageIDs); // Table sections and MediaLinks.
 
+            // Determine which pages in this summary are dependent items in other summaries.
+            PSAaRelationship[] incomingPageRelationships = FindIncomingPageRelationships(summaryRootID, summaryLinkID, oldPageIDs);
+
             // Doublecheck paths.
             PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
             VerifyItemHasPath(summaryRootItem[0], summary.DocumentID);
 
             string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
+
+            // Is the summary in a state suitable for updating?
+            VerifyDocumentMayBeUpdated(summary, existingItemPath, summaryRootID, summaryLinkID, oldPageIDs, incomingPageRelationships);
+            
             string newPath = GetTargetFolder(summary.BasePrettyURL);
             string prettyUrlName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
 
@@ -339,7 +352,7 @@ namespace GKManagers.CMSDocumentProcessing
                 PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
                 rollbackList.AddRange(newPageIDs);
 
-                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs);
+                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs, incomingPageRelationships);
 
                 // Add new cancer information summary pages into the page slot.
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
@@ -378,6 +391,104 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
+        /// <summary>
+        /// Performs checks to verify that the summary document is in a condition suitable for updating.
+        /// Throws CannotUpdateException if the document may not be updated.
+        /// </summary>
+        /// <param name="summary">The updated summary.</param>
+        /// <param name="summaryPath">Path to the summary's main folder.</param>
+        /// <param name="summaryRoot">PercussionGuid of the composite document's root CancerInfoSummary content item.</param>
+        /// <param name="summaryLink">PercussionGuid of the composite document's root CancerInfoSummaryLink content item.</param>
+        /// <param name="summaryPages">Array of PercussionGuids representing the current set of pages.</param>
+        /// <param name="incomingPageRelationships">Array of Percussion Relationship structures for items linking
+        /// to the individual summary pages.</param>
+        protected void VerifyDocumentMayBeUpdated(SummaryDocument summary,
+            string summaryPath,
+            PercussionGuid summaryRoot,
+            PercussionGuid summaryLink,
+            PercussionGuid[] summaryPages,
+            PSAaRelationship[] incomingPageRelationships)
+        {
+            List<string> errorList = new List<string>();
+
+            // Rollup list of link targets in this summary.
+            HashSet<string> sectionIDList = new HashSet<string>();
+            foreach (SummarySection section in summary.SectionList)
+            {
+                if (!sectionIDList.Contains(section.RawSectionID))
+                    sectionIDList.Add(section.RawSectionID);
+                section.LinkableNodeRawIDList.ForEach(sectionID =>
+                {
+                    if (!sectionIDList.Contains(sectionID))
+                        sectionIDList.Add(sectionID);
+                });
+            }
+
+            // Cache to prevent loading items repeatedly
+            ItemCache itemStore = new ItemCache(CMSController);
+
+            // Inspect items owning relationships to the pages.
+            foreach (PSAaRelationship relationship in incomingPageRelationships)
+            {
+                PercussionGuid parentID = new PercussionGuid(relationship.ownerId);
+                PercussionGuid dependentID = new PercussionGuid(relationship.dependentId);
+
+                PSItem parentItem = itemStore.LoadContentItem(parentID);
+
+                // Check for links from non-PDQ content types.
+                if (!SummaryContentTypes.Contains(parentItem.contentType))
+                {
+                    errorList.Add(CISErrorBuilder.BuildNonPDQReferenceMessage(dependentID, summary.DocumentID, parentItem));
+                    continue;
+                }
+
+                // Load the body of the page containing the link.
+                string sourceBodyField = PSItemUtils.GetFieldValue(parentItem, "bodyfield");
+                XmlDocument body = new XmlDocument();
+                body.LoadXml(sourceBodyField);
+
+                // Find all summary references contained in the source document.
+                XmlNodeList nodeList = body.SelectNodes("//a[@inlinetype='SummaryRef']");
+                foreach (XmlNode node in nodeList)
+                {
+                    // Find the section number
+                    XmlAttributeCollection attributeList = node.Attributes;
+                    XmlAttribute referenceAttribute = attributeList["objectid"];
+
+                    SummaryReference reference = new SummaryReference(referenceAttribute.Value, summaryPath);
+
+                    // If the reference doesn't refer to this document,
+                    // OR, if the reference isn't to a particular section number,
+                    // then skip it.
+                    if (reference.CdrID != summary.DocumentID
+                        || !reference.IsSectionReference)
+                        continue;
+
+                    if (!sectionIDList.Contains(reference.SectionID))
+                    {
+                        errorList.Add(CISErrorBuilder.BuildMissingReferenceMessage(summary.DocumentID, reference.SectionID, parentItem));
+                        continue;
+                    }
+                }
+            }
+
+            // If any errors occured, errorList will have a non-zero count.
+            // In this case, we report the error by throwing CannotUpdateException
+            if (errorList.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                errorList.ForEach(message =>
+                {
+                    if (sb.Length > 0)
+                        sb.Append(",\n");
+                    sb.Append(message);
+                });
+
+                throw new CannotUpdateException(sb.ToString());
+            }
+        }
+ 
+
         private void RemoveOldPages(PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems)
         {
             PercussionGuid[] combinedIDList = CMSController.BuildGuidArray(oldPageIDs, oldSubItems);
@@ -395,33 +506,14 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryLinkID">PercussionGuid of the composite document's root CancerInfoSummaryLink content item.</param>
         /// <param name="oldPageIDs">Array of PercussionGuids for the old pages.</param>
         /// <param name="newPageIDs">Array of PercussionGuids for the new pages.</param>
-        private void UpdateIncomingSummaryReferences(int targetCDRID, PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
-            PercussionGuid[] oldPageIDs, PercussionGuid[] newPageIDs)
+        /// <param name="incomingRelationships">Array of Percussion Relationship structures for items linking
+        /// to the summary which is being updated.</param>
+        private void UpdateIncomingSummaryReferences(int targetCDRID,
+            PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PercussionGuid[] oldPageIDs, PercussionGuid[] newPageIDs,
+            PSAaRelationship[] incomingRelationships)
         {
-            PercussionGuid[] currentIDs = CMSController.BuildGuidArray(summaryRootID, oldPageIDs);
-            PSAaRelationship[] externalRelationships = FindExternalRelationships(currentIDs);
 
-            // FindExternalRelationships finds all CISummary relationships external to the items specified.
-            // We also want to ignore references from the SummaryLink, the main Summary item, and any
-            // relationships with the main summary item as the dependent (only references to individual pages
-            // need to be updated and this is completely dependent on the assumption that there will never a
-            // link from an external item directly to a page.
-            List<PSAaRelationship> relationshipList = new List<PSAaRelationship>(externalRelationships);
-            relationshipList.RemoveAll(relationship =>
-            {
-                PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
-                PercussionGuid dependent = new PercussionGuid(relationship.dependentId);
-                return ownerID == summaryRootID     // Filter out links from root and summary link
-                    || ownerID == summaryLinkID
-                    || dependent == summaryRootID  // Filter out relationships which own the root or link.
-                    || dependent == summaryLinkID;
-            });
-
-            // Anything left at this point is a relationship to a CancerInfoSummaryPage object.
-            // NOTE: This assumes the only objects which can reference a CancerInfoSummaryPage
-            // are CancerInfoSummary objects and other CancerInfoSummaryPage objects.
-
-            if (relationshipList.Count > 0)
+            if (incomingRelationships.Length > 0)
             {
                 ItemCache itemStore = new ItemCache(CMSController);
                 PercussionGuid[] combinedList = CMSController.BuildGuidArray(oldPageIDs, newPageIDs, summaryRootID);
@@ -429,7 +521,7 @@ namespace GKManagers.CMSDocumentProcessing
                 // Check out all relationship owners. We know they will be modified.
                 PercussionGuid[] itemsToCheckout = // Filter out duplicate item IDs.
                     (from idValue in
-                         (from relationship in relationshipList select relationship.ownerId).Distinct()
+                         (from relationship in incomingRelationships select relationship.ownerId).Distinct()
                      select new PercussionGuid(idValue)).ToArray();
 
                 PSItemStatus[] checkedOutPageStatus = CMSController.CheckOutForEditing(itemsToCheckout);
@@ -442,7 +534,7 @@ namespace GKManagers.CMSDocumentProcessing
                 List<KeyValuePair<PercussionGuid, PercussionGuid>> relationshipPairs
                                     = new List<KeyValuePair<PercussionGuid, PercussionGuid>>();
 
-                foreach (PSAaRelationship individual in relationshipList)
+                foreach (PSAaRelationship individual in incomingRelationships)
                 {
                     PercussionGuid sourceID = new PercussionGuid(individual.ownerId);
                     PercussionGuid oldTargetID = new PercussionGuid(individual.dependentId);
@@ -558,6 +650,33 @@ namespace GKManagers.CMSDocumentProcessing
             return candidateRelationships.ToArray();
         }
 
+        private PSAaRelationship[] FindIncomingPageRelationships(PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+            PercussionGuid[] oldPageIDs)
+        {
+            PercussionGuid[] currentIDs = CMSController.BuildGuidArray(summaryRootID, oldPageIDs);
+            PSAaRelationship[] externalRelationships = FindExternalRelationships(currentIDs);
+
+            // FindExternalRelationships finds all CISummary relationships external to the items specified.
+            // We also want to ignore references from the SummaryLink, the main Summary item, and any
+            // relationships with the main summary item as the dependent (only references to individual pages
+            // need to be updated and this is completely dependent on the assumption that there will never a
+            // link from an external item directly to a page.
+            List<PSAaRelationship> relationshipList = new List<PSAaRelationship>(externalRelationships);
+            relationshipList.RemoveAll(relationship =>
+            {
+                PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
+                PercussionGuid dependent = new PercussionGuid(relationship.dependentId);
+                return ownerID == summaryRootID     // Filter out links from root and summary link
+                    || ownerID == summaryLinkID
+                    || dependent == summaryRootID  // Filter out relationships which own the root or link.
+                    || dependent == summaryLinkID;
+            });
+
+            // Anything left at this point is a relationship to a CancerInfoSummaryPage object.
+            // NOTE: This assumes the only objects which can reference a CancerInfoSummaryPage
+            // are CancerInfoSummary objects and other CancerInfoSummaryPage objects.
+            return relationshipList.ToArray();
+        }
 
         private void CreateSubPages(SummaryDocument summary, string createPath,
             List<PercussionGuid> rollbackList,

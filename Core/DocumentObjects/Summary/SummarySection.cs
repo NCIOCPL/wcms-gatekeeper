@@ -28,6 +28,7 @@ namespace GateKeeper.DocumentObjects.Summary
         private int _level = 0;
         private int _priority = 0;
         private SummarySectionType _sectionType = SummarySectionType.SummarySection;
+        private List<string> _linkableNodeRawIDList = new List<string>();
 
         #endregion
 
@@ -85,6 +86,15 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _parentSummarySectionID; }
             internal set { _parentSummarySectionID = value; }
+        }
+
+        /// <summary>
+        /// List of raw IDs for the various document nodes which can be
+        /// linked to from other documents.
+        /// </summary>
+        public List<string> LinkableNodeRawIDList
+        {
+            get { return _linkableNodeRawIDList; }
         }
 
         /// <summary>
@@ -245,6 +255,7 @@ namespace GateKeeper.DocumentObjects.Summary
         #endregion
 
         #region Public Methods
+
 
         /// <summary>
         /// Returns a System.String that represents the SummarySection.

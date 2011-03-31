@@ -220,6 +220,15 @@ namespace GateKeeper.DataAccess.CDR
                 summarySection.SummarySectionID = Guid.NewGuid();
                 summarySection.Text = sectionNav.Value;
                 summarySection.Xml.LoadXml(sectionNav.OuterXml);
+
+                // Find all the internal nodes which this and other documents
+                // might link to.
+                XmlNodeList linkableNodeList = summarySection.Xml.SelectNodes("//*[@id]");
+                foreach (XmlNode node in linkableNodeList)
+                {
+                    summarySection.LinkableNodeRawIDList.Add(node.Attributes["id"].Value);
+                }
+
                 XPathNavigator titleNode = sectionNav.SelectSingleNode("./Title");
                 string title = string.Empty;
                 if (titleNode != null)

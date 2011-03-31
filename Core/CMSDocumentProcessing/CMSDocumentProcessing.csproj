@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="CancerInfoSummaryProcessor.cs" />
     <Compile Include="CancerInfoSummarySectionFinder.cs" />
+    <Compile Include="CISErrorBuilder.cs" />
     <Compile Include="DocumentProcessorCommon.cs" />
     <Compile Include="DrugInfoSummaryProcessor.cs" />
     <Compile Include="enums.cs" />
