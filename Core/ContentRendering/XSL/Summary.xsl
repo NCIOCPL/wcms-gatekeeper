@@ -205,7 +205,7 @@
   
 	<xsl:template match="Title">
 		<xsl:if test="count(ancestor::SummarySection) = 1">
-			<!--Span class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></Span-->
+      <Span class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></Span>
 		</xsl:if>
 		<xsl:if test="count(ancestor::SummarySection) = 2">
 			<Span class="Summary-SummarySection-Title-Level2"><xsl:apply-templates/></Span>

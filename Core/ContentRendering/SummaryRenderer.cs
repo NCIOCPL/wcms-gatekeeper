@@ -529,7 +529,10 @@ namespace GateKeeper.ContentRendering
                             // and at least not having it look any worse than before.
                             if (!string.IsNullOrEmpty(section.Title))
                             {
-                                section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
+                                // section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
+                                XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
+                                nodes.MoveNext();
+                                section.Title = nodes.Current.InnerXml;
                             }
                         }
 
