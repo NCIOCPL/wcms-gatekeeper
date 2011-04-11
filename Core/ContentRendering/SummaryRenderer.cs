@@ -532,7 +532,7 @@ namespace GateKeeper.ContentRendering
                                 //section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
                                 XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
                                 nodes.MoveNext();
-                                if (sectionNav.Matches("Span"))
+                                if (nodes.Current.Matches("Span"))
                                 {
                                     section.Title = nodes.Current.InnerXml;
                                     nodes.Current.InnerXml = string.Empty;
