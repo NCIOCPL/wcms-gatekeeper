@@ -201,19 +201,20 @@ namespace GKManagers.CMSDocumentProcessing
                 // Create the folder where the content items are to be created and set the Navon to public.
                 CMSController.GuaranteeFolder(createPath, FolderManager.NavonAction.MakePublic);
 
+                // Create the Cancer Info Summary item.
+                List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
+                summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
+                rollbackList.Add(summaryRoot);
+
                 // Create the sub-pages
                 List<long> tableIDs;
                 List<long> mediaLinkIDs;
                 CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
+                // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
                 List<List<PercussionGuid>> referencedSumamries = ResolveSummaryReferences(document);
-
-                // Create the Cancer Info Summary item.
-                List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
-                summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
-                rollbackList.Add(summaryRoot);
 
 
                 //Create Cancer Info Summary Page items

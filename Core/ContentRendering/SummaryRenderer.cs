@@ -488,7 +488,11 @@ namespace GateKeeper.ContentRendering
                 // Break apart the PostRenderXML document...
                 foreach (SummarySection section in summary.SectionList)
                 {
-                    XPathNavigator sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
+                    XPathNavigator sectionNav = null;
+                    if( section.IsTopLevel )
+                        sectionNav = xNav.SelectSingleNode(".//span[@name='Section_" + section.SectionID + "']");
+                    else
+                        sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
                     if (sectionNav != null)
                     {
                         if (section.IsTopLevel)

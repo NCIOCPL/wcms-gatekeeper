@@ -2,12 +2,12 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 							  xmlns:msxsl="urn:schemas-microsoft-com:xslt"
 							  xmlns:scripts="urn:local-scripts">
-
+  
 	<xsl:include href="Common/CommonElements.xsl"/>
 	<xsl:include href="Common/CommonScripts.xsl"/>
 	<xsl:include href="Common/CustomTemplates.xsl"/>
 	<xsl:include href="Common/CommonTableFormatter.xsl"/>
-	
+  
 	<xsl:output method="xml"/>
 
 	<xsl:template match="/">
@@ -77,7 +77,7 @@
     <xsl:template match="SummarySection">
 		<xsl:choose>
 			<xsl:when test="count(ancestor::SummarySection) = 0">
-				<xsl:element name="a">
+				<xsl:element name="span">
 					<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
 					<xsl:call-template name="SectionDetails"/>
 				</xsl:element>
@@ -320,7 +320,7 @@
 			<xsl:element name="a">
 				<xsl:attribute name="name">Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
 			</xsl:element>
-			<Span Class="Summary-KeyPoint">
+      <Span Class="Summary-KeyPoint">
 				<xsl:apply-templates/>
 			</Span>
 		</p>

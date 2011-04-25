@@ -23,7 +23,7 @@ namespace GateKeeper.ContentRendering
         #endregion
 
         #region Public Properties
-        
+
         /// <summary>
         /// Transform to use for rendering.
         /// </summary>
@@ -56,11 +56,14 @@ namespace GateKeeper.ContentRendering
             {
                 string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".xml";
                 XmlDocument doc = new XmlDocument();
+                doc.PreserveWhitespace = true;
                 doc.LoadXml(document.Html);
                 //Save the document to a file.
-                doc.Save(fileName);  
+                doc.Save(fileName);
             }
 #endif
+            //Prasad: To resolve issue 738.
+            document.PostRenderXml.PreserveWhitespace = true;
             document.PostRenderXml.LoadXml(sb.ToString());
         }
 
