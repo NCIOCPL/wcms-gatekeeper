@@ -489,8 +489,12 @@ namespace GateKeeper.ContentRendering
                 foreach (SummarySection section in summary.SectionList)
                 {
                     XPathNavigator sectionNav = null;
-                    if( section.IsTopLevel )
+                    if (section.IsTopLevel)
+                    {
                         sectionNav = xNav.SelectSingleNode(".//span[@name='Section_" + section.SectionID + "']");
+                        if( sectionNav == null )
+                            sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
+                    }
                     else
                         sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
                     if (sectionNav != null)
@@ -533,14 +537,21 @@ namespace GateKeeper.ContentRendering
                             // and at least not having it look any worse than before.
                             if (!string.IsNullOrEmpty(section.Title))
                             {
-                                //section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
-                                XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
-                                nodes.MoveNext();
-                                if (nodes.Current.Matches("Span"))
-                                {
-                                    section.Title = nodes.Current.InnerXml;
-                                    nodes.Current.InnerXml = string.Empty;
-                                }
+                                section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
+                                
+                                // COMMENTED CODE - because the code changes is apparently breaking rich text. The code change was made to 
+                                // allow Rich Text in Section title in doing so it has broken rich text else where.
+                                // So i am commnenting this part of the code. This has not been througly investigated if this piece of 
+                                // code infact broke it. At this point this is the assumption. There is also a corresponding change of xsl that
+                                // will be commented.
+
+                                //XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
+                                //nodes.MoveNext();
+                                //if (nodes.Current.Matches("Span"))
+                                //{
+                                //    section.Title = nodes.Current.InnerXml;
+                                //    nodes.Current.InnerXml = string.Empty;
+                                //}
                             }
                         }
 
