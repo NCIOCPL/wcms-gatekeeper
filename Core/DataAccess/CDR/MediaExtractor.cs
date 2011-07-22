@@ -51,11 +51,15 @@ namespace GateKeeper.DataAccess.CDR
                 if (docNav.MoveToFirstChild())
                 {
                     string strBase64String = docNav.Value;
-                    MemoryStream imgMS = new MemoryStream(System.Convert.FromBase64String(strBase64String));
-                    media.Image = System.Drawing.Image.FromStream(imgMS);
+
+                    //MemoryStream imgMS = new MemoryStream(System.Convert.FromBase64String(strBase64String));
+                    //media.ImageMedia = System.Drawing.Image.FromStream(imgMS);
+                    media.EncodedData = strBase64String;
                     if (docNav.HasAttributes)
                     {
                         media.MimeType = docNav.GetAttribute(xPathManager.GetXPath(MediaXPath.Type), string.Empty);
+                        media.Size = docNav.GetAttribute(xPathManager.GetXPath(MediaXPath.Size), string.Empty);
+                        media.EncodingType = docNav.GetAttribute(xPathManager.GetXPath(MediaXPath.Encoding), string.Empty);
                     }
                 }
                 else

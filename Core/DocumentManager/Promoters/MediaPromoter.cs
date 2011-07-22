@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+
 using GateKeeper.Common;
 using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.GateKeeper;
@@ -11,6 +12,7 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.ContentRendering;
 using GKManagers.BusinessObjects;
+using GKManagers.CMSDocumentProcessing;
 
 namespace GKManagers
 {
@@ -54,8 +56,18 @@ namespace GKManagers
                 MediaRenderer mediaRender = new MediaRenderer();
                 mediaRender.Render(media);
 
+                // Save media info data into the Percussion CMS. This is not required for images types 
+                // since the images are stored on the filesyste and not in CMS.
+                if (ApplyMediaProcessor(media))
+                {
+                    using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                    {
+                        processor.ProcessDocument(media);
+                    }
+                }
+
                 // Save media data into database
-                using (MediaQuery orgQuery = new MediaQuery())
+                using (MediaQuery orgQuery = MediaPromoter.CreateMediaQueryObject(media))
                 {
                     orgQuery.SaveDocument(media, UserName);
                 }
@@ -66,6 +78,11 @@ namespace GKManagers
                 using (MediaQuery orgQuery = new MediaQuery())
                 {
                     orgQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
+                }
+
+                using (ImageMediaQuery imageMediaQuery = new ImageMediaQuery())
+                {
+                    imageMediaQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
                 }
             }
             else
@@ -96,8 +113,17 @@ namespace GKManagers
             media.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
+                MediaExtractor.Extract(DataBlock.DocumentData, media, DataBlock.CdrID, xPathManager);
+                if (ApplyMediaProcessor(media))
+                {
+                    using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                    {
+                        processor.PromoteToPreview(media.DocumentID);
+                    }
+                }
+
                 // Push media document to the preview database
-                using (MediaQuery orgQuery = new MediaQuery())
+                using (MediaQuery orgQuery = MediaPromoter.CreateMediaQueryObject(media))
                 {
                     orgQuery.PushDocumentToPreview(media, UserName);
                 }
@@ -107,7 +133,13 @@ namespace GKManagers
                 // Remove media data from database
                 using (MediaQuery orgQuery = new MediaQuery())
                 {
-                    orgQuery.DeleteDocument(media, ContentDatabase.Preview, UserName);
+                    orgQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
+                }
+
+                // For image remove media from file system.
+                using (ImageMediaQuery imageMediaQuery = new ImageMediaQuery())
+                {
+                    imageMediaQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
                 }
             }
             else
@@ -136,18 +168,40 @@ namespace GKManagers
             media.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
+                MediaExtractor.Extract(DataBlock.DocumentData, media, DataBlock.CdrID, xPathManager);
+
+                if (ApplyMediaProcessor(media))
+                {
+                    using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                    {
+                        processor.PromoteToLive(media.DocumentID);
+                    }
+                }
+
                 // Push media document to the live database
-                using (MediaQuery orgQuery = new MediaQuery())
+                using (MediaQuery orgQuery = MediaPromoter.CreateMediaQueryObject(media))
                 {
                     orgQuery.PushDocumentToLive(media, UserName);
                 }
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                // Remove media data from database
+                // Remove media from CMS, for audio types this will remove content item from CMS.
+                using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                {
+                    processor.DeleteContentItem(media.DocumentID);
+                }
+
+                // Remove media data from database for all types.
                 using (MediaQuery orgQuery = new MediaQuery())
                 {
-                    orgQuery.DeleteDocument(media, ContentDatabase.Live, UserName);
+                    orgQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
+                }
+
+                // For image remove media from file system.
+                using (ImageMediaQuery imageMediaQuery = new ImageMediaQuery())
+                {
+                    imageMediaQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
                 }
             }
             else
@@ -159,6 +213,50 @@ namespace GKManagers
             informationWriter("Promoting media document to the live database succeeded.");
         }
 
+        /// <summary>
+        /// Returns true if Media Processor should be invoked. Returns false for 
+        /// Image media since those are nor stored in CMS. true for audio since those are 
+        /// stored in CMS. If Image media is eventually stored in CMS then there is not need
+        /// for this logic.
+        /// </summary>
+        /// <param name="media"></param>
+        /// <returns></returns>
+        private bool ApplyMediaProcessor(MediaDocument mediaDoc)
+        {
+            string mimeType = mediaDoc.MimeType;
+            if (string.IsNullOrEmpty(mimeType))
+                throw new Exception("unknown mimeType");
+            mimeType = mimeType.ToLower();
+            if (mimeType.Contains("image"))
+                return false;
+            else if (mimeType.Contains("audio"))
+                return true;
+            else
+                throw new Exception("unknown mimeType");
+        }
+
         #endregion
+
+
+        /// <summary>
+        /// Creates a correct type of MediaQuery object instance based on the 
+        /// MimeType 
+        /// </summary>
+        /// <returns>MediaQuery instance</returns>
+        static MediaQuery CreateMediaQueryObject(MediaDocument mediaDoc)
+        { 
+            string mimeType = mediaDoc.MimeType;
+            if(string.IsNullOrEmpty(mimeType))
+                throw new Exception("unknown mimeType");
+
+            mimeType = mimeType.ToLower();
+
+            if (mimeType.Contains("image"))
+                return new ImageMediaQuery();
+            else if (mimeType.Contains("audio"))
+                return new MediaQuery();
+            else
+                throw new Exception("unknown mimeType");
+        }
     }
 }

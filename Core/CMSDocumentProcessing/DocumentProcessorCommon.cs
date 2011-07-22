@@ -24,6 +24,10 @@ namespace GKManagers.CMSDocumentProcessing
         protected string LanguageEnglish { get { return "en-us"; } }
         protected string LanguageSpanish { get { return "es-us"; } }
 
+        protected const string InlineSlot = "sys_inline_variant";
+        protected const string InlineLinkSlotID = "103";
+        protected const string InlinImageSlotID = "104";
+        protected const string InlineTemplateSlotID = "105";
         #endregion
 
         #region Properties

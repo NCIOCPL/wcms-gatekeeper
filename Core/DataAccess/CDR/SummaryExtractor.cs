@@ -320,6 +320,9 @@ namespace GateKeeper.DataAccess.CDR
                 if (size.Equals(String.Empty))
                     size = "half";
 
+                // Get the MimeType of the Media.
+                string type = DocumentHelper.GetAttribute(mediaLink, "type");
+
                 XmlDocument mediaXml = new XmlDocument();
                 mediaXml.LoadXml(mediaLink.OuterXml);
 
@@ -342,7 +345,7 @@ namespace GateKeeper.DataAccess.CDR
                 if (tableNode != null)
                     showEnlargeLink = false;
 
-                MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, mediaXml);
+                MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, type, mediaXml);
                 summary.MediaLinkSectionList.Add(link);
             }
         }

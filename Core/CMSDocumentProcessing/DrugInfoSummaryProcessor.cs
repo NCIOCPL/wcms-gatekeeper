@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.XPath;
 
 
 using GKManagers.CMSManager.Configuration;
@@ -21,7 +23,7 @@ namespace GKManagers.CMSDocumentProcessing
         // Contains the name of the Drug Information Summary ContentType as used in the CMS.
         // Set in the constructor.
         readonly private string DrugInfoSummaryContentType;
-        
+
         #endregion
 
         public DrugInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
@@ -65,6 +67,8 @@ namespace GKManagers.CMSDocumentProcessing
                     throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetPathName, prettyUrlName));
                 }
 
+                ResolveInlineSlots(document);
+
                 // Create the folder where the content item is to be created and set the Navon to public.
                 CMSController.GuaranteeFolder(targetPathName, FolderManager.NavonAction.MakePublic);
 
@@ -72,7 +76,6 @@ namespace GKManagers.CMSDocumentProcessing
                 ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), targetPathName);
                 List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
                 contentItemList.Add(contentItem);
-
 
                 // Create the new content item. (All items are created of the same type.)
                 InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
@@ -97,6 +100,8 @@ namespace GKManagers.CMSDocumentProcessing
                 {
                     throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetFolder, prettyUrlName));
                 }
+
+                ResolveInlineSlots(document);
 
                 // This is an existing item, we must therefore put it in an editable state.
                 TransitionItemsToStaging(new PercussionGuid[1] { identifier });
@@ -320,6 +325,68 @@ namespace GKManagers.CMSDocumentProcessing
             fields.Add("sys_lang", LanguageEnglish);
 
             return fields;
+        }
+
+        /// <summary>
+        /// Scans div tags with inlinetype=”rxvariant” and rewrite as an inline slot.
+        /// </summary>
+        /// <param name="drugInfo">The docment object containing the drug info summary hmtl</param>
+        /// itemIDMap is content id of the media link.
+        private void ResolveInlineSlots(DrugInfoSummaryDocument drugInfo)
+        {
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[PercussionTemplates.AudioMediaLinkSnippetTemplate];
+
+            XmlDocument html = new XmlDocument();
+            // Encolse the html with a top level element, to make the xml
+            // valid before loading into the XmlDocument object.
+            html.LoadXml( "<mk>" + drugInfo.Html + "</mk>" );
+            XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+
+            bool bProcesed = false;
+
+            foreach (XmlNode node in nodeList)
+            {
+                XmlAttributeCollection attributeList = node.Attributes; 
+
+                XmlAttribute reference = attributeList["objectid"];
+                XmlAttribute attrib;
+
+                int CdrID = Int32.Parse(CDRHelper.ExtractCDRID(reference.Value));
+                PercussionGuid mediaItemGuid = GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID);
+                
+                // The media linked may not always exists 
+                if (mediaItemGuid == null)
+                {
+                    WarningWriter("Media Link Warning: The media linked does not exists in CMS for druginfo summary document:" + drugInfo.DocumentID + " MediaLinkID =" + CdrID.ToString() + ".");
+                    continue;
+                }
+                long dependent = GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID).ID;
+                reference.Value = dependent.ToString();
+
+                attrib = html.CreateAttribute("sys_dependentid");
+                attrib.Value = dependent.ToString();
+                attributeList.Append(attrib);
+
+                attrib = html.CreateAttribute("contenteditable");
+                attrib.Value = "false";
+                attributeList.Append(attrib);
+
+                attrib = html.CreateAttribute("rxinlineslot");
+                attrib.Value = InlineTemplateSlotID;
+                attributeList.Append(attrib);
+
+                attrib = html.CreateAttribute("sys_dependentvariantid");
+                attrib.Value = snippetTemplate.ID.ToString();
+                attributeList.Append(attrib);
+                bProcesed = true;
+            }
+
+            // Update the drugInfo document html only if it was changed.
+            if (bProcesed)
+            {
+                drugInfo.Html = html.InnerXml.Substring("<mk>".Length, html.InnerXml.Length - "</mk>".Length);
+            }
         }
 
         #endregion

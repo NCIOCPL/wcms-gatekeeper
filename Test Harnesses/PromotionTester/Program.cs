@@ -60,8 +60,16 @@ where:
 
         private static void RunAsStandard(string[] args)
         {
+            System.Collections.ArrayList promotions = new System.Collections.ArrayList();
             if (args.Length >= 2 && args.Length <= 3)
             {
+                if (args[1].ToLower() == "all")
+                {
+                    promotions.Add("PromoteToStaging"); promotions.Add("PromoteToPreview"); promotions.Add("PromoteToLive");
+                }
+                else
+                { 
+                }
                 RequestData data = DeserializeData(args[0]);
                 ProcessActionType processAction = GetPromotionAction(args[1]);
                 CMSController.CMSPublishingTarget? publishingFlag = null;

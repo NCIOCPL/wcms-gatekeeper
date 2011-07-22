@@ -36,11 +36,7 @@ namespace GKManagers.CMSDocumentProcessing
         const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
         const string SummaryRefSlot = "pdqCancerInformationSummaryRef";
-        const string InlineSlot = "sys_inline_variant";
 
-        const string InlineLinkSlotID = "103";
-        const string InlinImageSlotID = "104";
-        const string InlineTemplateSlotID = "105";
 
         const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
         const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";

@@ -578,6 +578,20 @@ namespace GateKeeper.DataAccess.CancerGov
         }
 
         /// <summary>
+        /// Returns the summary document for a given documentid or cdrid
+        /// from the staging database.
+        /// </summary>
+        /// <param name="cdrID">The documenidt of the document</param>
+        /// <returns>SummaryDocument object</returns>
+        public SummaryDocument GetDocumentData(int cdrID)
+        {
+            SummaryDocument drug = new SummaryDocument();
+            drug.DocumentID = cdrID;
+            return GetSummaryInfo(drug, this.StagingDBWrapper.SetDatabase()) ? drug : null;
+        }
+
+
+        /// <summary>
         /// Call store procedure to get summary document info from CDRStaging database
         /// </summary>
         /// <param name="documentID"></param>

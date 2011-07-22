@@ -29,6 +29,7 @@ namespace GateKeeper.DocumentObjects.Media
         private bool _displayEnlargeLink = true;
         private int _mediaDocumentID = 0;
         private long _minWidth = 0;
+        private string _type = String.Empty;
 
         #endregion
 
@@ -205,7 +206,34 @@ namespace GateKeeper.DocumentObjects.Media
         {
             get { return 750; }
         }
-
+        
+        /// <summary>
+        /// Gets or Sets the MimeType of the media.
+        /// </summary>
+        public string Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
+        
+         public string Extension
+         {
+             get
+             {
+                 string ext = string.Empty;
+                 string mime = _type.ToLower();
+                 switch (mime)
+                 {
+                     case "image/jpeg":
+                         ext = ".jpg";
+                         break;
+                     case "audio/mpeg":
+                         ext = ".mp3";
+                         break;
+                 }
+                 return ext;
+             }
+         }
         #endregion
 
         #region Constructors
@@ -219,7 +247,7 @@ namespace GateKeeper.DocumentObjects.Media
         /// <param name="language"></param>
         /// <param name="isThumb"></param>
         /// <param name="xml"></param>
-        public MediaLink(string reference, int cdrID, string alt, bool isInline, bool displayEnlargeLink, long minWidth, string size, string ID, string caption, int mediaDocumentID, Language language, bool isThumb, XmlDocument xml)
+        public MediaLink(string reference, int cdrID, string alt, bool isInline, bool displayEnlargeLink, long minWidth, string size, string ID, string caption, int mediaDocumentID, Language language, bool isThumb, string type, XmlDocument xml)
         {
             this._reference = reference;
             this._referencedCdrDocumentID = cdrID;
@@ -234,6 +262,7 @@ namespace GateKeeper.DocumentObjects.Media
             this._language = language;
             this._isThumb = isThumb;
             this._xml = xml;
+            this._type = type;
         }
 
         #endregion

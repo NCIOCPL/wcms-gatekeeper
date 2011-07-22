@@ -21,8 +21,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         private string _termName = string.Empty;
         private List<MediaLink> _mediaLinkList = new List<MediaLink>();
         private List<GlossaryTermDefinition> _definitionList = new List<GlossaryTermDefinition>();
+        private List<RelatedInformationLink> _relatedInformationList = new List<RelatedInformationLink>();
 
-       #endregion
+        #endregion
 
 
         #region Constructors
@@ -34,8 +35,8 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// <param name="pronounciation"></param> 
         /// <param name="language"></param>
         /// <param name="definitionList"></param>
-         /// <param name="html"></param>
-        public GlossaryTermTranslation(string termName, string pronounciation, Language language,List<GlossaryTermDefinition> definitionList, string html)
+        /// <param name="html"></param>
+        public GlossaryTermTranslation(string termName, string pronounciation, Language language, List<GlossaryTermDefinition> definitionList, string html)
         {
             this._termName = termName;
             this._pronounciation = pronounciation;
@@ -57,9 +58,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             this._pronounciation = pronounciation;
             this._language = language;
             this._definitionList = definitionList;
-         }
+        }
 
-         #endregion
+        #endregion
 
         #region Public Properties
 
@@ -113,9 +114,22 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             get { return _definitionList; }
             set { _definitionList = value; }
         }
+
+        public List<RelatedInformationLink> RelatedInformationList
+        {
+            get { return _relatedInformationList; }
+            set { _relatedInformationList = value; }
+        }
+
+        public string RelatedInformationHTML
+        {
+            get;
+            set;
+        }
+
         #endregion
 
-          #region Public Methods
+        #region Public Methods
 
         /// <summary>
         /// Returns a System.String that represents the GlossaryTermTranslation.
@@ -135,17 +149,17 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             }
 
             sb.Append("Definitions: \n");
-           // foreach (GlossaryTermDefinition def in this.DefinitionList)
-           // {
-           //     sb.Append(def.ToString());
-           // }
+            // foreach (GlossaryTermDefinition def in this.DefinitionList)
+            // {
+            //     sb.Append(def.ToString());
+            // }
 
             return sb.ToString();
         }
 
         #endregion
 
-       
 
-     }
+
+    }
 }

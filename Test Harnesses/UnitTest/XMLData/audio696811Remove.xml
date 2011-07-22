@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+    <RequestData>
+      <RequestDataID>1116606</RequestDataID>
+      <RequestID>1097</RequestID>
+      <PacketNumber>8</PacketNumber>
+      <ActionType>Remove</ActionType>
+      <CDRDocType>Media</CDRDocType>
+      <GKDocType>Media</GKDocType>
+      <CdrID>696811</CdrID>
+      <CdrVersion>1</CdrVersion>
+      <Status>OK</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>GateKeeper</Location>
+      <GroupID>8</GroupID>
+
+    </RequestData>

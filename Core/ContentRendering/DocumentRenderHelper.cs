@@ -29,12 +29,45 @@ namespace GateKeeper.ContentRendering
 
         static public string ProcessMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable)
         {
-             // Check if the alt and image info is available 
-            if (mediaLink.Alt.Length == 0 || mediaLink.ReferencedCdrID == 0)
-            {
-                throw new Exception("Media Extraction Error: No ref or alt attribute found in the MediaLink tag.  Exception occurred in ProcessMediaLink");
-            }
+            // Check if the alt and image info is available 
+            if (mediaLink.ReferencedCdrID == 0)
+                throw new Exception("Media Extraction Error: No ref found in the MediaLink tag.  Exception occurred in ProcessMediaLink");
 
+            string type = mediaLink.Type;
+
+            // mime type information is not always present for a image media. If it is not present 
+            // we are making an assumption that it should be image media. 
+            type = string.IsNullOrEmpty(type) ? "image" : type;
+
+            if (type.Contains("image"))
+            {
+                if (string.IsNullOrEmpty(mediaLink.Alt))
+                    throw new Exception("Media Extraction Error: No ref or alt attribute found in the MediaLink tag.  Exception occurred in ProcessMediaLink");
+                return DocumentRenderHelper.ProcessImageMediaLink(mediaLink, bGlossary, bInTable);
+            }
+            else if (type.Contains("audio"))
+                return DocumentRenderHelper.ProcessAudioMediaLink(mediaLink);
+            else
+                return String.Empty;
+        }
+
+        static string ProcessAudioMediaLink(MediaLink mediaLink)
+        {
+            string audioMediaName = mediaLink.ReferencedCdrID + mediaLink.Extension;
+            string audioMediaHtml = "<a href=\"[_audioMediaLocation]/{0}\" id=\"audioLink{1}\" class=\"CDR_audiofile\" shape=\"rect\"><img src=\"/images/audio-icon.gif\" alt=\"listen\" border=\"0\" height=\"16\" width=\"16\" /></a>";
+            audioMediaHtml = string.Format(audioMediaHtml, audioMediaName, mediaLink.ReferencedCdrID.ToString());
+            return audioMediaHtml;
+        }
+
+        /// <summary>
+        /// This method generates html required to render the image for a glossary term.
+        /// </summary>
+        /// <param name="mediaLink">The medialink object</param>
+        /// <param name="bGlossary"></param>
+        /// <param name="bInTable"></param>
+        /// <returns></returns>
+        static public string ProcessImageMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable)
+        {
             // Captions will not be displayed in the dictionary page, but will be displayed in the pop-up
 
             //If the size is not specified, the default for glossary is 179 and for summary is 274
@@ -47,7 +80,7 @@ namespace GateKeeper.ContentRendering
                 bThumb = true;
 
             string imName = string.Empty;
-            string imLoc = "[__imagelocation]";   
+            string imLoc = "[__imagelocation]";
             // For as-is image, the image name is CDR#.jpg
             if (mediaLink.Size.Equals("as-is"))
                 imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + ".jpg";
@@ -56,7 +89,7 @@ namespace GateKeeper.ContentRendering
                 imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-" + width + ".jpg";
 
             //Write HTML
-            string langBuf=string.Empty;
+            string langBuf = string.Empty;
             string idTag = string.Empty;
             if (mediaLink.Id != "")
             {
@@ -75,7 +108,7 @@ namespace GateKeeper.ContentRendering
             {
                 string vertSpacer = "<td><img src=\"/images/spacer.gif\" alt=\"\" width=\"11\" height=\"1\"/></td>";
                 string horSpacer = " <tr><td><img src=\"/images/spacer.gif\" alt=\"\" width=\"1\" height=\"5\"/></td></tr> ";
-    
+
                 int table_wdt = width;
                 if (!mediaLink.Size.Equals("full"))
                 {
@@ -88,8 +121,8 @@ namespace GateKeeper.ContentRendering
                     langBuf += horSpacer;
                 }
                 else
-                {  
-                       langBuf += " <p><table align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"" + table_wdt + "\" >";
+                {
+                    langBuf += " <p><table align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width=\"" + table_wdt + "\" >";
                 }
 
                 string imPopup = "/Common/PopUps/popImage.aspx?imageName=" + imLoc + "CDR" + mediaLink.ReferencedCdrID + "-750.jpg";
@@ -106,55 +139,54 @@ namespace GateKeeper.ContentRendering
                         langBuf += "Enlarge</A></td>";
                     else
                         langBuf += "Ampliar</A></td>";
-                    
+
                     langBuf += "</tr>";
                 }
 
                 //Summary: for display grey line above the caption
                 if (!bGlossary && mediaLink.Caption.Length > 0)
-                   langBuf += "<tr><td><div class=\"caption-image\"><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+                    langBuf += "<tr><td><div class=\"caption-image\"><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
 
                 langBuf += " <tr><td align=\"center\" > ";
 
                 //for clickable of image if it is thrumbnail
                 if (bThumb)
-                   langBuf += "<A HREF=\"javascript:dynPopWindow('" + imPopup + "','popup','width=780,height=630,scrollbars=1,resizable=1,menubar=0,location=0,status=0,toolbar=0')\">";
+                    langBuf += "<A HREF=\"javascript:dynPopWindow('" + imPopup + "','popup','width=780,height=630,scrollbars=1,resizable=1,menubar=0,location=0,status=0,toolbar=0')\">";
 
                 langBuf += " <img " + idTag + " alt=\"" + mediaLink.Alt + "\" border=\"0\" ";
                 langBuf += " src=\"" + imName + "\"/>";
                 if (bThumb)
-                   langBuf += "</A>";
+                    langBuf += "</A>";
 
-               string capHtml = "<tr><td class=\"caption\" align=\"left\"> " + mediaLink.Caption + "</td></tr>";
-               if (bGlossary)
-               {
-                   langBuf += "</td>";
-                   if (!mediaLink.Size.Equals("full"))
-                       langBuf += vertSpacer;
-                   langBuf += "</tr>";
-                   langBuf += "</table>";
+                string capHtml = "<tr><td class=\"caption\" align=\"left\"> " + mediaLink.Caption + "</td></tr>";
+                if (bGlossary)
+                {
+                    langBuf += "</td>";
+                    if (!mediaLink.Size.Equals("full"))
+                        langBuf += vertSpacer;
+                    langBuf += "</tr>";
+                    langBuf += "</table>";
                 }
-               else
-               {
-                  langBuf+="</td></tr>";
-				
-					//for display grey line above the caption
-                  if (mediaLink.Caption.Length > 0)
-                  {
-                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"10\" border=\"0\"/></td></tr></table></div></td></tr>";
-                      langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"3\" border=\"0\"/></td></tr>";
-                      // Insert captions in the dictionary if it is from summary page
-                      langBuf += capHtml;
-                  }
-                    langBuf+="</table></p>";
+                else
+                {
+                    langBuf += "</td></tr>";
 
-               }
-          }
+                    //for display grey line above the caption
+                    if (mediaLink.Caption.Length > 0)
+                    {
+                        langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"10\" border=\"0\"/></td></tr></table></div></td></tr>";
+                        langBuf += "<tr><td valign=\"top\"><img src=\"/images/spacer.gif\" alt=\"\" width=\"12\" height=\"3\" border=\"0\"/></td></tr>";
+                        // Insert captions in the dictionary if it is from summary page
+                        langBuf += capHtml;
+                    }
+                    langBuf += "</table></p>";
 
-         return langBuf.ToString();
-     }
+                }
+            }
 
- 
+            return langBuf.ToString();
+        }
+
 
         /// <summary>
         /// Common method to render media links.

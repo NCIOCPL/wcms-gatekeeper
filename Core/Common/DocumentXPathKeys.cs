@@ -17,14 +17,14 @@ namespace GateKeeper.Common.XPathKeys
         #endregion
 
         #region public properties
-            public static string CDRID
-            { get { return _cdrid; } }
+        public static string CDRID
+        { get { return _cdrid; } }
 
-            public static string LastModifiedDate
-            { get { return _lastModifiedDate; } }
+        public static string LastModifiedDate
+        { get { return _lastModifiedDate; } }
 
-            public static string FirstPublishedDate
-            { get { return _firstPublishedDate; } }
+        public static string FirstPublishedDate
+        { get { return _firstPublishedDate; } }
         #endregion
     }
 
@@ -115,7 +115,7 @@ namespace GateKeeper.Common.XPathKeys
         public static string RelationID
         { get { return _relationID; } }
 
-         public static string PrettyURLHref
+        public static string PrettyURLHref
         { get { return _prettyURLHref; } }
 
         public static string PrettyURLRef
@@ -157,15 +157,16 @@ namespace GateKeeper.Common.XPathKeys
         private static string _dictionary = "GlossaryTermDictionary";
         private static string _audience = "GlossaryTermAudience";
         private static string _mediaLink = "GlossaryTermMediaLink";
-        private static string _mediaID = "GlossaryTermMediaID"; 
-        private static string _mediaThumb = "GlossaryTermMediaThumb"; 
-        private static string _mediaRef = "GlossaryTermMediaRef"; 
+        private static string _mediaID = "GlossaryTermMediaID";
+        private static string _mediaThumb = "GlossaryTermMediaThumb";
+        private static string _mediaRef = "GlossaryTermMediaRef";
         private static string _mediaAlt = "GlossaryTermMediaAlt";
-        private static string _mediaInline = "GlossaryTermMediaInline"; 
-        private static string _mediaMidWidth = "GlossaryTermMediaMinWidth";  
+        private static string _mediaInline = "GlossaryTermMediaInline";
+        private static string _mediaMidWidth = "GlossaryTermMediaMinWidth";
         private static string _mediaSize = "GlossaryTermMediaSize";
         private static string _mediaLanguage = "GlossaryTermMediaLanguage";
-        private static string _mediaCaption = "GlossaryTermMediaCaption"; 
+        private static string _mediaCaption = "GlossaryTermMediaCaption";
+        private static string _mediaType = "GlossaryTermMediaType";
 
         #endregion
 
@@ -198,7 +199,7 @@ namespace GateKeeper.Common.XPathKeys
         { get { return _mediaLink; } }
 
         public static string MediaID
-        { get { return _mediaID ; } }
+        { get { return _mediaID; } }
 
         public static string MediaThumb
         { get { return _mediaThumb; } }
@@ -206,10 +207,10 @@ namespace GateKeeper.Common.XPathKeys
         public static string MediaRef
         { get { return _mediaRef; } }
 
-       public static string MediaAlt
+        public static string MediaAlt
         { get { return _mediaAlt; } }
 
-       public static string MediaInline
+        public static string MediaInline
         { get { return _mediaInline; } }
 
         public static string MediaMidWidth
@@ -223,6 +224,9 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string MediaCaption
         { get { return _mediaCaption; } }
+
+        public static string MediaType
+        { get { return _mediaType; } }
 
         #endregion
     }
@@ -289,7 +293,7 @@ namespace GateKeeper.Common.XPathKeys
         { get { return _menuParent; } }
 
         public static string MenuRef
-         { get { return _menuRef; } }
+        { get { return _menuRef; } }
 
 
         #endregion
@@ -338,7 +342,7 @@ namespace GateKeeper.Common.XPathKeys
         private static string _zip = "GenProfZip";
         private static string _country = "GenProfCountry";
         private static string _city = "GenProfCity";
-        private static string _familySyndrome = "GenProfFamilySyndrome"; 
+        private static string _familySyndrome = "GenProfFamilySyndrome";
         private static string _syndromeName = "GenProfSyndromeName";
         private static string _cancerType = "GenProfCancerType";
         private static string _cancerTypeName = "GenProfCancerTypeName";
@@ -454,7 +458,7 @@ namespace GateKeeper.Common.XPathKeys
         private static string _leadOrgRef = "ProtocolLeadOrgRef";
         private static string _siteRef = "ProtocolSiteRef";
         private static string _titleAudience = "ProtocolTitleAudience";
-        private static string _drugRef= "ProtocolDrugRef";
+        private static string _drugRef = "ProtocolDrugRef";
         private static string _modalityRef = "ProtocolModalityRef";
         private static string _cancerTypeRef = "ProtocolCancerTypeRef";
         private static string _stateRef = "ProtocolStateRef";
@@ -501,10 +505,10 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string Eligibility
         { get { return _eligibility; } }
-        
+
         public static string Sponsor
         { get { return _sponsor; } }
-        
+
         public static string PrimaryID
         { get { return _primaryID; } }
 
@@ -564,9 +568,9 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string Title
         { get { return _title; } }
-        
-         public static string PDQTitle
-         { get { return _pdqTitle; } }
+
+        public static string PDQTitle
+        { get { return _pdqTitle; } }
 
         public static string LeadOrg
         { get { return _leadOrg; } }
@@ -647,93 +651,93 @@ namespace GateKeeper.Common.XPathKeys
         { get { return _secondaryUrlID; } }
 
         public static string CTBriefTitle
-        { get { return _ctBriefTitle; } } 
+        { get { return _ctBriefTitle; } }
 
         public static string CTLastModifiedDate
-        { get { return _ctLastModifiedDate; } }  
+        { get { return _ctLastModifiedDate; } }
 
         public static string CTOfficialTitle
-        { get { return _ctOfficialTitle; } }  
+        { get { return _ctOfficialTitle; } }
 
         public static string CTOrgStudyID
-        { get { return _ctStudyID; } }  
+        { get { return _ctStudyID; } }
 
         public static string CTSecondaryID
-        { get { return _ctSecondaryID; } }  
+        { get { return _ctSecondaryID; } }
 
         public static string CTNCIID
-        { get { return _ctNCIID; } }  
+        { get { return _ctNCIID; } }
 
         public static string CTGivenName
-        { get { return _ctGivenName; } }  
+        { get { return _ctGivenName; } }
 
         public static string CTSurName
-        { get { return _ctSurName; } }  
+        { get { return _ctSurName; } }
 
         public static string CTSuffix
-        { get { return _ctSuffix; } }  
+        { get { return _ctSuffix; } }
 
         public static string CTRole
-        { get { return _ctRole; } }  
+        { get { return _ctRole; } }
 
         public static string CTPhone
-        { get { return _ctPhone; } }  
+        { get { return _ctPhone; } }
 
         public static string CTPhoneExt
-        { get { return _ctPhoneExt; } }  
+        { get { return _ctPhoneExt; } }
 
         public static string CTLeadSponsor
-        { get { return _ctLeadSponsor; } }  
+        { get { return _ctLeadSponsor; } }
 
         public static string CTOverallContact
-        { get { return _ctOverallContact; } }  
+        { get { return _ctOverallContact; } }
 
         public static string CTOverallBackup
-        { get { return _ctOverallBackup; } }  
+        { get { return _ctOverallBackup; } }
 
         public static string CTOfficial
-        { get { return _ctOfficial; } }  
+        { get { return _ctOfficial; } }
 
         public static string CTFacilityName
-        { get { return _ctFacilityName; } }  
+        { get { return _ctFacilityName; } }
 
         public static string CTState
-        { get { return _ctState; } }  
+        { get { return _ctState; } }
 
         public static string CTCity
-        { get { return _ctCity; } }  
+        { get { return _ctCity; } }
 
         public static string CTCountry
-        { get { return _ctCountry; } }  
+        { get { return _ctCountry; } }
 
         public static string CTZip
-        { get { return _ctZip; } }  
+        { get { return _ctZip; } }
 
         public static string CTFacility
-        { get { return _ctFacility; } }  
+        { get { return _ctFacility; } }
 
         public static string CTGovContact
-        { get { return _ctContact; } }  
+        { get { return _ctContact; } }
 
         public static string CTGovContactBackup
-        { get { return _ctContactBackup; } }  
+        { get { return _ctContactBackup; } }
 
         public static string CTInvestigator
-        { get { return _ctInvestigator; } }  
+        { get { return _ctInvestigator; } }
 
         public static string CTSponsor
-        { get { return _ctSponsor; } }  
+        { get { return _ctSponsor; } }
 
         public static string CTLocation
-        { get { return _ctLocation; } }  
+        { get { return _ctLocation; } }
 
         public static string CTPDQSponsor
-        { get { return _ctPDQSponsor; } }  
+        { get { return _ctPDQSponsor; } }
 
         public static string CTGovStatus
         { get { return _ctStatus; } }
 
-         #endregion
+        #endregion
     }
 
     public class PoliticalSubUnitXPath
@@ -751,7 +755,7 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string FullName
         { get { return _fullName; } }
- 
+
         public static string CountryName
         { get { return _countryName; } }
 
@@ -782,15 +786,34 @@ namespace GateKeeper.Common.XPathKeys
         #endregion
     }
 
-     public class MediaXPath
+    public class MediaXPath
     {
         #region Fields
         private static string _type = "MediaType";
+        private static string _size = "MediaSize";
+        private static string _encodingType = "MediaEncodingType";
         #endregion
 
         #region Public Properties
         public static string Type
         { get { return _type; } }
+
+        public static string Size
+        { get { return _size; } }
+
+        public static string Encoding
+        { get { return _encodingType; } }
+
         #endregion
+    }
+
+    public class RelatedInformationXPath
+    {
+        public static string RelatedExternalRef = "RelatedInformationExternalRef";
+        public static string RelatedSummaryRef = "RelatedInformationSummaryRef";
+        public static string RelatedDrugSummaryRef = "RelatedInformationDrugSummaryRef";
+        public static string XRef = "RelatedInformationXRef";
+        public static string HRef = "RelatedInformationHRef";
+        public static string UseWith = "RelatedInformationUseWith";
     }
 }

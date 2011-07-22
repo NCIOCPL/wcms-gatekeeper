@@ -39,9 +39,13 @@ namespace GateKeeper.ContentRendering
             try
             {
                 base.Render(document);
-                // Modify the html data to save the content into database
+                // Strip off the opening and closing DrugInformationSummary tags.
+                // Tricky bit -- the opening tag will include a namespace, so we have
+                // to find the end of the tag separately from the beginning.
                 string html = document.Html;
-                int index = html.IndexOf("<p>");
+                int index = html.IndexOf("<DrugInformationSummary");
+                index = html.IndexOf('>', index) + 1;
+
                 html = html.Substring(index);
                 html = html.Replace("</DrugInformationSummary>", string.Empty);
                 document.Html = html;

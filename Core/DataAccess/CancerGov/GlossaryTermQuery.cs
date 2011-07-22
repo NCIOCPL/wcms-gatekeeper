@@ -20,16 +20,16 @@ namespace GateKeeper.DataAccess.CancerGov
     public class GlossaryTermQuery : DocumentQuery
     {
 
-       #region Constructors
+        #region Constructors
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         public GlossaryTermQuery()
-        {}
+        { }
 
         #endregion Constructors
-        
+
         #region Query for Store Procedure Calls
 
         /// <summary>
@@ -109,8 +109,9 @@ namespace GateKeeper.DataAccess.CancerGov
                         throw new Exception("Database Error: Invalid database name. DatabaseName = " + databaseName.ToString());
                 }
                 DbTransaction transaction = conn.BeginTransaction();
-            
-                try {
+
+                try
+                {
                     // SP: Clear extracted data
                     ClearExtractedData(glossaryDoc.DocumentID, db, transaction);
 
@@ -136,7 +137,7 @@ namespace GateKeeper.DataAccess.CancerGov
             }
         }
 
-         /// <summary>
+        /// <summary>
         /// Push glossary term document into preview database
         /// </summary>
         /// <param name="documentID">
@@ -172,10 +173,10 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     transaction.Dispose();
                 }
-                
+
                 // SP: Call push document 
                 PushDocument(glossaryDoc.DocumentID, db, ContentDatabase.Preview.ToString());
-                
+
             }
             catch (Exception e)
             {
@@ -203,7 +204,8 @@ namespace GateKeeper.DataAccess.CancerGov
             try
             {
                 // Rollback the change only if push glossary term sp failed.
-                try{
+                try
+                {
                     // SP: Call push glossary term document
                     string spPushData = SPGlossaryTerm.SP_PUSH_GT_DOCUMENT_DATA;
                     using (DbCommand pushCommand = db.GetStoredProcCommand(spPushData))
@@ -220,7 +222,7 @@ namespace GateKeeper.DataAccess.CancerGov
                     transaction.Rollback();
                     throw new Exception("Database Error: Store procedure dbo.usp_PushExtractedGlossaryData failed", e);
                 }
-                
+
                 // SP: Call Push document
                 PushDocument(glossaryDoc.DocumentID, db, ContentDatabase.Live.ToString());
             }
@@ -247,7 +249,7 @@ namespace GateKeeper.DataAccess.CancerGov
         /// <param name="transaction"></param>
         /// <param name="userID"></param>
         /// <returns></returns>
-         private void ClearExtractedData(int documentID, Database db, DbTransaction transaction)
+        private void ClearExtractedData(int documentID, Database db, DbTransaction transaction)
         {
             try
             {
@@ -257,7 +259,7 @@ namespace GateKeeper.DataAccess.CancerGov
                     clearCommand.CommandType = CommandType.StoredProcedure;
                     db.AddInParameter(clearCommand, "@DocumentID", DbType.Int32, documentID);
                     db.ExecuteNonQuery(clearCommand, transaction);
-                 }
+                }
             }
             catch (Exception e)
             {
@@ -336,15 +338,31 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
                     string mediaLink = string.Empty;
+                    string audioMediaHTML = string.Empty;
+                    string relatedInformationHtml = String.Empty;
+
+                    #region Media Links
                     foreach (MediaLink ml in trans.MediaLinkList)
                     {
                         if (ml.Language == language)
                         {
-                            // TODO:REMOVE the repacement is done for string comparison purpose
-                            mediaLink = mediaLink + ml.Html.Replace("&amps;", "&");
+                            if (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image"))
+                            {
+                                // TODO:REMOVE the repacement is done for string comparison purpose
+                                mediaLink = mediaLink + ml.Html.Replace("&amps;", "&");
+                            }
+                            else if (ml.Type.Contains("audio"))
+                                audioMediaHTML = audioMediaHTML + ml.Html;
                         }
                     }
+                    
+                    #endregion
 
+                    #region RelatedInformation
+                    relatedInformationHtml = trans.RelatedInformationHTML;
+                    #endregion
+
+                    #region GlossaryTerm Definition
                     foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
                     {
                         //Save Glossary Term Definition
@@ -357,6 +375,8 @@ namespace GateKeeper.DataAccess.CancerGov
                             db.AddInParameter(spDefCommand, "@Language", DbType.String, language.ToString().Trim());
                             db.AddInParameter(spDefCommand, "@UpdateUserID", DbType.String, userID);
                             db.AddInParameter(spDefCommand, "@MediaHTML", DbType.String, mediaLink.Trim());
+                            db.AddInParameter(spDefCommand, "@AudioMediaHTML", DbType.String, audioMediaHTML.Trim());
+                            db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, relatedInformationHtml.Trim());
                             db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
                             // Replace summaryref with prettyURL
                             string html = gtDef.Html.Trim();
@@ -401,16 +421,18 @@ namespace GateKeeper.DataAccess.CancerGov
                                 }
                             }
                         }
-                    } // End definition list loop
+                    } // End definition list loop 
+                    #endregion
+                    
                 } // End language map loop
-                
+
             }
             catch (Exception e)
             {
                 throw new Exception("Database Error: Saving glossary term definition failed. Document CDRID=" + GTDocument.DocumentID.ToString(), e);
             }
         }
-     #endregion
+        #endregion
 
     }
 }

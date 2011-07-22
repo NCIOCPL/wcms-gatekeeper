@@ -51,12 +51,14 @@
     <Compile Include="CancerInfoSummaryProcessor.cs" />
     <Compile Include="CancerInfoSummarySectionFinder.cs" />
     <Compile Include="CISErrorBuilder.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DocumentProcessorCommon.cs" />
     <Compile Include="DrugInfoSummaryProcessor.cs" />
     <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="ItemCache.cs" />
+    <Compile Include="MediaProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

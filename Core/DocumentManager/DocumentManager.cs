@@ -36,7 +36,7 @@ namespace GKManagers
 
         // Shortcut for the multiple document types which are maintained in the CMS.
         const DocumentTypeFlag CmsManagedTypes =
-            DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary;
+            DocumentTypeFlag.DrugInformationSummary | DocumentTypeFlag.Summary | DocumentTypeFlag.Media;
 
         #endregion
 
@@ -116,6 +116,7 @@ namespace GKManagers
                     SynchronizedIDQueue queueForRegularDocs = new SynchronizedIDQueue();
                     SynchronizedIDQueue queueForCmsDocs = new SynchronizedIDQueue();
                     List<int> delayedSummaryIDList = new List<int>();
+                    List<int> mediaDocumentIDList = new List<int>();
 
                     for (int docIndex = 0; docIndex < requestDataIDList.Count; ++docIndex)
                     {
@@ -154,10 +155,18 @@ namespace GKManagers
                         {
                             DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
 
+                            // Summary translations need to be scheduled after their
+                            // original versions.
                             if (docTypeFlag == DocumentTypeFlag.Summary
                                 && SummaryIsATranslation(docData))
                             {
                                 delayedSummaryIDList.Add(requestDataIDList[docIndex]);
+                            }
+                            // Media documents require special scheduling so they go in ahead of
+                            // anything which might reference them.
+                            else if (docTypeFlag == DocumentTypeFlag.Media)
+                            {
+                                mediaDocumentIDList.Add(requestDataIDList[docIndex]);
                             }
                             else if (useMultiThreading)
                             {
@@ -184,11 +193,40 @@ namespace GKManagers
                     // Merge delayed summaries back into the appropriate queue.
                     if (useMultiThreading)
                     {
-                        delayedSummaryIDList.ForEach(summaryID => queueForCmsDocs.Enqueue(summaryID));
+                        // All of the document types with scheduling depependencies are
+                        // controlled by the CMS.
+
+                        // Rebuild the list of IDs.  First the media documents,
+                        // Second the items without scheduling dependencies.
+                        // Third the summary translations.
+                        List<int> tempList = new List<int>();
+                        tempList.AddRange(mediaDocumentIDList);
+                        tempList.AddRange(queueForCmsDocs.ToArray());
+                        tempList.AddRange(delayedSummaryIDList);
+
+                        // Reload the CMS queue.
+                        queueForCmsDocs.Clear();
+                        tempList.ForEach(queueItem => queueForCmsDocs.Enqueue(queueItem));
                     }
                     else
                     {
-                        delayedSummaryIDList.ForEach(summaryID => queueForRegularDocs.Enqueue(summaryID));
+                        // All of the document types with scheduling depependencies are
+                        // controlled by the CMS, but because this is single threaded,
+                        // they all end up in the regular item queue.  We still
+                        // have to resort them though.
+
+                        //delayedSummaryIDList.ForEach(summaryID => queueForRegularDocs.Enqueue(summaryID));
+                        // Rebuild the list of IDs.  First the media documents,
+                        // Second the items without scheduling dependencies.
+                        // Third the summary translations.
+                        List<int> tempList = new List<int>();
+                        tempList.AddRange(mediaDocumentIDList);
+                        tempList.AddRange(queueForRegularDocs.ToArray());
+                        tempList.AddRange(delayedSummaryIDList);
+
+                        // Reload the CMS queue.
+                        queueForRegularDocs.Clear();
+                        tempList.ForEach(queueItem => queueForRegularDocs.Enqueue(queueItem));
                     }
 
 

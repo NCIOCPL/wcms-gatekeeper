@@ -22,14 +22,24 @@
 	
 	<!-- ****************************** DrugInfoSummary ***************************** -->
 	<xsl:template match="DrugInformationSummary">
+    <xsl:apply-templates select="DrugInfoMetaData/PronunciationInfo"/>
 		<xsl:apply-templates select="DrugInfoTitle"/>
 		<xsl:apply-templates select="DrugInfoMetaData/DrugInfoDescription"/>
 		<xsl:apply-templates select="DrugInfoMetaData"/>
 		<xsl:apply-templates select="Section"/>
 		<xsl:apply-templates select="DrugInfoDisclaimer"/>
 	</xsl:template>
-	
-	<xsl:template match="DrugInfoMetaData/DrugInfoDescription">
+
+  <xsl:template match="DrugInfoMetaData/PronunciationInfo">
+    <p>
+      <!-- Filter the MediaLinks to match only audio files and only English pronunciations -->
+      <xsl:apply-templates select="MediaLink[@type='audio/mpeg' and @language='en']" mode="audio" />
+      <xsl:if test="count(MediaLink) &gt; 0 and count(TermPronunciation) &gt; 0">&#160;</xsl:if>
+      <xsl:apply-templates select="TermPronunciation" />
+    </p>
+  </xsl:template>
+
+  <xsl:template match="DrugInfoMetaData/DrugInfoDescription">
 		<p><xsl:apply-templates /></p>
 	</xsl:template>	
 		
@@ -187,8 +197,19 @@
 			<xsl:attribute name="name">EndOfDisclaimer</xsl:attribute>
 		</xsl:element>
 	</xsl:template>
-	
-	<!-- *********************** End Content Section **************************** -->
+
+  <xsl:template match="MediaLink" mode="audio">
+    <div inlinetype="rxvariant" templatename="pdqSnMediaAudioPlayer" objectid="{@ref}">
+      Placeholder slot
+    </div>
+  </xsl:template>
+
+  <xsl:template match="TermPronunciation">
+    (<xsl:apply-templates/>)
+  </xsl:template>
+
+
+  <!-- *********************** End Content Section **************************** -->
 
 
   <xsl:template match="Table">

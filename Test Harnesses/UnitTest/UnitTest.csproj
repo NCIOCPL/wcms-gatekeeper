@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\TesterHelper.cs" />
     <Compile Include="DrugInfoSummary\DrugInfoSummaryDeleteTest.cs" />
     <Compile Include="DrugInfoSummary\DrugInfoSummaryPushTest.cs" />
     <Compile Include="DrugInfoSummary\DrugInfoSummarySaveTest.cs" />
@@ -88,8 +89,10 @@
     <Compile Include="GlossaryTerm\GlossaryTermSaveTest.cs" />
     <Compile Include="GeneticsProfessional\GenProfSaveTest.cs" />
     <Compile Include="GlossaryTerm\GlossaryPushTest.cs" />
+    <Compile Include="GlossaryTerm\GTRelInfoTest.cs" />
     <Compile Include="HiPerfTimer.cs" />
     <Compile Include="Logging\LoggingTestFixture.cs" />
+    <Compile Include="Media\AudioMediaTest.cs" />
     <Compile Include="Media\MediaDeleteTest.cs" />
     <Compile Include="Media\MediaPushTest.cs" />
     <Compile Include="Media\MediaSaveTest.cs" />
@@ -134,6 +137,10 @@
       <Project>{817A5A3A-9088-483E-A591-AF0A7B41374A}</Project>
       <Name>BatchManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\CMSManager\CMSManager.csproj">
+      <Project>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</Project>
+      <Name>CMSManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Common\Common.csproj">
       <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
       <Name>Common</Name>
@@ -174,6 +181,45 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <Content Include="XMLData\GT46332.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GT46583.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GT512821.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GT572363.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GT663502.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696772.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696772Remove.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696774.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696774Remove.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696806.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696806Remove.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696811.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\audio696811Remove.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="XMLData\CTGov363918.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -226,6 +272,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\GlossaryTermWithSpanish.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\image415499.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\image415499Remove.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\image415500.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\image415500Remove.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\Media.xml">

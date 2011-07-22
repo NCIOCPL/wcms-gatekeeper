@@ -60,6 +60,15 @@ namespace GKManagers.CMSManager.Configuration
 
         }
 
+        [ConfigurationProperty("pdqMediaFile")]
+        public PDQMediaElement PDQMedia
+        {
+            get
+            {
+                return (PDQMediaElement)base["pdqMediaFile"];
+            }
+
+        }
         [ConfigurationProperty("pdqTableSection")]
         public PDQTableSectionElement PDQTableSection
         {

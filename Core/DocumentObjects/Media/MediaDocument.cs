@@ -7,69 +7,33 @@ namespace GateKeeper.DocumentObjects.Media
 {
     /// <summary>
     /// Class to represent a media document.
+    /// Prasad(05/24) : Updated the class to include additional property 
+    /// for handling media document like audio. Eliminated unsed properties( Caption, IsThumb,
+    /// ImageExtension) 
+    /// and methods(ToSring, )
     /// </summary>
     [Serializable]
     public class MediaDocument : Document
     {
         #region Fields
 
-        private int _width = 0;
-        private int _height = 0;
-        private Image _image = null;
-        private string _caption = string.Empty;
-        private Language _language = Language.English;
+        private string _encodedData = null;
         private string _id = string.Empty;
-        private bool _isThumb = false;
         private string _mimeType = string.Empty;
-        private string _imageExtension = "jpeg";
+        private string _encodingType = string.Empty;
         #endregion
 
         #region Public Properties
 
         /// <summary>
-        /// Raw image data.
+        /// Raw data of the media.
         /// </summary>
-        public System.Drawing.Image Image
+        public string EncodedData
         {
-            get { return _image; }
-            internal set { _image = value; }
-        }
-        
-        /// <summary>
-        /// Image height.
-        /// </summary>
-        public int Height
-        {
-            get { return _height; }
-            internal set { _height = value; }
-        }
-        
-        /// <summary>
-        /// Image width.
-        /// </summary>
-        public int Width
-        {
-            get { return _width; }
-            internal set { _width = value; }
+            get { return _encodedData; }
+            internal set { _encodedData = value; }
         }
 
-        /// <summary>
-        /// Image caption.
-        /// </summary>
-        public string Caption
-        {
-            get { return _caption; }
-            internal set { _caption = value; }
-        }
-
-        /// <summary>
-        /// Language of the caption.
-        /// </summary>
-        public Language Language
-        {
-            get { return _language; }
-            internal set { _language = value; }
-        }
 
         /// <summary>
         /// Internal document id.
@@ -80,23 +44,28 @@ namespace GateKeeper.DocumentObjects.Media
             internal set { _id = value; }
         }
 
-        /// <summary>
-        /// Flag to indicate that the image is a thumbnail.
-        /// </summary>
-        public bool IsThumb
-        {
-            get { return _isThumb; }
-            internal set { _isThumb = value; }
-        }
 
         /// <summary>
-        /// Image file extension.
+        /// The mimetype extension of the media.
         /// </summary>
         /// <example>jpeg</example>
-        public string ImageExtension
+        public string Extension
         {
-            get { return _imageExtension; }
-            internal set { _imageExtension = value; }
+            get
+            {
+                string ext = string.Empty;
+                string mime = MimeType.ToLower();
+                switch (mime)
+                {
+                    case "image/jpeg":
+                        ext = ".jpg";
+                        break;
+                    case "audio/mpeg":
+                        ext = ".mp3";
+                        break;
+                }
+                return ext;
+            }
         }
 
         /// <summary>
@@ -109,30 +78,24 @@ namespace GateKeeper.DocumentObjects.Media
             internal set
             {
                 _mimeType = value;
-                if (_mimeType != null && _mimeType.Length > 0)
-                {
-                    _imageExtension = _mimeType.Remove(0, _mimeType.IndexOf("/") + 1);
-                }
             }
         }
 
-        #endregion
-
-        #region Public Methods
+        /// <summary>
+        /// Encoding type used for the data stored in EncodedData property
+        /// For example Base64
+        /// </summary>
+        public string EncodingType
+        {
+            get { return _encodingType; }
+            set { _encodingType = value; }
+        }
 
         /// <summary>
-        /// Returns a System.String representation of the MediaDocument.
+        /// The size of the encoded data.
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder(base.ToString());
-
-            sb.Append(string.Format(" Height = {0} Width = {1} Caption = {2} Language = {3} Id = {4} IsThumb = {5} ", 
-                Height, Width, Caption, Language, Id, IsThumb));
-
-            return sb.ToString();
-        }
+        public string Size
+        { get; set; }
 
         #endregion
     }

@@ -74,6 +74,7 @@
     <Compile Include="Configuration\PDQCancerInfoSummaryLinkElement.cs" />
     <Compile Include="Configuration\PDQCancerInfoSummaryPage.cs" />
     <Compile Include="Configuration\PDQDrugInfoSummaryElement.cs" />
+    <Compile Include="Configuration\PDQMediaElement.cs" />
     <Compile Include="Configuration\PDQMediaLinkElement.cs" />
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />

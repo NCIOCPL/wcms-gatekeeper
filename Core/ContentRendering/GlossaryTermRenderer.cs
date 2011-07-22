@@ -70,6 +70,18 @@ namespace GateKeeper.ContentRendering
                         RemoveXMLTags(ref text);
                         gtDef.Text = text;
                    }
+
+                    /// Render RelatedInformationLinks
+                    String relatedInformationHtml = String.Empty;
+                    string langMoreinfo = "More Information";
+                    if (lang == Language.Spanish)
+                        langMoreinfo = "Más información";
+                    foreach (RelatedInformationLink ri in trans.RelatedInformationList)
+                        relatedInformationHtml += string.Format("<li><h4><a href=\"{0}\">{1}</a></h4></li>", ri.Url, ri.Name); 
+
+                    if (!string.IsNullOrEmpty(relatedInformationHtml))
+                        relatedInformationHtml = "<div id=\"RelatedInfo\"><h3>" + langMoreinfo + "</h3><ul>" + relatedInformationHtml + "</ul></div>";
+                    trans.RelatedInformationHTML = relatedInformationHtml;
                 }
             }
             catch (Exception e)
