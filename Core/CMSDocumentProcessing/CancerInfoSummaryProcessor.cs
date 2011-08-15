@@ -202,15 +202,25 @@ namespace GKManagers.CMSDocumentProcessing
                 summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
                 rollbackList.Add(summaryRoot);
 
+                // Find the list of content items referenced by table sections.
+                // After the table sections are created, these are used to create relationships.
+                List<List<PercussionGuid>> tableSectionReferencedItems =
+                    ResolveSectionSummaryReferences(document, document.TableSectionList);
+
                 // Create the sub-pages
                 List<long> tableIDs;
                 List<long> mediaLinkIDs;
                 CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
+                // Create relationships from this summary's tables to other Cancer Information Summary Objects.
+                PSAaRelationship[] tableExternalRelationships =
+                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> referencedSumamries = ResolveSummaryReferences(document);
+                List<List<PercussionGuid>> pageSectionReferencedSumamries = ResolveSectionSummaryReferences(document, document.TopLevelSectionList);
+                    //ResolveSummaryReferences(document);
 
 
                 //Create Cancer Info Summary Page items
@@ -223,7 +233,7 @@ namespace GKManagers.CMSDocumentProcessing
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
                 // Create relationships to other Cancer Information Summary Objects.
-                PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, referencedSumamries);
+                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, pageSectionReferencedSumamries);
 
                 //  Search for a CISLink in the parent folder.
                 string parentPath = GetParentFolder(document.BasePrettyURL);
@@ -334,12 +344,22 @@ namespace GKManagers.CMSDocumentProcessing
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
 
+                // Find the list of content items referenced by table sections.
+                // After the table sections are created, these are used to create relationships.
+                List<List<PercussionGuid>> tableSectionReferencedItems =
+                    ResolveSectionSummaryReferences(summary, summary.TableSectionList);
+
                 // Create the new sub-page items in a temporary location.
                 CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
+                // Create relationships from this summary's tables to other Cancer Information Summary Objects.
+                PSAaRelationship[] tableExternalRelationships =
+                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> referencedItems = ResolveSummaryReferences(summary);
+                List<List<PercussionGuid>> pageSectionReferencedItems =
+                    ResolveSectionSummaryReferences(summary, summary.TopLevelSectionList);
 
                 // Create new Cancer Info Summary Page items
                 List<long> idList;
@@ -354,8 +374,8 @@ namespace GKManagers.CMSDocumentProcessing
                 // Add new cancer information summary pages into the page slot.
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
 
-                // Create relationships to other Cancer Information Summary Objects.
-                PSAaRelationship[] externalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, referencedItems);
+                // Create relationships from this summary's pages to other Cancer Information Summary Objects.
+                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, pageSectionReferencedItems);
 
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
@@ -897,97 +917,106 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summary">A list of objects corresponding 1:1 to the collection of top-level sections.
         /// Each object in the list is a (possibly empty) collection of PercussionGuid objects refererenced by
         /// the corresponding top-leavel section.</param>
-        private List<List<PercussionGuid>> ResolveSummaryReferences(SummaryDocument summary)
+        /// <param name="sectionList">A collection of sections within the sumary to scan for references.</param>
+        /// <returns></returns>
+        private List<List<PercussionGuid>> ResolveSectionSummaryReferences(SummaryDocument summary, IEnumerable<SummarySection> sectionList)
         {
             List<List<PercussionGuid>> listOfLists = new List<List<PercussionGuid>>();
 
             CancerInfoSummarySectionFinder finder = new CancerInfoSummarySectionFinder(CMSController);
 
-            foreach (SummarySection section in summary.SectionList.Where(item => item.IsTopLevel))
+            foreach (SummarySection section in sectionList)
             {
                 // Every section has a unique list of referenced items.  If no items are referenced,
                 // the list is empty, and this is OK.
                 List<PercussionGuid> referencedContentItems = new List<PercussionGuid>();
                 listOfLists.Add(referencedContentItems);
 
-                XmlDocument html = section.Html;
-                XmlNodeList nodeList = html.SelectNodes("//a[@inlinetype='SummaryRef']");
-
-                foreach (XmlNode node in nodeList)
+                // HACK: Look for summary references in both the main section HTML, and in the 
+                // (for tables only) standalone section.
+                foreach (XmlDocument html in new XmlDocument []{ section.Html, section.StandaloneHTML })
                 {
-                    XmlAttributeCollection attributeList = node.Attributes;
-
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
-
-                    if (summary.SummaryReferenceMap.ContainsKey(reference.Value))
+                    if (html != null)  // Only table sections will have a StandaloneHTML
                     {
-                        SummaryReference details = summary.SummaryReferenceMap[reference.Value];
-                        PercussionGuid referencedItemRootID = GetCdrDocumentID(CancerInfoSummaryContentType, details.CdrID);
+                        XmlNodeList nodeList = html.SelectNodes("//a[@inlinetype='SummaryRef']");
 
-                        if (referencedItemRootID == null)
+                        foreach (XmlNode node in nodeList)
                         {
-                            WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
-                            continue;
-                        }
+                            XmlAttributeCollection attributeList = node.Attributes;
 
-                        // Self-reference.
-                        if (summary.DocumentID == details.CdrID)
-                        {
-                            // There's no need to create a reference list entry.  Those are only used for
-                            // detecting and updating external links.  An internal link isn't a problem
-                            // for those purposes.
-                            int pageNumber = finder.FindInternalPageContainingSection(summary, details.SectionID);
-                            string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
-                            attrib = html.CreateAttribute("href");
-                            attrib.Value = url;
-                            attributeList.Append(attrib);
-                        }
-                        else if (details.IsSectionReference)
-                        {
-                            // Link to an external summary with a document fragment.
-                            int pageNumber;
-                            PercussionGuid referencedItemID;
-                            finder.FindPageContainingSection(referencedItemRootID, details.SectionID, out pageNumber, out referencedItemID);
+                            XmlAttribute reference = attributeList["objectid"];
+                            XmlAttribute attrib;
 
-                            if (referencedItemID == null)
+                            if (summary.SummaryReferenceMap.ContainsKey(reference.Value))
                             {
-                                string message =
-                                    string.Format("Unable to resolve section {0} in document with CDRID={1}.",
-                                    details.SectionID, details.CdrID);
-                                WarningWriter(message);
-                                continue;
+                                SummaryReference details = summary.SummaryReferenceMap[reference.Value];
+                                PercussionGuid referencedItemRootID = GetCdrDocumentID(CancerInfoSummaryContentType, details.CdrID);
+
+                                if (referencedItemRootID == null)
+                                {
+                                    WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
+                                    continue;
+                                }
+
+                                // Self-reference.
+                                if (summary.DocumentID == details.CdrID)
+                                {
+                                    // There's no need to create a reference list entry.  Those are only used for
+                                    // detecting and updating external links.  An internal link isn't a problem
+                                    // for those purposes.
+                                    int pageNumber = finder.FindInternalPageContainingSection(summary, details.SectionID);
+                                    string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
+                                    attrib = html.CreateAttribute("href");
+                                    attrib.Value = url;
+                                    attributeList.Append(attrib);
+                                }
+                                else if (details.IsSectionReference)
+                                {
+                                    // Link to an external summary with a document fragment.
+                                    int pageNumber;
+                                    PercussionGuid referencedItemID;
+                                    finder.FindPageContainingSection(referencedItemRootID, details.SectionID, out pageNumber, out referencedItemID);
+
+                                    if (referencedItemID == null)
+                                    {
+                                        string message =
+                                            string.Format("Unable to resolve section {0} in document with CDRID={1}.",
+                                            details.SectionID, details.CdrID);
+                                        WarningWriter(message);
+                                        continue;
+                                    }
+
+                                    // Add the item to the list.
+                                    referencedContentItems.Add(referencedItemID);
+
+                                    // Build the link.
+                                    string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
+                                    attrib = html.CreateAttribute("href");
+                                    attrib.Value = url;
+                                    attributeList.Append(attrib);
+                                }
+                                else
+                                {
+                                    // Link to a summary without a fragment.
+
+                                    // Add the item to the list.
+                                    PercussionGuid referencedItemID = finder.FindFirstPage(referencedItemRootID);
+
+                                    if (referencedItemID == null)
+                                    {
+                                        WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
+                                        continue;
+                                    }
+
+
+                                    referencedContentItems.Add(referencedItemID);
+
+                                    // Build the link.
+                                    attrib = html.CreateAttribute("href");
+                                    attrib.Value = details.Url;
+                                    attributeList.Append(attrib);
+                                }
                             }
-                            
-                            // Add the item to the list.
-                            referencedContentItems.Add(referencedItemID);
-
-                            // Build the link.
-                            string url = BuildSummaryRefUrl(details.Url, pageNumber, details.SectionID);
-                            attrib = html.CreateAttribute("href");
-                            attrib.Value = url;
-                            attributeList.Append(attrib);
-                        }
-                        else
-                        {
-                            // Link to a summary without a fragment.
-
-                            // Add the item to the list.
-                            PercussionGuid referencedItemID = finder.FindFirstPage(referencedItemRootID);
-
-                            if (referencedItemID == null)
-                            {
-                                WarningWriter(string.Format("Unable to find Summary document with CDRID={0}.", details.CdrID));
-                                continue;
-                            }
-
-
-                            referencedContentItems.Add(referencedItemID);
-
-                            // Build the link.
-                            attrib = html.CreateAttribute("href");
-                            attrib.Value = details.Url;
-                            attributeList.Append(attrib);
                         }
                     }
                 }

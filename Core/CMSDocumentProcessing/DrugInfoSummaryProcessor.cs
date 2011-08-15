@@ -338,7 +338,9 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid snippetTemplate = CMSController.TemplateNameManager[PercussionTemplates.AudioMediaLinkSnippetTemplate];
 
             XmlDocument html = new XmlDocument();
-            // Encolse the html with a top level element, to make the xml
+            html.PreserveWhitespace = true;
+
+            // Enclose the html within a top level element, to make the xml
             // valid before loading into the XmlDocument object.
             html.LoadXml( "<mk>" + drugInfo.Html + "</mk>" );
             XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");

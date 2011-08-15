@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Media;
@@ -199,6 +200,17 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _sectionList; }
             internal set { _sectionList = value; }
+        }
+
+        /// <summary>
+        ///  Returns a list of only the top-most sections.
+        /// </summary>
+        public List<SummarySection> TopLevelSectionList
+        {
+            get
+            {
+                return new List<SummarySection>(SectionList.Where(item => item.IsTopLevel));
+            }
         }
 
         /// <summary>

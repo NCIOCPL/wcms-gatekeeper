@@ -686,6 +686,8 @@ namespace GateKeeper.ContentRendering
                 
                 // Create temporary XML document to transform with the loaded XSL.
                 XmlDocument doc = new XmlDocument();
+                doc.PreserveWhitespace = true;
+
                 doc.LoadXml(string.Format("<Para id=\"InternalUse\">{0}</Para>", item.Caption));
                 Render(doc.CreateNavigator(), sw);
 

@@ -324,6 +324,7 @@ namespace GateKeeper.DataAccess.CDR
                 string type = DocumentHelper.GetAttribute(mediaLink, "type");
 
                 XmlDocument mediaXml = new XmlDocument();
+                mediaXml.PreserveWhitespace = true;
                 mediaXml.LoadXml(mediaLink.OuterXml);
 
                 XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
