@@ -431,8 +431,8 @@ namespace GateKeeper.DataAccess
                 else
                     collectHTML += " " + partA.Trim();
 
-                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
-                if (Regex.IsMatch(collectHTML, "[({[/]$|[({[\\s]\'$|[({[\\s]\"$"))
+                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[- or open ' "
+                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
                     collectHTML += partB;
                 else
                     collectHTML += " " + partB;

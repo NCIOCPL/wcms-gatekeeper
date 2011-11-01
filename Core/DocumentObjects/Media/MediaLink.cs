@@ -13,6 +13,9 @@ namespace GateKeeper.DocumentObjects.Media
     [Serializable]
     public class MediaLink
     {
+        public const string AudioType = "audio/mpeg";
+        public const string ImageType = "image/jpeg";
+
         #region Fields
 
         private string _reference = string.Empty;

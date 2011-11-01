@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Linq;
 using System.Web.Services.Protocols;
+using System.Text;
+using System.Diagnostics;
 
 using GKManagers.CMSManager.Configuration;
 using NCI.WCM.CMSManager.PercussionWebSvc;
@@ -48,10 +50,10 @@ namespace NCI.WCM.CMSManager.CMS
          */
         securitySOAP _securityService;
 
-         /**
-         * The content service instance; used to perform operations defined in
-         * the content services. It is initialized by login().
-         */
+        /**
+        * The content service instance; used to perform operations defined in
+        * the content services. It is initialized by login().
+        */
         contentSOAP _contentService;
 
         /**
@@ -104,6 +106,7 @@ namespace NCI.WCM.CMSManager.CMS
             Login(username, password, community, host, port, protocol, timeout);
 
             siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
+
         }
 
         /// <summary>
@@ -318,7 +321,7 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 CreateChildItems(new PercussionGuid(id), childFieldList, invalidFieldnameHandler);
             }
-            
+
             PSWSUtils.CheckinItem(_contentService, id);
             return id;
 
@@ -408,7 +411,7 @@ namespace NCI.WCM.CMSManager.CMS
 
             PSItemStatus[] checkOutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { id });
 
-            PSItem[] returnList = PSWSUtils.LoadItems(_contentService, new long[]{id});
+            PSItem[] returnList = PSWSUtils.LoadItems(_contentService, new long[] { id });
             PSItem item = returnList[0];
 
             if (invalidFieldnameHandler == null)
@@ -459,7 +462,7 @@ namespace NCI.WCM.CMSManager.CMS
             // the field name.  Otherwise, throw CMSInvalidFieldnameException.
 
             // Scan through the item's fields collection and look for field names.
-            foreach (KeyValuePair<string,string> kvp in fieldValueList)
+            foreach (KeyValuePair<string, string> kvp in fieldValueList)
             {
                 string targetName = kvp.Key;
                 string fieldValue = kvp.Value;
@@ -1040,7 +1043,7 @@ namespace NCI.WCM.CMSManager.CMS
             if (!string.IsNullOrEmpty(path))
                 searchPath = siteRootPath + path;
             else
-                searchPath = null;
+                searchPath = siteRootPath;
 
 
             PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, searchPath, fieldCriteria);
@@ -1080,7 +1083,7 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 filter.slot = slotname;
             }
-            
+
             PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
 
             // If relationships exist, load the relevant content items.
@@ -1099,7 +1102,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         public PSItemStatus[] CheckOutForEditing(PercussionGuid[] guidList)
         {
-            long[] idList= Array.ConvertAll(guidList, guid=>(long)guid.ID);
+            long[] idList = Array.ConvertAll(guidList, guid => (long)guid.ID);
             return PSWSUtils.PrepareForEdit(_contentService, idList);
         }
 
@@ -1109,6 +1112,42 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 PSWSUtils.ReleaseFromEdit(_contentService, statusList);
             }
+        }
+
+        public string Render(PercussionGuid contentID, string templateName, string contextId, string siteId, string itemFilter)
+        {
+            string renderdHtml = string.Empty;
+
+            PercussionGuid templateID = TemplateNameManager[templateName];
+
+            Uri serverUri = new Uri(_systemService.Url);
+            string cookies = _systemService.CookieContainer.GetCookieHeader(serverUri);
+
+            // Percussion system login and any other needed intitialization goes here.
+            // The login ID and password are loaded from the application's configuration file.
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            string host = percussionConfig.ConnectionInfo.Host.Value;
+            string port = percussionConfig.ConnectionInfo.Port.Value;
+            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
+
+            string srcAddress = "http://156.40.134.66:9925/Rhythmyx/assembler/render";
+            int pathStart = srcAddress.IndexOf("/Rhythmyx/");
+            string baseUrl = string.Format("{0}://{1}:{2}{3}", protocol, host, port, srcAddress.Substring(pathStart));
+
+            string url = string.Format("{0}?sys_contentid={1}&sys_context={2}&sys_siteid={3}&sys_itemfilter={4}&sys_template={5}",
+                                        baseUrl, contentID.ID, contextId, siteId, itemFilter, templateID.ID);
+
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add("cookie", cookies);
+                Byte[] pageData = client.DownloadData(url);
+                renderdHtml = Encoding.UTF8.GetString(pageData);
+                if (string.IsNullOrEmpty(renderdHtml))
+                    throw new Exception("CMS Preview did not render html content");
+            }
+
+
+            return renderdHtml;
         }
 
         #region Static Utility Methods

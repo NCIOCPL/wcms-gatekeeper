@@ -614,14 +614,15 @@ namespace NCI.WCM.CMSManager.CMS
                 if (!string.IsNullOrEmpty(searchPath))
                 {
                     req.PSSearch.PSSearchParams.FolderFilter = new PSSearchParamsFolderFilter();
-                    req.PSSearch.PSSearchParams.FolderFilter.includeSubFolders = true;
                     req.PSSearch.PSSearchParams.FolderFilter.Value = searchPath;
+                    req.PSSearch.PSSearchParams.FolderFilter.includeSubFolders = true;
                 }
 
                 // Search for fields
                 if (fieldCriteria != null && fieldCriteria.Count > 0)
                 {
-                    req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count];
+                    req.PSSearch.PSSearchParams.Parameter = new PSSearchField[fieldCriteria.Count + 1];
+
                     int offset = 0;
                     foreach (KeyValuePair<string, string> pair in fieldCriteria)
                     {
@@ -629,7 +630,20 @@ namespace NCI.WCM.CMSManager.CMS
                         req.PSSearch.PSSearchParams.Parameter[offset].name = pair.Key;
                         req.PSSearch.PSSearchParams.Parameter[offset].Value = pair.Value;
                         req.PSSearch.PSSearchParams.Parameter[offset].Operator = operatorTypes.equal;
+                        req.PSSearch.PSSearchParams.Parameter[offset].externalOperator = "CONCEPT";
+                        req.PSSearch.PSSearchParams.Parameter[offset].Connector = connectorTypes.and;
+                        offset++;
                     }
+
+                    // Include the required sys_objecttype
+
+                    req.PSSearch.PSSearchParams.Parameter[offset] = new PSSearchField();
+                    req.PSSearch.PSSearchParams.Parameter[offset].name = "sys_objecttype";
+                    req.PSSearch.PSSearchParams.Parameter[offset].Value = "3";
+                    req.PSSearch.PSSearchParams.Parameter[offset].Operator = operatorTypes.lessthan;
+                    req.PSSearch.PSSearchParams.Parameter[offset].externalOperator = String.Empty;
+                    req.PSSearch.PSSearchParams.Parameter[offset].Connector = connectorTypes.and;
+
                 }
 
                 try

@@ -27,6 +27,7 @@ namespace GKManagers.CMSDocumentProcessing
     public class CancerInfoSummaryProcessor : DocumentProcessorCommon, IDocumentProcessor, IDisposable
     {
         private PercussionConfig PercussionConfig;
+        private SectionToCmsIDMap _mediaLinkIDMap = null;
 
         #region Constants
 
@@ -47,7 +48,6 @@ namespace GKManagers.CMSDocumentProcessing
         // TODO: Seriously, the AudienceType string needs to be changed to an Enum.
         const string PatientAudience = "Patients";
         const string HealthProfAudience = "HealthProfessional";
-
         #endregion
 
         #region Runtime Constants
@@ -57,7 +57,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         // Contain the names of the ContentTypes used to represent Cancer Info Sumamries in the CMS.
         // Set in the constructor.
-        readonly private string CancerInfoSummaryContentType;
+        readonly protected string CancerInfoSummaryContentType;
         readonly private string CancerInfoSummaryPageContentType;
         readonly private string CancerInfoSummaryLinkContentType;
         readonly private string MediaLinkContentType;
@@ -67,7 +67,6 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
-
         #region Internal Delegates
 
         private delegate string SubDocumentIDDelegate<SubDocumentType>(SubDocumentType subDocument);
@@ -75,6 +74,12 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
+        #region Protected Members
+        protected SectionToCmsIDMap MediaLinkIDMap
+        {
+            get { return _mediaLinkIDMap; }
+        }
+        #endregion
 
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
             : base(warningWriter, informationWriter)
@@ -100,31 +105,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
-            VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
-
-            SummaryDocument document = documentObject as SummaryDocument;
-
-            InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
-
-
-
-            // Are we updating an existing document? Or saving a new one?
-            PercussionGuid identifier = GetCdrDocumentID(CancerInfoSummaryContentType, document.DocumentID);
-
-            // No mapping found, this is a new item.
-            if (identifier == null)
-            {
-                InformationWriter(string.Format("Create new content item for document CDRID = {0}.", document.DocumentID));
-                CreateNewCancerInformationSummary(document);
-            }
-            else
-            {
-                InformationWriter(string.Format("Update existing content item for document CDRID = {0}.", document.DocumentID));
-                UpdateCancerInformationSummary(document, identifier);
-            }
-
-
-            InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+            // Call the internal private method for processing the document.
+            processDocumentInternal(documentObject);
         }
 
         /// <summary>
@@ -174,7 +156,7 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        private void CreateNewCancerInformationSummary(SummaryDocument document)
+        protected PercussionGuid CreateNewCancerInformationSummary(SummaryDocument document)
         {
             // List of items to delete if unable to create the entire document.
             List<PercussionGuid> rollbackList = new List<PercussionGuid>();
@@ -220,7 +202,7 @@ namespace GKManagers.CMSDocumentProcessing
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
                 List<List<PercussionGuid>> pageSectionReferencedSumamries = ResolveSectionSummaryReferences(document, document.TopLevelSectionList);
-                    //ResolveSummaryReferences(document);
+                //ResolveSummaryReferences(document);
 
 
                 //Create Cancer Info Summary Page items
@@ -269,6 +251,8 @@ namespace GKManagers.CMSDocumentProcessing
                 LinkRootItemToAlternateAudienceVersion(summaryRoot, document.AudienceType);
 
                 LinkToAlternateLanguageVersion(document, summaryRoot);
+
+                return summaryRoot;
             }
             catch (Exception)
             {
@@ -311,7 +295,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Is the summary in a state suitable for updating?
             VerifyDocumentMayBeUpdated(summary, existingItemPath, summaryRootID, summaryLinkID, oldPageIDs, incomingPageRelationships);
-            
+
             string newPath = GetTargetFolder(summary.BasePrettyURL);
             string prettyUrlName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
 
@@ -459,8 +443,22 @@ namespace GKManagers.CMSDocumentProcessing
                     continue;
                 }
 
-                // Load the body of the page containing the link.
-                string sourceBodyField = PSItemUtils.GetFieldValue(parentItem, "bodyfield");
+                string sourceBodyField = String.Empty;
+
+                // Table section use Inline Table & FullSizeTable
+                if (parentItem.contentType == TableSectionContentType)
+                {
+                    // Load the content of the page containing the link.
+                    sourceBodyField += "<tableSection>";
+                    sourceBodyField += PSItemUtils.GetFieldValue(parentItem, "inline_table");
+                    sourceBodyField += PSItemUtils.GetFieldValue(parentItem, "fullsize_table");
+                    sourceBodyField += "</tableSection>";
+                }
+                else
+                {
+                    // Load the body of the page containing the link.
+                    sourceBodyField = PSItemUtils.GetFieldValue(parentItem, "bodyfield");
+                }
                 XmlDocument body = new XmlDocument();
                 body.LoadXml(sourceBodyField);
 
@@ -504,7 +502,7 @@ namespace GKManagers.CMSDocumentProcessing
                 throw new CannotUpdateException(sb.ToString());
             }
         }
- 
+
 
         private void RemoveOldPages(PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems)
         {
@@ -558,7 +556,23 @@ namespace GKManagers.CMSDocumentProcessing
                     PSItem oldTargetItem = itemStore.LoadContentItem(oldTargetID);
                     PSItem sourceItem = itemStore.LoadContentItem(sourceID);
 
-                    string sourceBodyField = PSItemUtils.GetFieldValue(sourceItem, "bodyfield");
+                    string sourceBodyField = String.Empty;
+
+                    // Table section use Inline Table & FullSizeTable
+                    if (sourceItem.contentType == TableSectionContentType)
+                    {
+                        // Load the content of the page containing the link.
+                        sourceBodyField += "<tableSection>";
+                        sourceBodyField += PSItemUtils.GetFieldValue(sourceItem, "inline_table");
+                        sourceBodyField += PSItemUtils.GetFieldValue(sourceItem, "fullsize_table");
+                        sourceBodyField += "</tableSection>";
+                    }
+                    else
+                    {
+                        // Load the body of the page containing the link.
+                        sourceBodyField = PSItemUtils.GetFieldValue(sourceItem, "bodyfield");
+                    }
+
                     XmlDocument body = new XmlDocument();
                     body.LoadXml(sourceBodyField);
 
@@ -707,7 +721,9 @@ namespace GKManagers.CMSDocumentProcessing
             rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
 
             // Resolve MediaLink inline slots within the pages.
-            SectionToCmsIDMap mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
+            SectionToCmsIDMap mediaLinkIDMap = null;
+            _mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
+            mediaLinkIDMap = _mediaLinkIDMap;
             ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
             // Resolve MediaLink references within table sections.
@@ -934,7 +950,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // HACK: Look for summary references in both the main section HTML, and in the 
                 // (for tables only) standalone section.
-                foreach (XmlDocument html in new XmlDocument []{ section.Html, section.StandaloneHTML })
+                foreach (XmlDocument html in new XmlDocument[] { section.Html, section.StandaloneHTML })
                 {
                     if (html != null)  // Only table sections will have a StandaloneHTML
                     {
@@ -1153,7 +1169,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Look for a summary item in the slot.
             PercussionGuid[] searchResults = CMSController.SearchForItemsInSlot(summaryLink, containingSlot);
-            if (searchResults.Length>0)
+            if (searchResults.Length > 0)
             {
                 summaryRoot = searchResults[0];
             }
@@ -1166,7 +1182,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// to create an alternage language version.
         /// </summary>
         /// <param name="summary">Reference to a CancerInformationSummary object.</param>
-        private void VerifyEnglishLanguageVersion(SummaryDocument summary)
+        protected virtual void VerifyEnglishLanguageVersion(SummaryDocument summary)
         {
             // No need to validate if the document is in English.
             if (summary.Language == Language.Spanish)
@@ -1187,7 +1203,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summary">Reference to a CancerInformationSummary object.</param>
         /// <param name="rootID">The CMSID for the root element of the CancerInformationSummary's
         /// composite content item.</param>
-        private void LinkToAlternateLanguageVersion(SummaryDocument summary, PercussionGuid rootID)
+        protected virtual void LinkToAlternateLanguageVersion(SummaryDocument summary, PercussionGuid rootID)
         {
             // We only need to set up a translation relationship from Spanish to English,
             // not the other way around.  CDR business rules dicatate that the English version
@@ -1395,6 +1411,115 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
+        #region Public Members
+        /// <summary>
+        /// This method is identical to ProcessDocument except it takes in ref argument which
+        /// contains the CMS content item identifier when the method returns. 
+        /// </summary>
+        /// <param name="documentObject">The sumamry document object</param>
+        /// <param name="contentItemGuid">The percussionguid of the content item</param>
+        public void ProcessDocument(Document documentObject, ref PercussionGuid contentItemGuid)
+        {
+            contentItemGuid = processDocumentInternal(documentObject);
+        }
+
+        // <summary>
+        /// Taking care of the spaces around GlossaryTermRefLink
+        /// </summary>
+        /// <param name="documentID"></param>
+        /// <returns></returns>
+        public void BuildGlossaryTermRefLink(ref string html, string tag)
+        {
+            // TODO:  This doesn't belong in the data layer!!!!
+            string startTag = "<a Class=\"" + tag + "\"";
+            string endTag = "</a>";
+            int startIndex = html.IndexOf(startTag, 0);
+            string sectionHTML = html;
+            string collectHTML = string.Empty;
+            string partC = string.Empty;
+            while (startIndex >= 0)
+            {
+                string partA = sectionHTML.Substring(0, startIndex);
+                string left = sectionHTML.Substring(startIndex);
+                int endIndex = left.IndexOf(endTag) + endTag.Length;
+                string partB = left.Substring(0, endIndex);
+                partC = left.Substring(endIndex);
+
+                // Combine
+                // Do not add extra space after the GlossaryTermRef if following sign
+                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
+                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
+                    collectHTML += partA.Trim();
+                else
+                    collectHTML += " " + partA.Trim();
+
+                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
+                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
+                    collectHTML += partB;
+                else
+                    collectHTML += " " + partB;
+
+                sectionHTML = partC.Trim();
+                startIndex = sectionHTML.IndexOf(startTag, 0);
+            }
+            html = collectHTML + partC;
+        }
+
+        public string GetLanguageCode(Language language)
+        {
+            string languageCode;
+
+            switch (language)
+            {
+                case Language.Spanish:
+                    languageCode = LanguageSpanish;
+                    break;
+                case Language.English:
+                default:
+                    languageCode = LanguageEnglish;
+                    break;
+            }
+
+            return languageCode;
+        }
+        #endregion
+
+        #region Private Members
+        /// <summary>
+        /// And internal private method which the identity of the content item created or being updated.
+        /// </summary>
+        /// <param name="documentObject">The summary document instance</param>
+        /// <returns>The percussion guid of the content item</returns>
+        private PercussionGuid processDocumentInternal(Document documentObject)
+        {
+            VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
+
+            SummaryDocument document = documentObject as SummaryDocument;
+
+            InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
+
+
+
+            // Are we updating an existing document? Or saving a new one?
+            PercussionGuid identifier = GetCdrDocumentID(CancerInfoSummaryContentType, document.DocumentID);
+
+            // No mapping found, this is a new item.
+            if (identifier == null)
+            {
+                InformationWriter(string.Format("Create new content item for document CDRID = {0}.", document.DocumentID));
+                identifier = CreateNewCancerInformationSummary(document);
+            }
+            else
+            {
+                InformationWriter(string.Format("Update existing content item for document CDRID = {0}.", document.DocumentID));
+                UpdateCancerInformationSummary(document, identifier);
+            }
+
+            InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+
+            return identifier;
+        }
+
         private List<ContentItemForCreating> CreatePDQCancerInfoSummaryPage(SummaryDocument document, string creationPath)
         {
             // Content items may be re-created during an update, therefore we must pass the create path from the caller.
@@ -1452,7 +1577,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             int shortLength = Math.Min(ShortTitleLength, longTitle.Length);
             fields.Add("short_title", longTitle.Substring(0, shortLength));
-            
+
             fields.Add("sys_title", summarySection.Title);
 
             // HACK: This relies on Percussion not setting anything else in the login session.
@@ -1534,8 +1659,6 @@ namespace GKManagers.CMSDocumentProcessing
 
             return fields;
         }
-
-
 
         private List<ContentItemForCreating> CreatePDQCancerInfoSummary(SummaryDocument document, string creationPath)
         {
@@ -1639,7 +1762,6 @@ namespace GKManagers.CMSDocumentProcessing
 
             return sb.ToString();
         }
-
 
         private List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
         {
@@ -1782,67 +1904,6 @@ namespace GKManagers.CMSDocumentProcessing
             return prettyURLName;
         }
 
-
-        // <summary>
-        /// Taking care of the spaces around GlossaryTermRefLink
-        /// </summary>
-        /// <param name="documentID"></param>
-        /// <returns></returns>
-        public void BuildGlossaryTermRefLink(ref string html, string tag)
-        {
-            // TODO:  This doesn't belong in the data layer!!!!
-            string startTag = "<a Class=\"" + tag + "\"";
-            string endTag = "</a>";
-            int startIndex = html.IndexOf(startTag, 0);
-            string sectionHTML = html;
-            string collectHTML = string.Empty;
-            string partC = string.Empty;
-            while (startIndex >= 0)
-            {
-                string partA = sectionHTML.Substring(0, startIndex);
-                string left = sectionHTML.Substring(startIndex);
-                int endIndex = left.IndexOf(endTag) + endTag.Length;
-                string partB = left.Substring(0, endIndex);
-                partC = left.Substring(endIndex);
-
-                // Combine
-                // Do not add extra space after the GlossaryTermRef if following sign
-                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
-                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
-                    collectHTML += partA.Trim();
-                else
-                    collectHTML += " " + partA.Trim();
-
-                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
-                if (Regex.IsMatch(collectHTML, "[({[/]$|[({[\\s]\'$|[({[\\s]\"$"))
-                    collectHTML += partB;
-                else
-                    collectHTML += " " + partB;
-
-                sectionHTML = partC.Trim();
-                startIndex = sectionHTML.IndexOf(startTag, 0);
-            }
-            html = collectHTML + partC;
-        }
-
-        public string GetLanguageCode(Language language)
-        {
-            string languageCode;
-
-            switch (language)
-            {
-                case Language.Spanish:
-                    languageCode = LanguageSpanish;
-                    break;
-                case Language.English:
-                default:
-                    languageCode = LanguageEnglish;
-                    break;
-            }
-
-            return languageCode;
-        }
-
         private string SummarySectionIDAccessor(SummarySection section)
         {
             return section.RawSectionID;
@@ -1852,5 +1913,6 @@ namespace GKManagers.CMSDocumentProcessing
         {
             return link.Id;
         }
+        #endregion
     }
 }

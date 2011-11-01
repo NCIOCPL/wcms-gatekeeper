@@ -21,82 +21,6 @@ namespace GateKeeper.DataAccess
     public static class GenerateCDRPreview
     {
         #region Public methods
-        // <summary>
-        /// Summary Preview
-        /// </summary>
-        /// <param name="html">summary html web page</param>
-        /// <param name="summary">SummaryDocument object</param>
-        /// <returns>html in parameter reference</returns>
-        public static void SummaryPreview(ref string html, SummaryDocument summary )
-        {
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
-            html = startTag;
-
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_cancertopics.jpg";
-            int tableWidth = 580;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            // Add document title
-            html += begin + summary.Title + end;
-
-            // Add last modified date
-            html += "<tr><td><table width=\"651\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"right\">";
-            html += "<tr><td><img src=\"/images/spacer.gif\" border=\"0\" height=\"6\" width=\"6\"/></td></tr>";
-            html += " <tr><td align=\"right\" valign=\"bottom\"><span class=\"protocol-date-label\">Last Modified: </span> ";
-            html += "<span class=\"protocol-dates\">" +GetDate(summary.LastModifiedDate, "MM/DD/YYYY") + "</span></td></tr></table></td></tr>";
-            html += "<img src=\"/images/spacer.gif\" border=\"0\" height=\"6\" width=\"6\"/>";
-
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-
-            GetContentTags(ref contentBegin, ref contentEnd);
-            html += contentBegin;
-            BuildSummaryTableOfContents(ref html, summary.SectionList, summary.Language);
-            foreach (SummarySection sect in summary.SectionList)
-            {
-                // Replace the SummaryRef with pretty URL in the SummarySection's html field
-                if (sect.IsTopLevel)
-                {
-                    html += "<p><span class=\"page-title\">" + "<a name=\"Section_" + sect.SectionID +"\"></a>" + sect.Title + "</span></p>";
-                    string sectHtml = sect.Html.OuterXml;
-                    using (SummaryQuery sumQuery = new SummaryQuery())
-                    {
-                        if (sectHtml.Contains("<SummaryRef"))
-                        {
-                            sumQuery.BuildSummaryRefLink(ref sectHtml, 0);
-                        }
-
-                        sumQuery.FormatSection(ref sectHtml, sect, summary);
-                    }
-                    // Replace media link 
-                    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
-                    sectHtml = sectHtml.Replace("[__imagelocation]", imagePath);
-                    // This is to fix the summary table link format problem on Cancer.gov.
-                    // Problem: the links in the summary table appear to be larger font than the text. however, hoover the link the font become small.
-                    // The problem is in the cancer.gov style sheet.  This is a temporary fix on CDRPreview side).
-                    sectHtml = sectHtml.Replace("Class=\"SummarySection-Table-Small\"", "style=\"font-size:7pt\"");
-
-                    string glossaryTermTag = "Summary-GlossaryTermRef";
-                    if (sectHtml.Contains(glossaryTermTag))
-                    {
-                        ProtocolQuery pQuery = new ProtocolQuery();
-                        pQuery.BuildGlossaryTermRefLink(ref sectHtml, glossaryTermTag);
-                    }
-
-                    html += sectHtml;
-                    html += "<p><a href=\"#top\" class=\"backtotop-link\">" +
-                            "<img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><p/>";
-                }
-            }
-
-            html += contentEnd;
-            html += endTag;
-        }
-
 
         // <summary>
         /// Protocol Health Professional / Patient Preview
@@ -104,100 +28,52 @@ namespace GateKeeper.DataAccess
         /// <param name="html">Protocol html web page</param>
         /// <param name="protocol">ProtocolDocument object</param>
         /// <returns>html in parameter reference</returns>
-        public static void ProtocolPreview(ref string html, ProtocolDocument protocol, PreviewTypes docType )
+        public static void ProtocolPreview(ref string html, ref string headerHtml, ProtocolDocument protocol, PreviewTypes docType)
         {
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
-            html = startTag;
-
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_cancertopics.jpg";
-            int tableWidth = 580;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            // Add document title
-            html += begin + "Clinical Trials (PDQ<sup class=\"header\">&#174;</sup>)" + end;
+            headerHtml = createHeaderZoneContent("Clinical Trials (PDQ&#174;)", protocol, docType);
 
             // Add last modified date and first published date
-            bool lineBreak = false;
-            html += "<tr><td><table width=\"651\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"right\">";
-            html += "<tr><td><img src=\"/images/spacer.gif\" border=\"0\" height=\"4\" width=\"8\"/><tr><td>";
-            html += "<tr><td align=\"right\" valign=\"bottom\">";
-            if (protocol.LastModifiedDate != DateTime.MinValue && protocol.LastModifiedDate != null)
-            {
-                html += "<span class=\"protocol-date-label\">Last Modified: </span>";
-                html +="<span class=\"protocol-dates\">" + GetDate(protocol.LastModifiedDate, string.Empty) + "</span>";
-                html += "<img src=\"/images/spacer.gif\" border=\"0\" height=\"1\" width=\"8\"/>";
-                lineBreak = true;
-            }
+            headerHtml += "<div id=\"language-dates\">";
+            string audience = "Patient";
+            if( docType == PreviewTypes.Protocol_HP )
+                audience = "Health Professional";
+            headerHtml += string.Format("<div class=\"version-language\"><ul><li class=\"one active\">{0}</li></ul></div>", audience);
+
+            headerHtml +=   "<div class=\"document-dates\"><ul>";
             if (protocol.FirstPublishedDate != DateTime.MinValue)
-            {
-                if (protocol.LastModifiedDate != DateTime.MinValue)
-                    html += "&nbsp;&nbsp;";
+                headerHtml += string.Format("<li><strong>First Published: </strong>{0}</li>", GetDate(protocol.FirstPublishedDate, string.Empty));
+            if (protocol.LastModifiedDate != DateTime.MinValue && protocol.LastModifiedDate != null)
+                headerHtml += string.Format("<li><strong>Last Modified: </strong>{0}</li>", GetDate(protocol.LastModifiedDate, string.Empty));
+            headerHtml += "</ul></div>";
 
-                html += "<span class=\"protocol-date-label\">First Published: </span> ";
-                html += "<span class=\"protocol-dates\">" + GetDate(protocol.FirstPublishedDate, string.Empty) + "</span>";
-                html += "<img src=\"/images/spacer.gif\" border=\"0\" height=\"1\" width=\"8\"/>";
-                lineBreak = true;
-            }
-            html += "</td></tr></table></td></tr>";
-            if (lineBreak)
-                html += "<tr><td height=\"10\"/></tr>";
+            headerHtml += "</div>";
 
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-            GetContentTags(ref contentBegin, ref contentEnd);
-            html += contentBegin;
-
-             XPathNavigator xNav;
+            XPathNavigator xNav;
             // Protocol HP version
             if (docType == PreviewTypes.Protocol_HP)
                 xNav = protocol.Xml.CreateNavigator();
-            else 
+            else
                 xNav = protocol.PatientXML.CreateNavigator();   // Protocol Patient version
 
             FormatProtocolSections(xNav, protocol);
             string protocolContent = xNav.OuterXml;
-            string strCDRID = CDRHelper.RebuildCDRID(protocol.ProtocolID.ToString()); 
+            string strCDRID = CDRHelper.RebuildCDRID(protocol.ProtocolID.ToString());
             // Following modification is to resolve the link around title in FireFox browser.
             FormatProtocolHTML(ref protocolContent, strCDRID);
-            html += protocolContent;
-
+            html = protocolContent;
             html += "<a href=\"#top\" class=\"backtotop-link\"><img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>";
-            html += contentEnd;
-            html += endTag;
         }
 
-         // <summary>
+        // <summary>
         /// CTGov Protocol preview
         /// </summary>
         /// <param name="html">CTGov Protocol html web page</param>
         /// <param name="protocol">ProtocolDocument object</param>
         /// <returns>html in parameter reference</returns>
-        public static void CTGovProtocolPreview(ref string html, ProtocolDocument protocol)
+        public static void CTGovProtocolPreview(ref string html, ref string headerHtml , ProtocolDocument protocol)
         {
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
-            html = startTag;
+            headerHtml = createHeaderZoneContent("Clinical Trials (PDQ&#174;)", protocol, PreviewTypes.CTGovProtocol);
 
-            // Add document title
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_cancertopics.jpg";
-            int tableWidth = 580;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            html += begin + "Clinical Trials (PDQ<sup class=\"header\">&#174;</sup>)" + end;
-
-            html += "<tr><td height=\"10\"/></tr>";
-
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-            GetContentTags(ref contentBegin, ref contentEnd);
-            html += contentBegin;
             XPathNavigator xNav = protocol.Xml.CreateNavigator();
             string strCDRID = CDRHelper.RebuildCDRID(protocol.ProtocolID.ToString());
             FormatCTGovProtocolSections(xNav, protocol, strCDRID);
@@ -205,10 +81,7 @@ namespace GateKeeper.DataAccess
             // Following modification is to resolve the link around title in FireFox browser.
             FormatProtocolHTML(ref protocolContent, strCDRID);
             html += protocolContent;
-
             html += "<a href=\"#top\" class=\"backtotop-link\"><img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>";
-            html += contentEnd;
-            html += endTag;
         }
 
 
@@ -218,52 +91,70 @@ namespace GateKeeper.DataAccess
         /// <param name="html">summary html web page</param>
         /// <param name="glossary">GlossaryTermDocument object</param>
         /// <returns>html in parameter reference</returns>
-        public static void GlossaryPreview(ref string html, GlossaryTermDocument glossary)
+        public static void GlossaryPreview(ref string html, ref string headerHtml, GlossaryTermDocument glossary)
         {
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
             StringBuilder sb = new StringBuilder();
-            sb.Append(startTag);
+            headerHtml = createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
-            // Add document title
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_cancertopics.jpg";
-            int tableWidth = 580;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            sb.AppendFormat("{0}Dictionary of Cancer Terms{1}", begin, end);
-
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-            GetContentTags(ref contentBegin, ref contentEnd);
+            html = "<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>";
+            int count = 0;
             foreach (Language lang in glossary.GlossaryTermTranslationMap.Keys)
             {
                 GlossaryTermTranslation trans = glossary.GlossaryTermTranslationMap[lang];
 
                 // Get Definition HTML
-                string pron = string.Empty;
-                if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
-                    pron = " " + trans.Pronounciation.Trim();
 
+                // Pronunciation
+                string pron = string.Empty;
+
+                // Pronuncation audio
+                string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
+                foreach (MediaLink ml in trans.MediaLinkList)
+                {
+                    if (ml.Language == lang && ml.Type == MediaLink.AudioType)
+                    {
+                        string mlHtml = ml.Html;
+                        // Replace media link 
+                        mlHtml = mlHtml.Replace("[_audioMediaLocation]", mediaPath);
+                        mlHtml = mlHtml.Replace("&amps;", "&");
+
+                        // Fix audio icon relative to pub-preview.
+                        mlHtml = mlHtml.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
+
+                        pron += " " + mlHtml;
+                    }
+                }
+
+
+                // Pronuncation key
+                if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
+                {
+                    pron += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span>";
+                }
+
+                // Body.
+                
                 foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
                 {
-                    sb.Append("<tr><td><img src=\"/images/spacer.gif\" border=\"0\" height=\"25\" width=\"10\"/></td></tr>");
-                    sb.Append(contentBegin);
+                    if (count > 0)
+                    {
+                        sb.Append("<img width=\"700\" height=\"1\" border=\"0\" src=\"/images/gray_spacer.gif\"/><br/>");
+                        sb.Append("<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>");
+                    }
 
-                    sb.AppendFormat("<span class=\"header-A\">{0}</span>{1}<br/>", trans.TermName, pron);
+                    sb.AppendFormat("<span class=\"header-A\">{0}</span>&nbsp;{1}<br/>", trans.TermName, pron);
                     sb.Append("<img width=\"10\" height=\"5\" border=\"0\" src=\"/images/spacer.gif\"/><br/>");
 
 
                     /************************************************/
-                    sb.Append("<table width=\"571\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
+                    sb.Append("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
                     sb.Append("<tbody>");
                     sb.Append("<tr><td valign=\"top\" width=\"3\"/><td valign=\"top\">");
 
                     /***********************************************/
 
-                    string defHtml= gtDef.Html.Trim();
+                    // Definition
+                    string defHtml = gtDef.Html.Trim();
                     using (GlossaryTermQuery gQuery = new GlossaryTermQuery())
                     {
                         if (defHtml.Contains("<SummaryRef"))
@@ -273,15 +164,23 @@ namespace GateKeeper.DataAccess
                     }
                     sb.Append(defHtml);
 
-                    // Get media link HTML
+                    // Use the GK rendered HTML for Related Links.
+                    if (trans.RelatedInformationHTML != String.Empty)
+                    {
+                        sb.Append("<div id=\"pnlRelatedInfo\"><br/>");
+                        sb.Append(trans.RelatedInformationHTML);
+                        sb.Append("</div>");
+                    }
+
+                    // Images.
                     sb.Append("<p>");
+                    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
                     foreach (MediaLink ml in trans.MediaLinkList)
                     {
-                        if (ml.Language == lang)
+                        if (ml.Language == lang && ml.Type == MediaLink.ImageType)
                         {
                             string mlHtml = ml.Html;
                             // Replace media link 
-                            string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
                             mlHtml = mlHtml.Replace("[__imagelocation]", imagePath);
                             mlHtml = mlHtml.Replace("&amps;", "&");
                             sb.Append(mlHtml);
@@ -293,111 +192,23 @@ namespace GateKeeper.DataAccess
 
                     sb.Append("<img width=\"10\" height=\"25\" border=\"0\" src=\"/images/spacer.gif\"/>");
                     sb.Append("<br/>");
-                    sb.Append("<img width=\"571\" height=\"1\" border=\"0\" src=\"/images/gray_spacer.gif\"/><br/>");
-                    sb.Append(contentEnd);
+                    
+
                 }
+
+                count++;
             }
 
-            sb.Append(endTag);
-
-            html = sb.ToString();           
+            html += sb.ToString();
         }
 
-
-        // <summary>
-        /// Drug Info Summary Preview
-        /// </summary>
-        /// <param name="html">summary html web page</param>
-        /// <param name="drug">DrugInfoSummaryDocument object</param>
-        /// <returns>html in parameter reference</returns>
-        public static void DrugInfoSummaryPreview(ref string html, DrugInfoSummaryDocument drug)
-        {
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
-            html = startTag;
-            
-            // Add page title
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_druginfopills.jpg";
-            int tableWidth = 480;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            html += begin + "Drug Information" + end;
-
-            // Display date
-            bool lineBreak = false;
-            //html += "<tr><td><table width=\"651\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"right\"><tr><td valign=\"top\" align=\"right\">";
-            html += "<tr><td valign=\"top\" align=\"right\">";
-            if (drug.FirstPublishedDate != DateTime.MinValue)
-            {
-                html += "<b>Posted: </b> " + GetDate(drug.FirstPublishedDate, "MM/DD/YYYY");
-                lineBreak = true;
-            }
-            if (drug.LastModifiedDate != DateTime.MinValue)
-            {
-                if (drug.ReceivedDate != DateTime.MinValue && drug.ReceivedDate != null)
-                    html += "&nbsp;&nbsp;&nbsp;";
-
-                html += "<b>Updated: </b> " + GetDate(drug.LastModifiedDate, "MM/DD/YYYY");
-                html += "<img src=\"/images/spacer.gif\" border=\"0\" height=\"1\" width=\"6\"/>";
-                lineBreak = true;
-            }
-            html += "</td></tr>";
-            if (lineBreak)
-                html += "<tr><td height=\"10\"/></tr>";
-
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-            GetContentTags(ref contentBegin, ref contentEnd);
-            html += contentBegin;
-            html += "<span class=\"page-title\">" + drug.Title + "</span>";
-            string htmlContent = drug.Html;
-            DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery();
-            drugQuery.ReformatHTMLEndTag(ref htmlContent);
-            string glossaryTermTag = "Summary-GlossaryTermRef";
-            if (htmlContent.Contains(glossaryTermTag))
-            {
-                drugQuery.BuildGlossaryTermRefLink(ref htmlContent, glossaryTermTag);
-            }
-
-            html += htmlContent;
-            html += "<a href=\"#top\" class=\"backtotop-link\">" +
-        "<img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>";
-            html += contentEnd;
-            html += endTag;
-
-        }
-
-        public static void GeneticsProfessionalPreview(ref string html, GeneticsProfessionalDocument geneticsProfessional)
+        public static void GeneticsProfessionalPreview(ref string html, ref string headerHtml, GeneticsProfessionalDocument geneticsProfessional)
         {
             StringBuilder sb = new StringBuilder();
 
-            string startTag = string.Empty;
-            string endTag = string.Empty;
-            PageFrame(ref startTag, ref endTag);
-            sb.Append(startTag);
+            headerHtml = createHeaderZoneContent("Cancer Genetics Professionals", geneticsProfessional, PreviewTypes.GeneticsProfessional);
 
-            // Add page title
-            string begin = string.Empty;
-            string end = string.Empty;
-            string titleImage = "title_default.jpg";
-            int tableWidth = 575;
-            GetPageTitleTags(ref begin, ref end, titleImage, tableWidth.ToString());
-            sb.Append(begin + "	Cancer Genetics Professionals" + end);
-
-            // Imaginary spacer row.
-            sb.Append(@"<tr><td valign=""top"" align=""right"">&nbsp;</td></tr>");
-
-            // Start the page content
-            string contentBegin = string.Empty;
-            string contentEnd = string.Empty;
-            GetContentTags(ref contentBegin, ref contentEnd);
-
-            sb.Append(contentBegin);
-
-
+            sb.Append("<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>");
 
             // Header
             sb.Append(@"<table cellpadding=""1"" width=""100%"" cellspacing=""0"" border=""0"" class=""gray-border"">
@@ -427,13 +238,9 @@ namespace GateKeeper.DataAccess
             sb.Append("<a href=\"#top\" class=\"backtotop-link\"><img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>");
             sb.Append("<p>");
 
-
-            sb.Append(contentEnd);
-            sb.Append(endTag);
-
             html = sb.ToString();
         }
-        
+
         #endregion
 
         #region Private methods
@@ -445,29 +252,38 @@ namespace GateKeeper.DataAccess
         /// <returns></returns>
         private static void PageFrame(ref string startTag, ref string endTag)
         {
-            startTag = "<html>" + 
-                        "<head runat=\"server\">" + 
-                        "<title>CDR Preview</title>" + 
+            string resourceBase = ConfigurationManager.AppSettings["PublishedContentBase"];
+            if (resourceBase.EndsWith("/"))
+                resourceBase = resourceBase.Substring(0, resourceBase.Length - 1);
+
+            startTag = "<html>" +
+                        "<head runat=\"server\">" +
+                        "<title>CDR Preview</title>" +
                         "<meta http-equiv=\"content-type\" content=\"text/html;charset=UTF-8\" />" +
-                        "<link rel=\"stylesheet\" href=\"http://www.cancer.gov/stylesheets/nci.css\" type=\"text/css\"/>" +
-		                "<link rel=\"stylesheet\" href=\"http://www.cancer.gov/stylesheets/nci_general_browsers.css\" type=\"text/css\"/>" +
-                         GetJScript() + 
+                        "<link rel=\"stylesheet\" href=\"" + resourceBase + "/Styles/nci.css\" type=\"text/css\"/>" +
+                        "<link rel=\"stylesheet\" href=\"" + resourceBase + "/Styles/nci-new.css\" type=\"text/css\"/>" +
+                        "<link rel=\"stylesheet\" href=\"" + resourceBase + "/Styles/nciplus.css\" type=\"text/css\"/>" +
+                         GetJScript() +
+                         "<script src=\"" + resourceBase + "/js/modernizr-1.7.min.js\"></script>\n" +
+                         "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js\" type=\"text/javascript\"></script>\n" +
+                         "<script src=\"https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js\" type=\"text/javascript\"></script>\n" +
+                         "<script src=\"common/wcmsAudio.js\" type=\"text/javascript\"></script>\n" +
                         "</head>" +
                         "<body leftmargin=\"0\" topmargin=\"0\" marginheight=\"0\" marginwidth=\"0\">" +
-                        "<form id=\"form1\" runat=\"server\">" + 
+                        "<div id=\"cgovContainer\">" +
                         "<div align=\"center\">" +
-                        "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" + 
+                        "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" +
                         "<tr><td>" +
-                        "<table width=\"100%\">" + 
+                        "<table width=\"100%\">" +
                         "<tr><td/>" +
                         "<td>" +
-                        "<table width=\"751\"  cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">";
+                        "<table width=\"100%\"  cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">";
 
-            endTag = "</table></td><td/></tr></table>" + 
+            endTag = "</table></td><td/></tr></table>" +
                      "</td></tr>" +
-                     "</table>" + 
-                     "</div>" + 
-                     "</form>" + 
+                     "</table>" +
+                     "</div>" +
+                     "</div>" +
                      "</body>" +
                     "</html> ";
         }
@@ -481,7 +297,7 @@ namespace GateKeeper.DataAccess
         private static void GetPageTitleTags(ref string begin, ref string end, string titleImage, string tableWidth)
         {
             // ToDo: Need to put the image location into the config file.
-            begin = "<tr><td><table bgcolor=\"#d4d9d9\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"751\">" +
+            begin = "<tr><td><table bgcolor=\"#d4d9d9\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">" +
                         "<tr><td valign=\"top\">" +
                             "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"" + tableWidth + "\"><tbody>" +
                                 "<tr><td colspan=\"2\"><img src=\"/images/spacer.gif\" border=\"0\" height=\"4\" width=\"1\"/></td></tr>" +
@@ -496,7 +312,7 @@ namespace GateKeeper.DataAccess
                         "<td bgcolor=\"#ffffff\" valign=\"top\"><img src=\"/images/spacer.gif\" border=\"0\" height=\"1\" width=\"1\"/></td>" +
                         "<td align=\"right\" bgcolor=\"#d4d9d9\" valign=\"top\"><img src=\"" + GetServerURL() + "/images/" + titleImage + "\" border=\"0\"/></td></tr>" +
                     "</table></td></tr>";
-        }           
+        }
 
         // <summary>
         /// Wrapper structure for page content
@@ -506,14 +322,15 @@ namespace GateKeeper.DataAccess
         /// <returns>begin and end in paremeter reference format</returns>
         private static void GetContentTags(ref string begin, ref string end)
         {
-            begin = "<tr><td><table width=\"751\"  cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" + 
-                        "<tr><td width=\"180\"></td>" +  
-                            "<td align=\"left\" border=\"0\">" +
-                                "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"571\" align=\"left\">" +
-                                    "<tbody><tr><td>";
+            begin = "<tr><td><table width=\"100%\"  cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" +
+                        "<tr><td id=\"leftzone\" valign=\"top\"><img src=\"/images/spacer.gif\" border=\"0\" height=\"1\" width=\"164\"/></td>" +
+                            "<td id=\"contentzone\" width=\"100%\" valign=\"top\">" +
+                                "<div id=\"cgvBody\">" +
+                                    "<div class=\"slot-item only-SI\">";
             // Document content is added in between begin and end
-            end =                   "</td></tr></tbody>" + 
-                                "</table></td></tr>" + 
+            end = "</div>" +
+                                "</div>" +
+                        "</td></tr>" +
                     "</table></td></tr>";
         }
 
@@ -530,10 +347,10 @@ namespace GateKeeper.DataAccess
             string index = string.Empty;
             if (lang == Language.Spanish)
                 index = "Índice";
-            else 
+            else
                 index = "Table of Contents";
 
-            toc = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"571\">" + 
+            toc = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">" +
                     "<tbody><tr><td valign=\"top\"><p><span class=\"page-title\">" + index + "</span></p>";
 
             foreach (SummarySection sect in SectionList)
@@ -552,7 +369,7 @@ namespace GateKeeper.DataAccess
                 }
             }
 
-           // Close table on level 1
+            // Close table on level 1
             toc += "</td></tr></tbody></table><br/>";
             html += toc;
         }
@@ -675,15 +492,15 @@ namespace GateKeeper.DataAccess
                     specialCategoryNav.OuterXml = "<SpecialCategories>" + proQuery.FormatSectionHTML(
                                             new ProtocolSection(0, specialCategoryNav.OuterXml, ProtocolSectionType.SpecialCategory)) + "</SpecialCategories>";
                 }
-                  
-                 // Patient - Trial Description
+
+                // Patient - Trial Description
                 XPathNavigator patientAbstractNav = xNav.SelectSingleNode("//a[starts-with(@name, 'TrialDescription:')]");
                 if (patientAbstractNav != null)
                 {
                     patientAbstractNav.OuterXml = "<TrialDescription>" + proQuery.FormatSectionHTML(
                                             new ProtocolSection(0, patientAbstractNav.OuterXml, ProtocolSectionType.SpecialCategory)) + "</TrialDescription>";
                 }
-                         
+
             }
             catch (Exception e)
             {
@@ -702,8 +519,9 @@ namespace GateKeeper.DataAccess
         private static void FormatCTGovProtocolSections(XPathNavigator xNav, ProtocolDocument protocol, string strCDRID)
         {
             ProtocolQuery proQuery = new ProtocolQuery();
-            try{
-                 // Summary (Objectives)
+            try
+            {
+                // Summary (Objectives)
                 XPathNavigator summaryNav = xNav.SelectSingleNode("//a[@name='Summary']");
                 if (summaryNav != null)
                 {
@@ -721,9 +539,9 @@ namespace GateKeeper.DataAccess
                 {
                     disclaimerNav.InnerXml = "<a name=\"Disclaimer_" + strCDRID + "\"></a>" + disclaimerNav.InnerXml;
                     string tempHtml = disclaimerNav.OuterXml;
-                     disclaimerNav.OuterXml = "<Disclaimer>" + proQuery.FormatSectionHTML(
-                        new ProtocolSection(0,
-                        tempHtml.Replace("http://www.nlm.nih.gov/contacts/custserv-email.html", "<a href=\"http://www.nlm.nih.gov/contacts/custserv-email.html\">http://www.nlm.nih.gov/contacts/custserv-email.html</a>"), ProtocolSectionType.CTGovDisclaimer)) + "</Disclaimer>";
+                    disclaimerNav.OuterXml = "<Disclaimer>" + proQuery.FormatSectionHTML(
+                       new ProtocolSection(0,
+                       tempHtml.Replace("http://www.nlm.nih.gov/contacts/custserv-email.html", "<a href=\"http://www.nlm.nih.gov/contacts/custserv-email.html\">http://www.nlm.nih.gov/contacts/custserv-email.html</a>"), ProtocolSectionType.CTGovDisclaimer)) + "</Disclaimer>";
                 }
 
                 // LeadOrgs
@@ -732,7 +550,7 @@ namespace GateKeeper.DataAccess
                 {
                     leadOrgsNav.InnerXml = "<a name=\"LeadOrgs_" + strCDRID + "\"></a>" + leadOrgsNav.InnerXml;
                     leadOrgsNav.OuterXml = "<LeadOrg>" + proQuery.FormatSectionHTML(
-                        new ProtocolSection(0, leadOrgsNav.OuterXml,   ProtocolSectionType.CTGovLeadOrgs)) +  "</LeadOrg>" ;
+                        new ProtocolSection(0, leadOrgsNav.OuterXml, ProtocolSectionType.CTGovLeadOrgs)) + "</LeadOrg>";
                 }
 
                 // Handle footer (specified in source document as the required header)
@@ -740,7 +558,7 @@ namespace GateKeeper.DataAccess
                 if (requiredHeaderNav != null)
                 {
                     requiredHeaderNav.OuterXml = "<RequiredHeader>" + proQuery.FormatSectionHTML(
-                        new ProtocolSection(0,requiredHeaderNav.InnerXml, ProtocolSectionType.CTGovFooter)) + "</RequiredHeader>";
+                        new ProtocolSection(0, requiredHeaderNav.InnerXml, ProtocolSectionType.CTGovFooter)) + "</RequiredHeader>";
                 }
 
                 // Detailed description
@@ -752,7 +570,7 @@ namespace GateKeeper.DataAccess
 
                     detailedDescNav.InnerXml = "<a name=\"Outline_" + strCDRID + "\"></a>" + html;
                     detailedDescNav.OuterXml = "<DetailedDesc>" + proQuery.FormatSectionHTML(
-                        new ProtocolSection(0, detailedDescNav.OuterXml,ProtocolSectionType.CTGovDetailedDescription)) +  "</DetailedDesc>";
+                        new ProtocolSection(0, detailedDescNav.OuterXml, ProtocolSectionType.CTGovDetailedDescription)) + "</DetailedDesc>";
                 }
 
                 // Entry criteria
@@ -766,14 +584,14 @@ namespace GateKeeper.DataAccess
                     html = html.Replace("<a name=\"EndEntryCriteria\">", string.Empty);
                     entryCriteriaNav.OuterXml = "<EntryCriteria>" + html + "</EntryCriteria>";
                 }
-             
+
                 // Trail contact info
                 XPathNavigator contctInfoNav = xNav.SelectSingleNode("//a[@name='TrialContact']");
                 if (contctInfoNav != null)
                 {
                     string html = contctInfoNav.OuterXml;
                     html = html.Replace("<a name=\"TrialContact\" />", "<a name = \"TrialContact_" + strCDRID + "\"></a>");
-                    contctInfoNav.OuterXml =html;
+                    contctInfoNav.OuterXml = html;
                 }
 
                 XPathNavigator trialSiteNav = xNav.SelectSingleNode("//a[@name='TrialSites']");
@@ -781,7 +599,7 @@ namespace GateKeeper.DataAccess
                 {
                     string html = trialSiteNav.InnerXml;
                     trialSiteNav.OuterXml = "<TrialSites>" + html.Trim() + "</TrialSites>";
-                }                
+                }
             }
             catch (Exception e)
             {
@@ -829,7 +647,7 @@ namespace GateKeeper.DataAccess
             protocolContent = Regex.Replace(protocolContent, "<br/ >[\\s\\t\\f]*<span", "<p><span", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             protocolContent = Regex.Replace(protocolContent, "</span>[\\s\\t\\f]*</a>", "</span></a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             protocolContent = Regex.Replace(protocolContent, "</tr>[\\s\\t\\f]*<tr", "</tr><tr", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-           
+
             // Remove the unused tag that has the pattern <a name="Section_alpha_number />, this cause text after it become link in firefox.
             protocolContent = Regex.Replace(protocolContent, "<a name=\"Section_*[A-Za-z]*[_]*[0-9]*\" />", "", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -902,7 +720,7 @@ namespace GateKeeper.DataAccess
             // --></script>";
         }
 
-          /// <summary>
+        /// <summary>
         /// Convert date into MM/DD/YYYY format
         /// </summary>
         /// <param></param>
@@ -911,7 +729,7 @@ namespace GateKeeper.DataAccess
         {
             string day = string.Empty;
             string month = string.Empty;
-            
+
             if (format == "MM/DD/YYYY")
             {
                 if (date.Day < 10)
@@ -930,9 +748,41 @@ namespace GateKeeper.DataAccess
                 month = date.Month.ToString();
             }
 
-            return month+"/"+day+"/"+date.Year.ToString();
+            return month + "/" + day + "/" + date.Year.ToString();
 
         }
+
+        private static string createHeaderZoneContent(string title, Document document, PreviewTypes docType)
+        {
+            // Generate the header HTML 
+            string titleImage = string.Empty;
+            switch (docType)
+            {
+                case PreviewTypes.CTGovProtocol:
+                    titleImage = "title_cancertopics.jpg";
+                    break;
+                case PreviewTypes.GeneticsProfessional:
+                    titleImage = "title_cancertopics.jpg";
+                    break;
+                case PreviewTypes.GlossaryTerm:
+                    titleImage = "title_cancertopics.jpg";
+                    break;
+                case PreviewTypes.Protocol_HP:
+                    titleImage = "title_clinicaltrials.jpg";
+                    break;
+                case PreviewTypes.Protocol_Patient:
+                    titleImage = "title_clinicaltrials.jpg";
+                    break;
+            }
+
+            string headerHtml = string.Format("<div id=\"cgvcontentheader\"><div class=\"document-title-block\" style=\"background-color:#d4d9d9\" >" +
+                    "<img src=\"/PublishedContent/Images/SharedItems/ContentHeaders/{0}\" alt=\"\" style=\"border-width:0px;\" />" +
+                    "<h1>{1}</h1></div></div>", titleImage, title);
+
+
+            return headerHtml;
+        }
+
         #endregion
     }
 }

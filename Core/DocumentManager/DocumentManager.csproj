@@ -95,6 +95,9 @@
     <Compile Include="PromotionWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Promoters\SpecificDocumentPromoter.cs" />
+    <Compile Include="PublishPreview\DocumentPreviewBase.cs" />
+    <Compile Include="PublishPreview\DrugInfoSummaryDocumentPreview.cs" />
+    <Compile Include="PublishPreview\SummaryDocumentPreview.cs" />
     <Compile Include="SynchronizedIDQueue.cs" />
   </ItemGroup>
   <ItemGroup>

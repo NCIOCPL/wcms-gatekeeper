@@ -48,11 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancerInfoSummaryPreviewProcessor.cs" />
     <Compile Include="CancerInfoSummaryProcessor.cs" />
     <Compile Include="CancerInfoSummarySectionFinder.cs" />
     <Compile Include="CISErrorBuilder.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DocumentProcessorCommon.cs" />
+    <Compile Include="DrugInfoSummaryPreviewProcessor.cs" />
     <Compile Include="DrugInfoSummaryProcessor.cs" />
     <Compile Include="enums.cs" />
     <Compile Include="Exceptions.cs" />

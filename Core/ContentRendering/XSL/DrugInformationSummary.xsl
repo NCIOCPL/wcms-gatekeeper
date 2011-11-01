@@ -44,7 +44,7 @@
 	</xsl:template>	
 		
 	<xsl:template match="DrugInfoMetaData">
-		<table width="571" cellspacing="0" cellpadding="0" border="0">
+		<table cellspacing="0" cellpadding="0" border="0">
 			<xsl:if test="USBrandNames[node()] = true()">
 				<xsl:for-each select="USBrandNames/USBrandName">
 					<tr>

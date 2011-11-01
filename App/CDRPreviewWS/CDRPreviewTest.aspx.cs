@@ -21,7 +21,7 @@ namespace CDRPreviewWS
         protected System.Web.UI.WebControls.Button btnPreview;
         protected System.Web.UI.WebControls.DropDownList dropDownList;
         protected string result;
-
+        protected string cgovHtmlUrl=string.Empty;
 
          #region Web Form
         protected override void OnInit(EventArgs e)
@@ -37,8 +37,6 @@ namespace CDRPreviewWS
 
         private void InitializeComponent()
         {
-            this.btnPreview.Click += new System.EventHandler(this.btnPreview_Click);
-            this.Load += new System.EventHandler(this.Page_Load);
         }
         #endregion
 
@@ -47,16 +45,17 @@ namespace CDRPreviewWS
         {
             int request = Int32.Parse(this.requestID.Text);
             int cdr = Int32.Parse(this.cdrID.Text);
-            RequestData requestData = RequestManager.LoadRequestDataByCdrid(request, cdr);
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.PreserveWhitespace = true;
-            xmlDoc.LoadXml(requestData.DocumentDataString);
+            string documentType = dropDownList.SelectedValue;
 
-            CDRPreview previewSvc = new CDRPreview();
-            string html = previewSvc.ReturnXML((XmlNode)xmlDoc, dropDownList.SelectedValue);
+            //RequestData requestData = RequestManager.LoadRequestDataByCdrid(request, cdr);
+            //XmlDocument xmlDoc = new XmlDocument();
+            //xmlDoc.PreserveWhitespace = true;
+            //xmlDoc.LoadXml(requestData.DocumentDataString);
+            //CDRPreview previewSvc = new CDRPreview();
+            //string html = previewSvc.ReturnXML((XmlNode)xmlDoc, documentType);
+            //this.result = html;
 
-            this.result = html;
-
+            cgovHtmlUrl = string.Format("<iframe name=\"previewFrame\" Id=\"previewFrame\" onLoad='adjustMyFrameHeight();' width=\"100%\"  border=0 frameborder=0 scrolling=no src=CGovHtml.aspx?requestID={0}&cdrID={1}&documentType={2}></iframe>", request.ToString(), cdr.ToString(), documentType);
         }
 
 

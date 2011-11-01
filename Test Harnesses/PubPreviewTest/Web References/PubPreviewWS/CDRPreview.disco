@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://localhost:25553/CDRPreview.asmx?wsdl" docRef="http://localhost:25553/CDRPreview.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://localhost:25553/CDRPreview.asmx" xmlns:q1="http://gatekeeper.cancer.gov/CDRPreview/" binding="q1:CDRPreviewSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://localhost:25553/CDRPreview.asmx" xmlns:q2="http://gatekeeper.cancer.gov/CDRPreview/" binding="q2:CDRPreviewSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

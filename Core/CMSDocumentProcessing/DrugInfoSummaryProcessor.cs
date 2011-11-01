@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-
 using GKManagers.CMSManager.Configuration;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
@@ -20,9 +19,10 @@ namespace GKManagers.CMSDocumentProcessing
     {
         #region Fields
 
+        protected PercussionGuid CurrentContentItem = null;
         // Contains the name of the Drug Information Summary ContentType as used in the CMS.
         // Set in the constructor.
-        readonly private string DrugInfoSummaryContentType;
+        readonly protected string DrugInfoSummaryContentType;
 
         #endregion
 
@@ -49,7 +49,7 @@ namespace GKManagers.CMSDocumentProcessing
             VerifyRequiredDocumentType(documentObject, DocumentType.DrugInfoSummary);
 
             DrugInfoSummaryDocument document = documentObject as DrugInfoSummaryDocument;
-
+             
             InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
 
 
@@ -80,6 +80,12 @@ namespace GKManagers.CMSDocumentProcessing
                 // Create the new content item. (All items are created of the same type.)
                 InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
                 idList = CMSController.CreateContentItemList(contentItemList);
+
+                // Even though the content item is created, trying to find the newly created content item 
+                // using GetCdrDocumentID returns null. This is problem in publish preview.
+                // so the content item guid is stored here for later use. This property is 
+                // used only publish preview derived class.
+                CurrentContentItem = new PercussionGuid(idList[0]);
             }
             else
             {
@@ -237,7 +243,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// path separator is the item name and the rest is used to determine the folder path.
         /// e.g. For the URL /cancertopics/druginfo/methotrexate, the target path is /cancertopics/druginfo
         /// </remarks>
-        private string GetTargetFolder(string itemPath)
+        protected string GetTargetFolder(string itemPath)
         {
             // Elminate leading/trailing whitespace and trailing slash.
             string targetFolder = itemPath.Trim();
@@ -261,7 +267,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="itemPath">Pretty URL of the drug info summary.</param>
         /// <returns>The </returns>
-        private string GetPrettyUrlName(string itemPath)
+        protected string GetPrettyUrlName(string itemPath)
         {
             string prettyURLName;
 
@@ -289,7 +295,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="drugInfo">DrugInfoSummaryDocument object to map</param>
         /// <returns>A Dictionary of key/value pairs. Keys are the names of fields in the
         /// CMS content type.</returns>
-        private FieldSet CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
+        protected FieldSet CreateFieldValueMap(DrugInfoSummaryDocument drugInfo)
         {
             FieldSet fields = new FieldSet();
             string prettyURLName = drugInfo.PrettyURL.Substring(drugInfo.PrettyURL.LastIndexOf('/') + 1);
@@ -332,7 +338,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="drugInfo">The docment object containing the drug info summary hmtl</param>
         /// itemIDMap is content id of the media link.
-        private void ResolveInlineSlots(DrugInfoSummaryDocument drugInfo)
+        protected void ResolveInlineSlots(DrugInfoSummaryDocument drugInfo)
         {
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
             PercussionGuid snippetTemplate = CMSController.TemplateNameManager[PercussionTemplates.AudioMediaLinkSnippetTemplate];

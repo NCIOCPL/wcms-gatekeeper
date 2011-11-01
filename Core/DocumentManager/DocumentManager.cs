@@ -156,9 +156,12 @@ namespace GKManagers
                             DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
 
                             // Summary translations need to be scheduled after their
-                            // original versions.
-                            if (docTypeFlag == DocumentTypeFlag.Summary
-                                && SummaryIsATranslation(docData))
+                            // original versions. But do not check for existence of translation when
+                            // the document is being remove, since during remove there is no translation
+                            // language information due to the absence of document data. 
+                            if ( docData.ActionType != RequestDataActionType.Remove &&
+                                 docTypeFlag == DocumentTypeFlag.Summary && 
+                                 SummaryIsATranslation(docData))
                             {
                                 delayedSummaryIDList.Add(requestDataIDList[docIndex]);
                             }

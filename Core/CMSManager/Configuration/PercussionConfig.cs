@@ -20,6 +20,41 @@ namespace GKManagers.CMSManager.Configuration
 
         }
 
+ 
+        /// <summary>
+        /// Gets the Site id value of the site specified by siteRootPath.
+        /// </summary>
+        [ConfigurationProperty("siteId", IsRequired = true)]
+        public ConfigValue SiteId
+        {
+            get
+            {
+                return (ConfigValue)base["siteId"];
+            }
+        }
+
+        #region Config Setting for CDR Preview
+        [ConfigurationProperty("previewSettings", IsRequired = false)]
+        public PreviewSettings PreviewSettings
+        {
+            get
+            {
+                return (PreviewSettings)base["previewSettings"];
+            }
+
+        }
+        #endregion        
+
+        [ConfigurationProperty("searchPath", IsRequired = true)]
+        public ConfigValue SearchPath
+        {
+            get
+            {
+                return (ConfigValue)base["searchPath"];
+            }
+        }
+
+
         [ConfigurationProperty("contentTypes", IsRequired = false)]
         public ContentType ContentType
         {

@@ -104,21 +104,14 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
-        /// <summary>
-        /// Searches the CMS repository for the specified CDR Document.
-        /// </summary>
-        /// <param name="contentType">The CMS content type of the document being searched for.</param>
-        /// <param name="cdrID">The document's CDR ID</param>
-        /// <returns>If found, a Percussion GUID value is returned which identifies the document.
-        /// A null return means no matching document was located.</returns>
-        public PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        public PercussionGuid GetCdrDocumentID(string contentType, string path, int cdrID)
         {
             PercussionGuid[] searchResults;
             PercussionGuid foundItem;
 
             Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
             fieldCriteria.Add("cdrid", cdrID.ToString("d"));
-            searchResults = CMSController.SearchForContentItems(contentType, fieldCriteria);
+            searchResults = CMSController.SearchForContentItems(contentType, path, fieldCriteria);
 
             if (searchResults.Count() > 1)
             {
@@ -133,10 +126,37 @@ namespace GKManagers.CMSDocumentProcessing
             else
             {
                 // Found exactly 1 item.
-                foundItem = searchResults[0]; 
+                foundItem = searchResults[0];
             }
 
             return foundItem;
+
+        }
+
+        public PSItem GetContentItem(string contentType, string path, int cdrID)
+        {
+            PercussionGuid identifier = GetCdrDocumentID( contentType, path, cdrID);
+            if (identifier != null)
+            {
+               PSItem[] item = null;
+               item = CMSController.LoadContentItems(new PercussionGuid[] { identifier });
+               return item[0];
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Searches the CMS repository for the specified CDR Document.
+        /// </summary>
+        /// <param name="contentType">The CMS content type of the document being searched for.</param>
+        /// <param name="cdrID">The document's CDR ID</param>
+        /// <returns>If found, a Percussion GUID value is returned which identifies the document.
+        /// A null return means no matching document was located.</returns>
+        public PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        {
+            return GetCdrDocumentID(contentType, null, cdrID);
         }
 
 
@@ -370,7 +390,6 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] searchResults;
 
             Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
-            fieldCriteria.Add("pretty_url_name", prettyUrlName);
             fieldCriteria.Add("cdrid", cdrID.ToString());
             searchResults = CMSController.SearchForContentItems(null, path, fieldCriteria);
 

@@ -1082,7 +1082,7 @@
           <xsd:complexType>
             <xsd:simpleContent>
               <xsd:extension base="xsd:string">
-                <xsd:attribute default="true" name="includeSubFolders" type="xsd:boolean">
+                <xsd:attribute name="includeSubFolders" type="xsd:boolean" use="required">
                   <xsd:annotation>
                     <xsd:documentation>If true, then objects in the specified folder or any of its sub-folders are allowed. If false, only objects that are direct children of this folder are allowed in the search results.</xsd:documentation>
                   </xsd:annotation>

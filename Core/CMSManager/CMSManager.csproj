@@ -67,6 +67,7 @@
     <Compile Include="CMS\SlotInfo.cs" />
     <Compile Include="CMS\SlotManager.cs" />
     <Compile Include="CMS\TemplateNameManager.cs" />
+    <Compile Include="Configuration\ConfigValue.cs" />
     <Compile Include="Configuration\ConnectionInfo.cs" />
     <Compile Include="Configuration\ContentType.cs" />
     <Compile Include="Configuration\NavonPublicTransitionElement.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Configuration\PDQMediaElement.cs" />
     <Compile Include="Configuration\PDQMediaLinkElement.cs" />
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
+    <Compile Include="Configuration\PreviewSettings.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />
     <Compile Include="CMS\SectionToCmsIDMap.cs" />
     <Compile Include="Exceptions.cs" />
@@ -266,10 +268,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="C:\WCMTeam\trunk\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl">
+    <WebReferenceUrl Include="C:\NCI\6.3\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\PercussionWebSvc\</RelPath>
-      <UpdateFromURL>C:\WCMTeam\trunk\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl</UpdateFromURL>
+      <UpdateFromURL>C:\NCI\6.3\GateKeeper\Core\CMSManager\PercussionWSDL\rhythmyx.wsdl</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

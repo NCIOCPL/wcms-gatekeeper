@@ -709,10 +709,10 @@
 		<P>
 			<span Class="Protocol-Section-Heading">Basic Trial Information</span>
 		</P>
-		<table width="570" cellspacing="0" cellpadding="1" border="0" class="Protocol-BasicStudy-Grayborder">
+		<table width="100%" cellspacing="0" cellpadding="1" border="0" class="Protocol-BasicStudy-Grayborder">
 			<tr>
 				<td valign="top">
-					<table width="568" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFFFF">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFFFF">
 						<tr bgcolor="#E6E6E2">
 							<td valign="top">
 								<img src="/images/spacer.gif" width="4px" height="21px" alt="" border="0"/>

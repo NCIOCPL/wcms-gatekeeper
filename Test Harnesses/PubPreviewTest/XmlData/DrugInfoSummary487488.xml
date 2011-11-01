@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DrugInformationSummary id="CDR0000487488">
+  <DrugInfoMetaData>
+    <DrugInfoType>Brief</DrugInfoType>
+    <DrugInfoAudience>Patients</DrugInfoAudience>
+    <DrugInfoDescription>This page contains brief information about imatinib mesylate and a collection of links to more information from the National Cancer Institute (NCI), the Food and Drug Administration (FDA), and the National Library of Medicine (NLM).</DrugInfoDescription>
+    <DrugInfoURL xref="http://www.cancer.gov/cancertopics/druginfo/imatinibmesylate">Imatinib Mesylate</DrugInfoURL>
+    <FDAApproved>Yes</FDAApproved>
+    <TerminologyLink ref="CDR0000037862">imatinib mesylate</TerminologyLink>
+    <GlossaryLink ref="CDR0000044893">imatinib mesylate</GlossaryLink>
+    <USBrandNames>
+      <USBrandName>Gleevec</USBrandName>
+    </USBrandNames>
+  </DrugInfoMetaData>
+  <DrugInfoTitle>Imatinib Mesylate</DrugInfoTitle>
+  <Section id="_1">
+    <Para id="_2">
+      Imatinib mesylate is approved by the <GlossaryTermRef href="CDR0000454785">Food and Drug Administration (FDA)</GlossaryTermRef> to treat some forms of adult and childhood <GlossaryTermRef href="CDR0000044901">chronic myelogenous leukemia (CML)</GlossaryTermRef>, and to treat a type of <GlossaryTermRef href="CDR0000445087">stomach cancer</GlossaryTermRef> called <GlossaryTermRef href="CDR0000044998">gastrointestinal stromal tumor (GIST)</GlossaryTermRef>.
+    </Para>
+    <Para id="_3">
+      Imatinib mesylate is also being studied in the treatment of other types of <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>.
+    </Para>
+  </Section>
+  <DrugInfoDisclaimer>
+    <Para id="_Disclaimer_4">
+      <Strong>Important: </Strong>The drug information on this Web page is meant to be educational. It is not a substitute for medical advice. The information may not cover all possible uses, actions, interactions, or side effects of this drug, or precautions to be taken while using it. Please see your health care professional for more information about your specific medical condition and the use of this drug.
+    </Para>
+  </DrugInfoDisclaimer>
+  <DateFirstPublished>2006-10-05</DateFirstPublished>
+</DrugInformationSummary>

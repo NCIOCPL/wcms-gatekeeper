@@ -69,7 +69,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Common\popevents.js" />
+    <Content Include="Common\PopUps\popDefinition.aspx" />
+    <Content Include="Common\speaker.swf" />
+    <Content Include="Common\wcmsAudio.js" />
+    <Content Include="PreviewAudioMedia.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="CDRPreview.asmx" />
+    <Content Include="CGovHtml.aspx" />
     <Content Include="Common\PopUps\popImage.aspx" />
     <Content Include="Web.config" />
     <Content Include="CDRPreviewTest.aspx" />
@@ -78,6 +86,20 @@
     <Compile Include="CDRPreview.asmx.cs">
       <DependentUpon>CDRPreview.asmx</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CGovHtml.aspx.cs">
+      <DependentUpon>CGovHtml.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CGovHtml.aspx.designer.cs">
+      <DependentUpon>CGovHtml.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Common\PopUps\popDefinition.aspx.cs">
+      <DependentUpon>popDefinition.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Common\PopUps\popDefinition.aspx.designer.cs">
+      <DependentUpon>popDefinition.aspx</DependentUpon>
     </Compile>
     <Compile Include="Common\PopUps\popImage.aspx.cs">
       <DependentUpon>popImage.aspx</DependentUpon>
@@ -96,6 +118,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\CMSDocumentProcessing\CMSDocumentProcessing.csproj">
+      <Project>{DD69C2C5-626D-4A06-9C6E-37461F0B93F1}</Project>
+      <Name>CMSDocumentProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\CMSManager\CMSManager.csproj">
+      <Project>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</Project>
+      <Name>CMSManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Common\Common.csproj">
       <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
       <Name>Common</Name>
