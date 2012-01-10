@@ -710,11 +710,12 @@ namespace GateKeeper.DataAccess.CDR
         }
 
         /// <summary>
-        /// Extracts the summary metadata from the input XML document.
+        /// Extracts the summary metadata from the input XML document. This method can be 
+        /// overridden in the derived class.
         /// </summary>
         /// <param name="xmlDoc">Summary XML</param>
         /// <param name="summary">Summary document object</param>
-        public void Extract(XmlDocument xmlDoc, SummaryDocument summary)
+        virtual public void Extract(XmlDocument xmlDoc, SummaryDocument summary)
         {
             try
             {

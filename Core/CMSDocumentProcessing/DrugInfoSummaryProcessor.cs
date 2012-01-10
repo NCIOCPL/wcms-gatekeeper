@@ -19,7 +19,6 @@ namespace GKManagers.CMSDocumentProcessing
     {
         #region Fields
 
-        protected PercussionGuid CurrentContentItem = null;
         // Contains the name of the Drug Information Summary ContentType as used in the CMS.
         // Set in the constructor.
         readonly protected string DrugInfoSummaryContentType;
@@ -42,94 +41,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="documentObject"></param>
         public void ProcessDocument(Document documentObject)
         {
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
-
-            List<long> idList;
-
-            VerifyRequiredDocumentType(documentObject, DocumentType.DrugInfoSummary);
-
-            DrugInfoSummaryDocument document = documentObject as DrugInfoSummaryDocument;
-             
-            InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
-
-
-            // Are we updating an existing document? Or saving a new one?
-            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, document.DocumentID);
-
-            // No identifier was returned, this is a new item.
-            if (identifier == null)
-            {
-                string targetPathName = GetTargetFolder(document.PrettyURL);
-                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
-
-                if (!PrettyUrlIsAvailable(targetPathName, prettyUrlName))
-                {
-                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetPathName, prettyUrlName));
-                }
-
-                ResolveInlineSlots(document);
-
-                // Create the folder where the content item is to be created and set the Navon to public.
-                CMSController.GuaranteeFolder(targetPathName, FolderManager.NavonAction.MakePublic);
-
-                // Turn the list of item fields into a list of one item.
-                ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), targetPathName);
-                List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
-                contentItemList.Add(contentItem);
-
-                // Create the new content item. (All items are created of the same type.)
-                InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
-                idList = CMSController.CreateContentItemList(contentItemList);
-
-                // Even though the content item is created, trying to find the newly created content item 
-                // using GetCdrDocumentID returns null. This is problem in publish preview.
-                // so the content item guid is stored here for later use. This property is 
-                // used only publish preview derived class.
-                CurrentContentItem = new PercussionGuid(idList[0]);
-            }
-            else
-            {
-                // We're updating an existing item, go fetch it.
-                PSItem[] oldItem = CMSController.LoadContentItems(new PercussionGuid[] { identifier });
-
-                // Doublecheck paths.
-                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
-                string oldPath = CMSController.GetPathInSite(oldItem[0]);
-                string targetFolder = GetTargetFolder(document.PrettyURL);
-
-                if (!PrettyUrlIsSameDocument(document.DocumentID, oldPath, prettyUrlName))
-                {
-                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", oldPath, prettyUrlName));
-                }
-                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase)
-                    && !PrettyUrlIsAvailable(targetFolder, prettyUrlName))
-                {
-                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetFolder, prettyUrlName));
-                }
-
-                ResolveInlineSlots(document);
-
-                // This is an existing item, we must therefore put it in an editable state.
-                TransitionItemsToStaging(new PercussionGuid[1] { identifier });
-
-                ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document));
-                List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
-                contentItemList.Add(contentItem);
-                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
-                idList = CMSController.UpdateContentItemList(contentItemList);
-
-                //Check if the Pretty URL changed if yes then move the content item to the new folder in percussion.
-                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    long[] id = idList.ToArray();
-
-                    CMSController.GuaranteeFolder(targetFolder, FolderManager.NavonAction.MakePublic);
-                    CMSController.MoveContentItemFolder(oldPath, targetFolder, id);
-                }
-
-            }
-
-            InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+            processDocumentInternal(documentObject);
         }
 
         /// <summary>
@@ -216,7 +128,6 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
-
         #region Disposable Pattern Members
 
         protected override void Dispose(bool disposing)
@@ -231,6 +142,98 @@ namespace GKManagers.CMSDocumentProcessing
         #endregion
 
         #region Private Methods
+        public PercussionGuid processDocumentInternal(Document documentObject)
+        {
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+
+            List<long> idList;
+
+            VerifyRequiredDocumentType(documentObject, DocumentType.DrugInfoSummary);
+
+            DrugInfoSummaryDocument document = documentObject as DrugInfoSummaryDocument;
+
+            InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
+
+
+            // Are we updating an existing document? Or saving a new one?
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, document.DocumentID);
+
+            // No identifier was returned, this is a new item.
+            if (identifier == null)
+            {
+                string targetPathName = GetTargetFolder(document.PrettyURL);
+                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
+
+                if (!PrettyUrlIsAvailable(targetPathName, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetPathName, prettyUrlName));
+                }
+
+                ResolveInlineSlots(document);
+
+                // Create the folder where the content item is to be created and set the Navon to public.
+                CMSController.GuaranteeFolder(targetPathName, FolderManager.NavonAction.MakePublic);
+
+                // Turn the list of item fields into a list of one item.
+                ContentItemForCreating contentItem = new ContentItemForCreating(DrugInfoSummaryContentType, CreateFieldValueMap(document), targetPathName);
+                List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+                contentItemList.Add(contentItem);
+
+                // Create the new content item. (All items are created of the same type.)
+                InformationWriter(string.Format("Adding document CDRID = {0} to Percussion system.", document.DocumentID));
+                idList = CMSController.CreateContentItemList(contentItemList);
+
+                identifier = new PercussionGuid(idList[0]);
+            }
+            else
+            {
+                // We're updating an existing item, go fetch it.
+                PSItem[] oldItem = CMSController.LoadContentItems(new PercussionGuid[] { identifier });
+
+                // Doublecheck paths.
+                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
+                string oldPath = CMSController.GetPathInSite(oldItem[0]);
+                string targetFolder = GetTargetFolder(document.PrettyURL);
+
+                if (!PrettyUrlIsSameDocument(document.DocumentID, oldPath, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", oldPath, prettyUrlName));
+                }
+                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase)
+                    && !PrettyUrlIsAvailable(targetFolder, prettyUrlName))
+                {
+                    throw new DocumentExistsException(string.Format("Another document already exists at path {0}/{1}.", targetFolder, prettyUrlName));
+                }
+
+                ResolveInlineSlots(document);
+
+                // This is an existing item, we must therefore put it in an editable state.
+                TransitionItemsToStaging(new PercussionGuid[1] { identifier });
+
+                ContentItemForUpdating contentItem = new ContentItemForUpdating(identifier.ID, CreateFieldValueMap(document));
+                List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
+                contentItemList.Add(contentItem);
+                InformationWriter(string.Format("Updating document CDRID = {0} in Percussion system.", document.DocumentID));
+                idList = CMSController.UpdateContentItemList(contentItemList);
+
+                //Check if the Pretty URL changed if yes then move the content item to the new folder in percussion.
+                if (!oldPath.Equals(targetFolder, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    long[] id = idList.ToArray();
+
+                    CMSController.GuaranteeFolder(targetFolder, FolderManager.NavonAction.MakePublic);
+                    CMSController.MoveContentItemFolder(oldPath, targetFolder, id);
+                }
+
+            }
+
+            InformationWriter(string.Format("Percussion processing completed for document CDRID = {0}.", document.DocumentID));
+
+            return identifier;
+        }
+        #endregion
+
+        #region Protected Methods
 
         /// <summary>
         /// Parses the URL for a drug information summary item and separates the folder path
@@ -396,7 +399,32 @@ namespace GKManagers.CMSDocumentProcessing
                 drugInfo.Html = html.InnerXml.Substring("<mk>".Length, html.InnerXml.Length - "</mk>".Length);
             }
         }
+        
+        #endregion
 
+        #region Public Methods
+        /// <summary>
+        /// This method is identical to ProcessDocument except it takes in ref argument which
+        /// contains the CMS content item identifier when the method returns. 
+        /// </summary>
+        /// <param name="documentObject">The DIS document object</param>
+        /// <param name="contentItemGuid">The percussionguid of the content item</param>
+        public void ProcessDocument(Document documentObject, ref PercussionGuid contentItemGuid)
+        {
+            contentItemGuid = processDocumentInternal(documentObject);
+        }
+
+        public void DeleteContentItem(PercussionGuid itemGuid)
+        {
+            if (itemGuid != null)
+            {
+                // Check for items with references.
+                VerifyDocumentMayBeDeleted(itemGuid.ID);
+
+                // Delete item from CMS.
+                CMSController.DeleteItem(itemGuid.ID);
+            }
+        }
         #endregion
     }
 }

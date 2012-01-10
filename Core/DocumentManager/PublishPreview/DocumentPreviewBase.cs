@@ -64,14 +64,7 @@ namespace GKPreviews
         /// <returns></returns>
         public void Preview(ref string contentHtml, ref string headerContent)
         {
-            try
-            {
-                ProcessPreview(ref contentHtml, ref headerContent);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            ProcessPreview(ref contentHtml, ref headerContent);
         }
 
 

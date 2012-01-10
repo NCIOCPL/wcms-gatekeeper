@@ -6,12 +6,14 @@ using System.Xml;
 using NUnit.Framework;
 using PubPreviewTest.PubPreviewWS;
 using GateKeeper.DocumentObjects;
-namespace GateKeeper.UnitTest.DISTest
+
+
+namespace PubPreviewTest
 {
     [TestFixture]
-    public class DISTest
+    public class SummaryTest
     {
-        [TestCase("DrugInfoSummary487488.xml")]
+        [TestCase("Summary62872.xml")]
         public void callPubPreview(string requestDataXMLFile)
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -19,7 +21,7 @@ namespace GateKeeper.UnitTest.DISTest
             xmlDoc.Load(@"./XMLData/" + requestDataXMLFile);
             CDRPreview pubPreviewWs = new CDRPreview();
             pubPreviewWs.Url = "http://gatekeeperred.cancer.gov/CDRPreviewWS/CDRPreview.asmx";
-            string html = pubPreviewWs.ReturnXML((XmlNode)xmlDoc, PreviewTypes.DrugInfoSummary.ToString());
+            string html = pubPreviewWs.ReturnXML((XmlNode)xmlDoc, PreviewTypes.Summary.ToString());
             html += "";
             Assert.IsFalse(html.Contains("CDRPreview web service error"));
         }

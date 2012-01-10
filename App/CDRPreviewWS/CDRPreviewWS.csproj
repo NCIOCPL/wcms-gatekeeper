@@ -94,6 +94,7 @@
     <Compile Include="CGovHtml.aspx.designer.cs">
       <DependentUpon>CGovHtml.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Common\GKCDRPreviewLogBuilder.cs" />
     <Compile Include="Common\PopUps\popDefinition.aspx.cs">
       <DependentUpon>popDefinition.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -145,6 +146,10 @@
     <ProjectReference Include="..\..\Core\DocumentObjects\DocumentObjects.csproj">
       <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
       <Name>DocumentObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Logging\Logging.csproj">
+      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
+      <Name>Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\RequestManager\RequestManager.csproj">
       <Project>{899D3B57-B535-4899-8ED5-2BD900065555}</Project>

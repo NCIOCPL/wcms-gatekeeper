@@ -33,30 +33,6 @@ namespace GKManagers.CMSDocumentProcessing
             : base(warningWriter, informationWriter)
         { }
 
-        ///// <summary>
-        ///// Main entry point for processing a Cancer Information Summary (formerly just "Summary")
-        ///// object which is to be managed in the CMS.
-        ///// </summary>
-        ///// <param name="documentObject"></param>
-        //public new void ProcessDocument(Document documentObject)
-        //{
-        //    VerifyRequiredDocumentType(documentObject, DocumentType.Summary);
-
-        //    SummaryDocument document = documentObject as SummaryDocument;
-
-        //    InformationWriter(string.Format("Begin Percussion processing for document CDRID = {0}.", document.DocumentID));
-
-        //    // Are we updating an existing document? Or saving a new one?
-        //    identifier = GetCdrDocumentID(CancerInfoSummaryContentType, document.DocumentID);
-
-        //    // No mapping found, this is a new item.
-        //    if (identifier == null)
-        //    {
-        //        InformationWriter(string.Format("Create new content item for document CDRID = {0}.", document.DocumentID));
-        //        CreateNewCancerInformationSummary(document);
-        //    }
-        //}
-
         /// <summary>
         /// This method generates the document HTML from the percussion system.  
         /// </summary>
@@ -70,8 +46,6 @@ namespace GKManagers.CMSDocumentProcessing
             // Create the preview url needed to produce the document html. To do this 
             // 1. Read the content id
             // 2. Know the template id of the content type 
-            if (contentItemGuid == null)
-                contentItemGuid = GetCdrDocumentID(CancerInfoSummaryContentType, documentObject.DocumentID);
 
             // identifier cannot be null. All the required content items should have 
             // been created before this step
@@ -115,7 +89,7 @@ namespace GKManagers.CMSDocumentProcessing
             }
             else
             {
-                throw new Exception(string.Format("Cannot find document in CMS for CDRID ID {0}:", documentObject.DocumentID));
+                throw new Exception(string.Format("The PercussionGuid contentItemGuid is null, this value cannot be null"));
             }
 
             return cmsRenderedHTML;
@@ -142,6 +116,18 @@ namespace GKManagers.CMSDocumentProcessing
         {  
             // We do not have to check for the existence of english versio of a spanish document.
             // Because the english version will never exist durin pub preview.
+        }
+
+        /// <summary>
+        /// For Publish preview always return null, which signifies the document as not being present in CMS.
+        /// so new document is always created.
+        /// </summary>
+        /// <param name="contentType">The document type</param>
+        /// <param name="cdrID">The cdrid of the document.</param>
+        /// <returns>Returns null, so a new document is alwasy created in new folder.</returns>
+        public override PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        {
+            return null;
         }
 
         public Dictionary<string, string> MediaRenderedContentList

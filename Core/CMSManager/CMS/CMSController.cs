@@ -617,15 +617,38 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
+        /// Delete folder from the CMS.
+        /// </summary>
+        /// <param name="folderPath">Path of the folder to be deleted.</param>
+        /// <param name="purge">if set to <c>true</c> [purge].</param>
+        public void DeleteFolder(string folderPath, bool purge)
+        {
+            PSFolder folderInfo = FolderManager.GetExistingFolder(siteRootPath + folderPath);
+            DeleteFolders(new PSFolder[] { folderInfo }, purge);
+        }
+
+        /// <summary>
         /// Deletes a collection of folders. Any items contained in the folder are
         /// removed from the content tree, but are not purged.
         /// </summary>
         /// <param name="folderInfo"></param>
         public void DeleteFolders(PSFolder[] folderInfo)
         {
-            long[] folderIDs = Array.ConvertAll(folderInfo, detail => detail.id);
-            PSWSUtils.DeleteFolders(_contentService, folderIDs, false);
+            DeleteFolders(folderInfo, false);
         }
+
+        /// <summary>
+        /// Deletes a collection of folders. Any items contained in the folder are
+        /// removed from the content tree, but are not purged.
+        /// </summary>
+        /// <param name="folderInfo">The folder info.</param>
+        /// <param name="purge">if set to <c>true</c> [purge].</param>
+        public void DeleteFolders(PSFolder[] folderInfo, bool purge)
+        {
+            long[] folderIDs = Array.ConvertAll(folderInfo, detail => detail.id);
+            PSWSUtils.DeleteFolders(_contentService, folderIDs, purge);
+        }
+
 
         /// <summary>
         /// Finds the content items contained in a folder.

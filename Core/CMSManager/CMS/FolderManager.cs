@@ -171,7 +171,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// </summary>
         /// <param name="folderPath">Path of the folder to be loaded.</param>
         /// <returns>PSFolder object.  Null if the folder doesn't exist.</returns>
-        private PSFolder GetExistingFolder(string folderPath)
+        public PSFolder GetExistingFolder(string folderPath)
         {
             PSFolder returnItem;
 

@@ -35,7 +35,7 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="drugInfoSummary"></param>
-        public void Extract(XmlDocument xmlDoc, DrugInfoSummaryDocument drugInfoSummary, DocumentXPathManager xPathManager)
+        public virtual void Extract(XmlDocument xmlDoc, DrugInfoSummaryDocument drugInfoSummary, DocumentXPathManager xPathManager)
         {
             try {
                 XPathNavigator xNav = xmlDoc.CreateNavigator();

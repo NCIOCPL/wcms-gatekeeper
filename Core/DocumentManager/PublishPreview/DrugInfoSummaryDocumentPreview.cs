@@ -42,7 +42,7 @@ namespace GKPreviews
             contentHtml = string.Empty;
 
             DrugInfoSummaryDocument drugInfoSummary = new DrugInfoSummaryDocument();
-            DrugInfoSummaryExtractor extractor = new DrugInfoSummaryExtractor();
+            DrugInfoSummaryPreviewExtractor extractor = new DrugInfoSummaryPreviewExtractor();
 
             // Extract drug info summary data
             extractor.Extract(DocumentData, drugInfoSummary, DocXPathManager);
@@ -54,32 +54,30 @@ namespace GKPreviews
             // Any media links in the document should be processed.
             processMediaReferences(DocumentData);
 
+            PercussionGuid contentItemGuid = null;
+
             // Save drug info summary data into the Percussion CMS.
             using (DrugInfoSummaryPreviewProcessor processor = new DrugInfoSummaryPreviewProcessor(WriteHistoryWarningEntry, WriteHistoryInformationEntry))
             {
                 try
                 {
                     // Create the content items in CMS from information in drugInfoSummary document
-                    processor.ProcessDocument(drugInfoSummary);
+                    processor.ProcessDocument(drugInfoSummary, ref contentItemGuid);
 
                     // Generate the CMS HTML rendering of the content item
-                    contentHtml = processor.ProcessCMSPreview(drugInfoSummary);
+                    contentHtml = processor.ProcessCMSPreview(drugInfoSummary, contentItemGuid);
 
                     headerContent = createHeaderZoneContent(drugInfoSummary);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(" Preview generation failed for document Id:" + drugInfoSummary.DocumentID.ToString(), ex);
                 }
                 finally
                 {
                     ////// For Pub Preview the document will be removed from CMS once 
                     ////// the job of generating the preview html is complete.
-
-                    // Oct-04 2011, Further testing uncovered that delete does not always delete ot take effect
-                    // immediatley and subsquest request will think the document exists and throws an
-                    // exception. This seems to happen inconsistently if requests for 
-                    // the same CDRId come in at the same time. 
-                    // So no clean up operation is being performed as of now.
-
-                    //processor.DeleteContentItem(drugInfoSummary.DocumentID);
-
+                   processor.DeleteContentItem(contentItemGuid);
                 }
             }
         }

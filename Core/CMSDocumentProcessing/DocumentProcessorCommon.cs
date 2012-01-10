@@ -154,7 +154,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="cdrID">The document's CDR ID</param>
         /// <returns>If found, a Percussion GUID value is returned which identifies the document.
         /// A null return means no matching document was located.</returns>
-        public PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        public virtual PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
         {
             return GetCdrDocumentID(contentType, null, cdrID);
         }

@@ -35,34 +35,37 @@ namespace GKPreviews
 
             SummaryDocument summary = new SummaryDocument();
 
-            SummaryExtractor extractor = new SummaryExtractor();
+            SummaryPreviewExtractor extractor = new SummaryPreviewExtractor();
             extractor.PrepareXml(DocumentData, DocXPathManager);
             extractor.Extract(DocumentData, summary);
 
             SummaryRenderer render = new SummaryRenderer();
             render.Render(summary);
 
-            // Save summary data into the Percussion CMS.
+            PercussionGuid contentItemGuid = null;
 
+            // Save summary data into the Percussion CMS.
             using (CancerInfoSummaryPreviewProcessor processor = new CancerInfoSummaryPreviewProcessor(WriteHistoryWarningEntry, WriteHistoryInformationEntry))
             {
                 try
                 {
-                    PercussionGuid contentItemGuid = null;
-
                     processor.ProcessDocument(summary, ref contentItemGuid);
 
                     // Generate the CMS HTML rendering of the content item
-                    contentHtml = processor.ProcessCMSPreview( summary, contentItemGuid);
+                    contentHtml = processor.ProcessCMSPreview(summary, contentItemGuid);
 
                     headerContent = createHeaderZoneContent(summary);
 
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(" Preview generation failed for document Id:" + summary.DocumentID.ToString(), ex);                
                 }
                 finally 
                 {
                     //// For Pub Preview the document will be removed from CMS once 
                     //// the job of generating the preview html is complete.
-                    //processor.DeleteContentItem(summary.DocumentID);
+                    processor.DeleteContentItem(contentItemGuid);
                 }
             }
 

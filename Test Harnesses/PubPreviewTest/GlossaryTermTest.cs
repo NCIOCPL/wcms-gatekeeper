@@ -24,6 +24,7 @@ namespace GateKeeper.UnitTest.GlossaryTerm
             CDRPreview pubPreviewWs = new CDRPreview();
             string html = pubPreviewWs.ReturnXML((XmlNode)xmlDoc, PreviewTypes.GlossaryTerm.ToString());
             html += "";
+            Assert.IsFalse(html.Contains("CDRPreview web service error"));
         }
     }
 }

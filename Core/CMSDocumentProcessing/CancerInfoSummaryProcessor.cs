@@ -79,6 +79,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             get { return _mediaLinkIDMap; }
         }
+
         #endregion
 
         public CancerInfoSummaryProcessor(HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
@@ -1237,17 +1238,30 @@ namespace GKManagers.CMSDocumentProcessing
             // No further work is required.
             if (rootItem != null)
             {
-                PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
-                PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
-                PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+                deleteContentItem(rootItem);
+            }
+        }
 
-                // Create a list of all content IDs making up the document.
-                // It is important for verification that rootItem always be first.
-                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
+        /// <summary>
+        /// This method purges all content item and also the containg folder of the root content item.
+        /// This id should be a root item id. This ensures all the content item related to \
+        /// the summary will be deleted.
+        /// </summary>
+        /// <param name="itemGuid">The root item guid of the summary content item.</param>
+        public void DeleteContentItem(PercussionGuid itemGuid)
+        {
+            // A null rootItem means the document has already been deleted.
+            // No further work is required.
+            if (itemGuid != null)
+            {
+                // Get access to the PSFolderItem object for removing the folder and its content.
+                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { itemGuid.ID });
 
-                VerifyDocumentMayBeDeleted(fullIDList.ToArray());
+                // Get path from the first item of the the PSFolderItem of the rootItem folder collection.
+                string folderPath = CMSController.GetPathInSite(rootItem[0]);
 
-                CMSController.DeleteItemList(fullIDList);
+                // Purge all the contents inside in the folder and remove  the folder.
+                CMSController.DeleteFolder(folderPath, true);
             }
         }
 
@@ -1912,6 +1926,30 @@ namespace GKManagers.CMSDocumentProcessing
         private string MediaLinkIDAccessor(MediaLink link)
         {
             return link.Id;
+        }
+
+        /// <summary>
+        /// Deletes the content time based on the percussion guid.
+        /// </summary>
+        /// <param name="rootItem">The CMS identifier for the content item whic will be deleted.</param>
+        private void deleteContentItem(PercussionGuid rootItem)
+        {
+            // A null rootItem means the document has already been deleted.
+            // No further work is required.
+            if (rootItem != null)
+            {
+                PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
+                PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
+                PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+
+                // Create a list of all content IDs making up the document.
+                // It is important for verification that rootItem always be first.
+                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
+
+                VerifyDocumentMayBeDeleted(fullIDList.ToArray());
+
+                CMSController.DeleteItemList(fullIDList);
+            }
         }
         #endregion
     }

@@ -28,6 +28,7 @@ using GKManagers.BusinessObjects;
 using GKManagers;
 using GKPreviews;
 using GKManagers.CMSManager.Configuration;
+using CDRPreviewWS.Common;
 
 namespace CDRPreviewWS
 {
@@ -41,15 +42,6 @@ namespace CDRPreviewWS
     [ToolboxItem(false)]
     public class CDRPreview : System.Web.Services.WebService
     {
-        /// <summary>
-        /// HACK:  The throttleLock object is used to prevent more than one request
-        /// at a time from running through the Publish Preview web service.
-        /// This is a *TEMPORARY* workaround for a race condition when multiple
-        /// closely-timed requests attempt to work with documents types which are
-        /// managed by Percussion.
-        /// </summary>
-        private static object _throttleLock = new object();
-
         #region Private variables
         private DocumentXPathManager xPathManager = new DocumentXPathManager();
         private string errorMsg = string.Empty;
@@ -72,17 +64,13 @@ namespace CDRPreviewWS
         [WebMethod(Description = "Return document HTML based on the XML input")]
         public string ReturnXML(XmlNode content, string template_type)
         {
-            string pageHtml;
-            
-            // Set the critical section 
-            lock (_throttleLock)
-            {
-                string headerHtml = string.Empty;
+            string pageHtml = string.Empty;
 
-                // Generate the HTML for the document data 
-                string contentHtml = ReturnHTML(content, template_type, ref headerHtml);
-                pageHtml = GeneratePageHtml(contentHtml, headerHtml);
-            }
+            // Set the critical section 
+            string headerHtml = string.Empty;
+            // Generate the HTML for the document data 
+            string contentHtml = ReturnHTML(content, template_type, ref headerHtml);
+            pageHtml = GeneratePageHtml(contentHtml, headerHtml);
             return pageHtml;
         }
 
@@ -114,7 +102,9 @@ namespace CDRPreviewWS
             }
             catch (Exception e)
             {
-                return "CDRPreview web service error: XML document is not well-formed. " + e.ToString();
+                errorMsg = "CDRPreview web service error: XML document is not well-formed.";
+                GKCDRPreviewLogBuilder.Instance.CreateError(this.GetType(), errorMsg, e);
+                return errorMsg + e.ToString();
             }
 
             // Verify the document with DTD
@@ -125,41 +115,58 @@ namespace CDRPreviewWS
             }
             catch (Exception e)
             {
-                return "CDRPreview web service error: XML is DTD validation failed. " + e.ToString();
+                errorMsg = "CDRPreview web service error: XML DTD validation failed. ";
+                GKCDRPreviewLogBuilder.Instance.CreateError(this.GetType(), errorMsg, e);
+                return errorMsg + e.ToString();
             }
 
             if (errorMsg.Length > 0)
-                return "CDRPreview web service error: " + errorMsg;
+            {
+                errorMsg = "CDRPreview web service error: Xml data validation error," + errorMsg;
+                GKCDRPreviewLogBuilder.Instance.CreateError(this.GetType(), "Xml data validation error", errorMsg);
+                return errorMsg;
+            }
 
 
             // Switch to different document class calls based on the document type
             PreviewTypes documentType = GetDocumentType(template_type);
-            switch (documentType)
+
+            try
             {
-                case PreviewTypes.Summary:
-                    html = RenderSummaryHTML(document, ref headerHtml);
-                    break;
-                case PreviewTypes.Protocol_HP:
-                    html = RenderProtocolHTML(document, ref headerHtml, PreviewTypes.Protocol_HP);
-                    break;
-                case PreviewTypes.Protocol_Patient:
-                    html = RenderProtocolHTML(document, ref headerHtml, PreviewTypes.Protocol_Patient);
-                    break;
-                case PreviewTypes.CTGovProtocol:
-                    html = RenderCTGovProtocolHTML(document, ref headerHtml);
-                    break;
-                case PreviewTypes.GlossaryTerm:
-                    html = RenderGlossaryTermHTML(document, ref headerHtml);
-                    break;
-                case PreviewTypes.DrugInfoSummary:
-                    html = RenderDrugInfoSummaryHTML(document, ref headerHtml);
-                    break;
-                case PreviewTypes.GeneticsProfessional:
-                    html = RenderGeneticsProfessional(document, ref headerHtml);
-                    break;
-                default:
-                    html = "The document type + " + template_type + " is not supported.";
-                    break;
+                switch (documentType)
+                {
+                    case PreviewTypes.Summary:
+                        html = RenderSummaryHTML(document, ref headerHtml);
+                        break;
+                    case PreviewTypes.Protocol_HP:
+                        html = RenderProtocolHTML(document, ref headerHtml, PreviewTypes.Protocol_HP);
+                        break;
+                    case PreviewTypes.Protocol_Patient:
+                        html = RenderProtocolHTML(document, ref headerHtml, PreviewTypes.Protocol_Patient);
+                        break;
+                    case PreviewTypes.CTGovProtocol:
+                        html = RenderCTGovProtocolHTML(document, ref headerHtml);
+                        break;
+                    case PreviewTypes.GlossaryTerm:
+                        html = RenderGlossaryTermHTML(document, ref headerHtml);
+                        break;
+                    case PreviewTypes.DrugInfoSummary:
+                        html = RenderDrugInfoSummaryHTML(document, ref headerHtml);
+                        break;
+                    case PreviewTypes.GeneticsProfessional:
+                        html = RenderGeneticsProfessional(document, ref headerHtml);
+                        break;
+                    default:
+                        errorMsg = "CDRPreview web service error: The document type " + template_type + " is not supported.";
+                        return errorMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = "CDRPreview web service error:There was error generating Preview html for template type " + template_type + " at " + DateTime.Now.ToLongTimeString();
+                message += " Error Message: " + ex.Message;
+                GKCDRPreviewLogBuilder.Instance.CreateError(this.GetType(), "ReturnXML", message, ex);
+                throw new Exception(message, ex);
             }
 
             string currentHost = this.Context.Request.Url.GetLeftPart(UriPartial.Authority);
@@ -195,7 +202,7 @@ namespace CDRPreviewWS
 
             string imageContentLocation = ConfigurationManager.AppSettings["PreviewEnlargeImageContentLocation"];
             html = html.Replace("/PublishedContent/MediaLinks", currentHost + "/CDRPreviewWS/" + imageContentLocation);
-            
+
             // For Image media the image url references should be pointing to CDR server
             string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
             html = html.Replace("/images/cdr/live/", imagePath);

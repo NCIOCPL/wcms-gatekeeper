@@ -80,7 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CancerGov\ImageMediaQuery.cs" />
+    <Compile Include="CDR\DrugInfoSummaryPreviewExtractor.cs" />
     <Compile Include="CDR\ProtocolExtractorBase.cs" />
+    <Compile Include="CDR\SummaryPreviewExtractor.cs" />
     <Compile Include="ContentDatabase.cs" />
     <Compile Include="CancerGov\DrugInfoSummaryQuery.cs" />
     <Compile Include="CancerGov\GenProfQuery.cs" />

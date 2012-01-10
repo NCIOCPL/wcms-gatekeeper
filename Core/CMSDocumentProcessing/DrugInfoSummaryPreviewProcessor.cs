@@ -33,23 +33,13 @@ namespace GKManagers.CMSDocumentProcessing
         /// This method generates the document HTML from the percussion system.  
         /// </summary>
         /// <returns>A string which is the html rendering of the content item in CMS</returns>
-        public string ProcessCMSPreview(Document documentObject)
+        public string ProcessCMSPreview(Document documentObject, PercussionGuid contentItemGuid)
         {
             string cmsRenderedHTML = string.Empty;
 
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
 
-            // Create the preview url needed to produce the document html. To do this 
-            // 1. Read the content id
-            // 2. Know the template id of the content type 
-
-            // Even though the content item is created, trying to find the newly created content item 
-            // using GetCdrDocumentID returns null. This is problem in publish preview.
-            // so the content item guid CurrentContentItem is stored during create in the 
-            // base class . This property is used only publish preview derived class.
-            PercussionGuid identifier = CurrentContentItem;
-            if (identifier == null)
-                identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentObject.DocumentID);
+            PercussionGuid identifier = contentItemGuid;
 
             if (identifier != null)
             {
@@ -61,13 +51,21 @@ namespace GKManagers.CMSDocumentProcessing
             }
             else
             {
-                DrugInfoSummaryDocument document = documentObject as DrugInfoSummaryDocument;
-                string targetPathName = GetTargetFolder(document.PrettyURL);
-                string prettyUrlName = GetPrettyUrlName(document.PrettyURL);
-                throw new Exception(string.Format("Document does not exists at path {0}/{1}.", targetPathName, prettyUrlName));
+                throw new Exception(string.Format("The PercussionGuid contentItemGuid is null, this value cannot be null"));
             }
             return cmsRenderedHTML;
         }
 
+        /// <summary>
+        /// For Publish preview always return null, which signifies the document as not being present in CMS.
+        /// so new document is always created.
+        /// </summary>
+        /// <param name="contentType">The document type</param>
+        /// <param name="cdrID">The cdrid of the document.</param>
+        /// <returns>Returns null, so a new document is alwasy created in new folder.</returns>
+        public override PercussionGuid GetCdrDocumentID(string contentType, int cdrID)
+        {
+            return null;
+        }
     }
 }
