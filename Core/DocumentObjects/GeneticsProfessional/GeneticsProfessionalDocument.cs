@@ -23,6 +23,16 @@ namespace GateKeeper.DocumentObjects.GeneticsProfessional
 
         #endregion
 
+        #region Constructors
+
+        public GeneticsProfessionalDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.GENETICSPROFESSIONAL;
+        }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>

@@ -10,7 +10,6 @@ using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DataAccess;
-using GateKeeper.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
@@ -340,6 +339,8 @@ namespace GateKeeper.DataAccess.CancerGov
                     string mediaLink = string.Empty;
                     string audioMediaHTML = string.Empty;
                     string relatedInformationHtml = String.Empty;
+                    string mediaCaption = string.Empty;
+                    int mediaID = 0;
 
                     #region Media Links
                     foreach (MediaLink ml in trans.MediaLinkList)
@@ -350,6 +351,9 @@ namespace GateKeeper.DataAccess.CancerGov
                             {
                                 // TODO:REMOVE the repacement is done for string comparison purpose
                                 mediaLink = mediaLink + ml.Html.Replace("&amps;", "&");
+                                mediaCaption = ml.Caption;
+                                mediaID = ml.ReferencedCdrID;
+
                             }
                             else if (ml.Type.Contains("audio"))
                                 audioMediaHTML = audioMediaHTML + ml.Html;
@@ -378,6 +382,8 @@ namespace GateKeeper.DataAccess.CancerGov
                             db.AddInParameter(spDefCommand, "@AudioMediaHTML", DbType.String, audioMediaHTML.Trim());
                             db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, relatedInformationHtml.Trim());
                             db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
+                            db.AddInParameter(spDefCommand, "@MediaCaption", DbType.String, mediaCaption.Trim());
+                            db.AddInParameter(spDefCommand, "@MediaID", DbType.Int32, mediaID);
                             // Replace summaryref with prettyURL
                             string html = gtDef.Html.Trim();
                             //TODO: Fix SummaryRef tags in Glossary Terms.

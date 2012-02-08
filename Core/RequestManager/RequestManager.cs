@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Web;
 using System.Web.UI.WebControls;
+using System.Text;
 
 using NCI.Messaging;
 
@@ -82,6 +83,64 @@ namespace GKManagers
             return RequestStatusType.DataReceived;
         }
 
+        public static RequestStatusType CopyRequest(string updateUserID, int[] requestDataIds, out int requestID, string dtdVersion)
+        {
+            Request req = new Request();
+
+            //Change some property of New request. 
+            req.Description = "Reprocessing Documents";
+            req.RequestPublicationType = RequestPublicationType.Reload;
+            req.ActualDocCount = requestDataIds.Length;
+            req.ExpectedDocCount = requestDataIds.Length;
+            req.PublicationTarget = RequestTargetType.Live;
+            req.Status = RequestStatusType.Receiving;
+            req.UpdateUserID = updateUserID;
+            req.Source = "Gatekeeper";
+            req.DataType = "XML";
+            req.DtdVersion = dtdVersion;
+            req.ExternalRequestID = Math.Round((decimal)DateTime.UtcNow.Subtract(new DateTime(2007, 1, 1)).Ticks / 1000000).ToString();
+            requestID = -1;
+
+            string source = req.Source;
+
+
+            try
+            {
+
+                CreateNewRequest(ref req);
+                
+                requestID = req.RequestID;
+
+                StringBuilder sbRequestDataIds = new StringBuilder();
+
+                foreach (int requestDataId in requestDataIds)
+                {
+                    if (sbRequestDataIds.Length > 0)
+                        sbRequestDataIds.Append("," + requestDataId.ToString());
+                    else
+                        sbRequestDataIds.Append(requestDataId.ToString());
+                }
+
+                bool result = RequestQuery.CopyRequest(sbRequestDataIds.ToString(), requestID, updateUserID);
+
+                if (!result)
+                {
+                    AbortRequest(req.ExternalRequestID, source, updateUserID,
+                        "Copy Request aborted due to problem inserting request data.");
+                    return RequestStatusType.Aborted;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                AbortRequest(req.ExternalRequestID, source, updateUserID,
+                            "Copy Request aborted due to problem inserting request data. Details: " + ex.Message);
+                return RequestStatusType.Aborted;
+            }
+
+            CompleteRequest(req.ExternalRequestID, req.Source, updateUserID, requestDataIds.Length);
+            return RequestStatusType.DataReceived;
+        }
         /// <summary>
         /// Verifies that a document's metadata matches the document's internal information.
         /// (Called from ImportRequest)
@@ -159,12 +218,12 @@ namespace GKManagers
             string tempexportFile = Path.GetTempFileName();
 
             if (String.IsNullOrEmpty(tempDir))
-            { 
+            {
                 string message = "There is no temp directory in the System or a temp can't be created.";
                 RequestMgrLogBuilder.Instance.CreateError(typeof(RequestManager), "ExportRequest", message);
                 throw new Exception(message);
             }
-            
+
             //Get Data            
             List<RequestData> requestDatas = new List<RequestData>();
             requestDatas = LoadRequestDataListByReqIDGroups(requestDataIDs);
@@ -194,7 +253,7 @@ namespace GKManagers
 
             parent.RequestDatas = requestDatas.ToArray();// new RequestData[requestDatas.Count];
             //string exportFile = HttpContext.Current.Server.MapPath("/") + "export.xml";
-            
+
             SerializeObject(parent, tempexportFile, true);
 
             DownloadXML(tempexportFile);
@@ -452,7 +511,7 @@ namespace GKManagers
                 fmt = "Packet: {0} - Null document body on a non-remove document.";
                 msg = string.Format(fmt, child.PacketNumber);
                 RequestMgrLogBuilder.Instance.CreateInformation(
-                    typeof(RequestManager),"InsertRequestData", msg);
+                    typeof(RequestManager), "InsertRequestData", msg);
                 throw new Exception(msg);
             }
 
@@ -688,7 +747,7 @@ namespace GKManagers
 
             Dictionary<int, DocumentVersionEntry> documentList =
                 RequestQuery.LoadDocumentLocationMap(requestID);
-            documentMap = new DocumentVersionMap( requestID, documentList);
+            documentMap = new DocumentVersionMap(requestID, documentList);
 
             return documentMap;
         }

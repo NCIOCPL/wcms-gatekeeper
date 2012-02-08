@@ -6,7 +6,6 @@ using System.Xml.XPath;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
-using GateKeeper.Logging;
 using GateKeeper.Common.XPathKeys;
 using GateKeeper.DataAccess.GateKeeper;
 

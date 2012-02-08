@@ -19,7 +19,7 @@ namespace GKManagers.DataAccess
             // There should be only one row to load.
             requestItem.RequestID = (int)data.Rows[0]["RequestID"];
             requestItem.ExternalRequestID = (string)data.Rows[0]["ExternalRequestID"];
-            requestItem.RequestPublicationType = 
+            requestItem.RequestPublicationType =
                 ConvertEnum<RequestPublicationType>.Convert(data.Rows[0]["RequestType"]);
             requestItem.Description = (string)data.Rows[0]["Description"];
             requestItem.Status = ConvertEnum<RequestStatusType>.Convert(data.Rows[0]["Status"]);
@@ -36,7 +36,7 @@ namespace GKManagers.DataAccess
             requestItem.InitiateDate = (DateTime)data.Rows[0]["InitiateDate"];
 
             // Allow for the request to not be completed yet.
-            if( data.Rows[0]["CompleteReceivedTime"] != DBNull.Value)
+            if (data.Rows[0]["CompleteReceivedTime"] != DBNull.Value)
                 requestItem.CompleteReceivedTime = (DateTime)data.Rows[0]["CompleteReceivedTime"];
 
             requestItem.PublicationTarget =
@@ -255,12 +255,42 @@ namespace GKManagers.DataAccess
                 throw new Exception(string.Format("Column '{0}' not found.", "live"));
             if (liveDateColumn < 0)
                 throw new Exception(string.Format("Column '{0}' not found.", "liveDateTime"));
+
+            int gateKeeperRequestDataIDCol = getColumnIndex(data, "gateKeeperRequestDataID");
+            int stagingRequestDataIDCol = getColumnIndex(data, "stagingRequestDataID");
+            int previewRequestDataIDCol = getColumnIndex(data, "previewRequestDataID");
+            int liveRequestDataIDCol = getColumnIndex(data, "liveRequestDataID");
+
+            int gateKeeperDTDVersionCol = getColumnIndex(data, "gateKeeperDTDVersion");
+            int stagingDTDVersionCol = getColumnIndex(data, "stagingDTDVersion");
+            int previewDTDVersionCol = getColumnIndex(data, "previewDTDVersion");
+            int liveDTDVersionCol = getColumnIndex(data, "liveDTDVersion");
+            int completeReceivedTimeCol = getColumnIndex(data, "CompleteReceivedTime");
+            int externalRequestIdCol = getColumnIndex(data, "ExternalRequestId");
+            int actionTypeCol = getColumnIndex(data, "actionType");
+            int statusCol = getColumnIndex(data, "Status");
+            int groupIdCol = getColumnIndex(data, "GroupID");
+            int titleCol = getColumnIndex(data, "Title");
+
             #endregion
 
             int cdrid;
             CDRDocumentType docType = CDRDocumentType.Invalid;
-            int gateKeeperId, stagingId, previewId, liveId;
-            DateTime gateKeeperDate, stagingDate, previewDate, liveDate;
+            int gateKeeperId, stagingId, previewId, liveId, groupID;
+            DateTime gateKeeperDate, stagingDate, previewDate, liveDate, completeReceivedTimeDate;
+            string externalRequestId = string.Empty, title=string.Empty;
+            RequestDataActionType actionType = RequestDataActionType.Invalid;
+            RequestStatusType status = RequestStatusType.Invalid;
+
+            int gateKeeperRequestDataID = RequestLocationInternalIds.LocationNotPresent,
+                stagingRequestDataID = RequestLocationInternalIds.LocationNotPresent,
+                previewRequestDataID = RequestLocationInternalIds.LocationNotPresent,
+                liveRequestDataID = RequestLocationInternalIds.LocationNotPresent;
+
+            string gateKeeperDTDVersion = String.Empty,
+                    stagingDTDVersion = String.Empty,
+                    previewDTDVersion = String.Empty,
+                    liveDTDVersion = String.Empty;
 
             // Load the data
             results = new List<RequestLocationInternalIds>();
@@ -311,8 +341,54 @@ namespace GKManagers.DataAccess
                 else
                     liveDate = DateTime.MinValue;
 
+                if (row[completeReceivedTimeCol] != DBNull.Value)
+                    completeReceivedTimeDate = (DateTime)row[completeReceivedTimeCol];
+                else
+                    completeReceivedTimeDate = DateTime.MinValue;
+
+                if (row[externalRequestIdCol] != DBNull.Value)
+                    externalRequestId = (string)row[externalRequestIdCol];
+
+                if (row[groupIdCol] != DBNull.Value)
+                    groupID = (int)row[groupIdCol];
+                else
+                    groupID = RequestLocationInternalIds.LocationNotPresent;
+
+                if (row[actionTypeCol] != DBNull.Value)
+                    actionType = ConvertEnum<RequestDataActionType>.Convert(row[actionTypeCol]); ;
+
+                if (row[statusCol] != DBNull.Value)
+                    status = ConvertEnum<RequestStatusType>.Convert(row[statusCol]); ;
+
+                if (row[titleCol] != DBNull.Value)
+                    title = (string)row[titleCol];
+
+                // Acquire requestdatacolumn values
+                if (row[gateKeeperRequestDataIDCol] != DBNull.Value)
+                    gateKeeperRequestDataID = (int)row[gateKeeperRequestDataIDCol];
+                if (row[stagingRequestDataIDCol] != DBNull.Value)
+                    stagingRequestDataID = (int)row[stagingRequestDataIDCol];
+                if (row[previewRequestDataIDCol] != DBNull.Value)
+                    previewRequestDataID = (int)row[previewRequestDataIDCol];
+                if (row[liveRequestDataIDCol] != DBNull.Value)
+                    liveRequestDataID = (int)row[liveRequestDataIDCol];
+
+                // Acquire dtdVersion column values
+                if (row[gateKeeperDTDVersionCol] != DBNull.Value)
+                    gateKeeperDTDVersion = (string)row[gateKeeperDTDVersionCol];
+                if (row[stagingDTDVersionCol] != DBNull.Value)
+                    stagingDTDVersion = (string)row[stagingDTDVersionCol];
+                if (row[previewDTDVersionCol] != DBNull.Value)
+                    previewDTDVersion = (string)row[previewDTDVersionCol];
+                if (row[liveDTDVersionCol] != DBNull.Value)
+                    liveDTDVersion = (string)row[liveDTDVersionCol];
+
                 results.Add(new RequestLocationInternalIds(cdrid, gateKeeperId, gateKeeperDate,
-                    stagingId, stagingDate, previewId, previewDate, liveId, liveDate, docType));
+                    stagingId, stagingDate, previewId, previewDate, liveId, liveDate, docType,
+                    gateKeeperRequestDataID, stagingRequestDataID, previewRequestDataID, liveRequestDataID,
+                    gateKeeperDTDVersion, stagingDTDVersion, previewDTDVersion, liveDTDVersion,
+                    completeReceivedTimeDate, externalRequestId, groupID, actionType, status, title
+                    ));
             }
 
             return results;
@@ -412,5 +488,15 @@ namespace GKManagers.DataAccess
 
             return results;
         }
+
+        #region Private Methods
+        static int getColumnIndex(DataTable dt, string columnName)
+        {
+            int columnIndex = dt.Columns.IndexOf(columnName);
+            if (columnIndex < 0)
+                throw new Exception(string.Format("Column '{0}' not found.", columnName));
+            return columnIndex;
+        }
+        #endregion
     }
 }

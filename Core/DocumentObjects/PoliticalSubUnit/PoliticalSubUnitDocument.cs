@@ -19,6 +19,16 @@ namespace GateKeeper.DocumentObjects.PoliticalSubUnit
 
         #endregion
 
+        #region Constructors
+
+        public PoliticalSubUnitDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.PoliticalSubUnit;
+        }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>

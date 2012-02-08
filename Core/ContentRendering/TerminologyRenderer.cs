@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Terminology;
-using GateKeeper.Logging;
 
 
 namespace GateKeeper.ContentRendering

@@ -65,23 +65,32 @@ where:
             {
                 if (args[1].ToLower() == "all")
                 {
-                    promotions.Add("PromoteToStaging"); promotions.Add("PromoteToPreview"); promotions.Add("PromoteToLive");
+                    promotions.Add(ProcessActionType.PromoteToStaging); 
+                    promotions.Add(ProcessActionType.PromoteToPreview);
+                    promotions.Add(ProcessActionType.PromoteToLive);
                 }
                 else
                 { 
+                    promotions.Add( GetPromotionAction(args[1]) );
                 }
+
                 RequestData data = DeserializeData(args[0]);
-                ProcessActionType processAction = GetPromotionAction(args[1]);
+
+                foreach (ProcessActionType processActionType in promotions)
+                {
+                    ProcessActionType processAction = processActionType;
+
+                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+                    // Instantiate a promoter and go to town.
+                    DocumentPromoterBase promoter =
+                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                    promoter.Promote(xPathManager);
+                }
+
                 CMSController.CMSPublishingTarget? publishingFlag = null;
                 if (args.Length == 3)
                     publishingFlag = GetPublishingFlag(args[2]);
-
-                DocumentXPathManager xPathManager = new DocumentXPathManager();
-
-                // Instantiate a promoter and go to town.
-                DocumentPromoterBase promoter =
-                    DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                promoter.Promote(xPathManager);
 
                 if (publishingFlag.HasValue)
                 {

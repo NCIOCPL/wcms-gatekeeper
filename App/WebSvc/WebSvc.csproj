@@ -92,6 +92,7 @@
   <ItemGroup>
     <None Include="Class Diagrams\Web Service.cd" />
     <None Include="Class Diagrams\Request Handling.cd" />
+    <Content Include="sharedconfig\connectionStrings.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\BatchManager\BatchManager.csproj">

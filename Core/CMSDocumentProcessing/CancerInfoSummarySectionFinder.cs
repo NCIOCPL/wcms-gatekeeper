@@ -13,15 +13,11 @@ using GateKeeper.DocumentObjects.Summary;
 
 namespace GKManagers.CMSDocumentProcessing
 {
-    class CancerInfoSummarySectionFinder
+    public abstract class CancerInfoSummarySectionFinder
     {
-        #region Constants
+        protected CMSController CMSController { get; set; }
 
-        const string SummaryPageSlot = "pdqCancerInformationSummaryPageSlot";
-
-        #endregion
-
-        private CMSController CMSController { get; set; }
+        protected abstract string SummaryPageSlot { get; }
 
         public CancerInfoSummarySectionFinder(CMSController controller)
         {
@@ -34,10 +30,10 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="root">The ID of the content item forming the summary document's root.</param>
         /// <returns>PercussionGuid of the first page</returns>
-        public PercussionGuid FindFirstPage(PercussionGuid root)
+        internal virtual SummaryPageInfo FindFirstPage(PercussionGuid root)
         {
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
-            return FindFirstPage(pageIDs);
+            return FindFirstPage(pageIDs, CMSController.SiteRootPath);
         }
 
         /// <summary>
@@ -47,33 +43,42 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="pageIDs">The list of IDs for document's individual pages.
         /// Assumed to be in page order.</param>
         /// <returns>PercussionGuid of the first page</returns>
-        public PercussionGuid FindFirstPage(PercussionGuid[] pageIDs)
+        internal SummaryPageInfo FindFirstPage(PercussionGuid[] pageIDs, string siteFolder)
         {
             PercussionGuid first = null;
+            SummaryPageInfo pageInfo = null;
 
             if (pageIDs.Length > 0)
+            {
                 first = pageIDs[0];
 
-            return first;
+                // Load the actual page item.
+                PSItem item = CMSController.LoadContentItems(new PercussionGuid[] { first })[0];
+
+                string pagePath = CMSController.GetPathInSite(item, siteFolder);
+
+                pageInfo = new SummaryPageInfo(1, pagePath, first);
+            }
+
+            return pageInfo;
         }
 
 
-        public void FindPageContainingSection(PercussionGuid root, string sectionID, out int pageNumber, out PercussionGuid containingItem)
-        {
-            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, SummaryPageSlot);
-            if (pageIDs.Length <= 0)
-                throw new EmptySlotException(string.Format("Slot unexpectedly empty for content item {0}.", root));
+        internal abstract SummaryPageInfo FindPageContainingSection(PercussionGuid root, string sectionID);
 
-            FindPageContainingSection(pageIDs, sectionID, out pageNumber, out containingItem);
-        }
 
-        public void FindPageContainingSection(PercussionGuid[] pageIDs, string sectionID, out int pageNumber, out PercussionGuid containingItem)
+        internal SummaryPageInfo FindPageContainingSection(PercussionGuid[] pageIDs, string sectionID)
         {
             // Force the out parameters to have values.
-            pageNumber = int.MinValue;
-            containingItem = null;
+            int pageNumber = int.MinValue;
+            PercussionGuid containingItem = null;
+
+            SummaryPageInfo pageInfo = null;
 
             PSItem[] pageItems = CMSController.LoadContentItems(pageIDs);
+
+            // All the page items reside in the same folder.
+            string baseUrl = CMSController.GetPathInSite(pageItems[0]);
 
             for (int i = 0; i < pageItems.Length; i++)
             {
@@ -108,10 +113,19 @@ namespace GKManagers.CMSDocumentProcessing
                 }
             }
 
-            // If a page number was found, adjust pageNumber to reflect natural numbers (1, 2, 3)
+            if (pageNumber == int.MinValue)
+            {
+                String fmt = "Unable to locate section {0}.";
+                throw new CannotUpdateException(string.Format(fmt, sectionID));
+            }
+
+            // Adjust pageNumber to reflect natural numbers (1, 2, 3)
             // instead of zero-based.
-            if (pageNumber != int.MinValue)
-                pageNumber++;
+            pageNumber++;
+
+            pageInfo = new SummaryPageInfo(pageNumber, baseUrl, containingItem);
+
+            return pageInfo;
         }
 
         public int FindInternalPageContainingSection(SummaryDocument summary, string sectionID)

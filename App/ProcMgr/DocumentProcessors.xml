@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProcessorPool xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Processors>
+
+    <Processor>
+      <Type>Summary</Type>
+      <ProcessingTargets>
+
+        <ProcessingTarget TargetedDevice="screen">
+          <DocumentExtractor xsi:type="SummaryExtractor" />
+          <DocumentRenderer xsi:type="SummaryRenderer" />
+          <DocumentDataAccess xsi:type="SummaryStandardDataAccessWrapper" SitePath="//Sites/CancerGov" />
+        </ProcessingTarget>
+
+        <ProcessingTarget TargetedDevice="mobile">
+          <DocumentExtractor xsi:type="SummaryExtractor" />
+          <DocumentRenderer xsi:type="SummaryRenderer" />
+          <DocumentDataAccess xsi:type="SummaryMobileDataAccessWrapper" SitePath="//Sites/MobileCancerGov" />
+        </ProcessingTarget>
+
+      </ProcessingTargets>
+    </Processor>
+
+  </Processors>
+</ProcessorPool>

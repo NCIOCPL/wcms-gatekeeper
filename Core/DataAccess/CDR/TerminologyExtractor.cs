@@ -5,7 +5,6 @@ using System.Xml;
 using System.Xml.XPath;
 using GateKeeper.Common;
 using GateKeeper.Common.XPathKeys;
-using GateKeeper.Logging;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Terminology;
 using GateKeeper.DataAccess.GateKeeper;

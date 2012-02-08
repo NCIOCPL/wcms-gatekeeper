@@ -24,6 +24,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// Default constructor.
         /// </summary>
         public GlossaryTermDocument()
+            : base()
         {
             this.DocumentType = DocumentType.GlossaryTerm;
         }

@@ -17,7 +17,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -39,6 +39,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AssemblyOriginatorKeyFile>..\..\GateKeeper.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -75,11 +76,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\DocumentProcessingSection.cs" />
     <Compile Include="DocMgrLogBuilder.cs" />
     <Compile Include="DocumentManager.cs" />
     <Compile Include="DocumentTypeFlagMapper.cs" />
     <Compile Include="DocumentTypeTracker.cs" />
     <Compile Include="DocumentTypeFlag.cs" />
+    <Compile Include="Configuration\NamedSingleValueElement.cs" />
+    <Compile Include="Processors\ProcessingTarget.cs" />
+    <Compile Include="Processors\Processor.cs" />
+    <Compile Include="Processors\ProcessorLoader.cs" />
+    <Compile Include="Processors\ProcessorPool.cs" />
     <Compile Include="Promoters\CTGovProtocolPromoter.cs" />
     <Compile Include="Promoters\DocumentPromoterBase.cs" />
     <Compile Include="DocumentPromoterFactory.cs" />

@@ -80,7 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CancerGov\ImageMediaQuery.cs" />
+    <Compile Include="CDR\DocumentExtractor.cs" />
     <Compile Include="CDR\DrugInfoSummaryPreviewExtractor.cs" />
+    <Compile Include="CDR\Exceptions.cs" />
     <Compile Include="CDR\ProtocolExtractorBase.cs" />
     <Compile Include="CDR\SummaryPreviewExtractor.cs" />
     <Compile Include="ContentDatabase.cs" />
@@ -104,6 +106,9 @@
     <Compile Include="CDR\SummaryExtractor.cs" />
     <Compile Include="CDR\TerminologyExtractor.cs" />
     <Compile Include="DataAccessManager.cs" />
+    <Compile Include="DataAccessWrappers\SummaryMobileDataAccessWrapper.cs" />
+    <Compile Include="DataAccessWrappers\DocumentDataAccess.cs" />
+    <Compile Include="DataAccessWrappers\SummaryStandardDataAccessWrapper.cs" />
     <Compile Include="DbBaseQuery.cs" />
     <Compile Include="DbWrapper.cs" />
     <Compile Include="DocumentQuery.cs" />
@@ -117,6 +122,14 @@
     <Compile Include="SPConstants.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CMSDocumentProcessing\CMSDocumentProcessing.csproj">
+      <Project>{DD69C2C5-626D-4A06-9C6E-37461F0B93F1}</Project>
+      <Name>CMSDocumentProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CMSManager\CMSManager.csproj">
+      <Project>{7D2F8F1C-75AF-4D6F-975D-CBCD8DE16D09}</Project>
+      <Name>CMSManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
       <Name>Common</Name>
@@ -124,10 +137,6 @@
     <ProjectReference Include="..\DocumentObjects\DocumentObjects.csproj">
       <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
       <Name>DocumentObjects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
-      <Name>Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

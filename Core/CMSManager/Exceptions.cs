@@ -180,4 +180,19 @@ namespace NCI.WCM.CMSManager
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown by the CMSController object when errors occur during initialization.
+    /// </summary>
+    [global::System.Serializable]
+    public class CMSInitializationException : CMSException
+    {
+        public CMSInitializationException() { }
+        public CMSInitializationException(string message) : base(message) { }
+        public CMSInitializationException(string message, Exception inner) : base(message, inner) { }
+        protected CMSInitializationException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

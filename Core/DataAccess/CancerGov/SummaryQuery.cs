@@ -14,7 +14,6 @@ using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DataAccess;
-using GateKeeper.Logging;
 using GateKeeper.Common;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;

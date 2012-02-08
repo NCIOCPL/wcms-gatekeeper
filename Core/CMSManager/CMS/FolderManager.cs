@@ -104,7 +104,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// and the base of the specific site. e.g. //Sites/CancerGov.</remarks>
         public PSFolder GuaranteeFolder(string folderPath, NavonAction navonAction)
         {
-            if (folderPath == null)
+            if (string.IsNullOrEmpty(folderPath))
                 throw new ArgumentNullException("folderPath");
 
             // Does the path already exist in the collection?

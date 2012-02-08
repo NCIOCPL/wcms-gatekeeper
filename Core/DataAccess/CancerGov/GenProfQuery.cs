@@ -9,7 +9,6 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.GeneticsProfessional;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DataAccess;
-using GateKeeper.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 

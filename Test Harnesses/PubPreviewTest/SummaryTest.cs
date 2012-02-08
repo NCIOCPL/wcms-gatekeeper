@@ -6,9 +6,7 @@ using System.Xml;
 using NUnit.Framework;
 using PubPreviewTest.PubPreviewWS;
 using GateKeeper.DocumentObjects;
-
-
-namespace PubPreviewTest
+namespace GateKeeper.UnitTest.GlossaryTerm
 {
     [TestFixture]
     public class SummaryTest
@@ -20,10 +18,8 @@ namespace PubPreviewTest
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.Load(@"./XMLData/" + requestDataXMLFile);
             CDRPreview pubPreviewWs = new CDRPreview();
-            pubPreviewWs.Url = "http://gatekeeperred.cancer.gov/CDRPreviewWS/CDRPreview.asmx";
             string html = pubPreviewWs.ReturnXML((XmlNode)xmlDoc, PreviewTypes.Summary.ToString());
             html += "";
-            Assert.IsFalse(html.Contains("CDRPreview web service error"));
         }
     }
 }

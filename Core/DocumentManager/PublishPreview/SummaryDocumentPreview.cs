@@ -36,8 +36,7 @@ namespace GKPreviews
             SummaryDocument summary = new SummaryDocument();
 
             SummaryPreviewExtractor extractor = new SummaryPreviewExtractor();
-            extractor.PrepareXml(DocumentData, DocXPathManager);
-            extractor.Extract(DocumentData, summary);
+            extractor.Extract(DocumentData, summary, DocXPathManager, TargetedDevice.screen);
 
             SummaryRenderer render = new SummaryRenderer();
             render.Render(summary);

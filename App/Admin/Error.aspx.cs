@@ -26,8 +26,19 @@ namespace GateKeeperAdmin
                 case 2:
                     MesTextLbl.Text = "Can not delete a batch because it's being Processed";
                     break;
+                case 3:
+                    MesTextLbl.Text = "You should be logged in as Administrator to perform this task or your login session has timed out.";
+                    break;
+                case 4:
+                    MesTextLbl.Text = "Document reprocessing cannot be scheduled, because copyRequest did not return DataReceived status.";
+                    break;
+                case 5:
+                    MesTextLbl.Text = "Document reprocessing cannot schedule the batch.";
+                    break;
                 default:
-                    MesTextLbl.Text = "Unexpected errors occurred. Our technicians have been notified and are working to correct the situation.";
+                    {
+                        MesTextLbl.Text = "Unexpected errors occurred. Our technicians have been notified and are working to correct the situation.";
+                    }
                     break;
             }
 

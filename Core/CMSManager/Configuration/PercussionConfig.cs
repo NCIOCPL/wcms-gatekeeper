@@ -22,7 +22,7 @@ namespace GKManagers.CMSManager.Configuration
 
  
         /// <summary>
-        /// Gets the Site id value of the site specified by siteRootPath.
+        /// Gets the Site id value of the site specified by SiteRootPath.
         /// </summary>
         [ConfigurationProperty("siteId", IsRequired = true)]
         public ConfigValue SiteId

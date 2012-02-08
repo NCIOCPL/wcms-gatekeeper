@@ -74,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudienceType.cs" />
-    <Compile Include="Country\CountryDocument.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
     <Compile Include="GlossaryTerm\RelatedInformationLink.cs" />
@@ -136,10 +135,6 @@
       <Project>{18292900-B618-49DC-AC6C-A4575BD62F47}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
-      <Name>Logging</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -157,6 +152,9 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Country\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

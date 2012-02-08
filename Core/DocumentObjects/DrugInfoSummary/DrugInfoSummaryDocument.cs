@@ -21,6 +21,16 @@ namespace GateKeeper.DocumentObjects.DrugInfoSummary
 
         #endregion
 
+        #region Constructors
+
+        public DrugInfoSummaryDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.DrugInfoSummary;
+        }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>

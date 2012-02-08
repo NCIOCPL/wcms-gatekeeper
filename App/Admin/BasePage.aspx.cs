@@ -16,7 +16,6 @@ namespace GateKeeperAdmin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-        
         }
 
         protected void SetActiveNavTab(int tabID)

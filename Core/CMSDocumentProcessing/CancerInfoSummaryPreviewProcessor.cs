@@ -21,11 +21,11 @@ using NCI.WCM.CMSManager.PercussionWebSvc;
 namespace GKManagers.CMSDocumentProcessing
 {
     /// <summary>
-    /// This class is derived from the standard CancerInfoSummaryProcessor. This method re-implements 
+    /// This class is derived from the standard CancerInfoSummaryProcessorStandard. This method re-implements 
     /// the method ProcessDocument of the base class. This class in addition to processing the document into
     /// CMS also provides method to generate the html from the percussion system.
     /// </summary>
-    public class CancerInfoSummaryPreviewProcessor : CancerInfoSummaryProcessor, IDocumentProcessor, IDisposable
+    public class CancerInfoSummaryPreviewProcessor : CancerInfoSummaryProcessorStandard, IDocumentProcessor, IDisposable
     {
         private Dictionary<string, string> mediaRenderedContentList = new Dictionary<string, string>();
 

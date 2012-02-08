@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
-using GateKeeper.Logging;
 
 namespace GateKeeper.ContentRendering
 {

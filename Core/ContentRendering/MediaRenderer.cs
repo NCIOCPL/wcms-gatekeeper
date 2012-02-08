@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Media;
-using GateKeeper.Logging;
+
 namespace GateKeeper.ContentRendering
 {
 

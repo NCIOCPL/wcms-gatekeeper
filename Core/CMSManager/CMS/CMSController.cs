@@ -78,9 +78,17 @@ namespace NCI.WCM.CMSManager.CMS
         // the state of content items (or similar entities) between calls to
         // the controller's public methods.
 
-        private string siteRootPath = string.Empty;
-
         private Dictionary<string, PercussionGuid> communityCollection = new Dictionary<string, PercussionGuid>();
+
+        #endregion
+
+        #region CMSController Session Properties
+
+        /// <summary>
+        /// Allows the site root path to be overridden.  This value defaults to a value
+        /// loaded from the siteRoot key in the Percussion configuration section.
+        /// </summary>
+        public string SiteRootPath { get; set; }
 
         #endregion
 
@@ -88,25 +96,9 @@ namespace NCI.WCM.CMSManager.CMS
         /// Initializes a new instance of the CMSController class.
         /// </summary>
         public CMSController()
+            : this(null)
         {
-            // Percussion system login and any other needed intitialization goes here.
-            // The login ID and password are loaded from the application's configuration file.
-            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
-
-            string username = percussionConfig.ConnectionInfo.UserName.Value;
-            string password = percussionConfig.ConnectionInfo.Password.Value;
-            string community = percussionConfig.ConnectionInfo.Community.Value;
-
-            string host = percussionConfig.ConnectionInfo.Host.Value;
-            string port = percussionConfig.ConnectionInfo.Port.Value;
-            string protocol = percussionConfig.ConnectionInfo.Protocol.Value;
-
-            int timeout = percussionConfig.ConnectionInfo.Timeout.Value;   //100000; // percussionConfig.Timeout;
-
-            Login(username, password, community, host, port, protocol, timeout);
-
-            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
-
+            // Initialization logic is shared with and implemented by CMSController(string communityName).
         }
 
         /// <summary>
@@ -115,11 +107,20 @@ namespace NCI.WCM.CMSManager.CMS
         public CMSController(string communityName)
         {
             // HACK: There should really be a mechanism for a single CMSController to address multiple communities
-            // without having to switch on the fly.  (Maintain multiple logins.)
+            // without having to switch on the fly.  (Maintain multiple logins?)
 
             // Percussion system login and any other needed intitialization goes here.
             // The login ID and password are loaded from the application's configuration file.
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+
+            if (percussionConfig == null)
+                throw new CMSInitializationException("Unable to load Percussion Configuration section.");
+
+            string community;
+            if (string.IsNullOrEmpty(communityName))
+                community = percussionConfig.ConnectionInfo.Community.Value;
+            else
+                community = communityName;
 
             string username = percussionConfig.ConnectionInfo.UserName.Value;
             string password = percussionConfig.ConnectionInfo.Password.Value;
@@ -130,8 +131,8 @@ namespace NCI.WCM.CMSManager.CMS
 
             int timeout = percussionConfig.ConnectionInfo.Timeout.Value;  //100000; // percussionConfig.Timeout;
 
-            Login(username, password, communityName, host, port, protocol, timeout);
-            siteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
+            Login(username, password, community, host, port, protocol, timeout);
+            SiteRootPath = percussionConfig.ConnectionInfo.SiteRootPath.Value;
         }
 
 
@@ -370,7 +371,26 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>List of IDs of all the content items updated </returns>
         public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems)
         {
-            return UpdateContentItemList(contentItems, null);
+            return UpdateContentItemList(contentItems, null, null, null);
+        }
+
+        /// <summary>
+        /// Updates the content item list.
+        /// </summary>
+        /// <param name="contentItems">A collection of UpdateContentItem.</param>
+        /// <param name="replacementPathCollection">Updated collection of paths the item should be appear in.
+        /// This value replaces the existing collection of locations for the items.
+        /// If null, the items' location is not updated.</param>
+        /// <param name="additionalPathCollection">Collection of additional paths where the items should appear.
+        /// Specify null for no additional paths.</param>
+        /// <returns>
+        /// List of IDs of all the content items updated
+        /// </returns>
+        public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems,
+            List<string> replacementPathCollection,
+            List<string>additionalPathCollection)
+        {
+            return UpdateContentItemList(contentItems, null, replacementPathCollection, additionalPathCollection);
         }
 
         /// <summary>
@@ -384,11 +404,34 @@ namespace NCI.WCM.CMSManager.CMS
         public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems,
             Action<string> invalidFieldnameHandler)
         {
+            return UpdateContentItemList(contentItems, invalidFieldnameHandler, null, null);
+        }
+
+        /// <summary>
+        /// Updates the content item list.
+        /// </summary>
+        /// <param name="contentItems">A collection of UpdateContentItem.</param>
+        /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
+        /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
+        /// will throw CMSInvalidFieldnameException with the invalid name.</param>
+        /// <param name="replacementPathCollection">Updated collection of paths the item should be appear in.
+        /// This value replaces the existing collection of locations for the items.
+        /// If null, the items' location is not updated.</param>
+        /// <param name="additionalPathCollection">Collection of additional paths where the items should appear.
+        /// Specify null for no additional paths.</param>
+        /// <returns>
+        /// List of IDs of all the content items updated
+        /// </returns>
+        public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems,
+            Action<string> invalidFieldnameHandler,
+            List<string> replacementPathCollection,
+            List<string> additionalPathCollection)
+        {
             List<long> idUpdList = new List<long>();
             long idUpd;
             foreach (ContentItemForUpdating cmi in contentItems)
             {
-                idUpd = UpdateItem(cmi.ID, cmi.Fields, invalidFieldnameHandler);
+                idUpd = UpdateItem(cmi.ID, cmi.Fields, invalidFieldnameHandler, replacementPathCollection, additionalPathCollection);
                 idUpdList.Add(idUpd);
             }
             return idUpdList;
@@ -398,14 +441,23 @@ namespace NCI.WCM.CMSManager.CMS
         /// Updates a single content item.
         /// </summary>
         /// <param name="id">The id.</param>
-        /// <param name="fields">The fields.</param>
+        /// <param name="newFieldValues">The new field values.</param>
         /// <param name="invalidFieldnameHandler">Method accepting a single string parameter to call
         /// when a fieldname is not valid.  If invalidFieldnameHandler is null, invalid fieldnames
         /// will throw CMSInvalidFieldnameException with the invalid name.</param>
-        /// <returns>The ID of the content time which has been updated.</returns>
+        /// <param name="replacementPathCollection">Updated collection of paths the item should be appear in.
+        /// This value replaces the existing collection of locations for the items.
+        /// If null, the items' location is not updated.</param>
+        /// <param name="additionalPathCollection">Collection of additional paths where the items should appear.
+        /// Specify null for no additional paths.</param>
+        /// <returns>
+        /// The ID of the content time which has been updated.
+        /// </returns>
         private long UpdateItem(long id,
             Dictionary<string, string> newFieldValues,
-            Action<string> invalidFieldnameHandler)
+            Action<string> invalidFieldnameHandler,
+            List<string> replacementPathCollection,
+            List<string> additionalPathCollection)
         {
             // TODO: Merge this with the version of UpdateContentItemList which accepts invalidFieldnameHandler.
 
@@ -436,6 +488,19 @@ namespace NCI.WCM.CMSManager.CMS
             }
 
             // TODO: Add logic to update child fields.
+
+
+            // Replace the item's list of paths.
+            if (replacementPathCollection != null)
+            {
+                item.Folders = PSItemFoldersBuilder.Build(SiteRootPath, replacementPathCollection);
+            }
+
+            // Update the item's list of paths.
+            if (additionalPathCollection != null)
+            {
+                item.Folders = PSItemFoldersBuilder.Build(SiteRootPath, item.Folders, additionalPathCollection);
+            }
 
             long idUpd = PSWSUtils.SaveItem(_contentService, item);
             PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
@@ -536,7 +601,10 @@ namespace NCI.WCM.CMSManager.CMS
         public void DeleteItemList(PercussionGuid[] itemList)
         {
             long[] rawIDs = Array.ConvertAll(itemList, item => (long)item.ID);
-            DeleteItemList(rawIDs);
+            if (rawIDs.Length > 0)
+            {
+                DeleteItemList(rawIDs);
+            }
         }
 
         /// <summary>
@@ -568,8 +636,8 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="idcoll">The collection of tems to move.</param>
         public void MoveContentItemFolder(string sourcePath, string targetPath, long[] idcoll)
         {
-            sourcePath = siteRootPath + sourcePath;
-            targetPath = siteRootPath + targetPath;
+            sourcePath = SiteRootPath + sourcePath;
+            targetPath = SiteRootPath + targetPath;
 
             PSWSUtils.MoveFolderChildren(_contentService, targetPath, sourcePath, idcoll);
         }
@@ -585,7 +653,7 @@ namespace NCI.WCM.CMSManager.CMS
         [Obsolete("Use GuaranteeFolder(string folderPath, NavonAction navonAction) instead.")]
         public PSFolder GuaranteeFolder(string folderPath)
         {
-            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, FolderManager.NavonAction.None);
+            return FolderManager.GuaranteeFolder(SiteRootPath + folderPath, FolderManager.NavonAction.None);
         }
 
         /// <summary>
@@ -598,7 +666,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// prepended before the attempt is made to create it.</remarks>
         public PSFolder GuaranteeFolder(string folderPath, FolderManager.NavonAction navonAction)
         {
-            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, navonAction);
+            return FolderManager.GuaranteeFolder(SiteRootPath + folderPath, navonAction);
         }
 
         /// <summary>
@@ -613,7 +681,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// prepended before the attempt is made to create it.</remarks>
         public PSFolder GuaranteeFolder(string folderPath, bool makeNavonPublic)
         {
-            return FolderManager.GuaranteeFolder(siteRootPath + folderPath, makeNavonPublic);
+            return FolderManager.GuaranteeFolder(SiteRootPath + folderPath, makeNavonPublic);
         }
 
         /// <summary>
@@ -623,7 +691,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="purge">if set to <c>true</c> [purge].</param>
         public void DeleteFolder(string folderPath, bool purge)
         {
-            PSFolder folderInfo = FolderManager.GetExistingFolder(siteRootPath + folderPath);
+            PSFolder folderInfo = FolderManager.GetExistingFolder(SiteRootPath + folderPath);
             DeleteFolders(new PSFolder[] { folderInfo }, purge);
         }
 
@@ -657,7 +725,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>A collection of zero or more objects describing the folder's contents.</returns>
         public PSItemSummary[] FindFolderChildren(string path)
         {
-            return PSWSUtils.FindFolderChildren(_contentService, siteRootPath + path);
+            return PSWSUtils.FindFolderChildren(_contentService, SiteRootPath + path);
         }
 
         /// <summary>
@@ -667,7 +735,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <returns>True if the folder exists, false otherwise.</returns>
         public bool FolderExists(string path)
         {
-            return PSWSUtils.FolderExists(_contentService, siteRootPath + path);
+            return PSWSUtils.FolderExists(_contentService, SiteRootPath + path);
         }
 
         /// <summary>
@@ -954,23 +1022,38 @@ namespace NCI.WCM.CMSManager.CMS
         }
 
         /// <summary>
-        /// Strips the leading //Sites/sitename portion from the first path
-        /// a content item resides in.
+        /// Finds the first path in the current site which a content item resides in.
         /// </summary>
         /// <param name="item">A content item</param>
-        /// <returns>The path relative to the site's base, or null if no path is available.</returns>
+        /// <returns>The path relative to the current site's base, or null if no path is available.</returns>
         public string GetPathInSite(PSItem item)
+        {
+            return GetPathInSite(item, SiteRootPath);
+        }
+
+        /// <summary>
+        /// Finds the first path, under the specified site path, which a content item resides in.
+        /// </summary>
+        /// <param name="item">A content item</param>
+        /// <param name="siteBasePath">The site base path.</param>
+        /// <returns>
+        /// The path relative to the current site's base, or null if no path is available.
+        /// </returns>
+        public string GetPathInSite(PSItem item, string siteBasePath)
         {
             if (item == null || item.Folders == null || item.Folders.Length == 0)
                 return null;
 
-            PSItemFolders pathFolder = Array.Find(item.Folders, folder => (!string.IsNullOrEmpty(folder.path)));
+            PSItemFolders pathFolder = Array.Find(item.Folders, folder =>{
+                return (!string.IsNullOrEmpty(folder.path)
+                    && folder.path.StartsWith(siteBasePath));
+            });
             if (pathFolder == null)
                 return null;
 
             string path = pathFolder.path;
-            if (path.StartsWith(siteRootPath, StringComparison.InvariantCultureIgnoreCase))
-                return path.Substring(siteRootPath.Length);
+            if (path.StartsWith(siteBasePath, StringComparison.InvariantCultureIgnoreCase))
+                return path.Substring(siteBasePath.Length);
             else
                 return path;
         }
@@ -1043,6 +1126,23 @@ namespace NCI.WCM.CMSManager.CMS
             return SearchForContentItems(contentType, null, fieldCriteria);
         }
 
+        /// <summary>
+        /// Peforms a search of the CMS repository for content items via a the CMS database search
+        /// engine (as opposed to the full text search engine).
+        /// Search criteria must include a content type, and may optionally include a list of
+        /// field/values pairs.
+        /// </summary>
+        /// <param name="contentType">String naming the content type for limiting the search.</param>
+        /// <param name="path">Site sub path in which to search for content items.
+        /// (Must begin with /, must not include the //Sites/sitename component.)</param>
+        /// <param name="fieldCriteria">Optional list of name/value pairs identifying the fields
+        /// and values to search for</param>
+        /// <returns>An array containing zero or more content item ID values.  The array may
+        /// be empty, but is never null.</returns>
+        public PercussionGuid[] SearchForContentItems(string contentType, string path, Dictionary<string, string> fieldCriteria)
+        {
+            return SearchForContentItems(contentType, null, path, fieldCriteria);
+        }
 
         /// <summary>
         /// Peforms a search of the CMS repository for content items via a the CMS database search
@@ -1051,22 +1151,33 @@ namespace NCI.WCM.CMSManager.CMS
         /// field/values pairs.
         /// </summary>
         /// <param name="contentType">String naming the content type for limiting the search.</param>
-        /// <param name="path">Base path in which to search for content items.
+        /// <param name="siteBasePath">Path to the site's base folder. Use null for current/default site.</param>
+        /// <param name="path">Site sub path in which to search for content items.
         /// (Must begin with /, must not include the //Sites/sitename component.)</param>
         /// <param name="fieldCriteria">Optional list of name/value pairs identifying the fields
         /// and values to search for</param>
-        /// <returns>An array containing zero or more content item ID values.  The array may
-        /// be empty, but is never null.</returns>
-        public PercussionGuid[] SearchForContentItems(string contentType, string path, Dictionary<string, string> fieldCriteria)
+        /// <returns>
+        /// An array containing zero or more content item ID values.  The array may
+        /// be empty, but is never null.
+        /// </returns>
+        public PercussionGuid[] SearchForContentItems(string contentType, string siteBasePath, string path, Dictionary<string, string> fieldCriteria)
         {
             PercussionGuid[] contentIdList;
 
             string searchPath;
+            string siteBase;
 
-            if (!string.IsNullOrEmpty(path))
-                searchPath = siteRootPath + path;
+            // Allow override of default site root.
+            if (string.IsNullOrEmpty(siteBasePath))
+                siteBase = SiteRootPath;
             else
-                searchPath = siteRootPath;
+                siteBase = siteBasePath;
+
+            // Allow path within site to be specified.
+            if (string.IsNullOrEmpty(path))
+                searchPath = siteBase;
+            else
+                searchPath = siteBase + path;
 
 
             PSSearchResults[] searchResults = PSWSUtils.FindItemByFieldValues(_contentService, contentType, searchPath, fieldCriteria);

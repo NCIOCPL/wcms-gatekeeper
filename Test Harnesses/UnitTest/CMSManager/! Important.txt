@@ -1,0 +1,4 @@
+﻿Unit tests should not be communicating with the Percussion server.
+
+Tests in this group should only be written for functionality which
+does not require manipulating data in the CMS.

@@ -15,7 +15,7 @@ namespace GKManagers.CMSDocumentProcessing
     /// Abstract base class to implement the functionality shared between
     /// all DocumentProcessors.
     /// </summary>
-    public abstract class DocumentProcessorCommon : IDisposable
+    public abstract class DocumentProcessorCommon : IDocumentProcessor, IDisposable
     {
         #region Constants
 
@@ -76,6 +76,58 @@ namespace GKManagers.CMSDocumentProcessing
 
         #endregion
 
+        #region IDocumentProcessor methods
+
+        /// These methods are not intended to be called from derived classes.  They are
+        /// implemented in the DocumentProcessorCommon class to allow subclasses to
+        /// fullfil the IDocumentProcessor contract without requiring the sitePath
+        /// logic to be implemented in all classes.
+        /// 
+        /// The intent is that as more document types begin to be supported on the mobile
+        /// platform, these default implementations can be removed.
+
+        public virtual void ProcessDocument(Document documentObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void ProcessDocument(Document documentObject, string sitePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void DeleteContentItem(int documentCdrID, string sitePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void DeleteContentItem(int documentCdrID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void PromoteToPreview(int documentCdrID, string sitePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void PromoteToPreview(int documentCdrID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void PromoteToLive(int documentCdrID, string sitePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void PromoteToLive(int documentCdrID)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -104,14 +156,39 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
-        public PercussionGuid GetCdrDocumentID(string contentType, string path, int cdrID)
+
+        /// <summary>
+        /// Searches the CMS repository for the specified CDR Document.
+        /// </summary>
+        /// <param name="contentType">The CMS content type of the document being searched for.</param>
+        /// <param name="path">The path to search.</param>
+        /// <param name="cdrID">The document's CDR ID</param>
+        /// <returns>If found, a Percussion GUID value is returned which identifies the document.
+        /// A null return means no matching document was located.</returns>
+        public virtual PercussionGuid GetCdrDocumentID(string contentType, string path, int cdrID)
+        {
+            return GetCdrDocumentID(contentType, null, path, cdrID);
+        }
+
+        /// <summary>
+        /// Searches the CMS repository for the specified CDR Document.
+        /// </summary>
+        /// <param name="contentType">The CMS content type of the document being searched for.</param>
+        /// <param name="siteBase">Path to the site's base folder.  Specify null for current/default site.</param>
+        /// <param name="path">The path to search.</param>
+        /// <param name="cdrID">The document's CDR ID</param>
+        /// <returns>
+        /// If found, a Percussion GUID value is returned which identifies the document.
+        /// A null return means no matching document was located.
+        /// </returns>
+        public virtual PercussionGuid GetCdrDocumentID(string contentType, string siteBase, string path, int cdrID)
         {
             PercussionGuid[] searchResults;
             PercussionGuid foundItem;
 
             Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
             fieldCriteria.Add("cdrid", cdrID.ToString("d"));
-            searchResults = CMSController.SearchForContentItems(contentType, path, fieldCriteria);
+            searchResults = CMSController.SearchForContentItems(contentType, siteBase, path, fieldCriteria);
 
             if (searchResults.Count() > 1)
             {
@@ -368,11 +445,32 @@ namespace GKManagers.CMSDocumentProcessing
         /// <returns>true if no item matches the parameters.</returns>
         protected bool PrettyUrlIsAvailable(string path, string prettyUrlName)
         {
+            return PrettyUrlIsAvailable(null, path, prettyUrlName);
+        }
+
+        /// <summary>
+        /// Checks whether any content item exists at location path with its
+        /// pretty_url_name field set to prettyUrlName.
+        /// </summary>
+        /// <param name="path">Path to check for content items</param>
+        /// <param name="prettyUrlName">pretty_url_name field value to check.</param>
+        /// <param name="sitePath">Overrides the default site folder.</param>
+        /// <returns>true if no item matches the parameters.</returns>
+        protected bool PrettyUrlIsAvailable(string sitePath, string path, string prettyUrlName)
+        {
             PercussionGuid[] searchResults;
 
             Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
             fieldCriteria.Add("pretty_url_name", prettyUrlName);
+
+            // Allow the configured site path to be overriden.
+            string defaultPath = CMSController.SiteRootPath;
+            if (!string.IsNullOrEmpty(sitePath))
+                CMSController.SiteRootPath = sitePath;
+
             searchResults = CMSController.SearchForContentItems(null, path, fieldCriteria);
+
+            CMSController.SiteRootPath = defaultPath;
 
             return searchResults.Length == 0;
         }
@@ -424,6 +522,17 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return emptyOrNonexistant;
+        }
+
+        protected String EscapeSystemTitle(String title)
+        {
+            while (title.IndexOf('/') > -1)
+            {
+                int offset= title.IndexOf('/');
+                title = title.Substring(0, offset) + "," + title.Substring(offset + 1);
+            }
+
+            return title;
         }
     }
 }

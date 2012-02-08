@@ -7,7 +7,6 @@ using GateKeeper.Common.XPathKeys;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.PoliticalSubUnit;
-using GateKeeper.Logging;
 using GateKeeper.DataAccess.GateKeeper;
 
 namespace GateKeeper.DataAccess.CDR

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Media;
 
@@ -16,6 +18,7 @@ namespace GateKeeper.DocumentObjects.Summary
         #region Fields
         private string _basePrettyURL = string.Empty;
         private string _prettyURL = string.Empty;
+        private string _baseMobileURL = string.Empty;
         private string _title = string.Empty;
         private string _shortTitle = string.Empty;
         private string _description = string.Empty;
@@ -35,7 +38,6 @@ namespace GateKeeper.DocumentObjects.Summary
         private Guid _otherLanguageDocumentGUID = Guid.Empty;
         private Guid _replacementforDocumentGUID = Guid.Empty;
 
-
         /// <summary>
         /// Summaries/SummarySections that this summary references (may also be internal references).
         /// </summary>
@@ -52,7 +54,8 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public SummaryDocument()
+        public SummaryDocument() :
+            base()
         {
             this.DocumentType = DocumentType.Summary;
         }
@@ -61,21 +64,21 @@ namespace GateKeeper.DocumentObjects.Summary
         /// Class constructor with parameters.
         /// </summary>
         /// <param name="summaryID"></param>
-        /// <param name="summaryGuid"></param>
         /// <param name="title"></param>
         /// <param name="audience"></param>
         /// <param name="language"></param>
         /// <param name="isActive"></param>
-        public SummaryDocument(int summaryID, string title, string audience, Language language, bool isActive)
-        {
-            this.DocumentType = DocumentType.Summary;
-            this.DocumentID = summaryID;
-            this._title = title;
-            this._audienceType = audience;
-            this._language = language;
-            this._type = _type.ToString();
-            this._isActive = isActive;
-        }
+        //public SummaryDocument(int summaryID, string title, string audience, Language language, bool isActive)
+        //    : base()
+        //{
+        //    this.DocumentType = DocumentType.Summary;
+        //    this.DocumentID = summaryID;
+        //    this._title = title;
+        //    this._audienceType = audience;
+        //    this._language = language;
+        //    this._type = _type.ToString();
+        //    this._isActive = isActive;
+        //}
 
         #endregion Constructors
 
@@ -96,6 +99,15 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _basePrettyURL; }
             internal set { _basePrettyURL = value; }
+        }
+
+        /// <summary>
+        /// Gets, sets base Mobile URL
+        /// </summary>
+        public string BaseMobileURL
+        {
+            get { return _baseMobileURL; }
+            internal set { _baseMobileURL = value; }
         }
 
         /// <summary>

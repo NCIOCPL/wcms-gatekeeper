@@ -1,0 +1,757 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+        <Summary id="CDR0000062955" LegacyPDQID="813">
+          <SummaryMetaData>
+            <SummaryType>Treatment</SummaryType>
+            <SummaryAudience>Patients</SummaryAudience>
+            <SummaryLanguage>English</SummaryLanguage>
+            <SummaryDescription>Expert-reviewed information summary about the treatment of breast cancer.</SummaryDescription>
+            <SummaryURL xref="http://cancer.gov/desktop/link">Breast Cancer (PDQ®): Treatment</SummaryURL>
+            <MainTopics>
+              <TermRef ref="CDR0000038832">breast cancer</TermRef>
+            </MainTopics>
+          </SummaryMetaData>
+          <SummaryTitle>Breast Cancer Treatment (PDQ®)</SummaryTitle>
+          <AltTitle TitleType="Short">Breast Cancer Treatment</AltTitle>
+          <SummarySection id="_125">
+            <Title>General Information About Breast Cancer</Title>
+            <SummarySection id="_126">
+              <SectMetaData>
+                <SectionType>Cancer description</SectionType>
+                <SectionType>Organ description</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_127">Breast cancer is a disease in which malignant (cancer) cells
+		  form in the tissues of the breast.</KeyPoint>
+              <Para id="_128">The <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> is made up of <GlossaryTermRef href="CDR0000046188">lobes</GlossaryTermRef> and <GlossaryTermRef href="CDR0000046441">ducts</GlossaryTermRef>. Each breast has 15 to 20 sections called
+		  lobes, which have many smaller sections called <GlossaryTermRef href="CDR0000046308">lobules</GlossaryTermRef>. Lobules end in dozens of tiny bulbs that
+		  can produce milk. The lobes, lobules, and bulbs are linked by thin tubes called
+		  ducts. <MediaLink ref="CDR0000415520" type="image/jpeg" alt="Drawing of female breast anatomy showing  the lymph nodes, nipple, areola, chest wall, ribs, muscle, fatty tissue, lobe, and ducts." language="en" thumb="Yes" id="_281"><Caption language="en">Anatomy of the female breast. The nipple and areola are shown on the outside of the breast. The lymph nodes, lobes, lobules, ducts, and other parts of the inside of the breast are also shown.</Caption></MediaLink></Para>
+              <Para id="_129">Each breast also has <GlossaryTermRef href="CDR0000045020">blood
+		  vessels</GlossaryTermRef> and <GlossaryTermRef href="CDR0000269462">lymph
+		  vessels</GlossaryTermRef>. The lymph vessels carry an almost colorless <GlossaryTermRef href="CDR0000044669">fluid</GlossaryTermRef> called <GlossaryTermRef href="CDR0000046305">lymph</GlossaryTermRef>. Lymph
+		  vessels lead to <GlossaryTermRef href="CDR0000257523">organs</GlossaryTermRef> called <GlossaryTermRef href="CDR0000045762">lymph
+		  nodes</GlossaryTermRef>. Lymph nodes are small bean-shaped structures that are
+		  found throughout the body. They filter substances in a fluid called lymph and help fight
+		  <GlossaryTermRef href="CDR0000045364">infection</GlossaryTermRef> and disease. Clusters of lymph nodes are found near the breast in the
+		  <GlossaryTermRef href="CDR0000046510">axilla</GlossaryTermRef> (under the arm), above the
+		  collarbone, and in the chest.</Para>
+              <Para id="_130">The most common type of <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> is <GlossaryTermRef href="CDR0000045085">ductal
+		  carcinoma</GlossaryTermRef>, which begins in the <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> of the ducts. Cancer that begins in the
+		  lobes or lobules is called <GlossaryTermRef href="CDR0000426416">lobular carcinoma</GlossaryTermRef> and is more often found in both
+		  breasts than are other types of breast cancer. <GlossaryTermRef href="CDR0000045313">Inflammatory breast cancer</GlossaryTermRef> is an uncommon type of
+		  breast cancer in which the breast is warm, red, and swollen. </Para>
+              <Para id="_324">See the <GlossaryTermRef href="CDR0000044271">PDQ</GlossaryTermRef> summary on  <SummaryRef href="CDR0000062878#_100" url="/cancertopics/pdq/treatment/unusual-cancers-childhood/Patient">Unusual Cancers of Childhood</SummaryRef> for information about childhood breast cancer.</Para>
+            </SummarySection>
+            <SummarySection id="_131">
+              <SectMetaData>
+                <SectionType>Risk factors</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_132">Age and health history can affect the risk of developing breast
+		  cancer.</KeyPoint>
+              <Para id="_16">Anything that increases your chance of getting a disease
+		  is called a <GlossaryTermRef href="CDR0000045873">risk factor</GlossaryTermRef>.  Having a risk factor does not mean that you will 
+         get <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>; not having risk factors doesn't mean that you will 
+         not get cancer. People who think they may be at risk should 
+         discuss this with their doctor.  Risk factors for breast cancer include the following:</Para>
+              <ItemizedList id="_17" Style="bullet"> 
+		  <ListItem>Older age.</ListItem> 
+		  <ListItem> <GlossaryTermRef href="CDR0000046297">Menstruating</GlossaryTermRef> at an
+			 early age.</ListItem>
+		  <ListItem>Older age at first birth or never having given birth.</ListItem>
+		  <ListItem>A personal history of breast cancer or <GlossaryTermRef href="CDR0000045614">benign</GlossaryTermRef> (noncancer) breast disease. </ListItem>
+		  <ListItem>A mother or sister with breast cancer.
+			 </ListItem>
+		  <ListItem>Treatment with <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef> to the breast/chest.</ListItem> 
+		  <ListItem>Breast <GlossaryTermRef href="CDR0000046683">tissue</GlossaryTermRef> that is dense on a <GlossaryTermRef href="CDR0000045775">mammogram</GlossaryTermRef>.</ListItem>
+		  <ListItem>Taking <GlossaryTermRef href="CDR0000045713">hormones</GlossaryTermRef> such as <GlossaryTermRef href="CDR0000046076">estrogen</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045158">progesterone</GlossaryTermRef>.</ListItem>
+		  <ListItem>Drinking alcoholic beverages.</ListItem><ListItem>Being white.</ListItem> 
+		</ItemizedList>
+              <Para id="_327">
+                <GlossaryTermRef href="CDR0000044267">NCI's</GlossaryTermRef> <ExternalRef xref="http://www.cancer.gov/bcrisktool/">Breast Cancer Risk Assessment Tool</ExternalRef> uses a woman's risk factors to estimate her risk for breast cancer during the next five years and up to age 90. This online tool is meant to be used by a health care provider. For more information on breast cancer risk, call 1-800-4-CANCER.</Para>
+            </SummarySection>
+            <SummarySection id="_135">
+              <SectMetaData>
+                <SectionType>Genetic aspects</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_136">Breast cancer is sometimes caused by inherited gene mutations
+		  (changes). </KeyPoint>
+              <Para id="_137">The <GlossaryTermRef href="CDR0000045693">genes</GlossaryTermRef> in cells carry
+		  the <GlossaryTermRef href="CDR0000045983">hereditary</GlossaryTermRef> information that is
+		  received from a person’s parents. Hereditary breast cancer makes up
+		  approximately 5% to 10% of all breast cancer. Some altered genes related to
+		  breast cancer are more common in certain ethnic groups.</Para>
+              <Para id="_314">Women who have an altered gene related to breast cancer and who
+		  have had breast cancer in one breast have an increased risk of developing
+		  breast cancer in the other breast. These women also have an increased risk of
+		  developing <GlossaryTermRef href="CDR0000044984">ovarian</GlossaryTermRef> cancer, and may
+		  have an increased risk of developing other cancers. Men who have an altered
+		  gene related to breast cancer also have an increased risk of developing this
+		  disease. For more information, see the PDQ summary on
+		  <SummaryRef href="CDR0000062969" url="/cancertopics/pdq/treatment/malebreast/Patient">Male Breast Cancer Treatment</SummaryRef>.</Para>
+              <Para id="_139">Tests have been developed that can detect altered genes. These
+		  <GlossaryTermRef href="CDR0000046128">genetic tests</GlossaryTermRef> are sometimes done for
+		  members of families with a high risk of cancer. See the following PDQ summaries for
+		  more information:</Para>
+              <ItemizedList id="_325" Style="bullet">
+                <ListItem>
+                  <SummaryRef href="CDR0000257995" url="/cancertopics/pdq/screening/breast/Patient"> Breast
+		  Cancer Screening</SummaryRef>
+                </ListItem>
+                <ListItem>
+                  <SummaryRef href="CDR0000257994" url="/cancertopics/pdq/prevention/breast/Patient"> Breast Cancer Prevention</SummaryRef>
+                </ListItem>
+                <ListItem>
+                  <SummaryRef href="CDR0000062855" url="/cancertopics/pdq/genetics/breast-and-ovarian/HealthProfessional">Genetics of Breast and Ovarian Cancer</SummaryRef>
+                </ListItem>
+              </ItemizedList>
+            </SummarySection>
+            <SummarySection id="_373">
+              <SectMetaData>
+                <SectionType>Symptoms</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_374">Possible signs of breast cancer include a lump or change in the breast.</KeyPoint>
+              <Para id="_375">Breast cancer may cause any of the following signs and <GlossaryTermRef href="CDR0000045022">symptoms</GlossaryTermRef>. Check with your doctor if any of the following problems occur:
+
+</Para>
+              <ItemizedList id="_376" Style="bullet">
+    <ListItem>A lump or thickening in or near the breast or in the underarm area.</ListItem><ListItem>A change in the size or shape of the breast.</ListItem><ListItem>A dimple or puckering in the skin of the breast.</ListItem><ListItem>A nipple turned inward into the breast.</ListItem><ListItem>Fluid, other than breast milk, from the nipple, especially if it's bloody.</ListItem><ListItem>Scaly, red, or swollen skin on the breast, nipple, or <GlossaryTermRef href="CDR0000046525">areola</GlossaryTermRef> (the dark area of skin that is around the nipple).</ListItem><ListItem>Dimples in the breast that look like the skin of an orange, called <GlossaryTermRef href="CDR0000045821">peau
+		d’orange</GlossaryTermRef>.</ListItem> 
+     
+     
+     
+   </ItemizedList>
+              <Para id="_377">Other <GlossaryTermRef href="CDR0000651193">conditions</GlossaryTermRef> that are not breast cancer may cause these same symptoms.</Para>
+            </SummarySection>
+            <SummarySection id="_140">
+              <SectMetaData>
+                <SectionType>Diagnostic tests</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_141">Tests that examine the breasts are used to detect (find) and
+		  diagnose breast cancer.</KeyPoint>
+              <Para id="_142">A doctor should be seen if changes in the breast are noticed. The
+		  following tests and procedures may be used:</Para>
+              <ItemizedList id="_143" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000270871">Physical exam</GlossaryTermRef> and <GlossaryTermRef href="CDR0000642019">history</GlossaryTermRef>: An exam of the body to check general signs of health, including checking for signs of disease, such as lumps or anything else that seems unusual. A history of the patient’s health habits and past illnesses and treatments will also be taken. </ListItem><ListItem><GlossaryTermRef href="CDR0000045775">Mammogram</GlossaryTermRef>: An
+			 <GlossaryTermRef href="CDR0000045944">x-ray</GlossaryTermRef> of the breast.
+			 <MediaLink ref="CDR0000415525" type="image/jpeg" alt="Photograph shows the right breast positioned between the plates of a mammography machine." language="en" thumb="Yes" id="_282"><Caption language="en">Mammography of the right breast.</Caption></MediaLink></ListItem><ListItem><GlossaryTermRef href="CDR0000046157">Ultrasound</GlossaryTermRef> exam: A procedure in which high-energy sound waves (ultrasound) are bounced off internal tissues or organs and make echoes. The echoes form a picture of body tissues called a <GlossaryTermRef href="CDR0000046587">sonogram</GlossaryTermRef>. The picture can be printed to be looked at later.</ListItem> 
+		   
+		<ListItem><GlossaryTermRef href="CDR0000045788"> 
+		  MRI</GlossaryTermRef> (magnetic resonance imaging): A procedure that uses a magnet, <GlossaryTermRef href="CDR0000651209">radio waves</GlossaryTermRef>, and a computer to make a series of detailed pictures of areas inside the body. This procedure is also called nuclear magnetic resonance imaging (NMRI).</ListItem><ListItem><GlossaryTermRef href="CDR0000304685">Blood chemistry studies</GlossaryTermRef>: A procedure in which a blood sample is checked to measure the amounts of certain substances released into the blood by organs and tissues in the body. An unusual (higher or lower than normal) amount of a substance can be a sign of disease in the organ or tissue that makes it. </ListItem><ListItem><GlossaryTermRef href="CDR0000045164">Biopsy</GlossaryTermRef>: The removal
+			 of cells or tissues so they can be viewed under a <GlossaryTermRef href="CDR0000638184">microscope</GlossaryTermRef> by a <GlossaryTermRef href="CDR0000046244">pathologist</GlossaryTermRef> to check for signs of cancer. If a lump in the breast is
+			 found, the doctor may need to remove a small piece of the lump. Four types of
+			 biopsies are as follows: 
+			 <ItemizedList id="_144" Style="dash"> 
+				<ListItem><GlossaryTermRef href="CDR0000046411">Excisional
+				  biopsy</GlossaryTermRef>:  The removal of an entire lump of tissue.  </ListItem> 
+				<ListItem><GlossaryTermRef href="CDR0000046698">Incisional
+				  biopsy</GlossaryTermRef>: The removal of part of a lump or a sample of tissue.  </ListItem> 
+				<ListItem><GlossaryTermRef href="CDR0000045657">Core biopsy</GlossaryTermRef>:
+				  The removal of tissue using a wide needle.  </ListItem> 
+				<ListItem><GlossaryTermRef href="CDR0000045691">Fine-needle aspiration (FNA) biopsy</GlossaryTermRef>:
+				  
+				  The removal of tissue or fluid, using a thin needle.</ListItem> 
+			 </ItemizedList></ListItem></ItemizedList>
+            </SummarySection>
+            <SummarySection id="_358">
+              <KeyPoint id="_359">If cancer is found, tests are done to study the cancer cells.</KeyPoint>
+              <Para id="_360">Decisions about the best treatment are based on the results of these tests. The tests give information about:</Para>
+              <ItemizedList id="_361" Style="bullet">
+                <ListItem>how quickly the cancer may grow.</ListItem>
+                <ListItem>how likely it is that the cancer will spread through the body.</ListItem>
+                <ListItem>how well certain treatments might work.</ListItem>
+                <ListItem>how likely the cancer is to <GlossaryTermRef href="CDR0000046556">recur</GlossaryTermRef> (come back).</ListItem>
+              </ItemizedList>
+              <Para id="_362">Tests include the following:</Para>
+              <ItemizedList id="_363" Style="bullet" Compact="No">
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000044668">Estrogen</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044713">progesterone receptor test</GlossaryTermRef>: A test to measure the amount of <GlossaryTermRef href="CDR0000046076">estrogen</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045158">progesterone</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045713">hormones</GlossaryTermRef>) <GlossaryTermRef href="CDR0000044958">receptors</GlossaryTermRef> in cancer tissue. If there are more estrogen and progesterone receptors than normal, the cancer may grow more quickly. The test results show whether treatment to block estrogen and progesterone may stop the cancer from growing.</ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000044945">Human epidermal growth factor type 2 receptor</GlossaryTermRef> (HER2/neu) test: A laboratory test to measure how many HER2/neu genes there are and how much HER2/neu <GlossaryTermRef href="CDR0000046092">protein</GlossaryTermRef> is made in a sample of tissue. If there are more HER2/neu genes or higher levels of HER2/neu protein than normal, the cancer may grow more quickly and is more likely to spread to other parts of the body. The cancer may be treated with <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> that target the HER2/neu protein, such as <GlossaryTermRef href="CDR0000045439">trastuzumab</GlossaryTermRef> (Herceptin) and <GlossaryTermRef href="CDR0000390335">lapatinib</GlossaryTermRef> (Tykerb).</ListItem>
+                <ListItem>Multigene tests: Tests in which samples of tissue are studied to look at the activity of many genes at the same time. These tests may help predict whether cancer will spread to other parts of the body or recur (come back).<ItemizedList id="_364" Style="dash"><ListItem>Oncotype DX: This test helps predict whether <GlossaryTermRef href="CDR0000045142">stage I</GlossaryTermRef> or <GlossaryTermRef href="CDR0000045146">stage II breast cancer</GlossaryTermRef> that is <GlossaryTermRef href="CDR0000045270">estrogen receptor positive</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045980">node-negative</GlossaryTermRef> will spread to other parts of the body. If the risk of the cancer spreading is high, <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> may be given to lower the risk.</ListItem><ListItem>MammaPrint: This test helps predict whether stage I or stage II breast cancer that is node-negative will spread to other parts of the body. If the risk of the cancer spreading is high, chemotherapy may be given to lower the risk.</ListItem></ItemizedList></ListItem>
+              </ItemizedList>
+            </SummarySection>
+            <SummarySection id="_271">
+              <SectMetaData>
+                <SectionType>Prognostic factors</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_272">Certain factors affect prognosis (chance of recovery) and treatment options.</KeyPoint>
+              <Para id="_273">The <GlossaryTermRef href="CDR0000045849">prognosis</GlossaryTermRef> (chance of recovery) and treatment options depend on the following:</Para>
+              <ItemizedList id="_274" Style="bullet">
+    <ListItem>The <GlossaryTermRef href="CDR0000045885">stage</GlossaryTermRef>
+		  of the cancer (the size of the tumor and        whether it is in the breast only or has spread to lymph nodes or other places
+		  in the body).</ListItem><ListItem>The type of breast cancer.</ListItem><ListItem>Estrogen receptor and progesterone receptor levels in the tumor tissue.</ListItem><ListItem>Human epidermal growth factor type 2 receptor (HER2/neu) levels in the tumor tissue.</ListItem><ListItem>Whether the tumor tissue is   <GlossaryTermRef href="CDR0000639916">triple-negative</GlossaryTermRef> (cells that do not have estrogen receptors, progesterone receptors, or high levels of HER2/neu).</ListItem><ListItem>How fast the tumor is growing.</ListItem><ListItem>How likely the tumor is to recur (come back).</ListItem><ListItem>A woman’s age,
+		  general health, and <GlossaryTermRef href="CDR0000046296">menopausal</GlossaryTermRef> status (whether a woman
+		  is still having <GlossaryTermRef href="CDR0000045784">menstrual periods</GlossaryTermRef>). </ListItem>
+    
+    <ListItem>Whether the cancer has just been <GlossaryTermRef href="CDR0000046450">diagnosed</GlossaryTermRef> or has recurred (come back).</ListItem>
+   </ItemizedList>
+            </SummarySection>
+          </SummarySection>
+          <SummarySection id="_148">
+            <Title>Stages of Breast Cancer</Title>
+            <SummarySection id="_149">
+              <SectMetaData>
+                <SectionType>Diagnostic tests</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_150">After breast cancer has been diagnosed, tests are done to find
+		  out if cancer cells have spread within the breast or to other parts of the
+		  body. </KeyPoint>
+              <Para id="_151">The process used to find out whether the <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> has spread within the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> or to other
+		  parts of the body is called <GlossaryTermRef href="CDR0000046597">staging</GlossaryTermRef>.
+		  The information gathered from the staging process determines the
+		  <GlossaryTermRef href="CDR0000045885">stage</GlossaryTermRef> of the disease. It is
+		  important to know the stage in order to plan treatment. The following tests and procedures may be used in 
+         the staging process:</Para>
+              <ItemizedList id="_378" Style="bullet">
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000304687">Chest x-ray</GlossaryTermRef>: An <GlossaryTermRef href="CDR0000045944">x-ray</GlossaryTermRef> of the <GlossaryTermRef href="CDR0000257523">organs</GlossaryTermRef> and bones inside the chest. An x-ray is a type of energy beam that can go through the body and onto film, making a picture of areas inside the body.</ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046033">CT scan</GlossaryTermRef> (CAT scan): A procedure that makes a series of detailed pictures of areas inside the body, taken from different angles.  The pictures are made by a computer linked to an x-ray machine. A <GlossaryTermRef href="CDR0000409764">dye</GlossaryTermRef> may be <GlossaryTermRef href="CDR0000044678">injected</GlossaryTermRef> into a <GlossaryTermRef href="CDR0000476471">vein</GlossaryTermRef> or swallowed to help the organs or <GlossaryTermRef href="CDR0000046683">tissues</GlossaryTermRef> show up more clearly.  This procedure is also called computed tomography, computerized tomography, or computerized axial tomography.
+
+</ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046499">Bone scan</GlossaryTermRef>: A procedure to check if there are rapidly dividing <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef>, such as cancer cells, in the bone.  A very small amount of <GlossaryTermRef href="CDR0000046550">radioactive</GlossaryTermRef> material is injected into a vein and travels through the bloodstream.  The radioactive material collects in the bones and is detected by a <GlossaryTermRef href="CDR0000386220">scanner</GlossaryTermRef>.</ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046140">PET scan</GlossaryTermRef> (positron emission tomography scan): A procedure to find <GlossaryTermRef href="CDR0000045772">malignant</GlossaryTermRef> <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> cells in the body.  A small amount of radioactive <GlossaryTermRef href="CDR0000044033">glucose</GlossaryTermRef> (sugar) is injected into a vein.  The PET scanner rotates around the body and makes a picture of where glucose is being used in the body.  Malignant tumor cells show up brighter in the picture because they are more active and take up more glucose than normal cells do.
+
+</ListItem>
+              </ItemizedList>
+            </SummarySection>
+            <SummarySection id="_315">
+              <KeyPoint id="_316">There are three ways that cancer spreads in the body.</KeyPoint>
+              <Para id="_315_8">The three ways that cancer spreads in the body are:</Para>
+              <ItemizedList id="_315_9" Style="bullet">
+                <ListItem>Through <GlossaryTermRef href="CDR0000046683">tissue</GlossaryTermRef>. Cancer <GlossaryTermRef href="CDR0000045741">invades</GlossaryTermRef> the surrounding normal tissue.</ListItem>
+                <ListItem>Through the <GlossaryTermRef href="CDR0000045764">lymph system</GlossaryTermRef>. Cancer invades the lymph system and travels through the <GlossaryTermRef href="CDR0000269462">lymph vessels</GlossaryTermRef> to other places in the body.</ListItem>
+                <ListItem>Through the <GlossaryTermRef href="CDR0000270735">blood</GlossaryTermRef>. Cancer invades the <GlossaryTermRef href="CDR0000476471">veins</GlossaryTermRef> and <GlossaryTermRef href="CDR0000415542">capillaries</GlossaryTermRef> and travels through the blood to other places in the body.</ListItem>
+              </ItemizedList>
+              <Para id="_315_10">When cancer <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> break away from the <GlossaryTermRef href="CDR0000045847">primary</GlossaryTermRef> (original) <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> and travel through the <GlossaryTermRef href="CDR0000046305">lymph</GlossaryTermRef> or blood to other places in the body, another (secondary) tumor may form. This process is called <GlossaryTermRef href="CDR0000046710">metastasis</GlossaryTermRef>. The secondary (metastatic) tumor is the same type of cancer as the primary tumor. For example, if <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> spreads to the bones, the cancer cells in the bones are actually breast cancer cells. The disease is metastatic breast cancer, not <GlossaryTermRef href="CDR0000434562">bone cancer</GlossaryTermRef>.</Para>
+            </SummarySection>
+            <SummarySection id="_253">
+              <SectMetaData>
+                <SectionType>Classification by stage</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_153">The following stages are used for breast cancer:</KeyPoint>
+              <SummarySection id="_154">
+                <KeyPoint id="_155">Stage 0 (carcinoma in situ)</KeyPoint>
+                <Para id="_156">There are 2 types of <GlossaryTermRef href="CDR0000044650">breast carcinoma in situ</GlossaryTermRef>:</Para>
+                <ItemizedList id="_157" Style="bullet"> 
+			 <ListItem><GlossaryTermRef href="CDR0000045674">Ductal carcinoma in
+				situ</GlossaryTermRef> (DCIS) is a <GlossaryTermRef href="CDR0000455364">noninvasive</GlossaryTermRef> condition in which <GlossaryTermRef href="CDR0000044636">abnormal</GlossaryTermRef> <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> are found in the lining of a <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> <GlossaryTermRef href="CDR0000046441">duct</GlossaryTermRef>.  The abnormal cells have not spread outside the duct to other <GlossaryTermRef href="CDR0000046683">tissues</GlossaryTermRef> in the breast.  In some cases, DCIS may become <GlossaryTermRef href="CDR0000045741">invasive cancer</GlossaryTermRef> and spread to other tissues, although it is not known at this time how to predict which <GlossaryTermRef href="CDR0000046324">lesions</GlossaryTermRef> will become invasive.</ListItem> 
+			 <ListItem><GlossaryTermRef href="CDR0000046315">Lobular carcinoma in
+				situ</GlossaryTermRef> (LCIS) is a condition in which <GlossaryTermRef href="CDR0000044636">abnormal</GlossaryTermRef> <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> are found in the <GlossaryTermRef href="CDR0000046308">lobules</GlossaryTermRef> of the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>.  This condition seldom becomes <GlossaryTermRef href="CDR0000045741">invasive cancer</GlossaryTermRef>; however, having lobular carcinoma in situ in one breast increases the risk of developing <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> in either breast.</ListItem> 
+		  </ItemizedList>
+              </SummarySection>
+              <MediaLink ref="CDR0000415526" type="image/jpeg" alt="Tumor size compared to everyday objects; shows various measurements of a tumor compared to a pea, peanut, walnut, and lime" language="en" thumb="Yes" id="_283" size="full">
+                <Caption language="en">Pea, peanut, walnut, and lime show tumor sizes.</Caption>
+              </MediaLink>
+              <SummarySection id="_343">
+                <KeyPoint id="_344">Stage I </KeyPoint>
+                <Para id="_345">In <GlossaryTermRef href="CDR0000045142">stage I</GlossaryTermRef>, <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> has formed. Stage I is divided into stages IA and IB.</Para>
+                <ItemizedList id="_346" Style="bullet">
+                  <ListItem>In <GlossaryTermRef href="CDR0000684435">stage IA</GlossaryTermRef>, the <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef>
+			 is 2 <GlossaryTermRef href="CDR0000354457">centimeters</GlossaryTermRef> or smaller and has not spread outside the
+			 <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>.</ListItem>
+                  <ListItem>In <GlossaryTermRef href="CDR0000684439">stage IB</GlossaryTermRef>, either: <ItemizedList id="_347" Style="dash"><ListItem>no <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef>  is found in the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>,  but small clusters of <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef>  (larger than 0.2 <GlossaryTermRef href="CDR0000044215">millimeter</GlossaryTermRef>  but not larger than 2 millimeters) are found in the
+				<GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef>; or</ListItem><ListItem>the tumor is 2 <GlossaryTermRef href="CDR0000354457">centimeters</GlossaryTermRef> or smaller and small clusters of cancer cells (larger than 0.2 millimeter but not larger than 2 millimeters)  are found in the  lymph nodes.</ListItem></ItemizedList></ListItem>
+                </ItemizedList>
+              </SummarySection>
+              <SummarySection id="_348">
+                <KeyPoint id="_349">Stage II</KeyPoint>
+                <Para id="_350">
+                  <GlossaryTermRef href="CDR0000045146">Stage II</GlossaryTermRef> is divided into stages IIA and IIB.</Para>
+                <ItemizedList id="_351" Style="bullet">
+                  <ListItem>In <GlossaryTermRef href="CDR0000413882">stage IIA</GlossaryTermRef>:<ItemizedList id="_352" Style="dash"><ListItem>no <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> is found in the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>, but <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> is found in the <GlossaryTermRef href="CDR0000045607">axillary lymph nodes</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> under the arm);
+				or</ListItem><ListItem>the tumor is 2 <GlossaryTermRef href="CDR0000354457">centimeters</GlossaryTermRef> or smaller and has spread
+				to the axillary lymph nodes;
+				or</ListItem> 
+			 <ListItem>the tumor is larger than 2 centimeters but not larger than 5 centimeters and has not
+				spread to the axillary lymph nodes.</ListItem></ItemizedList></ListItem>
+                  <ListItem>In <GlossaryTermRef href="CDR0000413883">stage IIB</GlossaryTermRef>, the tumor is either:<ItemizedList id="_353" Style="dash"><ListItem> larger than 2 <GlossaryTermRef href="CDR0000354457">centimeters</GlossaryTermRef>  but not larger than 5 centimeters and has spread
+				to the <GlossaryTermRef href="CDR0000045607">axillary lymph nodes</GlossaryTermRef>; or </ListItem> 
+			 <ListItem>larger than 5 centimeters but has not
+				spread to the axillary lymph nodes. </ListItem></ItemizedList></ListItem>
+                </ItemizedList>
+              </SummarySection>
+              <SummarySection id="_169">
+                <KeyPoint id="_170">Stage IIIA</KeyPoint>
+                <Para id="_171">In <GlossaryTermRef href="CDR0000045183">stage IIIA</GlossaryTermRef>:</Para>
+                <ItemizedList id="_172" Style="bullet"> 
+			 <ListItem>no <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> is found in the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>. <GlossaryTermRef href="CDR0000045333">Cancer</GlossaryTermRef> is found in <GlossaryTermRef href="CDR0000045607">axillary lymph nodes</GlossaryTermRef> that are attached to each other or to other structures, or cancer may be found in <GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> near the <GlossaryTermRef href="CDR0000549425">breastbone</GlossaryTermRef>; or</ListItem><ListItem>the tumor is 2 <GlossaryTermRef href="CDR0000354457">centimeters</GlossaryTermRef> or smaller. Cancer has spread
+				to axillary lymph nodes that are attached to each other or to other structures, or cancer may have spread to lymph nodes near the breastbone; or</ListItem><ListItem>the tumor is larger than 2 centimeters but not larger than 5 centimeters. Cancer has spread to axillary lymph nodes that are attached to each other or to other structures, or cancer may have spread to lymph nodes near the breastbone; or</ListItem> 
+			 <ListItem>the tumor is larger than 5 centimeters. Cancer has spread to axillary
+				lymph nodes that may  be attached to each other or to other
+				structures, or cancer may have spread to lymph nodes near the breastbone.</ListItem> 
+		  </ItemizedList>
+              </SummarySection>
+              <SummarySection id="_173">
+                <KeyPoint id="_256">Stage IIIB</KeyPoint>
+                <Para id="_257">In <GlossaryTermRef href="CDR0000045412">stage IIIB</GlossaryTermRef>, the
+			 <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef>  may be any size and <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>:</Para>
+                <ItemizedList id="_176" Style="bullet"> 
+			 <ListItem>has spread to the <GlossaryTermRef href="CDR0000044996">chest wall</GlossaryTermRef> and/or the skin of the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>; and </ListItem> 
+			 <ListItem>may have spread to <GlossaryTermRef href="CDR0000045607">axillary lymph nodes</GlossaryTermRef> that may be attached to each other or to other structures, or cancer may have spread to <GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> near the <GlossaryTermRef href="CDR0000549425">breastbone</GlossaryTermRef>.</ListItem> 
+		  </ItemizedList>
+                <Para id="_313">Cancer that has spread to the skin of the breast is <GlossaryTermRef href="CDR0000045313">inflammatory breast cancer</GlossaryTermRef>. See the section on <SummaryRef href="CDR0000062955#_181" url="/cancertopics/pdq/treatment/breast/Patient">Inflammatory Breast Cancer</SummaryRef> for more information.</Para>
+              </SummarySection>
+              <SummarySection id="_254">
+                <KeyPoint id="_258">Stage IIIC</KeyPoint>
+                <Para id="_259">In <GlossaryTermRef href="CDR0000363609">stage IIIC</GlossaryTermRef>, there may be no sign of <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> in the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> or the <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> may be any size and may have spread to the <GlossaryTermRef href="CDR0000044996">chest wall</GlossaryTermRef> and/or the skin of the breast. Also, cancer:</Para>
+                <ItemizedList id="_275" Style="bullet">
+                  <ListItem>has spread to <GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> above or below the <GlossaryTermRef href="CDR0000639993">collarbone</GlossaryTermRef>; and</ListItem>
+                  <ListItem>may have spread to <GlossaryTermRef href="CDR0000045607"> axillary lymph nodes</GlossaryTermRef> or to lymph nodes near the <GlossaryTermRef href="CDR0000549425">breastbone</GlossaryTermRef>.</ListItem>
+                </ItemizedList>
+                <Para id="_312">Cancer that has spread to the skin of the breast is <GlossaryTermRef href="CDR0000045313">inflammatory breast cancer</GlossaryTermRef>. See the section on <SummaryRef href="CDR0000062955#_181" url="/cancertopics/pdq/treatment/breast/Patient">Inflammatory Breast Cancer</SummaryRef> for more information.</Para>
+                <Para id="_279">Stage IIIC <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> is divided into <GlossaryTermRef href="CDR0000285978">operable</GlossaryTermRef> and <GlossaryTermRef href="CDR0000285970">inoperable</GlossaryTermRef> stage IIIC.  </Para>
+                <Para id="_280">In operable stage IIIC, the cancer:</Para>
+                <ItemizedList id="_267" Style="bullet">
+                  <ListItem> is found in ten or more axillary lymph nodes; or</ListItem>
+                  <ListItem> is found in  lymph nodes below the collarbone; or</ListItem>
+                  <ListItem> is found in axillary lymph nodes and  in lymph nodes near the breastbone.</ListItem>
+                </ItemizedList>
+                <Para id="_269">In inoperable stage IIIC breast cancer, the cancer has spread to the lymph nodes above the collarbone.</Para>
+              </SummarySection>
+              <SummarySection id="_177">
+                <KeyPoint id="_178">Stage IV</KeyPoint>
+                <Para id="_179">In <GlossaryTermRef href="CDR0000045162">stage IV</GlossaryTermRef>, the <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>
+			 has spread to other <GlossaryTermRef href="CDR0000257523">organs</GlossaryTermRef> of the body, most often the bones,
+				<GlossaryTermRef href="CDR0000270740">lungs</GlossaryTermRef>, <GlossaryTermRef href="CDR0000046312">liver</GlossaryTermRef>, or brain.</Para>
+              </SummarySection>
+            </SummarySection>
+          </SummarySection>
+          <SummarySection id="_181">
+            <Title>Inflammatory Breast Cancer</Title>
+            <Para id="_292"> In <GlossaryTermRef href="CDR0000045313">inflammatory breast
+		cancer</GlossaryTermRef>, <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> has spread to the skin of the breast and the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> looks red and swollen and feels warm. The
+		redness and warmth occur because the <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> block the <GlossaryTermRef href="CDR0000269462">lymph vessels</GlossaryTermRef> in the skin. The skin of the breast
+		may also show the dimpled appearance called <GlossaryTermRef href="CDR0000045821">peau
+		d’orange</GlossaryTermRef> (like the skin of an orange). There may not be any lumps in the breast that can be felt. Inflammatory breast cancer may be <GlossaryTermRef href="CDR0000045412">stage IIIB</GlossaryTermRef>, <GlossaryTermRef href="CDR0000363609">stage IIIC</GlossaryTermRef>, or <GlossaryTermRef href="CDR0000045162">stage IV</GlossaryTermRef>.</Para>
+            <Para id="_293">
+              <MediaLink ref="CDR0000415524" type="image/jpeg" alt="Inflammatory breast cancer of the left breast with redness, peau d'orange, and inverted nipple." language="en" thumb="Yes" id="_284">
+                <Caption language="en">Inflammatory breast cancer of the left breast showing peau d’orange and inverted nipple.</Caption>
+              </MediaLink>
+            </Para>
+          </SummarySection>
+          <SummarySection id="_183">
+            <Title>Recurrent Breast Cancer</Title>
+            <Para id="_184">
+              <GlossaryTermRef href="CDR0000045862">Recurrent</GlossaryTermRef> <GlossaryTermRef href="CDR0000444971">breast
+		cancer</GlossaryTermRef> is <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> that has recurred
+		(come back) after it has been treated. The cancer may come back in
+		the breast, in the <GlossaryTermRef href="CDR0000044996">chest wall</GlossaryTermRef>, or
+		in other parts of the body.</Para>
+          </SummarySection>
+          <SummarySection id="_185">
+            <Title>Treatment Option Overview</Title>
+            <SummarySection id="_186">
+              <SectMetaData>
+                <SectionType>Standard treatment</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_187">There are different types of treatment for patients with breast
+		  cancer.</KeyPoint>
+              <Para id="_188">Different types of treatment are available for patients with <GlossaryTermRef href="CDR0000444971">breast
+		  cancer</GlossaryTermRef>. Some treatments are <GlossaryTermRef href="CDR0000044930">standard</GlossaryTermRef>
+		  (the currently used treatment), and some are being tested in
+		  <GlossaryTermRef href="CDR0000045961">clinical trials</GlossaryTermRef>. A
+		  treatment clinical trial is a research study meant to help improve current
+		  treatments or obtain information on new treatments for patients with <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>.
+		  When clinical trials show that a new treatment is better than the
+		  standard treatment, the new
+		  treatment may become the standard treatment.    Patients may want to think about taking part in a clinical trial. Some clinical trials are open only to patients who have not started treatment.</Para>
+            </SummarySection>
+            <SummarySection id="_190">
+              <SectMetaData>
+                <SectionType>Standard treatment</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_191">Six types of standard treatment are used:</KeyPoint>
+              <SummarySection id="_192">
+                <KeyPoint id="_193">Surgery </KeyPoint>
+                <Para id="_194">Most patients with breast cancer have <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> to remove the cancer from the breast. Some
+			 of the <GlossaryTermRef href="CDR0000045762"> lymph nodes</GlossaryTermRef> under the arm
+			 are usually taken out and looked at under a microscope to see if they contain
+			 cancer <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef>.</Para>
+                <Para id="_195">
+                  <GlossaryTermRef href="CDR0000045626">Breast-conserving
+			 surgery</GlossaryTermRef>, an operation to remove the cancer but not the breast
+			 itself, includes the following: </Para>
+                <ItemizedList id="_196" Style="bullet"> 
+			 <ListItem><GlossaryTermRef href="CDR0000045758">Lumpectomy</GlossaryTermRef>:
+				Surgery to remove a <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> (lump) and a small
+				amount of normal <GlossaryTermRef href="CDR0000046683">tissue</GlossaryTermRef> around it.
+				 </ListItem> 
+			 <ListItem><GlossaryTermRef href="CDR0000045105">Partial mastectomy</GlossaryTermRef>:  Surgery to remove the part of the breast that  has cancer and some normal tissue around it. The lining over the chest muscles below the cancer may also be removed. This procedure is also called a <GlossaryTermRef href="CDR0000046575">segmental mastectomy</GlossaryTermRef>.  </ListItem> 
+		  </ItemizedList>
+                <MediaLink ref="CDR0000415521" type="image/jpeg" alt="Breast-conserving surgery; drawing shows removal of the tumor and axillary lymph nodes." language="en" thumb="Yes" id="_285">
+                  <Caption language="en">Breast-conserving surgery.  Dotted lines show the area containing the tumor that is removed and some of the lymph nodes that may be removed.</Caption>
+                </MediaLink>
+                <Para id="_252">Patients who are treated with breast-conserving surgery may also have some of the lymph nodes under the arm removed for <GlossaryTermRef href="CDR0000045164">biopsy</GlossaryTermRef>. This procedure is called <GlossaryTermRef href="CDR0000044435">lymph node dissection</GlossaryTermRef>. It may be done at the same time as the breast-conserving surgery or after. Lymph node dissection is done through a separate <GlossaryTermRef href="CDR0000046353">incision</GlossaryTermRef>.</Para>
+                <Para id="_197">Other types of surgery include the following:</Para>
+                <ItemizedList id="_198" Style="bullet"> 
+			  
+			 <ListItem><GlossaryTermRef href="CDR0000046620">Total mastectomy</GlossaryTermRef>: Surgery to remove the whole breast that  has cancer. This procedure is also called a simple mastectomy. Some of the lymph nodes under the arm may  be removed for biopsy at the same time as the breast surgery or after. This is done through a separate incision. <MediaLink ref="CDR0000415522" type="image/jpeg" alt="Total (simple) mastectomy; drawing shows removal of the breast and lymph nodes." language="en" thumb="Yes" id="_286"><Caption language="en">Total (simple) mastectomy.  The dotted line shows where the entire breast is removed.  Some lymph nodes under the arm may also be removed.</Caption></MediaLink></ListItem><ListItem><GlossaryTermRef href="CDR0000046285">Modified radical
+				mastectomy</GlossaryTermRef>:             Surgery to remove the whole breast that has cancer, many of the lymph nodes under
+				the arm, the lining over the chest muscles, and sometimes, part of the
+				<GlossaryTermRef href="CDR0000044996">chest wall</GlossaryTermRef> muscles. <MediaLink ref="CDR0000415523" type="image/jpeg" alt="Modified radical mastectomy; drawing shows the removal of the breast, most or all of the lymph nodes under the arm, the lining over the chest muscles and sometimes part of the chest wall muscles." language="en" thumb="Yes" id="_287"><Caption language="en">Modified radical mastectomy.  The dotted line shows where the entire breast and some lymph nodes are removed.  Part of the chest wall muscle may also be removed.</Caption></MediaLink></ListItem> 
+			 <ListItem><GlossaryTermRef href="CDR0000046548">Radical
+				mastectomy</GlossaryTermRef>:  Surgery to remove the breast that  has cancer, chest wall muscles under the breast, and all of the lymph nodes under the arm.  This procedure is sometimes called a Halsted radical mastectomy.</ListItem> 
+		  </ItemizedList>
+                <Para id="_365">
+                  <GlossaryTermRef href="CDR0000045214">Chemotherapy</GlossaryTermRef> may be given before surgery to remove the tumor. When given before surgery, chemotherapy will shrink the tumor and reduce the amount of tissue that needs to be removed during surgery. Treatment given before surgery is called <GlossaryTermRef href="CDR0000045800">neoadjuvant therapy</GlossaryTermRef>.</Para>
+                <Para id="_199">Even if the doctor removes all  the cancer that can be seen at
+			 the time of the  surgery, some patients may be given <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>,
+			 chemotherapy, or
+			 <GlossaryTermRef href="CDR0000045110">hormone therapy</GlossaryTermRef> after surgery to kill any cancer cells that are left. Treatment given after  the surgery, to
+			 lower the risk that the cancer will come back, is called <GlossaryTermRef href="CDR0000045587">adjuvant
+			 therapy</GlossaryTermRef>. </Para>
+                <Para id="_200">If a patient is going to have a mastectomy,
+			 <GlossaryTermRef href="CDR0000046492">breast reconstruction</GlossaryTermRef> (surgery to
+			 rebuild a breast’s shape after a mastectomy) may be considered. Breast
+			 reconstruction may be done at the time of the mastectomy or at a future time.
+			 The reconstructed breast may be made with the patient’s own (nonbreast) tissue
+			 or by using <GlossaryTermRef href="CDR0000044676">implants</GlossaryTermRef> filled with <GlossaryTermRef href="CDR0000046152">saline</GlossaryTermRef> or <GlossaryTermRef href="CDR0000044725">silicone gel</GlossaryTermRef>.   Before the decision to get an implant is
+			 made, patients can call the Food and Drug Administration's (FDA) Center for Devices and Radiologic Health at
+			 1-888-INFO-FDA (1-888-463-6332)    or visit the <ExternalRef xref="http://www.fda.gov/cdrh/breastimplants/">FDA's Web site</ExternalRef> for more information     on breast implants. </Para>
+              </SummarySection>
+              <SummarySection id="_370">
+                <KeyPoint id="_371">Sentinel lymph node biopsy followed by surgery</KeyPoint>
+                <Para id="_372">
+                  <GlossaryTermRef href="CDR0000046712">Sentinel lymph node biopsy</GlossaryTermRef> is the removal of the <GlossaryTermRef href="CDR0000045876">sentinel lymph node</GlossaryTermRef>  during surgery.  The sentinel lymph node is the first lymph node to receive lymphatic drainage from a tumor. It is the first lymph node the cancer is likely to spread to from the tumor. A radioactive substance and/or blue dye is injected near the tumor.  The substance or dye flows through the lymph <GlossaryTermRef href="CDR0000046441">ducts</GlossaryTermRef> to the lymph nodes.  The first lymph node to receive the substance or dye is removed.    A <GlossaryTermRef href="CDR0000046244">pathologist</GlossaryTermRef> views the tissue under a microscope to look for cancer cells.  If cancer cells are not found, it may not be necessary to remove more lymph nodes. After the sentinel lymph node biopsy, the
+			 <GlossaryTermRef href="CDR0000044306">surgeon</GlossaryTermRef> removes the tumor (breast-conserving surgery or mastectomy). </Para>
+                <MediaLink ref="CDR0000661757" type="image/jpeg" alt="Sentinel lymph node biopsy of the breast.  The first of three panels shows a  radioactive substance and/or blue dye injected near the tumor; the middle panel shows that the injected material is followed visually and/or with a probe that detects radioactivity to find the sentinel nodes (the first lymph nodes to take up the material); the third panel shows the removal of the tumor and the sentinel nodes to check for cancer cells." language="en" thumb="Yes" id="_335" size="full">
+                  <Caption language="en">Sentinel lymph node biopsy of the breast. A radioactive substance and/or blue dye is injected near the tumor (first panel). The injected material is detected visually and/or with a probe that detects radioactivity (middle panel). The sentinel nodes (the first lymph nodes to take up the material) are removed and checked for cancer cells (last panel).</Caption>
+                </MediaLink>
+              </SummarySection>
+              <SummarySection id="_201">
+                <KeyPoint id="_202">Radiation therapy
+			 </KeyPoint>
+                <Para id="_203">Radiation therapy is a cancer treatment that uses high-energy <GlossaryTermRef href="CDR0000045944">x-rays</GlossaryTermRef> or other types of <GlossaryTermRef href="CDR0000045072">radiation</GlossaryTermRef> to kill cancer cells  or keep them from growing. There are two types of radiation therapy.  <GlossaryTermRef href="CDR0000046686">External radiation</GlossaryTermRef> therapy uses a machine outside the body to send radiation toward the cancer.  <GlossaryTermRef href="CDR0000046345">Internal radiation</GlossaryTermRef> therapy uses a <GlossaryTermRef href="CDR0000046550">radioactive</GlossaryTermRef> substance sealed in needles, <GlossaryTermRef href="CDR0000257219">seeds</GlossaryTermRef>, wires, or <GlossaryTermRef href="CDR0000045637">catheters</GlossaryTermRef> that are placed directly into or near the cancer.  The way the radiation therapy is given depends on the type and <GlossaryTermRef href="CDR0000045885">stage</GlossaryTermRef> of the cancer being treated.</Para>
+              </SummarySection>
+              <SummarySection id="_204">
+                <KeyPoint id="_205">Chemotherapy </KeyPoint>
+                <Para id="_206">Chemotherapy is a cancer treatment that uses <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> to stop the growth of cancer cells, either by killing the cells or by stopping  them from dividing.  When chemotherapy is taken by mouth or <GlossaryTermRef href="CDR0000044678">injected</GlossaryTermRef> into a <GlossaryTermRef href="CDR0000476471">vein</GlossaryTermRef> or muscle, the drugs enter the bloodstream and can reach cancer cells throughout the body (<GlossaryTermRef href="CDR0000301626">systemic chemotherapy</GlossaryTermRef>).  When chemotherapy is placed directly into the <GlossaryTermRef href="CDR0000046483">cerebrospinal fluid</GlossaryTermRef>, an <GlossaryTermRef href="CDR0000257523">organ</GlossaryTermRef>, or a body <GlossaryTermRef href="CDR0000463703">cavity</GlossaryTermRef> such as the <GlossaryTermRef href="CDR0000045070">abdomen</GlossaryTermRef>, the drugs mainly affect cancer cells in those areas (<GlossaryTermRef href="CDR0000046559">regional chemotherapy</GlossaryTermRef>). The way the chemotherapy is given depends on the type and stage of the cancer being treated.</Para>
+                <Para id="_379">See <ExternalRef xref="http://www.cancer.gov/cancertopics/druginfo/breastcancer">Drugs Approved for Breast Cancer</ExternalRef> for more information.</Para>
+              </SummarySection>
+              <SummarySection id="_207">
+                <KeyPoint id="_208">Hormone therapy
+			 </KeyPoint>
+                <Para id="_209">
+                  <GlossaryTermRef href="CDR0000045110">Hormone therapy</GlossaryTermRef> is a cancer treatment that removes <GlossaryTermRef href="CDR0000045713">hormones</GlossaryTermRef> or blocks their action and stops cancer cells from growing. Hormones are substances produced by <GlossaryTermRef href="CDR0000046386">glands</GlossaryTermRef> in the body and circulated in the bloodstream.   Some hormones can cause certain cancers to grow. If tests show that the cancer cells have places where hormones can attach (<GlossaryTermRef href="CDR0000044958">receptors</GlossaryTermRef>), drugs, surgery, or radiation therapy is used to reduce the production of hormones or block them from working. The hormone <GlossaryTermRef href="CDR0000046076">estrogen</GlossaryTermRef>, which makes some breast cancers grow, is made mainly by the <GlossaryTermRef href="CDR0000046687">ovaries</GlossaryTermRef>. Treatment to stop the ovaries  from making estrogen is called <GlossaryTermRef href="CDR0000045811">ovarian ablation</GlossaryTermRef>. </Para>
+                <Para id="_210">Hormone therapy with <GlossaryTermRef href="CDR0000045576">tamoxifen</GlossaryTermRef> is often given to patients with early
+			 stages of breast cancer and those
+			 with <GlossaryTermRef href="CDR0000044058">metastatic</GlossaryTermRef> breast cancer (cancer
+			 that has spread to other parts of the body). Hormone therapy with tamoxifen or
+			 estrogens can act on cells all over the body and may increase the chance of
+			 developing <GlossaryTermRef href="CDR0000045044">endometrial</GlossaryTermRef> cancer.
+			 Women taking tamoxifen should have a <GlossaryTermRef href="CDR0000045087">pelvic</GlossaryTermRef>       exam every year to look for any
+			 signs of cancer. Any <GlossaryTermRef href="CDR0000044308">vaginal</GlossaryTermRef>
+			 bleeding, other than <GlossaryTermRef href="CDR0000045784">menstrual</GlossaryTermRef>
+			 bleeding, should be reported to a doctor as soon as possible.</Para>
+                <Para id="_300">Hormone therapy with an <GlossaryTermRef href="CDR0000044232">aromatase inhibitor</GlossaryTermRef> is  given  to  some <GlossaryTermRef href="CDR0000045269">postmenopausal</GlossaryTermRef> women who have hormone-dependent breast cancer. Hormone-dependent breast cancer  needs the hormone <GlossaryTermRef href="CDR0000046076">estrogen</GlossaryTermRef> to grow. Aromatase inhibitors decrease the body's estrogen by blocking an <GlossaryTermRef href="CDR0000046081">enzyme</GlossaryTermRef> called aromatase from turning <GlossaryTermRef href="CDR0000045592">androgen</GlossaryTermRef> into estrogen. </Para>
+                <Para id="_301">For the treatment of  early stage breast cancer, certain aromatase inhibitors  may be used as adjuvant therapy  instead  of tamoxifen or after 2 or more years of tamoxifen.  For the treatment of <GlossaryTermRef href="CDR0000044058">metastatic</GlossaryTermRef> breast cancer, aromatase inhibitors  are  being tested in clinical trials to  compare them to  hormone therapy with tamoxifen.</Para>
+                <Para id="_380">See <ExternalRef xref="http://www.cancer.gov/cancertopics/druginfo/breastcancer">Drugs Approved for Breast Cancer</ExternalRef> for more information.</Para>
+              </SummarySection>
+              <SummarySection id="_328">
+                <KeyPoint id="_329">Targeted therapy</KeyPoint>
+                <Para id="_330">
+                  <GlossaryTermRef href="CDR0000270742">Targeted therapy</GlossaryTermRef> is a type of treatment that uses drugs or other substances to identify and attack specific cancer cells without harming normal cells.  <GlossaryTermRef href="CDR0000046066">Monoclonal antibodies</GlossaryTermRef> and  <GlossaryTermRef href="CDR0000044833">tyrosine kinase inhibitors</GlossaryTermRef> are two types of targeted therapies used in the treatment of breast cancer. <GlossaryTermRef href="CDR0000660869">PARP inhibitors</GlossaryTermRef> are a type of targeted therapy being studied for the treatment of <GlossaryTermRef href="CDR0000639916">triple-negative breast cancer</GlossaryTermRef>.</Para>
+                <Para id="_331">Monoclonal antibody <GlossaryTermRef href="CDR0000044737">therapy</GlossaryTermRef> is a cancer treatment that uses <GlossaryTermRef href="CDR0000044918">antibodies</GlossaryTermRef> made in the laboratory, from a single type of <GlossaryTermRef href="CDR0000046356">immune system</GlossaryTermRef> cell. These antibodies can identify substances on cancer cells or normal substances that may help cancer cells grow. The antibodies attach to the substances and kill the cancer cells, block their growth, or keep them from spreading. Monoclonal antibodies are given by <GlossaryTermRef href="CDR0000045738">infusion</GlossaryTermRef>. They may be used alone or to carry drugs, <GlossaryTermRef href="CDR0000046622">toxins</GlossaryTermRef>, or radioactive material directly to cancer cells. Monoclonal antibodies may be used in combination with chemotherapy as adjuvant therapy.</Para>
+                <Para id="_332">
+                  <GlossaryTermRef href="CDR0000045439">Trastuzumab</GlossaryTermRef> (Herceptin) is a monoclonal antibody that blocks the effects of the <GlossaryTermRef href="CDR0000045705">growth factor</GlossaryTermRef> <GlossaryTermRef href="CDR0000046092">protein</GlossaryTermRef> <GlossaryTermRef href="CDR0000044945">HER2</GlossaryTermRef>, which sends growth signals to breast cancer cells. About one-fourth of patients with breast cancer have tumors that may be treated with    trastuzumab combined with chemotherapy.</Para>
+                <Para id="_333">Tyrosine kinase inhibitors are targeted therapy drugs  that block signals needed for tumors   to grow. Tyrosine kinase inhibitors may be used in combination with other anticancer drugs as adjuvant therapy.</Para>
+                <Para id="_334">
+                  <GlossaryTermRef href="CDR0000390335">Lapatinib</GlossaryTermRef> is a tyrosine kinase inhibitor that blocks the effects of the HER2 protein and other proteins inside tumor cells. It may be used to treat patients with HER2-positive breast cancer that has <GlossaryTermRef href="CDR0000044078">progressed</GlossaryTermRef> following treatment with trastuzumab.</Para>
+                <Para id="_366">PARP inhibitors are a type of targeted therapy that block <GlossaryTermRef href="CDR0000045671">DNA</GlossaryTermRef> repair and may cause cancer cells to die. PARP inhibitor therapy is being studied for the treatment of triple-negative breast cancer.</Para>
+                <Para id="_381">See <ExternalRef xref="http://www.cancer.gov/cancertopics/druginfo/breastcancer">Drugs Approved for Breast Cancer</ExternalRef> for more information.</Para>
+              </SummarySection>
+            </SummarySection>
+            <SummarySection id="_211">
+              <SectMetaData>
+                <SectionType>Treatment in clinical trials</SectionType>
+              </SectMetaData>
+              <KeyPoint id="_212">New types of treatment are being tested in clinical trials.
+		  </KeyPoint>
+              <Para id="_311">This summary section describes treatments that are being studied in
+		  clinical trials. It may not mention every new treatment being studied.
+		  Information about clinical trials is available from the
+		  <ExternalRef xref="http://cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+              <SummarySection id="_216">
+                <KeyPoint id="_217">High-dose chemotherapy with stem cell transplant</KeyPoint>
+                <Para id="_218">
+                  <GlossaryTermRef href="CDR0000346522">High-dose chemotherapy</GlossaryTermRef> with <GlossaryTermRef href="CDR0000046695">stem cell transplant</GlossaryTermRef> is a  way of giving high <GlossaryTermRef href="CDR0000044664">doses</GlossaryTermRef> of chemotherapy and replacing <GlossaryTermRef href="CDR0000270735">blood</GlossaryTermRef>-forming cells destroyed by the cancer treatment.  <GlossaryTermRef href="CDR0000046598">Stem cells</GlossaryTermRef> (immature blood cells) are removed from the blood or <GlossaryTermRef href="CDR0000045622">bone marrow</GlossaryTermRef> of the patient or a donor and are frozen and stored.  After the chemotherapy is completed, the stored stem cells are thawed and given back to the patient through an infusion.  These reinfused stem cells grow into (and restore) the body’s blood cells.</Para>
+                <Para id="_219">Studies have shown that high-dose chemotherapy followed by stem cell transplant does not work better than standard chemotherapy in the treatment of breast
+			 cancer. Doctors have decided that, for now, high-dose chemotherapy should be tested only in clinical trials. Before taking part in such a trial, women should
+			 talk with their doctors about the serious side
+			 effects, including death, that may be caused by high-dose chemotherapy.</Para>
+              </SummarySection>
+            </SummarySection>
+            <SummarySection id="_317">
+              <KeyPoint id="_318">Patients may want to think about taking part in a clinical trial.</KeyPoint>
+              <Para id="_317_23">For some patients, taking part in a <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> may be the best treatment choice. Clinical trials are part of the cancer research process. Clinical trials are done to find out if new cancer  treatments are safe and effective or better than the standard treatment.</Para>
+              <Para id="_317_24">Many of today's standard treatments for cancer are based on earlier clinical trials. Patients who take part in a clinical trial may receive the standard treatment or be among the first  to receive a new treatment.</Para>
+              <Para id="_317_25">Patients who take part in clinical trials also help improve the way cancer will be treated in the future. Even when clinical trials do not lead to effective new treatments, they often answer important questions and help move research forward.</Para>
+            </SummarySection>
+            <SummarySection id="_319">
+              <KeyPoint id="_320">Patients can enter clinical trials before, during, or after starting their cancer treatment.</KeyPoint>
+              <Para id="_319_29">Some clinical trials only include patients who have not yet received treatment. Other trials test treatments for patients whose cancer has not gotten better. There are also clinical trials that test new ways to stop cancer from <GlossaryTermRef href="CDR0000046556">recurring</GlossaryTermRef> (coming back) or reduce the <GlossaryTermRef href="CDR0000046580">side effects</GlossaryTermRef> of cancer treatment.</Para>
+              <Para id="_319_30">Clinical trials are taking place in many parts of the country. See the Treatment Options section that follows for links to current treatment clinical trials. These have been retrieved from <GlossaryTermRef href="CDR0000044267">NCI's</GlossaryTermRef> listing of clinical trials. </Para>
+            </SummarySection>
+            <SummarySection id="_321">
+              <KeyPoint id="_322">Follow-up tests may be needed.</KeyPoint>
+              <Para id="_321_33">Some of the tests that were done to <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef> the cancer or to find out the <GlossaryTermRef href="CDR0000045885">stage</GlossaryTermRef> of the cancer may be repeated. Some tests will be repeated in order to see how well the treatment is working. Decisions about whether to continue, change, or stop treatment may be based on the results of these tests. This is sometimes called re-staging.</Para>
+              <Para id="_321_34">Some of the tests will continue to be done from time to time after treatment has ended. The results of these tests can show if your condition has changed or if the cancer has <GlossaryTermRef href="CDR0000046556">recurred</GlossaryTermRef> (come back). These tests are sometimes called <GlossaryTermRef href="CDR0000044671">follow-up</GlossaryTermRef> tests or check-ups.</Para>
+            </SummarySection>
+          </SummarySection>
+          <SummarySection id="_222">
+            <SectMetaData>
+              <SectionType>Treatment options by stage</SectionType>
+            </SectMetaData>
+            <Title>Treatment Options by Stage</Title>
+            <Para id="_222_37">A link to a list of current <GlossaryTermRef href="CDR0000045961">clinical trials</GlossaryTermRef> is included for each treatment section. For some types or <GlossaryTermRef href="CDR0000045885">stages</GlossaryTermRef> of cancer, there may not be any trials listed. Check with your doctor for clinical trials that are not listed here but may be right for you.</Para>
+            <SummarySection id="_223">
+              <SectMetaData>
+                <SpecificDiagnosis ref="CDR0000039839">ductal breast carcinoma in situ</SpecificDiagnosis>
+              </SectMetaData>
+              <Title>Ductal Carcinoma In Situ (DCIS)</Title>
+              <Para id="_224">Treatment of <GlossaryTermRef href="CDR0000045674">ductal carcinoma in situ</GlossaryTermRef> (DCIS) may include the following:</Para>
+              <ItemizedList id="_225" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000045626">Breast-conserving
+			 surgery</GlossaryTermRef>        and <GlossaryTermRef href="CDR0000044971">radiation
+			 therapy</GlossaryTermRef>      with or without      <GlossaryTermRef href="CDR0000045576">tamoxifen</GlossaryTermRef>.</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000046620">Total
+			 mastectomy</GlossaryTermRef>  with or
+			 without   tamoxifen.</ListItem><ListItem>Breast-conserving surgery without radiation therapy.</ListItem><ListItem><GlossaryTermRef href="CDR0000045961">Clinical trials</GlossaryTermRef> testing breast-conserving surgery and  tamoxifen with or without radiation therapy.</ListItem> 
+		</ItemizedList>
+              <Para id="_TrialSearch_223_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=39839&amp;tt=1&amp;format=1&amp;cn=1">ductal breast carcinoma in situ</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+            </SummarySection>
+            <SummarySection id="_226">
+              <SectMetaData>
+                <SpecificDiagnosis ref="CDR0000039848">lobular breast carcinoma in situ</SpecificDiagnosis>
+              </SectMetaData>
+              <Title>Lobular Carcinoma In Situ (LCIS)</Title>
+              <Para id="_227">Treatment of <GlossaryTermRef href="CDR0000046315">lobular carcinoma in situ</GlossaryTermRef> (LCIS) may include the following:</Para>
+              <ItemizedList id="_228" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000045164">Biopsy</GlossaryTermRef> to <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef>
+			 the LCIS followed by regular examinations and regular
+			 <GlossaryTermRef href="CDR0000045775">mammograms</GlossaryTermRef> to find any changes as
+			 early as possible. This is called <GlossaryTermRef href="CDR0000045981">observation</GlossaryTermRef>.</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000045576">Tamoxifen</GlossaryTermRef> to reduce
+			 the risk of developing <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef>.</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000304724">Bilateral prophylactic mastectomy</GlossaryTermRef>.
+			 This treatment
+			 choice is sometimes used in women who have a high risk of getting breast
+			 cancer. Most <GlossaryTermRef href="CDR0000044306">surgeons</GlossaryTermRef> believe that this is a more aggressive treatment than is
+			 needed.</ListItem><ListItem><GlossaryTermRef href="CDR0000045961">Clinical trials</GlossaryTermRef> testing cancer prevention <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef>.</ListItem> 
+		</ItemizedList>
+              <Para id="_TrialSearch_226_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=39848&amp;tt=1&amp;format=1&amp;cn=1">lobular breast carcinoma in situ</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+            </SummarySection>
+            <SummarySection id="_229">
+              <SectMetaData>
+                <SpecificDiagnosis ref="CDR0000038902">stage I breast cancer</SpecificDiagnosis>
+                <SpecificDiagnosis ref="CDR0000038954">stage II breast cancer</SpecificDiagnosis>
+                <SpecificDiagnosis ref="CDR0000039180">stage IIIA breast cancer</SpecificDiagnosis>
+                <SpecificDiagnosis ref="CDR0000340180">stage IIIC breast cancer</SpecificDiagnosis>
+              </SectMetaData>
+              <Title>Stage I, Stage II, Stage IIIA, and Operable Stage IIIC Breast Cancer</Title>
+              <Para id="_230">Treatment of <GlossaryTermRef href="CDR0000045142">stage I</GlossaryTermRef>,
+		  <GlossaryTermRef href="CDR0000045146">stage II</GlossaryTermRef>, <GlossaryTermRef href="CDR0000045183">stage IIIA</GlossaryTermRef>, and <GlossaryTermRef href="CDR0000285978">operable</GlossaryTermRef> <GlossaryTermRef href="CDR0000363609">stage IIIC breast cancer</GlossaryTermRef> may include the following:</Para>
+              <ItemizedList id="_231" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000045626">Breast-conserving surgery</GlossaryTermRef> to remove only the <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> and some
+			 surrounding <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef> <GlossaryTermRef href="CDR0000046683">tissue</GlossaryTermRef>, followed
+			 by <GlossaryTermRef href="CDR0000044435">lymph node dissection</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>. </ListItem> 
+		  <ListItem> <GlossaryTermRef href="CDR0000046285">Modified radical
+			 mastectomy</GlossaryTermRef>  with
+			 or without <GlossaryTermRef href="CDR0000046492">breast reconstruction</GlossaryTermRef>
+			 <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef>.</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000046712">Sentinel lymph node biopsy</GlossaryTermRef>
+			  followed by
+			 surgery.</ListItem> 
+		</ItemizedList>
+              <Para id="_232">
+                <GlossaryTermRef href="CDR0000045587">Adjuvant
+		  therapy</GlossaryTermRef> (treatment given after surgery to
+		  increase the chances of a <GlossaryTermRef href="CDR0000318813">cure</GlossaryTermRef>) may include the following: </Para>
+              <ItemizedList id="_233" Style="bullet"> 
+		  <ListItem>Radiation therapy to the <GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> near the breast and to
+			 the <GlossaryTermRef href="CDR0000044996">chest wall</GlossaryTermRef> after a modified
+			 radical mastectomy. </ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000301626">Systemic chemotherapy</GlossaryTermRef> with or without
+			 <GlossaryTermRef href="CDR0000045110">hormone therapy</GlossaryTermRef>.</ListItem> 
+		  <ListItem>Hormone therapy.</ListItem> 
+		<ListItem> A clinical trial of <GlossaryTermRef href="CDR0000045439">trastuzumab</GlossaryTermRef>  (Herceptin) combined with  systemic chemotherapy.</ListItem><ListItem>A clinical trial of <GlossaryTermRef href="CDR0000044817">bisphosphonates</GlossaryTermRef> combined with  <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> and/or hormone therapy.</ListItem></ItemizedList>
+              <Para id="_TrialSearch_229_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=38902&amp;tt=1&amp;format=1&amp;cn=1">stage I breast cancer</ExternalRef>, <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=38954&amp;tt=1&amp;format=1&amp;cn=1">stage II breast cancer</ExternalRef>, <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=39180&amp;tt=1&amp;format=1&amp;cn=1">stage IIIA breast cancer</ExternalRef> and <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=340180&amp;tt=1&amp;format=1&amp;cn=1">stage IIIC breast cancer</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+            </SummarySection>
+            <SummarySection id="_260">
+              <SectMetaData>
+                <SpecificDiagnosis ref="CDR0000041974">stage IIIB breast cancer</SpecificDiagnosis>
+                <SpecificDiagnosis ref="CDR0000340180">stage IIIC breast cancer</SpecificDiagnosis>
+                <SpecificDiagnosis ref="CDR0000039108">stage IV breast cancer</SpecificDiagnosis>
+              </SectMetaData>
+              <Title>Stage IIIB, Inoperable Stage IIIC, Stage IV, and Metastatic Breast Cancer</Title>
+              <SummarySection id="_263">
+                <Title>Stage IIIB and inoperable stage IIIC breast cancer</Title>
+                <Para id="_236">Treatment of <GlossaryTermRef href="CDR0000045412">stage IIIB</GlossaryTermRef> and <GlossaryTermRef href="CDR0000285970">inoperable</GlossaryTermRef> <GlossaryTermRef href="CDR0000363609">stage IIIC breast cancer</GlossaryTermRef> may include the following:</Para>
+                <ItemizedList id="_237" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000301626">Systemic chemotherapy</GlossaryTermRef>.</ListItem> 
+		  <ListItem>Systemic chemotherapy followed by <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045626">breast-conserving
+			 surgery</GlossaryTermRef> or <GlossaryTermRef href="CDR0000046620">total mastectomy</GlossaryTermRef>), with <GlossaryTermRef href="CDR0000044435">lymph node dissection</GlossaryTermRef> followed by <GlossaryTermRef href="CDR0000044971">radiation
+			 therapy</GlossaryTermRef>. Additional systemic therapy (chemotherapy, <GlossaryTermRef href="CDR0000045110">hormone therapy</GlossaryTermRef>, or both)
+			 may be given. </ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000045961">Clinical trials</GlossaryTermRef> testing new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef>, new drug
+			 combinations, and new ways of giving treatment. </ListItem></ItemizedList>
+              </SummarySection>
+              <SummarySection id="_265">
+                <Title>Stage IV and metastatic breast cancer</Title>
+                <Para id="_239">Treatment of <GlossaryTermRef href="CDR0000045162">stage IV</GlossaryTermRef> or
+		  <GlossaryTermRef href="CDR0000044058">metastatic</GlossaryTermRef> breast <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> may include
+		  the following:</Para>
+                <ItemizedList id="_240" Style="bullet"> 
+		  <ListItem><GlossaryTermRef href="CDR0000045110">Hormone therapy</GlossaryTermRef> and/or <GlossaryTermRef href="CDR0000301626">systemic chemotherapy</GlossaryTermRef> with or without
+			 <GlossaryTermRef href="CDR0000045439">trastuzumab</GlossaryTermRef>
+			 (Herceptin).</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000044833">Tyrosine kinase inhibitor</GlossaryTermRef> therapy  with <GlossaryTermRef href="CDR0000390335">lapatinib</GlossaryTermRef> combined with <GlossaryTermRef href="CDR0000045565">capecitabine</GlossaryTermRef>.</ListItem><ListItem><GlossaryTermRef href="CDR0000044971">Radiation therapy</GlossaryTermRef> and/or <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> for relief of pain and other
+			 <GlossaryTermRef href="CDR0000045022">symptoms</GlossaryTermRef>.</ListItem> 
+		  <ListItem><GlossaryTermRef href="CDR0000044817">Bisphosphonate</GlossaryTermRef> <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> to reduce bone disease and pain when cancer has spread to the bone.</ListItem><ListItem><GlossaryTermRef href="CDR0000045961">Clinical trials</GlossaryTermRef> testing new systemic chemotherapy and/or hormone
+			 therapy. </ListItem><ListItem>Clinical trials of new combinations of trastuzumab 
+		  (Herceptin) with anticancer drugs.</ListItem><ListItem>Clinical trials of new combinations of lapatinib with anticancer drugs.</ListItem><ListItem>Clinical trials testing other approaches, including <GlossaryTermRef href="CDR0000346522">high-dose
+			 chemotherapy</GlossaryTermRef> with <GlossaryTermRef href="CDR0000046695">stem cell
+			 transplant</GlossaryTermRef>.</ListItem> 
+		</ItemizedList>
+              </SummarySection>
+              <Para id="_TrialSearch_260_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=41974&amp;tt=1&amp;format=1&amp;cn=1">stage IIIB breast cancer</ExternalRef>, <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=340180&amp;tt=1&amp;format=1&amp;cn=1">stage IIIC breast cancer</ExternalRef> and <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=39108&amp;tt=1&amp;format=1&amp;cn=1">stage IV breast cancer</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+            </SummarySection>
+          </SummarySection>
+          <SummarySection id="_242">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000040816">inflammatory breast cancer</SpecificDiagnosis>
+              <SectionType>Treatment options by stage</SectionType>
+            </SectMetaData>
+            <Title>Treatment Options for Inflammatory Breast Cancer</Title>
+            <Para id="_243">Treatment of <GlossaryTermRef href="CDR0000045313"> inflammatory breast
+		cancer</GlossaryTermRef> may include the following:</Para>
+            <ItemizedList id="_244" Style="bullet"> 
+		<ListItem><GlossaryTermRef href="CDR0000301626">Systemic chemotherapy</GlossaryTermRef>.</ListItem> 
+		<ListItem>Systemic chemotherapy followed by <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045626">breast-conserving surgery</GlossaryTermRef> or
+		  <GlossaryTermRef href="CDR0000046620">total mastectomy</GlossaryTermRef>), with
+		    <GlossaryTermRef href="CDR0000044435">lymph node dissection</GlossaryTermRef> followed by
+		  <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>. Additional
+		  systemic therapy (chemotherapy, <GlossaryTermRef href="CDR0000045110">hormone
+		  therapy</GlossaryTermRef>, or both) may be given.</ListItem> 
+		<ListItem><GlossaryTermRef href="CDR0000045961">Clinical trials</GlossaryTermRef>
+		  testing new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef>, new drug combinations, and new ways of giving
+		  treatment. </ListItem> 
+	 </ItemizedList>
+            <Para id="_TrialSearch_242_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=40816&amp;tt=1&amp;format=1&amp;cn=1">inflammatory breast cancer</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+          </SummarySection>
+          <SummarySection id="_367">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000637899">triple-negative breast cancer</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Treatment Options for Triple-Negative Breast Cancer</Title>
+            <Para id="_368">Treatment of <GlossaryTermRef href="CDR0000639916">triple-negative breast cancer</GlossaryTermRef> may include the following:</Para>
+            <ItemizedList id="_369" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000045214">Chemotherapy</GlossaryTermRef> followed by <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045626">breast-conserving surgery</GlossaryTermRef>, <GlossaryTermRef href="CDR0000046620">total mastectomy</GlossaryTermRef>, or <GlossaryTermRef href="CDR0000046285">modified radical mastectomy</GlossaryTermRef>) and <GlossaryTermRef href="CDR0000044435">lymph node dissection</GlossaryTermRef>.</ListItem>
+              <ListItem>A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000045650">combination chemotherapy</GlossaryTermRef> with <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> that are often used to treat <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> and drugs that are not usually used to treat breast cancer.</ListItem>
+              <ListItem>A clinical trial of <GlossaryTermRef href="CDR0000660869">PARP inhibitor</GlossaryTermRef> <GlossaryTermRef href="CDR0000044737">therapy</GlossaryTermRef>.</ListItem>
+            </ItemizedList>
+            <Para id="_TrialSearch_367_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=637899&amp;tt=1&amp;format=1&amp;cn=1">triple-negative breast cancer</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+          </SummarySection>
+          <SummarySection id="_246">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000039738">recurrent breast cancer</SpecificDiagnosis>
+              <SectionType>Treatment options for recurrent cancer</SectionType>
+            </SectMetaData>
+            <Title>Treatment Options for Recurrent Breast Cancer</Title>
+            <Para id="_247">Treatment of <GlossaryTermRef href="CDR0000045862">recurrent</GlossaryTermRef>
+		<GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef> (<GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> that has come
+		back after treatment) in the breast or <GlossaryTermRef href="CDR0000044996">chest
+		wall</GlossaryTermRef> may include the following:</Para>
+            <ItemizedList id="_248" Style="bullet"> 
+		<ListItem><GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef>
+		  (<GlossaryTermRef href="CDR0000046548">radical</GlossaryTermRef> or
+		  <GlossaryTermRef href="CDR0000046285">modified radical mastectomy</GlossaryTermRef>),
+		  <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, or
+		  both.</ListItem> 
+		<ListItem><GlossaryTermRef href="CDR0000301626">Systemic chemotherapy</GlossaryTermRef> or
+		  <GlossaryTermRef href="CDR0000045110">hormone therapy</GlossaryTermRef>.</ListItem> 
+	 <ListItem>A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000045439">trastuzumab</GlossaryTermRef>  (Herceptin) combined with  systemic chemotherapy.</ListItem></ItemizedList>
+            <Para id="_TrialSearch_246_10">Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=39738&amp;tt=1&amp;format=1&amp;cn=1">recurrent breast cancer</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.</Para>
+          </SummarySection>
+          <SummarySection id="_306">
+            <Title>To Learn More About Breast Cancer</Title>
+            <Para id="_307">For more information from the <GlossaryTermRef href="CDR0000044266">National Cancer Institute</GlossaryTermRef> about  breast    cancer, see the following: </Para>
+            <ItemizedList id="_382" Style="bullet">
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/types/breast">Breast Cancer Home Page</ExternalRef> </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/wyntk/breast">What You Need to Know About™ 
+Breast Cancer</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000257994" url="/cancertopics/pdq/prevention/breast/Patient">Breast Cancer Prevention</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000257995" url="/cancertopics/pdq/screening/breast/Patient">Breast Cancer Screening</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062970" url="/cancertopics/pdq/treatment/breast-cancer-and-pregnancy/Patient">Breast Cancer Treatment and Pregnancy</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/factsheet/Therapy/preventive-mastectomy"> 
+ Preventive Mastectomy</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/factsheet/therapy/sentinel-node-biopsy">Sentinel Lymph Node Biopsy</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/druginfo/breastcancer">Drugs Approved for Breast Cancer</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/understandingcancer/targetedtherapies">Understanding Cancer Series: Targeted Therapies</ExternalRef> (<Emphasis>Advances in Targeted Therapies</Emphasis> and <Emphasis>Targeted Therapies for Breast Cancer)</Emphasis></ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/factsheet/Therapy/targeted">Targeted Cancer Therapies</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/factsheet/Sites-Types/IBC">Inflammatory Breast Cancer: Questions and Answers</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/UnderstandingCancer/genetesting">Understanding Cancer Series: Gene Testing</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/Genetic-Testing-for-Breast-and-Ovarian-Cancer-Risk">Genetic Testing for Breast and Ovarian Cancer Risk: 
+It's Your Choice</ExternalRef>
+              </ListItem>
+            </ItemizedList>
+            <Para id="_306_40">For general <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> information and other resources from the National Cancer Institute, see the following:</Para>
+            <ItemizedList id="_306_41" Style="bullet">
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/wyntk/overview">What You Need to Know About™ Cancer</ExternalRef>
+</ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/understandingcancer/cancer">Understanding Cancer Series: Cancer</ExternalRef> 
+</ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/factsheet/Detection/staging">Cancer Staging</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/chemotherapy-and-you">Chemotherapy and You: Support for People With Cancer</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/radiation-therapy-and-you">Radiation Therapy and You: Support for People With Cancer</ExternalRef>
+</ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/coping">Coping with Cancer: Supportive and Palliative Care</ExternalRef>
+              </ListItem>
+              <ListItem>
+                <ExternalRef xref="http://www.cancer.gov/cancertopics/cancerlibrary">Cancer Library</ExternalRef>
+</ListItem>
+              <ListItem>
+                <ExternalRef xref="http://dccps.cancer.gov/ocs/resources.html">Information For Survivors/Caregivers/Advocates</ExternalRef>
+</ListItem>
+            </ItemizedList>
+          </SummarySection> 
+
+  <SummarySection id="_GetMore_3"><Title>Get More Information From NCI</Title><Para id="_GetMore_15"><Emphasis><Strong>Call 1-800-4-CANCER</Strong></Emphasis></Para><Para id="_GetMore_16">For more information, U.S. residents may call the National Cancer Institute's (NCI's) Cancer Information Service toll-free at 1-800-4-CANCER (1-800-422-6237) Monday through Friday from 8:00 a.m. to 8:00 p.m., Eastern Time.  A trained Cancer Information Specialist is available to answer your questions.</Para><Para id="_GetMore_25"><Emphasis><Strong>Chat online 
+</Strong></Emphasis></Para><Para id="_GetMore_26">The <ExternalRef xref="https://cissecure.nci.nih.gov/livehelp/welcome.asp">NCI's LiveHelp®</ExternalRef> online chat service provides Internet users with the ability to chat online with an Information Specialist. The service is available from 8:00 a.m. to 11:00 p.m. Eastern time, Monday through Friday. Information Specialists can help Internet users find information on NCI Web sites and answer questions about cancer.
+</Para><Para id="_GetMore_27"><Emphasis><Strong>Write to us</Strong></Emphasis></Para><Para id="_GetMore_28">For more information from the NCI, please write to this address:</Para><ItemizedList id="_GetMore_29" Style="simple"><ListItem>NCI Public Inquiries Office</ListItem><ListItem>Suite 3036A</ListItem><ListItem>6116 Executive Boulevard, MSC8322</ListItem><ListItem>Bethesda, MD 20892-8322</ListItem></ItemizedList><Para id="_GetMore_17"><Emphasis><Strong>Search the NCI Web site</Strong></Emphasis></Para><Para id="_GetMore_18">The <ExternalRef xref="http://cancer.gov">NCI Web site</ExternalRef> provides online access to information on cancer, clinical trials, and other Web sites and organizations that offer support and resources for cancer patients and their families.  For a quick search, use the search box in the upper right corner of each Web page. The results for a wide range of search terms will include a list of "Best Bets," editorially chosen Web pages that are most closely related to the search term entered.</Para><Para id="_GetMore_30">There are also many other places to get materials and information about cancer treatment and services.      Hospitals in your area may have information about  local and regional agencies that have information on finances, getting to and from treatment, receiving care at home, and dealing with problems related to cancer treatment.</Para><Para id="_GetMore_19"><Emphasis><Strong>Find Publications</Strong></Emphasis></Para><Para id="_GetMore_20">The NCI has booklets and other materials for patients, health professionals, and the public.  These publications discuss types of cancer, methods of cancer treatment, coping with cancer, and clinical trials.  Some publications provide information on tests for cancer, cancer causes and prevention, cancer statistics, and NCI research activities.  NCI materials on these and other topics may be ordered online or printed directly from the <ExternalRef xref="https://cissecure.nci.nih.gov/ncipubs">NCI Publications Locator</ExternalRef>. These materials can also be ordered by telephone from the Cancer Information Service toll-free at 1-800-4-CANCER (1-800-422-6237).</Para></SummarySection><SummarySection id="_249"><SectMetaData><SectionType>Changes to summary</SectionType></SectMetaData><Title>Changes to This Summary (08/18/2011)</Title><Para id="_250">The <GlossaryTermRef href="CDR0000044271">PDQ</GlossaryTermRef> <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> information summaries are reviewed regularly and updated as new information becomes available.  This section describes the latest changes made to this summary as of the date above.</Para><Para id="_326">Editorial changes were made to this summary.</Para></SummarySection> 
+  <SummarySection id="_AboutPDQ_14"><Title>About PDQ</Title><Para id="_AboutPDQ_10"><Emphasis><Strong>PDQ is a comprehensive cancer database available on NCI's Web site.</Strong></Emphasis></Para><Para id="_AboutPDQ_11">PDQ is the National Cancer Institute's (NCI's) comprehensive cancer information database.  Most of the information contained in PDQ is available online at <ExternalRef xref="http://cancer.gov">NCI's Web site</ExternalRef>.  PDQ is provided as a service of the NCI.  The NCI is part of the National Institutes of Health, the federal government's focal point for biomedical research.</Para><Para id="_AboutPDQ_3"><Emphasis><Strong>PDQ contains cancer information summaries.</Strong></Emphasis></Para><Para id="_AboutPDQ_4">The PDQ database contains summaries of the latest published information on cancer prevention, detection, genetics, treatment, supportive care, and complementary and alternative medicine.  Most summaries are available in two versions.  The health professional versions provide detailed information written in technical language.  The patient versions are written in easy-to-understand, nontechnical language.  Both versions provide current and accurate cancer information. </Para><Para id="_AboutPDQ_5"><Emphasis><Strong>The PDQ cancer information summaries are developed by cancer experts and reviewed regularly.</Strong></Emphasis></Para><Para id="_AboutPDQ_6">Editorial Boards made up of experts in oncology and related specialties are responsible for writing and maintaining the cancer information summaries.  The summaries are reviewed regularly and changes are made as new information becomes available.  The date on each summary ("Date Last Modified") indicates the time of the most recent change.</Para><Para id="_AboutPDQ_7"><Emphasis><Strong>PDQ also contains information on clinical trials.</Strong></Emphasis></Para><Para id="_AboutPDQ_8">A clinical trial is a study to answer a scientific question, such as whether one treatment is better than another.  Trials are based on past studies and what has been learned in the laboratory.  Each trial answers certain scientific questions in order to find new and better ways to help cancer patients.  During treatment clinical trials, information is collected about the effects of a new treatment and how well it works.  If a clinical trial shows that a new treatment is better than one currently being used, the new treatment may become "standard." Patients may want to think about taking part in a clinical trial. Some clinical trials are open only to patients who have not started treatment.</Para><Para id="_AboutPDQ_9">Listings of clinical trials are included in PDQ and are available online at <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI's Web site</ExternalRef>.  Descriptions of the trials are available in health professional and patient versions.  Many cancer doctors who take part in clinical trials are also listed in PDQ.  For more information, call the Cancer Information Service 1-800-4-CANCER (1-800-422-6237).</Para></SummarySection> 
+  <PatientVersionOf ref="CDR0000062787" /><DateLastModified>2011-08-18</DateLastModified></Summary>

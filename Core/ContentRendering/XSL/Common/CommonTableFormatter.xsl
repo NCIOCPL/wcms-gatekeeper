@@ -3,34 +3,36 @@
 							  xmlns:msxsl="urn:schemas-microsoft-com:xslt"
 							  xmlns:scripts="urn:local-scripts">
 
-	<xsl:output method="xml"/>
+  <xsl:import href="DeviceFilter.xslt"/>
+
   <xsl:include href="TableRender.xslt"/>
 
+  <xsl:output method="xml"/>
 
   <!--
   
     Shared code for rendering tables in Protocol, CTGovProtocol, and Summary documents.
   
   -->
-
   <xsl:template match="Table">
-			
-    <!-- The TableSectionXML tag is needed so the renderer can limit itself
+    <xsl:apply-templates select="." mode="ApplyDeviceFilter"/>
+  </xsl:template>
+
+  <xsl:template match="Table" mode="deviceFiltered">
+      <!-- The TableSectionXML tag is needed so the renderer can limit itself
     to only rewriting styles in a limited region of the rendered page. -->
-		<TableSectionXML>
-				<xsl:element name="a">
-				<xsl:attribute name="name">SectionXML<xsl:value-of select="@id"/></xsl:attribute>
-		
-				
-				<!--xsl:element name="a"><xsl:attribute name="name">TableSection</xsl:attribute></xsl:element>
-				<xsl:element name="a"><xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute></xsl:element-->
+      <TableSectionXML>
+        <a name="SectionXML{@id}">
+
           <xsl:call-template name="TableRender">
             <xsl:with-param name="table-cell-class">Summary-SummarySection-Small</xsl:with-param>
           </xsl:call-template>
 
-          <xsl:element name="a"><xsl:attribute name="name">END_TableSection</xsl:attribute></xsl:element>
-	  </xsl:element>
-		</TableSectionXML>
+          <xsl:element name="a">
+            <xsl:attribute name="name">END_TableSection</xsl:attribute>
+          </xsl:element>
+        </a>
+      </TableSectionXML>
 
 	</xsl:template>
 	

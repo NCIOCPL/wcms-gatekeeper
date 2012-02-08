@@ -2,23 +2,39 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 							  xmlns:msxsl="urn:schemas-microsoft-com:xslt"
 							  xmlns:scripts="urn:local-scripts">
+
+  <xsl:import href="Common/CommonTableFormatter.xsl"/>
+  <xsl:import href="Common/DeviceFilter.xslt"/>
   
-	<xsl:include href="Common/CommonElements.xsl"/>
-	<xsl:include href="Common/CommonScripts.xsl"/>
-	<xsl:include href="Common/CustomTemplates.xsl"/>
-	<xsl:include href="Common/CommonTableFormatter.xsl"/>
+  <xsl:include href="Common/CommonElements.xsl"/>
+  <xsl:include href="Common/CustomTemplates.xsl"/>
   
 	<xsl:output method="xml"/>
 
-	<xsl:template match="/">
+  <!--
+    XSL Parameters from DocumentRenderer.Render().
+    
+    $targetedDevice - the particular device to output for.
+  -->
+  <xsl:param name="targetedDevice" select="screen" />
+
+  <xsl:template match="/">
 		<Summary>
 			<xsl:apply-templates/>
 		</Summary>
 	</xsl:template>
 	
 	<xsl:template match="*">
-		<!-- suppress defaults -->	
+		<!-- Suppress default output for unmatched elements.
+         This has higher precedence than any imported templates
+         which therefore require explicit matches to invoke
+         the the imported one. -->
 	</xsl:template>
+
+  <!-- Enable device-specific filtering for select elements -->
+  <xsl:template match="SummarySection|MediaLink">
+    <xsl:apply-templates select="." mode="ApplyDeviceFilter"/>
+  </xsl:template>
 	
 	<!-- ****************************** TOC Section ***************************** -->
 	
@@ -27,46 +43,49 @@
 	</xsl:template>
 
 	<xsl:template match="SummaryTitle">
-		<Span Class="Summary-Title"><xsl:apply-templates/></Span>
-			<ul>
-			<xsl:for-each select="//SummarySection"> <!-- Only select a valid title element  -->
-				<xsl:if test="./Title[node()] = true()"> <!-- Only select top 3 levels of title for TOC -->
-					<xsl:if test="count(ancestor::SummarySection) &lt; 3">
-						<xsl:choose>
-							<xsl:when test="count(ancestor::SummarySection) = 0">
-								<li Class="Summary-SummaryTitle-Level1">
-									<xsl:element name="a"><xsl:attribute name="href">#Section<xsl:value-of select="@id"/></xsl:attribute>
-										<xsl:apply-templates select="Title"/>
-									</xsl:element>
-								</li>
-							</xsl:when>
-							<xsl:when test="count(ancestor::SummarySection) = 1">
-								<ul>
-									<li Class="Summary-SummaryTitle-Level2">
-										<xsl:element name="a"><xsl:attribute name="href">#Section<xsl:apply-templates select="@id"/></xsl:attribute>
-											<xsl:apply-templates select="Title"/>
-										</xsl:element>
-									</li>
-								</ul>			
-							</xsl:when>
-							<xsl:when test="count(ancestor::SummarySection) = 2">
-								<ul>
-									<ul>
-										<li Class="Summary-SummaryTitle-Level3">
-											<xsl:element name="a"><xsl:attribute name="href">#Section<xsl:apply-templates select="@id"/></xsl:attribute>
-												<xsl:apply-templates select="Title"/>
-											</xsl:element>
-										</li>
-									</ul>
-								</ul>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:if>
-				</xsl:if>		
-			</xsl:for-each>
-			</ul>
-		<!--xsl:copy-of select="$ReturnToTopBar"/-->	
-	
+    <xsl:if test="$targetedDevice != 'mobile'">
+		  <Span Class="Summary-Title"><xsl:apply-templates/></Span>
+			  <ul>
+          <!-- This filter expression MUST, MUST, MUST be synchronized with the Extract
+             path for SummaryTopSection and SummarySubSection. -->
+          <xsl:for-each select="//SummarySection[(contains(concat(' ', @IncludedDevices, ' '), concat(' ', $targetedDevice, ' ')) or not(@IncludedDevices)) and (not(contains(concat(' ', @ExcludedDevices, ' '), concat(' ', $targetedDevice, ' '))) or not(@ExcludedDevices))]"> <!-- Only select a valid title element  -->
+				  <xsl:if test="./Title[node()] = true()"> <!-- Only select top 3 levels of title for TOC -->
+					  <xsl:if test="count(ancestor::SummarySection) &lt; 3">
+						  <xsl:choose>
+							  <xsl:when test="count(ancestor::SummarySection) = 0">
+								  <li Class="Summary-SummaryTitle-Level1">
+									  <xsl:element name="a"><xsl:attribute name="href">#Section<xsl:value-of select="@id"/></xsl:attribute>
+										  <xsl:apply-templates select="Title"/>
+									  </xsl:element>
+								  </li>
+							  </xsl:when>
+							  <xsl:when test="count(ancestor::SummarySection) = 1">
+								  <ul>
+									  <li Class="Summary-SummaryTitle-Level2">
+										  <xsl:element name="a"><xsl:attribute name="href">#Section<xsl:apply-templates select="@id"/></xsl:attribute>
+											  <xsl:apply-templates select="Title"/>
+										  </xsl:element>
+									  </li>
+								  </ul>			
+							  </xsl:when>
+							  <xsl:when test="count(ancestor::SummarySection) = 2">
+								  <ul>
+									  <ul>
+										  <li Class="Summary-SummaryTitle-Level3">
+											  <xsl:element name="a"><xsl:attribute name="href">#Section<xsl:apply-templates select="@id"/></xsl:attribute>
+												  <xsl:apply-templates select="Title"/>
+											  </xsl:element>
+										  </li>
+									  </ul>
+								  </ul>
+							  </xsl:when>
+						  </xsl:choose>
+					  </xsl:if>
+				  </xsl:if>		
+			  </xsl:for-each>
+			  </ul>
+		  <!--xsl:copy-of select="$ReturnToTopBar"/-->
+    </xsl:if>
 	</xsl:template>
 
 	<!-- *************************** End TOC Section **************************** -->
@@ -74,29 +93,54 @@
 	
 	<!-- *********************** Summary Section Section ************************ -->
 
-    <xsl:template match="SummarySection">
-		<xsl:choose>
-			<xsl:when test="count(ancestor::SummarySection) = 0">
-				<xsl:element name="span">
-					<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
-					<xsl:call-template name="SectionDetails"/>
-				</xsl:element>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="a">
-					<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
-				</xsl:element>
-				<xsl:call-template name="SectionDetails"/>
-				<xsl:element name="a">
-					<xsl:attribute name="name">END_Section<xsl:value-of select="@id"/></xsl:attribute>
-				</xsl:element>
-			</xsl:otherwise>
-			
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template name="SectionDetails">
-		<xsl:if test="name(..) = 'Summary'">
+  <xsl:template match="SummarySection" mode="deviceFiltered">
+    <!-- Dispatch and call the device-specific version of the template. -->
+    <xsl:choose>
+      <xsl:when test="$targetedDevice = 'mobile'">
+        <xsl:apply-templates select="." mode="mobile"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="screen"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="SummarySection" mode="screen">
+    <xsl:choose>
+      <xsl:when test="count(ancestor::SummarySection) = 0">
+        <span name="Section{@id}" id="Section{@id}">
+          <xsl:call-template name="SectionDetails"/>
+        </span>
+      </xsl:when>
+      <xsl:otherwise>
+        <a name="Section{@id}" id="Section{@id}"></a>
+        <xsl:call-template name="SectionDetails"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="SummarySection" mode="mobile">
+    <xsl:choose>
+      <xsl:when test="count(ancestor::SummarySection) = 0">
+        <div data-role="collapsible" data-collapsed="true" data-iconpos="right" name="Section{@id}" id="Section{@id}">
+          <h2 class='section_heading'>
+            <span>
+              <xsl:value-of select="Title" />
+            </span>
+          </h2>
+          <xsl:call-template name="SectionDetails"/>
+        </div>
+      </xsl:when>
+      <xsl:otherwise>
+        <a name="Section{@id}" id="Section{@id}"></a>
+        <xsl:call-template name="SectionDetails"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
+  <xsl:template name="SectionDetails">
+    <xsl:if test="name(..) = 'Summary' and $targetedDevice != 'mobile'">
 
       <!-- If the section contains keypoints at any level, build up a list with
            appropriate nesting by recursively walking the SummarySection hierarchy. -->
@@ -204,29 +248,55 @@
   </xsl:template>
   
 	<xsl:template match="Title">
-		<xsl:if test="count(ancestor::SummarySection) = 1">
-      <!--<Span class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></Span>-->
-		</xsl:if>
-		<xsl:if test="count(ancestor::SummarySection) = 2">
-			<Span class="Summary-SummarySection-Title-Level2"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="count(ancestor::SummarySection) = 3">
-			<Span class="Summary-SummarySection-Title-Level3"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="count(ancestor::SummarySection) &gt; 3 ">
-			<Span class="Summary-SummarySection-Title-Level4"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="following-sibling::node()">
-			<xsl:for-each select="following-sibling::node()">
-				<xsl:choose>
-					<xsl:when test="name() ='SummarySection' and position()=1"><br /><br /></xsl:when>
-					<!--xsl:when test="name() ='SummarySection' and position()=2"><br /><br /></xsl:when-->
-					<xsl:when test="name() ='Table' and position()=1"><br /><br /></xsl:when>
-					<!--xsl:when test="name() ='Table' and position()=2"><br /><br /></xsl:when-->
-				</xsl:choose>
-			</xsl:for-each>
-		</xsl:if>
+    <xsl:choose>
+      <xsl:when test="$targetedDevice = 'mobile'">
+        <xsl:call-template name="Mobile-Title-and-Keypoint" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="Desktop-Title"/>
+      </xsl:otherwise>
+    </xsl:choose>
 	</xsl:template>
+
+  <xsl:template name="Desktop-Title">
+    <xsl:if test="count(ancestor::SummarySection) = 1">
+      <!--<Span class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></Span>-->
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) = 2">
+      <Span class="Summary-SummarySection-Title-Level2"><xsl:apply-templates/></Span>
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) = 3">
+      <Span class="Summary-SummarySection-Title-Level3"><xsl:apply-templates/></Span>
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) &gt; 3 ">
+      <Span class="Summary-SummarySection-Title-Level4"><xsl:apply-templates/></Span>
+    </xsl:if>
+    <xsl:if test="following-sibling::node()">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:choose>
+          <xsl:when test="name() ='SummarySection' and position()=1"><br /><br /></xsl:when>
+          <!--xsl:when test="name() ='SummarySection' and position()=2"><br /><br /></xsl:when-->
+          <xsl:when test="name() ='Table' and position()=1"><br /><br /></xsl:when>
+          <!--xsl:when test="name() ='Table' and position()=2"><br /><br /></xsl:when-->
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="Mobile-Title-and-Keypoint">
+    <xsl:if test="count(ancestor::SummarySection) = 1">
+      <!-- <h2 class="Summary-SummarySection-Title-Level1"><xsl:apply-templates/></h2> -->
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) = 2">
+      <h3 class="Summary-SummarySection-Title-Level2"><xsl:apply-templates/></h3>
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) = 3">
+      <h4 class="Summary-SummarySection-Title-Level3"><xsl:apply-templates/></h4>
+    </xsl:if>
+    <xsl:if test="count(ancestor::SummarySection) &gt; 3 ">
+      <h5 class="Summary-SummarySection-Title-Level4"><xsl:apply-templates/></h5>
+    </xsl:if>
+  </xsl:template>
 	
 	<!-- ******************** End Summary Section Section *********************** -->
 	
@@ -248,11 +318,11 @@
     gathered during the Extract step and the tag structure replaced by the CMS,
     using the value of the objectid attribute.
   -->
-	<xsl:template match="MediaLink">
+  <xsl:template match="MediaLink" mode="deviceFiltered">
     <div inlinetype="rxvariant" objectid="{@id}">
       Placeholder slot
     </div>
-	</xsl:template>
+  </xsl:template>
   
 	<xsl:template match="Reference">
 		<xsl:element name="a">
@@ -316,14 +386,20 @@
 			
 	<!-- Key point is with h4 tag-->
 	<xsl:template match="KeyPoint">
-		<p>
-			<xsl:element name="a">
-				<xsl:attribute name="name">Keypoint<xsl:value-of select="count(preceding::KeyPoint) + 1"/></xsl:attribute>
-			</xsl:element>
-      <Span Class="Summary-KeyPoint">
-				<xsl:apply-templates/>
-			</Span>
-		</p>
+    <xsl:choose>
+      <xsl:when test="$targetedDevice = 'mobile'">
+        <xsl:call-template name="Mobile-Title-and-Keypoint" />
+      </xsl:when>
+      <xsl:otherwise>
+        <p>
+          <a name="Keypoint{count(preceding::KeyPoint) + 1}" id="Keypoint{count(preceding::KeyPoint) + 1}"></a>
+          <Span Class="Summary-KeyPoint">
+            <xsl:apply-templates/>
+          </Span>
+        </p>
+
+      </xsl:otherwise>
+    </xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="ProfessionalDisclaimer">
@@ -476,5 +552,139 @@
 	</xsl:template>
 	
 	<!-- *********************** End Content Section **************************** -->
+
+  <!-- Necessitated by the match="*" template to suppress unknown elements. -->
+  <xsl:template match="Table">
+    <xsl:apply-imports/>
+  </xsl:template>
+
+  <!-- Override imported templates. -->
+
+  <!-- Dispatch to device-specific version. -->
+  <xsl:template match="ItemizedList|ListItem" mode="deviceFiltered">
+    <xsl:choose>
+      <xsl:when test="$targetedDevice = 'mobile'">
+        <xsl:apply-templates select="." mode="mobile" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="screen" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="ItemizedList" mode="screen">
+    <a name="Section{@id}"></a>
+
+    <xsl:element name="a">
+      <xsl:attribute name="name">ListSection</xsl:attribute>
+    </xsl:element>
+
+    <xsl:if test="ListTitle !=''">
+      <p><Span Class="Protocol-IL-Title"><xsl:value-of select="ListTitle"/></Span></p>
+    </xsl:if>
+
+    <xsl:choose>
+      <xsl:when test="@Style !='simple'">
+        <xsl:element name="UL">
+          <xsl:attribute name="__id"><xsl:value-of select="@id"/></xsl:attribute>
+          <xsl:attribute name="class">Protocol-UL</xsl:attribute>
+          <xsl:choose>
+            <xsl:when test="@Style='bullet'">
+              <xsl:apply-templates>
+                <xsl:with-param name="ListType">Protocol-IL-Bullet</xsl:with-param>
+              </xsl:apply-templates>
+            </xsl:when>
+            <xsl:when test="@Style='dash'">
+              <xsl:apply-templates>
+                <xsl:with-param name="ListType">Protocol-IL-Dash</xsl:with-param>
+              </xsl:apply-templates>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates>
+                <xsl:with-param name="ListType">Protocol-IL-Simple</xsl:with-param>
+              </xsl:apply-templates>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="DL">
+          <xsl:attribute name="__id"><xsl:value-of select="@id"/></xsl:attribute>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:element name="a">
+      <xsl:attribute name="name">END_ListSection</xsl:attribute>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="ItemizedList" mode="mobile">
+    <xsl:choose>
+      <xsl:when test="@Style !='simple'">
+        <xsl:element name="ul">
+          <xsl:attribute name="class">
+            <xsl:choose>
+              <xsl:when test="@Style='bullet'">list-bullet</xsl:when>
+              <xsl:when test="@Style='dash'">list-dash</xsl:when>
+              <xsl:otherwise>list-simple</xsl:otherwise>
+            </xsl:choose>
+          </xsl:attribute>
+          <xsl:apply-templates />
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="dl">
+          <xsl:attribute name="__id"><xsl:value-of select="@id"/></xsl:attribute>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="ListItem" mode="screen">
+    <xsl:param name="ListType">Protocol-LI</xsl:param>
+    <xsl:choose>
+      <xsl:when test="../@Style !='simple'">
+        <xsl:choose>
+          <xsl:when test="../@Compact ='No'">
+            <LI class="{$ListType}">
+              <xsl:apply-templates/>
+              <p></p>
+            </LI>
+          </xsl:when>
+          <xsl:otherwise>
+            <LI class="{$ListType}">
+              <xsl:apply-templates/>
+            </LI>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when test="../@Compact ='No'">
+            <DD>
+              <xsl:apply-templates/>
+              <p></p>
+            </DD>
+          </xsl:when>
+          <xsl:otherwise>
+            <DD>
+              <xsl:apply-templates/>
+            </DD>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="ListItem" mode="mobile">
+    <li>
+      <xsl:apply-templates />
+    </li>
+  </xsl:template>
+
+  <!-- End override imported templates. -->
+
 
 </xsl:stylesheet>

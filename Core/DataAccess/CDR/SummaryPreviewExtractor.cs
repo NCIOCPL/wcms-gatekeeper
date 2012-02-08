@@ -6,6 +6,8 @@ using System.Xml;
 
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
+using GateKeeper.Common;
+using GateKeeper.DataAccess.GateKeeper;
 
 namespace GateKeeper.DataAccess.CDR
 {
@@ -24,16 +26,16 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xmlDoc">Summary XML</param>
         /// <param name="summary">Summary document object</param>
-        override public void Extract(XmlDocument xmlDoc, SummaryDocument summary)
+        override public void Extract(XmlDocument xmlDoc, Document document, DocumentXPathManager xPathManager, TargetedDevice targetedDevice)
         {
             // invoke the base class method to extract information from xml document.
-            base.Extract(xmlDoc, summary);
+            base.Extract(xmlDoc, document, xPathManager, TargetedDevice.screen);
 
             // create unique identifier using current time expressed as milliseconds since 1-1-1970.   
             // append this unique to the base url
             string uniqueId = Math.Round((decimal)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000000).ToString();
 
-            summary.BasePrettyURL = "/" + uniqueId;
+            ((SummaryDocument)document).BasePrettyURL = "/" + uniqueId;
         }
     }
 }

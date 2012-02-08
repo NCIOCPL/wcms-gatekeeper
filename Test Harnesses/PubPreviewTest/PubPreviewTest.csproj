@@ -47,10 +47,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:25553/CDRPreview.asmx">
+    <WebReferenceUrl Include="http://localhost/CDRPreviewWS/CDRPreview.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\PubPreviewWS\</RelPath>
-      <UpdateFromURL>http://localhost:25553/CDRPreview.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost/CDRPreviewWS/CDRPreview.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
@@ -75,8 +75,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="nunit.framework, Version=2.5.9.10348, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Services" />

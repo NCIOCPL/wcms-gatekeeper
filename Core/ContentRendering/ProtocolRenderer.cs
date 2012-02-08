@@ -9,7 +9,6 @@ using System.Configuration;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Protocol;
-using GateKeeper.Logging;
 
 namespace GateKeeper.ContentRendering
 {

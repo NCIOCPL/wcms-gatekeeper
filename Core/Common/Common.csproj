@@ -80,9 +80,11 @@
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="DocumentHistoryHelper.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="FrameworkLogBuilder.cs" />
     <Compile Include="LogBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharedEnums.cs" />
     <Compile Include="Strings.cs" />
   </ItemGroup>
   <ItemGroup>

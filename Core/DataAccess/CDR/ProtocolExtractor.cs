@@ -8,7 +8,6 @@ using GateKeeper.Common.XPathKeys;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Protocol;
 using GateKeeper.DataAccess.GateKeeper;
-using GateKeeper.Logging;
 
 namespace GateKeeper.DataAccess.CDR
 {

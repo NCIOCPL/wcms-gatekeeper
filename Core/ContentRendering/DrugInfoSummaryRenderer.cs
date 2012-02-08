@@ -8,7 +8,6 @@ using System.Xml.Xsl;
 using GateKeeper.DocumentObjects;
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
-using GateKeeper.Logging;
 
 namespace GateKeeper.ContentRendering
 {

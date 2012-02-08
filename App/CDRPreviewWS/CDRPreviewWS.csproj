@@ -147,14 +147,13 @@
       <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
       <Name>DocumentObjects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Logging\Logging.csproj">
-      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
-      <Name>Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\RequestManager\RequestManager.csproj">
       <Project>{899D3B57-B535-4899-8ED5-2BD900065555}</Project>
       <Name>RequestManager</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sharedconfig\connectionStrings.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" Condition="" />

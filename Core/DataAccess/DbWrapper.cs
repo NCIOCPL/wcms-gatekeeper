@@ -6,7 +6,6 @@ using System.Data;
 using System.Data.Common;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
-using GateKeeper.Logging;
 
 namespace GateKeeper.DataAccess
 {

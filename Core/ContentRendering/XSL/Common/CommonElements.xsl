@@ -2,10 +2,18 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 							  xmlns:msxsl="urn:schemas-microsoft-com:xslt"
 							  xmlns:scripts="urn:local-scripts">
-	
-	<xsl:output method="xml"/>
-	
-	<xsl:template match="QandASet">
+
+  <xsl:import href="DeviceFilter.xslt"/>
+
+  <xsl:output method="xml"/>
+
+  <!-- Enable device-specific filtering for select elements -->
+  <xsl:template match="QandASet|ItemizedList|OrderedList|Para">
+    <xsl:apply-templates select="." mode="ApplyDeviceFilter"/>
+  </xsl:template>
+
+
+  <xsl:template match="QandASet" mode="deviceFiltered">
 		<xsl:element name="a">
 			<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
 		</xsl:element>
@@ -45,7 +53,7 @@
 		<span class="QandA-Answer"><xsl:apply-templates/></span>
 	</xsl:template>
 	
-	<xsl:template match="ItemizedList">
+	<xsl:template match="ItemizedList" mode="deviceFiltered">
 		<xsl:element name="a">
 			<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
 		</xsl:element>
@@ -94,7 +102,7 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="OrderedList">
+	<xsl:template match="OrderedList" mode="deviceFiltered">
 		<xsl:element name="a">
 			<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
 		</xsl:element>
@@ -201,12 +209,9 @@
 		</xsl:choose>	
 	</xsl:template>
 		
-	<xsl:template match="Para">
-		<xsl:element name="a">
-			<xsl:attribute name="name">Section<xsl:value-of select="@id"/></xsl:attribute>
-		</xsl:element>
-		<P>
-			<xsl:attribute name="__id"><xsl:value-of select="@id"/></xsl:attribute>
+	<xsl:template match="Para" mode="deviceFiltered">
+    <a name="Section{@id}"></a>
+		<P id="Section{@id}" __id="{@id}">
 			<xsl:apply-templates/>
 		</P>
 	</xsl:template>

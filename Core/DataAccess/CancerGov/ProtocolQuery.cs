@@ -11,7 +11,6 @@ using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Protocol;
-using GateKeeper.Logging;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.Common;

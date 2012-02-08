@@ -26,6 +26,20 @@ namespace GateKeeper.DocumentObjects
         private HistoryEntryWriter _informationWriter;
         private Guid _documentGUID = Guid.NewGuid();
 
+        // Target devices which the summary is valid for.
+        private HashSet<TargetedDevice> _validDevices = new HashSet<TargetedDevice>();
+
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the Document class.
+        /// </summary>
+        public Document()
+        {
+            // Always valid for desktop browsers.
+            ValidOutputDevices.Add(TargetedDevice.screen);
+        }
         #endregion
 
         #region Public Properties
@@ -143,6 +157,14 @@ namespace GateKeeper.DocumentObjects
             get { return _informationWriter; }
             set { _informationWriter = value; }
         }
+
+        // Contains a list of TargetedDevice which are valid for
+        // processing this summary.
+        public HashSet<TargetedDevice> ValidOutputDevices
+        {
+            get { return _validDevices; }
+        }
+
         #endregion
 
         #region Public Methods

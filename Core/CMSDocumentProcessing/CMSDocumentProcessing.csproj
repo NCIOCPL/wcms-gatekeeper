@@ -14,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\GateKeeper.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,9 +51,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CancerInfoSummaryPreviewProcessor.cs" />
-    <Compile Include="CancerInfoSummaryProcessor.cs" />
+    <Compile Include="CancerInfoSummaryProcessorStandard.cs" />
+    <Compile Include="CancerInfoSummaryProcessorCommon.cs" />
+    <Compile Include="CancerInfoSummaryProcessorMobile.cs" />
     <Compile Include="CancerInfoSummarySectionFinder.cs" />
     <Compile Include="CISErrorBuilder.cs" />
+    <Compile Include="Configuration\BaseFolders.cs" />
+    <Compile Include="Configuration\CMSProcessingSection.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DocumentProcessorCommon.cs" />
     <Compile Include="DrugInfoSummaryPreviewProcessor.cs" />
@@ -61,7 +67,10 @@
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="ItemCache.cs" />
     <Compile Include="MediaProcessor.cs" />
+    <Compile Include="MobileSummarySectionFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandardSummarySectionFinder.cs" />
+    <Compile Include="SummaryPageInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CMSManager\CMSManager.csproj">

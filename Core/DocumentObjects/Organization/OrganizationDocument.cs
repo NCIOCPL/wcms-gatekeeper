@@ -17,6 +17,17 @@ namespace GateKeeper.DocumentObjects.Organization
         private List<string> _alternateNames = new List<string>();
         #endregion
 
+        #region Constructors
+
+        public OrganizationDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.Organization;
+        }
+
+        #endregion
+
+
         #region Public Properties
 
         /// <summary>

@@ -32,6 +32,7 @@ namespace GateKeeper.Common.XPathKeys
     {
         #region Fields
         private static string _url = "SummaryURL";
+        private static string _mobileUrl = "MobileURL";
         private static string _patientVersion = "SummaryPatientVersionOf";
         private static string _title = "SummaryTitle";
         private static string _type = "SummaryType";
@@ -47,6 +48,7 @@ namespace GateKeeper.Common.XPathKeys
         private static string _subSection = "SummarySubSection";
         private static string _reference = "SummaryReference";
         private static string _basePrettyURL = "SummaryBasePrettyURL";
+        private static string _baseMobileURL = "SummaryBaseMobileURL";
         private static string _replacement = "SummaryReplacement";
         private static string _relationID = "SummaryRelationRef";
         private static string _prettyURLHref = "SummaryPrettyURLHref";
@@ -63,6 +65,9 @@ namespace GateKeeper.Common.XPathKeys
         #region public properties
         public static string URL
         { get { return _url; } }
+
+        public static string MobileURL
+        { get { return _mobileUrl; } }
 
         public static string PatientVersion
         { get { return _patientVersion; } }
@@ -108,6 +113,9 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string BasePrettyURL
         { get { return _basePrettyURL; } }
+
+        public static string BaseMobileURL
+        { get { return _baseMobileURL; } }
 
         public static string Replacement
         { get { return _replacement; } }

@@ -8,7 +8,6 @@ using System.Transactions;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DataAccess;
-using GateKeeper.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 using GateKeeper.DocumentObjects.PoliticalSubUnit;

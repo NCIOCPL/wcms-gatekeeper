@@ -67,6 +67,38 @@ namespace GKManagers.DataAccess
             return succeeded;
         }
 
+
+        public static bool CopyRequest(string requestDataIds, int requestId, string updateUserID)
+        {
+            bool succeeded = true;
+
+            Database db = DatabaseFactory.CreateDatabase(ContentDatabase.GateKeeper.ToString());
+            using (DbCommand cmd = db.GetStoredProcCommand(StoredProcNames.SP_COPY_REQUEST_DATA))
+            {
+                try
+                {
+                    db.AddInParameter(cmd, "@RequestDataIDs", DbType.String, requestDataIds);
+                    db.AddInParameter(cmd, "@RequestID", DbType.String, requestId);
+                    db.AddInParameter(cmd, "@updateUserID", DbType.String, updateUserID);
+
+                    QueryWrapper.ExecuteNonQuery(db, cmd);
+
+                    // Check for non-fatal errors.
+                    DBStatusCodeType statusCode = (DBStatusCodeType)db.GetParameterValue(cmd, "@Status_Code");
+                    if (statusCode == DBStatusCodeType.Success)
+                        succeeded = true;
+                    else
+                        succeeded = false;
+                }
+                catch (Exception ex)
+                {
+                    RequestMgrLogBuilder.Instance.CreateError(typeof(RequestQuery), "CopyRequest", ex);
+                    throw new Exception("Error in RequestQuery.CopyRequest", ex);
+                }
+            }
+
+            return succeeded;
+        }
         /// <summary>
         /// Mark the specified Request object as being abnormally terminated.  If an attempt
         /// is made to abort a request which is no longer open (e.g. previously aborted or

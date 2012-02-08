@@ -25,6 +25,7 @@ namespace GKManagers.DataAccess
         private const string _spLoadRequestByID = "usp_GetRequestByID";
         private const string _spLoadRequestByExternalID = "usp_GetRequestByExternalID";
         private const string _spCreateNewRequest = "usp_CreateNewRequest";
+        private const string _spCopyRequestData = "usp_CopyRequestData";
         private const string _spInsertRequestData = "usp_InsertRequestData";
         private const string _spAbortRequest = "usp_AbortRequest";
         private const string _spCompleteRequest = "usp_CompleteRequest";
@@ -154,6 +155,11 @@ namespace GKManagers.DataAccess
         public static string SP_CREATE_NEW_REQUEST
         {
             get { return _spCreateNewRequest; }
+        }
+
+        public static string SP_COPY_REQUEST_DATA
+        {
+            get { return _spCopyRequestData; }
         }
 
         public static string SP_LOAD_REQUEST_BY_EXTERNAL_ID

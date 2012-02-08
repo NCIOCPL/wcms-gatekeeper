@@ -8,7 +8,6 @@ using System.Data.Common;
 using GateKeeper.DataAccess;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DataAccess.StoreProcedures;
-using GateKeeper.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
@@ -34,6 +33,12 @@ namespace GateKeeper.DataAccess.GateKeeper
         #endregion Constructors
 
         #region Public Methods
+
+        /// <summary>
+        /// Retrieves the XPath expression named by key.
+        /// </summary>
+        /// <param name="key">The name of the XPath expression</param>
+        /// <returns>String containing an XPath expression.</returns>
         public string GetXPath(string key)
         {
             string value = string.Empty;
@@ -45,6 +50,19 @@ namespace GateKeeper.DataAccess.GateKeeper
             return value;
         }
 
+        /// <summary>
+        /// Retrieves the XPath expression named by key, replacing format specifiers
+        /// with the string equivalent of the values in args.
+        /// </summary>
+        /// <param name="key">The name of the XPath expression</param>
+        /// <param name="args">Array of objects to use in the format specifier.</param>
+        /// <returns>String containing an XPath expression.</returns>
+        public string GetXPath(string key, params object[] args)
+        {
+            string value = GetXPath(key);
+
+            return string.Format(value, args);
+        }
 
         #endregion
 

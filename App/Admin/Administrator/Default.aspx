@@ -15,7 +15,10 @@
           <div class="gk-rtcol-home" style="height:111px">
               <h2>Other Tools</h2>
 				<ul class="gk-bullet">
-					<li><a href="EventLogViewer.aspx">View Eventlog</a></li><li><a href="../Reports/ViewLocation.aspx">View Document Locations</a></li></ul>
+					<li><a href="EventLogViewer.aspx">View Eventlog</a></li>
+					<li><a href="../Reports/ViewLocation.aspx">View Document Locations</a></li>
+					<li><a href="../ProcessingActivities/DocumentReprocessing.aspx">Document Reprocessing</a></li>
+					</ul>
           </div>
           </div>
 	  <div class="gk-ltcol-home" style="height:auto">		

@@ -12,6 +12,8 @@
     <AssemblyName>CMSManager</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\GateKeeper.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +63,7 @@
     <Compile Include="CMS\FieldSet.cs" />
     <Compile Include="CMS\FolderManager.cs" />
     <Compile Include="CMS\PercussionGuid.cs" />
+    <Compile Include="CMS\PSItemFoldersBuilder.cs" />
     <Compile Include="CMS\PSItemUtils.cs" />
     <Compile Include="CMS\ContentItemForUpdating.cs" />
     <Compile Include="CMS\ContentItemForCreating.cs" />

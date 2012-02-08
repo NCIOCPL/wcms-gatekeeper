@@ -1,0 +1,1327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Summary id="CDR0000062697" LegacyPDQID="1189">
+      <SummaryMetaData>
+        <SummaryType>Treatment</SummaryType>
+        <SummaryAudience>Patients</SummaryAudience>
+        <SummaryLanguage>English</SummaryLanguage>
+        <SummaryDescription>Expert-reviewed information summary about the treatment of adult brain tumors.</SummaryDescription>
+        <SummaryURL xref="http://cancer.gov/cancertopics/pdq/treatment/adultbrain/Patient">Adult Brain Tumors (PDQ®): Treatment</SummaryURL>
+        <MobileURL xref="http://m.cancer.gov/topics/adultbrain">Adult Brain Tumors (PDQ®): Treatment</MobileURL>
+        <MainTopics>
+          <TermRef ref="CDR0000038717">adult brain tumor</TermRef>
+        </MainTopics>
+      </SummaryMetaData>
+      <SummaryTitle>Test for conditional extract</SummaryTitle>
+      <AltTitle TitleType="Short">Adult Brain Tumors Treatment</AltTitle>
+      <SummarySection id="_1" ExcludedDevices="screen">
+        <Title>Section excluded from screen</Title>
+        <SummarySection id="_2">
+          <SectMetaData>
+            <SectionType>Cancer description</SectionType>
+            <SectionType>Organ description</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_373">An adult brain tumor is a disease in which abnormal cells form in the tissues of the brain.</KeyPoint>
+          <Para id="_475">
+            There are many types of brain and <GlossaryTermRef href="CDR0000340937">spinal cord</GlossaryTermRef> <GlossaryTermRef href="CDR0000046634">tumors</GlossaryTermRef>. The tumors are formed by the <GlossaryTermRef href="CDR0000044636">abnormal</GlossaryTermRef> growth of <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> and may begin in different parts of the brain or spinal cord. Together, the brain and spinal cord make up the <GlossaryTermRef href="CDR0000046481">central nervous system</GlossaryTermRef> (CNS).
+          </Para>
+          <Para id="_4">
+            The tumors may be <GlossaryTermRef href="CDR0000045614">benign</GlossaryTermRef> (not <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>) or <GlossaryTermRef href="CDR0000045772">malignant</GlossaryTermRef> (cancer). Benign <GlossaryTermRef href="CDR0000387264">brain tumors</GlossaryTermRef> grow and press on nearby areas of the brain. They rarely spread into other <GlossaryTermRef href="CDR0000046683">tissues</GlossaryTermRef> and may <GlossaryTermRef href="CDR0000046556">recur</GlossaryTermRef> (come back). Malignant brain tumors are likely
+            to grow quickly and spread into other brain tissue. When a tumor grows into or presses on an area of the brain, it may stop that part of the brain from working the way it should. Both benign and malignant brain tumors can cause <GlossaryTermRef href="CDR0000045022">symptoms</GlossaryTermRef> and need treatment.
+          </Para>
+          <Para id="_411">
+            Brain tumors can occur in both  adults and children. However, treatment for
+            children may be different than treatment for adults. (See the <GlossaryTermRef href="CDR0000044271">PDQ</GlossaryTermRef> summary
+            on <SummaryRef href="CDR0000257997" url="/cancertopics/pdq/treatment/childbrain/Patient">Childhood Brain and Spinal Cord Tumors Treatment Overview</SummaryRef> for more information on the treatment of children.)
+          </Para>
+          <Para id="_522">
+            For information about <GlossaryTermRef href="CDR0000045368">lymphoma</GlossaryTermRef> that begins in the brain, see the PDQ summary on <SummaryRef href="CDR0000258030" url="/cancertopics/pdq/treatment/primary-CNS-lymphoma/Patient">Primary CNS Lymphoma Treatment</SummaryRef>.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_514">
+          <KeyPoint id="_515">A brain tumor that starts in another part of the body and spreads to the brain is called a metastatic tumor.</KeyPoint>
+          <Para id="_516">
+            Tumors that start in the brain are called <GlossaryTermRef href="CDR0000045847">primary</GlossaryTermRef> brain tumors.
+            Often, tumors found in the brain have started somewhere else in the body and spread to one or more parts of the brain. These are called <GlossaryTermRef href="CDR0000044058">metastatic</GlossaryTermRef> brain tumors (or brain metastases). Metastatic
+            brain tumors are more common than primary brain tumors.
+          </Para>
+          <Para id="_517">
+            The types of cancer that commonly spread to the brain are <GlossaryTermRef href="CDR0000045135">melanoma</GlossaryTermRef> and cancer of the <GlossaryTermRef href="CDR0000304766">breast</GlossaryTermRef>, <GlossaryTermRef href="CDR0000046462">colon</GlossaryTermRef>,  <GlossaryTermRef href="CDR0000270740">lung</GlossaryTermRef>, and unknown primary site.   The types of cancer that commonly spread to the spinal cord are lymphoma and cancer of the lung, breast, and <GlossaryTermRef href="CDR0000046539">prostate</GlossaryTermRef>. About half of metastatic brain and spinal cord tumors are caused by <GlossaryTermRef href="CDR0000445043">lung cancer</GlossaryTermRef>.
+
+            <GlossaryTermRef href="CDR0000045343">Leukemia</GlossaryTermRef>, lymphoma, <GlossaryTermRef href="CDR0000444971">breast cancer</GlossaryTermRef>, and <GlossaryTermRef href="CDR0000045692">gastrointestinal</GlossaryTermRef> cancer may spread to the leptomeninges (the two innermost <GlossaryTermRef href="CDR0000046294">membranes</GlossaryTermRef> covering the brain and spinal cord).
+          </Para>
+          <Para id="_518">See the following PDQ summaries for more information on cancers that commonly spread to the brain and spinal cord:</Para>
+          <ItemizedList id="_519" Style="bullet">
+            <ListItem>
+              <SummaryRef href="CDR0000257991" url="/cancertopics/pdq/treatment/adulthodgkins/Patient">Adult Hodgkin Lymphoma Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062958" url="/cancertopics/pdq/treatment/adult-non-hodgkins/Patient">Adult Non-Hodgkin Lymphoma Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062955" url="/cancertopics/pdq/treatment/breast/Patient">Breast Cancer Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062729" url="/cancertopics/pdq/treatment/unknownprimary/Patient">Carcinoma of Unknown Primary Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062954" url="/cancertopics/pdq/treatment/colon/Patient">Colon Cancer Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062713" url="/cancertopics/pdq/treatment/melanoma/Patient">Melanoma Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062956" url="/cancertopics/pdq/treatment/non-small-cell-lung/Patient">Non-Small Cell Lung Cancer Treatment</SummaryRef>
+            </ListItem>
+            <ListItem>
+              <SummaryRef href="CDR0000062947" url="/cancertopics/pdq/treatment/small-cell-lung/Patient">Small Cell Lung Cancer Treatment</SummaryRef>
+            </ListItem>
+          </ItemizedList>
+        </SummarySection>
+        <SummarySection id="_476">
+          <KeyPoint id="_477">
+            The brain controls many important body functions.
+
+          </KeyPoint>
+          <Para id="_478">
+            The brain has three major parts:
+
+          </Para>
+          <ItemizedList id="_479" Style="bullet">
+            <ListItem>
+              The <GlossaryTermRef href="CDR0000046484">cerebrum</GlossaryTermRef> is the largest part of the brain. It is at the top of the head. The cerebrum controls thinking, learning, problem solving, emotions, speech, reading, writing, and voluntary movement.
+            </ListItem>
+            <ListItem>
+              The <GlossaryTermRef href="CDR0000046714">cerebellum</GlossaryTermRef> is in the lower back of the brain (near the middle of the back of the head). It controls movement, balance, and posture.
+            </ListItem>
+            <ListItem>
+              The <GlossaryTermRef href="CDR0000046491">brain stem</GlossaryTermRef> connects the brain to the spinal cord. It is in the lowest part of the brain (just above the back of the neck). The brain stem controls breathing, heart rate, and the <GlossaryTermRef href="CDR0000373935">nerves</GlossaryTermRef> and muscles used in seeing, hearing, walking, talking, and eating.
+            </ListItem>
+          </ItemizedList>
+          <Table id="_527">
+            <Title> </Title>
+            <TGroup Cols="2">
+              <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+              <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+              <TBody>
+                <Row>
+                  <entry>
+                    <MediaLink ref="CDR0000680399" alt="Drawing of brain anatomy showing the brain stem, pons, medulla, spinal cord, cerebellum, cerebrum, meninges, ventricles (fluid-filled spaces), and skull. " language="en" thumb="Yes" id="_525" />
+                  </entry>
+                  <entry>
+                    <MediaLink ref="CDR0000680415" alt="Drawing of the inside of the brain showing ventricles (fluid-filled spaces), choroid plexus, hypothalamus, pineal gland, pituitary gland, optic nerve, brain stem, cerebellum, cerebrum, medulla, pons, and spinal cord." language="en" thumb="Yes" id="_526" />
+                  </entry>
+                </Row>
+                <Row>
+                  <entry>Anatomy of the brain, showing the cerebrum, cerebellum, brain stem, and other parts of the brain.</entry>
+                  <entry>Anatomy of the inside of the brain, showing the pineal and pituitary glands, optic nerve, ventricles (with cerebrospinal fluid shown in blue), and other parts of the brain.</entry>
+                </Row>
+              </TBody>
+            </TGroup>
+          </Table>
+        </SummarySection>
+        <SummarySection id="_492">
+          <KeyPoint id="_498">The spinal cord connects the brain to nerves in most parts of the body.</KeyPoint>
+          <Para id="_494">
+            The spinal cord is a column of nerve tissue that runs from the brain stem down the center of the back. It is covered by three thin layers of tissue called membranes. These membranes are surrounded by the <GlossaryTermRef href="CDR0000415916">vertebrae</GlossaryTermRef> (back bones). Spinal cord nerves carry messages between the brain and the rest of the body, such as a signal from the brain to cause muscles to move or from the skin to the brain about the sense of touch.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_32">
+          <KeyPoint id="_381">There are different types of brain and spinal cord tumors. </KeyPoint>
+          <Para id="_210">
+            Brain and spinal cord tumors are named based on the type of cell they formed in and where the tumor first formed in the <GlossaryTermRef href="CDR0000045643">CNS</GlossaryTermRef>. The <GlossaryTermRef href="CDR0000045702">grade</GlossaryTermRef> of a  tumor may be used to tell the difference between slow- and fast-growing types of the tumor. The grade of a tumor is based on how abnormal the cancer cells look under a microscope and how quickly the tumor is likely to grow and spread.
+          </Para>
+          <ItemizedList id="_520" Style="bullet">
+            <ListTitle>Tumor Grading System</ListTitle>
+            <ListItem>
+              Grade I (<GlossaryTermRef href="CDR0000386213">low-grade</GlossaryTermRef>) — The tumor grows slowly, has cells that look a lot like normal cells, and rarely spreads into nearby tissues. It may be possible to remove the entire tumor by <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>Grade II — The tumor grows slowly, but may spread into nearby tissue and may recur (come back). Some tumors may become a higher-grade tumor.</ListItem>
+            <ListItem>Grade III — The tumor grows quickly, is likely to spread into nearby tissue, and the tumor cells look very different from normal cells.</ListItem>
+            <ListItem>
+              Grade IV (<GlossaryTermRef href="CDR0000386205">high-grade</GlossaryTermRef>) — The tumor grows and spreads very quickly and the cells do not look like normal cells. There may be areas of dead cells in the tumor. Grade IV brain tumors are harder to <GlossaryTermRef href="CDR0000318813">cure</GlossaryTermRef> than lower-grade tumors.
+            </ListItem>
+          </ItemizedList>
+          <SummarySection id="_495">
+            <KeyPoint id="_499">Astrocytic Tumors</KeyPoint>
+            <Para id="_513">
+              An <GlossaryTermRef href="CDR0000045602">astrocytic tumor</GlossaryTermRef> begins in star-shaped brain cells called <GlossaryTermRef href="CDR0000269436">astrocytes</GlossaryTermRef>, which help keep <GlossaryTermRef href="CDR0000269443">nerve cells</GlossaryTermRef> healthy. An astrocyte is a type of <GlossaryTermRef href="CDR0000269440">glial cell</GlossaryTermRef> and is sometimes called   a <GlossaryTermRef href="CDR0000045700">glioma</GlossaryTermRef>. Astrocytic tumors include the following:
+            </Para>
+            <ItemizedList id="_500" Style="bullet">
+              <ListItem>
+                <Strong>Brain stem glioma</Strong>: A <GlossaryTermRef href="CDR0000045624">brain stem glioma</GlossaryTermRef> forms in the  brain stem, which is the part of the brain connected to the spinal cord. It is often a high-grade tumor, which spreads widely through the brain
+                stem and is hard to cure. A brain stem glioma rarely occurs in adults. (See the PDQ summary on <SummaryRef href="CDR0000062962" url="/cancertopics/pdq/treatment/child-brain-stem-glioma/Patient">Childhood Brain Stem Glioma Treatment</SummaryRef> for more information.)
+              </ListItem>
+              <ListItem>
+                <Strong>Pineal astrocytic tumor</Strong>: A pineal astrocytic tumor
+                forms in tissue around the <GlossaryTermRef href="CDR0000046226">pineal gland</GlossaryTermRef> and  may be any grade. The pineal gland is a tiny <GlossaryTermRef href="CDR0000257523">organ</GlossaryTermRef> in the brain that makes <GlossaryTermRef href="CDR0000440118">melatonin</GlossaryTermRef>, a <GlossaryTermRef href="CDR0000045713">hormone</GlossaryTermRef> that helps control the sleeping and waking cycle.
+              </ListItem>
+              <ListItem>
+                <Strong>Pilocytic astrocytoma (grade I)</Strong>: A <GlossaryTermRef href="CDR0000044341">pilocytic</GlossaryTermRef> <GlossaryTermRef href="CDR0000045602">astrocytoma</GlossaryTermRef> grows slowly in the brain or spinal cord. It may be in the form of a <GlossaryTermRef href="CDR0000046461">cyst</GlossaryTermRef> and
+                rarely spreads into nearby tissues. This type of tumor is most common in children and young adults and in people with <GlossaryTermRef href="CDR0000045096">neurofibromatosis type 1</GlossaryTermRef> (NF1). A pilocytic astrocytoma  rarely causes death.
+              </ListItem>
+              <ListItem>
+                <Strong>Diffuse astrocytoma (grade II)</Strong>: A <GlossaryTermRef href="CDR0000044508">diffuse</GlossaryTermRef> astrocytoma grows slowly, but often spreads into nearby  tissues. Sometimes a diffuse astrocytoma <GlossaryTermRef href="CDR0000044078">progresses</GlossaryTermRef> to a higher grade and becomes an <GlossaryTermRef href="CDR0000045591">anaplastic</GlossaryTermRef> astrocytoma or a <GlossaryTermRef href="CDR0000045698">glioblastoma</GlossaryTermRef>.  A diffuse astrocytoma can form in any part of the brain but most often forms in the cerebrum. It is most common in young adults and in people with <GlossaryTermRef href="CDR0000046322">Li-Fraumeni syndrome</GlossaryTermRef>. It is also called a low-grade diffuse astrocytoma.
+              </ListItem>
+              <ListItem>
+                <Strong>Anaplastic astrocytoma (grade III)</Strong>: An anaplastic astrocytoma grows quickly and spreads into nearby  tissues. An anaplastic astrocytoma may progress to a higher grade and become a glioblastoma. An anaplastic astrocytoma forms most often in the cerebrum and is most common in adults.  An anaplastic astrocytoma is also called a malignant astrocytoma or high-grade astrocytoma.
+              </ListItem>
+              <ListItem>
+                <Strong>Glioblastoma (grade IV)</Strong>: A glioblastoma grows and spreads very quickly. A glioblastoma forms most often in the cerebrum. This type of tumor is most common in adults. This type of tumor has a poor <GlossaryTermRef href="CDR0000045849">prognosis</GlossaryTermRef>. It is
+                also called glioblastoma multiforme.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_67">
+            <KeyPoint id="_452">Oligodendroglial Tumors</KeyPoint>
+            <Para id="_69">
+              An <GlossaryTermRef href="CDR0000045808">oligodendroglial tumor</GlossaryTermRef> begins in brain cells called
+              oligodendrocytes, which help keep nerve cells healthy.  Oligodendrocytes are a type of glial cell and are sometimes called a glioma. Grades of oligodendroglial tumors include the following:
+            </Para>
+            <ItemizedList id="_368" Style="bullet">
+              <ListItem>
+                <Strong>Oligodendroglioma (grade II)</Strong>: An <GlossaryTermRef href="CDR0000046257">oligodendroglioma</GlossaryTermRef> grows and spreads slowly
+                and the tumor cells look very much like normal cells. This type of tumor most often forms in the cerebrum. An oligodendroglioma  is most common in adults.
+              </ListItem>
+              <ListItem>
+                <Strong>Anaplastic oligodendroglioma (grade III)</Strong>: An anaplastic oligodendroglioma grows quickly and the tumor cells look
+                very different from normal cells. It may grow in one place or in many places throughout the brain. This type of cancer most often forms in the cerebrum.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_76">
+            <KeyPoint id="_453">Mixed Gliomas</KeyPoint>
+            <Para id="_78">
+              A <GlossaryTermRef href="CDR0000045344">mixed glioma</GlossaryTermRef> is a brain tumor that has  two types of tumor cells in it — <GlossaryTermRef href="CDR0000540447">oligodendrocytes</GlossaryTermRef> and astrocytes. This type of tumor most often forms in the cerebrum.
+            </Para>
+            <ItemizedList id="_369" Style="bullet">
+              <ListItem>
+                <Strong>Oligoastrocytoma (grade II)</Strong>: An <GlossaryTermRef href="CDR0000321382">oligoastrocytoma</GlossaryTermRef> is a slow-growing tumor and the tumor cells don't look very different from  normal cells.
+              </ListItem>
+              <ListItem>
+                <Strong>Anaplastic oligoastrocytoma (grade III)</Strong>: The tumor cells in an anaplastic oligoastrocytoma look very different from normal cells.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_55">
+            <KeyPoint id="_454">Ependymal Tumors</KeyPoint>
+            <Para id="_57">
+              An <GlossaryTermRef href="CDR0000045679">ependymal tumor</GlossaryTermRef> usually begins in cells that line the
+              <GlossaryTermRef href="CDR0000044669">fluid</GlossaryTermRef>-filled spaces in the brain and
+              around the spinal cord. Ependymal cells are a type of glial cell and are sometimes called a glioma.  <GlossaryTermRef href="CDR0000045702">Grades</GlossaryTermRef> of ependymal
+              tumors include the following:
+            </Para>
+            <ItemizedList id="_370" Style="bullet">
+              <ListItem>
+                <Strong>Ependymoma (grade I or II)</Strong>: A grade I or II <GlossaryTermRef href="CDR0000046432">ependymoma</GlossaryTermRef> grows slowly and has cells
+                that look very much like normal cells. There are two types of  grade I ependymoma —  myxopapillary ependymoma and subependymoma. These tumors are most common in adults. A grade II ependymoma grows in the <GlossaryTermRef href="CDR0000045939">ventricle</GlossaryTermRef> and its connecting paths or in the spinal cord.  It is most common in children and young adults and in people with <GlossaryTermRef href="CDR0000256540">neurofibromatosis type 2</GlossaryTermRef> (NF2). (See the PDQ summary on <SummaryRef href="CDR0000062971" url="/cancertopics/pdq/treatment/childependymoma/Patient">Childhood Ependymoma Treatment</SummaryRef> for more information.)
+              </ListItem>
+              <ListItem>
+                <Strong>Anaplastic ependymoma (grade III)</Strong>: An anaplastic ependymoma grows very  quickly and has a poor prognosis.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_79">
+            <KeyPoint id="_455">Embryonal Cell Tumors: Medulloblastoma (Grade IV)</KeyPoint>
+            <Para id="_81">
+              A <GlossaryTermRef href="CDR0000045780">medulloblastoma</GlossaryTermRef> is a type of <GlossaryTermRef href="CDR0000367442">embryonal tumor</GlossaryTermRef>. The tumor forms in brain cells when the <GlossaryTermRef href="CDR0000046400">fetus</GlossaryTermRef> is beginning to develop.  This type of  brain tumor often begins in the cerebellum. The tumor may spread from the brain to the <GlossaryTermRef href="CDR0000415914">spine</GlossaryTermRef> through the <GlossaryTermRef href="CDR0000046483">cerebrospinal fluid</GlossaryTermRef> (CSF). A medulloblastoma occurs most often in children or young adults and in people with Turcot <GlossaryTermRef href="CDR0000045090">syndrome</GlossaryTermRef> type 2 or <GlossaryTermRef href="CDR0000442897">nevoid basal cell carcinoma syndrome</GlossaryTermRef>.
+            </Para>
+            <Para id="_332">See the following PDQ summaries for more information on embryonal tumors in children:</Para>
+            <ItemizedList id="_502" Style="bullet">
+              <ListItem>
+                <SummaryRef href="CDR0000552550" url="/cancertopics/pdq/treatment/childCNSembryonal/patient">Childhood Central Nervous System Embryonal Tumors Treatment</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000574573" url="/cancertopics/pdq/treatment/child-CNS-ATRT/patient">Childhood Central Nervous System Atypical Teratoid/Rhabdoid Tumor Treatment</SummaryRef>
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_238">
+            <KeyPoint id="_456">Pineal Parenchymal Tumors</KeyPoint>
+            <Para id="_240">
+              A pineal <GlossaryTermRef href="CDR0000044503">parenchymal</GlossaryTermRef> tumor forms in parenchymal cells or pineocytes,  which are the cells that make up most of  the pineal gland. These tumors are different  from pineal astrocytic tumors. Grades of pineal parenchymal
+              tumors include the following:
+            </Para>
+            <ItemizedList id="_371" Style="bullet">
+              <ListItem>
+                <Strong>Pineocytomas (grade II)</Strong>: A <GlossaryTermRef href="CDR0000046228">pineocytoma</GlossaryTermRef> is a slow-growing pineal tumor that occurs most often in adults.
+              </ListItem>
+              <ListItem>
+                <Strong>Pineoblastomas (grade IV)</Strong>: A <GlossaryTermRef href="CDR0000046227">pineoblastoma</GlossaryTermRef> is a rare tumor that is very likely to spread.  This type of tumor is most common in children. (See the PDQ summary on <SummaryRef href="CDR0000552550" url="/cancertopics/pdq/treatment/childCNSembryonal/patient">Childhood Central Nervous System Embryonal Tumors Treatment</SummaryRef> for more information.)
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_88">
+            <KeyPoint id="_457">Meningeal Tumors</KeyPoint>
+            <Para id="_90">
+              A <GlossaryTermRef href="CDR0000045781">meningeal</GlossaryTermRef> tumor, also called a <GlossaryTermRef href="CDR0000045783">meningioma</GlossaryTermRef>, forms in the <GlossaryTermRef href="CDR0000046295">meninges</GlossaryTermRef> (thin layers of tissue that cover the
+              brain and spinal cord). It can form from different types of brain or spinal cord cells. A meningioma is most common in adults. Types of meningeal tumors include the following:
+            </Para>
+            <ItemizedList id="_372" Style="bullet">
+              <ListItem>
+                <Strong>Meningioma (grade I)</Strong>: A grade I meningioma is the most common type of meningeal tumor. A grade I meningioma is a slow-growing, <GlossaryTermRef href="CDR0000046079">benign tumor</GlossaryTermRef> that forms most often in the dura mater (the layer of tissue that covers the brain and is closest to the skull). It is most common in women.
+              </ListItem>
+              <ListItem>
+                <Strong>Meningioma (grade II and III)</Strong>: This is a rare, malignant meningeal tumor.  It grows quickly
+                and is likely
+                to spread within the brain and spinal cord. A grade III meningioma is most common in men.
+              </ListItem>
+            </ItemizedList>
+            <Para id="_503">
+              A <GlossaryTermRef href="CDR0000045707">hemangiopericytoma</GlossaryTermRef> is not a meningeal tumor but is treated like a grade II or III meningioma. A hemangiopericytoma usually forms in the dura mater.  It often recurs (comes back) after treatment and usually spreads to other parts of the body.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_241">
+            <KeyPoint id="_458">Germ Cell Tumors</KeyPoint>
+            <Para id="_243">
+              A <GlossaryTermRef href="CDR0000045695">germ cell tumor</GlossaryTermRef> forms in <GlossaryTermRef href="CDR0000046382">germ cells</GlossaryTermRef>, which are the cells that develop into <GlossaryTermRef href="CDR0000257221">sperm</GlossaryTermRef>  in men or ova (eggs) in women. Germ cell tumors usually form in the center of the brain, near the pineal gland. Germ cell tumors can spread to other parts of the brain and spinal cord. There are different types of germ cell tumors. These include <GlossaryTermRef href="CDR0000046383">germinomas</GlossaryTermRef>, <GlossaryTermRef href="CDR0000044248">teratomas</GlossaryTermRef>, embryonal yolk sac <GlossaryTermRef href="CDR0000045963">carcinomas</GlossaryTermRef>, and <GlossaryTermRef href="CDR0000046753">choriocarcinomas</GlossaryTermRef>. Germ cell tumors can be either benign or malignant.
+            </Para>
+            <Para id="_333">
+              Most germ cell tumors occur in children and in people with <GlossaryTermRef href="CDR0000304688">Klinefelter syndrome</GlossaryTermRef>.
+
+              (See the PDQ summary on <SummaryRef href="CDR0000257997" url="/cancertopics/pdq/treatment/childbrain/Patient">Childhood Brain and Spinal Cord Tumors Treatment Overview</SummaryRef> for more information.)
+            </Para>
+          </SummarySection>
+          <SummarySection id="_244">
+            <KeyPoint id="_459">Tumors of the Sellar Region: Craniopharyngioma (Grade I) and Pituitary Tumor</KeyPoint>
+            <Para id="_489">A tumor of the sellar region begins in the center of the brain,  just above the back of the nose. It can form from different types of brain or spinal cord cells. </Para>
+            <ItemizedList id="_504" Style="bullet">
+              <ListItem>
+                <Strong>Craniopharyngioma (grade I)</Strong>: A  <GlossaryTermRef href="CDR0000046131">craniopharyngioma</GlossaryTermRef> is a rare tumor that usually forms just above the <GlossaryTermRef href="CDR0000046229">pituitary gland</GlossaryTermRef> (a pea-sized organ at the bottom of the brain that controls other <GlossaryTermRef href="CDR0000046386">glands</GlossaryTermRef>). The tumor  may grow into  nearby tissues, including  the pituitary gland and  <GlossaryTermRef href="CDR0000046248">optic nerves</GlossaryTermRef>. This can affect many functions, including hormone-making  and vision.  These tumors occur in adults and children. (See the PDQ summary on <SummaryRef href="CDR0000574137" url="/cancertopics/pdq/treatment/child-cranio/patient">Childhood Craniopharyngioma Treatment</SummaryRef> for more information on the treatment of children.)
+              </ListItem>
+              <ListItem>
+                <Strong>Pituitary tumor</Strong>: See the PDQ summary on <SummaryRef href="CDR0000579645" url="/cancertopics/pdq/treatment/pituitary/Patient">Pituitary Tumors Treatment</SummaryRef> for more information.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_330">
+            <KeyPoint id="_460">Other Adult Brain Tumors</KeyPoint>
+            <Para id="_331">
+              There are many other types of adult brain tumors that are rare and are not discussed in this summary. See the PDQ health professional  summary on <SummaryRef href="CDR0000062900" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Adult Brain Tumors Treatment</SummaryRef> for information about these other types of adult brain tumors:
+            </Para>
+            <ItemizedList id="_505" Style="bullet">
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_291" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Pleomorphic xanthoastrocytoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_292" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Subependymal giant cell astrocytoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_308" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Astroblastoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_309" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Chordoid glioma of the third ventricle</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_310" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Gliomatosis cerebri</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_313" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Gangliocytoma or ganglioglioma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_314" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Desmoplastic infantile astrocytoma or ganglioglioma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_315" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Dysembryoplastic neuroepithelial tumor</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_316" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Central neurocytoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_317" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Cerebellar liponeurocytoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_318" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Paraganglioma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_320" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Ependymoblastoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_322" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Supratentorial primitive neuroectodermal tumor (PNET)</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_325" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Choroid plexus papilloma or carcinoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_330" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Pineal parenchymal tumors of intermediate differentiation</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_341" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Melanocytic lesions</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_352" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Capillary hemangioblastoma</SummaryRef>
+              </ListItem>
+              <ListItem>
+                <SummaryRef href="CDR0000062900#_354" url="/cancertopics/pdq/treatment/adultbrain/HealthProfessional">Schwannoma</SummaryRef>
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_100">
+            <KeyPoint id="_461">Recurrent Brain Tumors</KeyPoint>
+            <Para id="_101">
+              A <GlossaryTermRef href="CDR0000045862">recurrent</GlossaryTermRef>  brain tumor is a  tumor that has recurred (come back)
+              after it has been treated. Brain tumors often recur, sometimes many years
+              after the first tumor. The tumor may recur at the same place in the brain or in other parts of the central nervous system.
+            </Para>
+          </SummarySection>
+        </SummarySection>
+        <SummarySection id="_14">
+          <SectMetaData>
+            <SectionType>Risk factors</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_374">The cause of most adult brain tumors is unknown. </KeyPoint>
+          <Para id="_480">
+            Anything that increases your chance of getting a disease is called a <GlossaryTermRef href="CDR0000045873">risk factor</GlossaryTermRef>. Having a risk factor does not mean that you will get cancer; not having risk factors doesn’t mean that you will not get cancer. People who think they may be at risk should discuss this with their doctor. There are few known risk factors for brain tumors. The following conditions may increase the risk of developing certain types of brain tumors:
+          </Para>
+          <ItemizedList id="_481" Style="bullet">
+            <ListItem>
+              Being exposed to <GlossaryTermRef href="CDR0000046648">vinyl chloride</GlossaryTermRef> may increase the risk of   glioma.
+            </ListItem>
+            <ListItem>
+              Past treatment with <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef> to the scalp or brain may increase the risk of  meningioma.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045364">Infection</GlossaryTermRef> with the <GlossaryTermRef href="CDR0000045684">Epstein-Barr virus</GlossaryTermRef>, having <GlossaryTermRef href="CDR0000045950">AIDS</GlossaryTermRef> (acquired immunodeficiency syndrome), or receiving an organ <GlossaryTermRef href="CDR0000046631">transplant</GlossaryTermRef> may increase the risk of  <GlossaryTermRef href="CDR0000468774">primary CNS lymphoma</GlossaryTermRef>. (See the PDQ summary
+              on <SummaryRef href="CDR0000258030" url="/cancertopics/pdq/treatment/primary-CNS-lymphoma/Patient">Primary CNS Lymphoma</SummaryRef> for more information.)
+            </ListItem>
+            <ListItem>
+              Having certain <GlossaryTermRef href="CDR0000046391">genetic</GlossaryTermRef> syndromes may increase the risk of developing the following types of brain tumors:<ItemizedList id="_521" Style="dash">
+                <ListItem>Neurofibromatosis type 1 or 2.</ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000045563">von Hippel-Lindau disease</GlossaryTermRef>.
+                </ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000304692">Tuberous sclerosis</GlossaryTermRef>.
+                </ListItem>
+                <ListItem>Li-Fraumeni syndrome.</ListItem>
+                <ListItem>Turcot syndrome type 1 and type 2.</ListItem>
+                <ListItem>Klinefelter syndrome.</ListItem>
+                <ListItem>Nevoid basal cell carcinoma syndrome.</ListItem>
+              </ItemizedList>
+            </ListItem>
+          </ItemizedList>
+        </SummarySection>
+        <SummarySection id="_16">
+          <SectMetaData>
+            <SectionType>Symptoms</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_440">The symptoms  of adult brain and spinal cord tumors are not the same in every person. </KeyPoint>
+          <Para id="_441">The symptoms caused by a brain tumor depend on where the tumor formed in the brain, the functions controlled by that part of the brain, and the size of the tumor. Headaches and other symptoms may be caused by adult brain tumors. Other conditions may cause the same symptoms. A doctor should be consulted if any of the following problems occur:</Para>
+          <ItemizedList id="_19" Style="bullet">
+            <ListTitle>Brain Tumors</ListTitle>
+            <ListItem>
+              Morning headache or headache that goes away after <GlossaryTermRef href="CDR0000390324">vomiting</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              Frequent <GlossaryTermRef href="CDR0000390302">nausea</GlossaryTermRef> and vomiting.
+            </ListItem>
+            <ListItem>Vision, hearing, and speech problems.</ListItem>
+            <ListItem>Loss of balance and trouble walking.</ListItem>
+            <ListItem>Weakness on one side of the body.</ListItem>
+            <ListItem>
+              Unusual sleepiness or change in activity level.
+            </ListItem>
+            <ListItem>Unusual changes in personality or behavior.</ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045484">Seizures</GlossaryTermRef>.
+            </ListItem>
+          </ItemizedList>
+          <ItemizedList id="_501" Style="bullet">
+            <ListTitle>Spinal Cord Tumors</ListTitle>
+            <ListItem>Back pain or pain that spreads from the back towards the arms or legs.</ListItem>
+            <ListItem>
+              A change in <GlossaryTermRef href="CDR0000046500">bowel</GlossaryTermRef> habits or trouble <GlossaryTermRef href="CDR0000046642">urinating</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>Weakness in the legs.</ListItem>
+            <ListItem>Trouble walking.</ListItem>
+          </ItemizedList>
+        </SummarySection>
+        <SummarySection id="_20">
+          <SectMetaData>
+            <SectionType>Diagnostic tests</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_376">
+            Tests that examine the brain and spinal cord are used to
+            detect (find) adult brain tumors.
+          </KeyPoint>
+          <Para id="_23">The following tests and procedures may be used:</Para>
+          <ItemizedList id="_24" Style="bullet">
+            <ListItem>
+              <GlossaryTermRef href="CDR0000270871">Physical exam</GlossaryTermRef> and history: An exam of the body to check general signs of health, including checking for signs of disease, such as lumps or anything else that seems unusual. A history of the patient’s health habits and past illnesses and treatments will also be taken.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000322871">Neurological exam</GlossaryTermRef>: A series of questions and tests to check the brain, spinal cord, and nerve function. The exam checks a person’s mental status, coordination, and ability to walk normally, and how well the muscles, senses, and reflexes work. This may also be called a neuro exam or a neurologic exam.
+            </ListItem>
+            <ListItem>Visual field exam: An exam to check a person’s field of vision (the total area in which objects can be seen). This test measures both central vision (how much a person can see when looking straight ahead) and peripheral vision (how much a person can see in all other directions while staring straight ahead). Any loss of vision may be a sign of a tumor that has damaged or pressed on the parts of the brain that affect eyesight. </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046636">Tumor marker</GlossaryTermRef> test: A procedure in which a sample of blood, urine, or tissue is checked to measure the amounts of certain substances made by organs, tissues, or tumor cells in the body. Certain substances are linked to specific types of cancer when found in increased levels in the body. These are called tumor markers.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046128">Gene testing</GlossaryTermRef>: A <GlossaryTermRef href="CDR0000046590">laboratory test</GlossaryTermRef> in which a sample of blood or tissue is tested for changes in a    <GlossaryTermRef href="CDR0000046470">chromosome</GlossaryTermRef> that has been linked with a certain type of brain tumor.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046303">Lumbar puncture</GlossaryTermRef>: A procedure used to collect cerebrospinal fluid from the <GlossaryTermRef href="CDR0000396787">spinal column</GlossaryTermRef>. This is done by placing a needle into the spinal column.  The cerebrospinal fluid is viewed under a microscope by a <GlossaryTermRef href="CDR0000046244">pathologist</GlossaryTermRef> to check for signs of cancer.      This procedure is also called an LP or spinal tap.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046033">CT scan</GlossaryTermRef> (CAT
+              scan): A procedure that makes a series of detailed pictures of areas inside the body, taken from different angles.  The pictures are made by a computer linked to an <GlossaryTermRef href="CDR0000045944">x-ray</GlossaryTermRef> machine. A <GlossaryTermRef href="CDR0000409764">dye</GlossaryTermRef> may be <GlossaryTermRef href="CDR0000044678">injected</GlossaryTermRef> into a <GlossaryTermRef href="CDR0000476471">vein</GlossaryTermRef> or swallowed to help the organs or tissues show up more clearly.  This procedure is also called computed tomography, computerized tomography, or computerized axial tomography.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045788">MRI</GlossaryTermRef> (magnetic
+              resonance imaging) with <GlossaryTermRef href="CDR0000597153">gadolinium</GlossaryTermRef>: A procedure that uses a magnet, radio waves, and a computer to make a series of detailed pictures of the brain and spinal cord.  A substance called gadolinium is injected into  a vein. The gadolinium collects around the cancer cells so they show up brighter in the picture. This procedure is also called nuclear magnetic resonance imaging (NMRI). Sometimes a procedure called magnetic resonance <GlossaryTermRef href="CDR0000600463">spectroscopy</GlossaryTermRef> (MRS) is done during the  MRI <GlossaryTermRef href="CDR0000046570">scan</GlossaryTermRef>. An MRS is used to <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef> tumors, based on their chemical make-up.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000306534">SPECT</GlossaryTermRef> scan (single photon emission computed tomography scan): A procedure that uses a special camera linked to a computer to make a <GlossaryTermRef href="CDR0000045582">3-dimensional</GlossaryTermRef> (3-D) picture of the brain. A small amount of a <GlossaryTermRef href="CDR0000046550">radioactive</GlossaryTermRef> substance is injected into a vein or <GlossaryTermRef href="CDR0000044600">inhaled</GlossaryTermRef> through the nose. As the substance travels through the blood, the camera rotates around the head and takes pictures of the brain. There will be increased blood flow and more chemical reactions (<GlossaryTermRef href="CDR0000046173">metabolism</GlossaryTermRef>) in areas where cancer cells are growing. These areas will show up brighter in the picture. This procedure may be done just before or after a CT scan.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046140">PET scan</GlossaryTermRef> (positron emission tomography scan): A procedure to find malignant tumor cells in the body. A small amount of radioactive <GlossaryTermRef href="CDR0000044033">glucose</GlossaryTermRef> (sugar) is injected into a vein. The PET <GlossaryTermRef href="CDR0000386220">scanner</GlossaryTermRef> rotates around the body and makes a picture of where glucose is being used in the brain. Malignant tumor cells show up brighter in the picture because they are more active and take up more glucose than normal cells do.
+            </ListItem>
+
+            <ListItem>
+              <GlossaryTermRef href="CDR0000046530">Angiogram</GlossaryTermRef>: A procedure to look at <GlossaryTermRef href="CDR0000045020">blood vessels</GlossaryTermRef> and the flow of blood in the brain. A contrast dye is injected into the blood vessel. As the contrast dye moves through the blood vessel, x-rays are taken to see if there are any blockages.
+            </ListItem>
+          </ItemizedList>
+        </SummarySection>
+        <SummarySection id="_203">
+          <SectMetaData>
+            <SectionType>Diagnostic tests</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_377">Most adult brain tumors are diagnosed and removed in surgery.</KeyPoint>
+          <Para id="_205">
+            If doctors think there may be a brain tumor, a <GlossaryTermRef href="CDR0000045164">biopsy</GlossaryTermRef> may be done to remove a sample of tissue. For tumors in the brain, the biopsy is done by removing part of the skull and using a needle to remove the tissue sample.  A pathologist views the tissue under a microscope to look for cancer cells. If cancer cells are found, the doctor may remove as much tumor as safely possible during the same surgery. After the surgery, a pathologist checks the cancer cells to find out the type and grade of brain tumor. The grade of the tumor is based on how abnormal the cancer cells look under a microscope and how quickly the tumor is likely to grow and spread.
+            A CT scan or  MRI may be used to find out if any cancer cells remain after surgery.
+          </Para>
+          <Para id="_483">The following tests may be done on the tumor tissue that is removed:</Para>
+          <ItemizedList id="_484" Style="bullet">
+            <ListItem>
+              Immunohistochemistry study: A laboratory test in which a substance such as an <GlossaryTermRef href="CDR0000044918">antibody</GlossaryTermRef>, dye, or <GlossaryTermRef href="CDR0000045856">radioisotope</GlossaryTermRef> is added to a sample of cancer tissue to test for certain <GlossaryTermRef href="CDR0000046086">antigens</GlossaryTermRef>. This type of study is used to tell the difference between different types of cancer.
+            </ListItem>
+            <ListItem>
+              Light and <GlossaryTermRef href="CDR0000044025">electron microscopy</GlossaryTermRef>: A laboratory test in which cells in a sample of tissue are viewed under regular and high-powered microscopes to look for certain changes in the cells.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000270737">Cytogenetic analysis</GlossaryTermRef>: A laboratory test in which cells in a sample of tissue are viewed under a microscope to look for certain changes in the <GlossaryTermRef href="CDR0000046470">chromosomes</GlossaryTermRef>.
+            </ListItem>
+          </ItemizedList>
+          <Para id="_506">
+            Sometimes a biopsy or surgery cannot be done safely because of where the tumor formed in the brain or spinal cord. These tumors are diagnosed based on the results of <GlossaryTermRef href="CDR0000046361">imaging</GlossaryTermRef> tests and other procedures.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_25">
+          <SectMetaData>
+            <SectionType>Prognostic factors</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_379">Certain factors affect prognosis (chance of recovery) and treatment options.</KeyPoint>
+          <Para id="_217">
+            The prognosis (chance of recovery) and treatment options for <Emphasis>primary</Emphasis> brain tumors depend on the following:
+          </Para>
+          <ItemizedList id="_215" Style="bullet">
+            <ListItem>The type and grade of the tumor.</ListItem>
+            <ListItem> Where the tumor is in the brain.</ListItem>
+            <ListItem>Whether the tumor can be removed by surgery.</ListItem>
+            <ListItem>Whether cancer cells remain after surgery.</ListItem>
+            <ListItem>Whether there are certain changes in the chromosomes.</ListItem>
+            <ListItem>Whether the cancer has just been diagnosed or has recurred (come back).</ListItem>
+            <ListItem>The patient's general health.</ListItem>
+          </ItemizedList>
+          <Para id="_412">
+            The prognosis and treatment options for <Emphasis>metastatic</Emphasis> brain tumors depend on the following:
+          </Para>
+          <ItemizedList id="_413" Style="bullet">
+            <ListItem>Whether the patient is younger than 60 years.</ListItem>
+            <ListItem>Whether there are more than two tumors in the brain or spinal cord.</ListItem>
+            <ListItem>Where in the brain or spinal cord the tumors are.</ListItem>
+            <ListItem>How well the tumor responds to treatment.</ListItem>
+            <ListItem>Whether the primary tumor continues to grow or spread.</ListItem>
+          </ItemizedList>
+          <Para id="_414">
+            The prognosis is better for <GlossaryTermRef href="CDR0000045314">brain metastases</GlossaryTermRef> from breast cancer than from other types of primary cancer. The prognosis is worse for brain metastases from <GlossaryTermRef href="CDR0000044237">colon cancer</GlossaryTermRef>.
+
+          </Para>
+        </SummarySection>
+      </SummarySection>
+      <SummarySection id="_28" IncludedDevices="mobile">
+        <Title>Section included for mobile only.</Title>
+        <SummarySection id="_220">
+          <SectMetaData>
+            <SectionType>Classification by stage</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_380">There is no standard staging system for adult brain tumors.</KeyPoint>
+          <Para id="_219">
+            The extent or spread of <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> is usually described as <GlossaryTermRef href="CDR0000045885">stages</GlossaryTermRef>. There is no standard <GlossaryTermRef href="CDR0000046597">staging</GlossaryTermRef> system for <GlossaryTermRef href="CDR0000387264">brain tumors</GlossaryTermRef>. Brain tumors that begin in the brain may spread  to other parts of the brain and <GlossaryTermRef href="CDR0000340937">spinal cord</GlossaryTermRef>, but they rarely spread to other parts of the body.  Treatment of brain tumors is based on the type of <GlossaryTermRef href="CDR0000046476">cell</GlossaryTermRef> in which the tumor began, where the tumor formed in the <GlossaryTermRef href="CDR0000046481">central nervous system</GlossaryTermRef>, the amount of cancer left after <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef>, and the <GlossaryTermRef href="CDR0000045702">grade</GlossaryTermRef> of the tumor. Treatment of brain tumors that have spread to the brain from other parts of the body is based on the number of tumors in the brain.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_485">
+          <KeyPoint id="_486">Imaging tests may be repeated after surgery to help plan more treatment.</KeyPoint>
+          <Para id="_487">
+            After the tumor is removed in surgery, some of the <SummaryRef href="CDR0000062697#_20" url="/cancertopics/pdq/treatment/adultbrain/Patient">tests and procedures</SummaryRef> used to detect the brain tumor may be repeated to find out how much tumor is left.
+          </Para>
+        </SummarySection>
+      </SummarySection>
+      <SummarySection id="_102" IncludedDevices="" ExcludedDevices="">
+        <Title>Section Included for nothing, excluded for nothing.</Title>
+        <SummarySection id="_103">
+          <SectMetaData>
+            <SectionType>Standard treatment</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_384">
+            There are different types of treatment for patients with adult
+            brain tumors.
+          </KeyPoint>
+          <Para id="_105">
+            Different types of treatment are available for patients with adult
+            <GlossaryTermRef href="CDR0000387264">brain tumors</GlossaryTermRef>. Some treatments are <GlossaryTermRef href="CDR0000044930">standard</GlossaryTermRef> (the currently used treatment), and
+            some are being tested in <GlossaryTermRef href="CDR0000045961">
+              clinical
+              trials
+            </GlossaryTermRef>. A treatment clinical trial is a research
+            study meant to help improve current treatments or obtain information on new
+            treatments for patients with <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef>. When clinical trials show that a new
+            treatment is better than the standard
+            treatment, the new treatment may become the standard treatment.
+            Patients may want to think about taking part in a clinical trial. Some clinical trials are open only to patients who have not started treatment.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_107">
+          <SectMetaData>
+            <SectionType>Standard treatment</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_386">Three types of standard treatment are used:</KeyPoint>
+          <SummarySection id="_109">
+            <KeyPoint id="_387">Surgery </KeyPoint>
+            <Para id="_111">
+              <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> is used to <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef> and treat adult brain tumors, as described in the <SummaryRef href="CDR0000062697#_203" url="/cancertopics/pdq/treatment/adultbrain/Patient">General Information</SummaryRef> section of this summary.
+            </Para>
+            <Para id="_443">
+              Even if the doctor removes all the cancer that can be seen at the time  of the surgery, some patients may be given <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> or <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef> after surgery to kill any cancer <GlossaryTermRef href="CDR0000046476">cells</GlossaryTermRef> that are left. Treatment given after the surgery, to lower the risk that the cancer will come back, is called <GlossaryTermRef href="CDR0000045587">adjuvant therapy</GlossaryTermRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_112">
+            <KeyPoint id="_388">Radiation therapy</KeyPoint>
+            <Para id="_199">
+              Radiation therapy is a cancer treatment that uses high-energy <GlossaryTermRef href="CDR0000045944">x-rays</GlossaryTermRef> or other types of <GlossaryTermRef href="CDR0000045072">radiation</GlossaryTermRef> to kill cancer cells or keep them from growing.  There are two types of radiation therapy.  <GlossaryTermRef href="CDR0000046686">External radiation therapy</GlossaryTermRef> uses a machine outside the body to send radiation toward the cancer. One type of external radiation therapy is <GlossaryTermRef href="CDR0000484407">hyperfractionated radiation therapy</GlossaryTermRef>, in which the total <GlossaryTermRef href="CDR0000044664">dose</GlossaryTermRef> of radiation is divided into small doses given more than once a day. <GlossaryTermRef href="CDR0000046345">Internal radiation therapy</GlossaryTermRef> uses a <GlossaryTermRef href="CDR0000046550">radioactive</GlossaryTermRef> substance sealed in needles, <GlossaryTermRef href="CDR0000257219">seeds</GlossaryTermRef>, wires, or <GlossaryTermRef href="CDR0000045637">catheters</GlossaryTermRef> that are placed directly into or near the cancer. The way the radiation therapy is given depends on the type of <GlossaryTermRef href="CDR0000046634">tumor</GlossaryTermRef> and where it is in the brain.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_115">
+            <KeyPoint id="_389">Chemotherapy</KeyPoint>
+            <Para id="_200">
+              Chemotherapy is a cancer treatment that uses <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> to stop the growth of cancer cells, either by killing the cells or by stopping them from dividing. When chemotherapy is taken by mouth or <GlossaryTermRef href="CDR0000044678">injected</GlossaryTermRef> into a <GlossaryTermRef href="CDR0000476471">vein</GlossaryTermRef> or muscle, the drugs enter the bloodstream and can reach cancer cells throughout the body (<GlossaryTermRef href="CDR0000301626">systemic chemotherapy</GlossaryTermRef>).  When chemotherapy is placed directly into the <GlossaryTermRef href="CDR0000046483">cerebrospinal fluid</GlossaryTermRef>, an <GlossaryTermRef href="CDR0000257523">organ</GlossaryTermRef>, or a body <GlossaryTermRef href="CDR0000463703">cavity</GlossaryTermRef> such as the <GlossaryTermRef href="CDR0000045070">abdomen</GlossaryTermRef>, the drugs mainly affect cancer cells in those areas (<GlossaryTermRef href="CDR0000046559">regional chemotherapy</GlossaryTermRef>). <GlossaryTermRef href="CDR0000045650">Combination chemotherapy</GlossaryTermRef> is treatment using more than one anticancer drug.  To treat  brain tumors, a dissolving <GlossaryTermRef href="CDR0000306512">wafer</GlossaryTermRef> may be used to deliver an  anticancer drug directly to the brain tumor site after the tumor has been removed by surgery. The way the chemotherapy is given depends on the type of tumor and where it is in the brain.
+            </Para>
+          </SummarySection>
+        </SummarySection>
+        <SummarySection id="_119">
+          <SectMetaData>
+            <SectionType>Treatment in clinical trials</SectionType>
+          </SectMetaData>
+          <KeyPoint id="_390">
+            New types of treatment are being tested in clinical trials.
+          </KeyPoint>
+          <Para id="_465">
+            This summary section refers to specific treatments under study in clinical trials, but it may not mention every new treatment being studied. Information about clinical trials is available from the <ExternalRef xref="http://cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+          </Para>
+          <SummarySection id="_121">
+            <KeyPoint id="_391">Other types of radiation therapy </KeyPoint>
+            <ItemizedList id="_218" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000046553">Radiosensitizers</GlossaryTermRef>: Drugs that make tumor cells more sensitive to radiation therapy. Combining radiation therapy with radiosensitizers may kill more tumor cells.
+              </ListItem>
+              <ListItem>
+                Hyperfractionated radiation therapy: Hyperfractionated radiation therapy is radiation treatment in which the total dose of radiation is divided into small doses and the treatments are given more than once a day. Hyperfractionated radiation therapy is used as a standard treatment for a <GlossaryTermRef href="CDR0000045624">brain stem glioma</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>
+                <GlossaryTermRef href="CDR0000643103">Accelerated-fraction radiation therapy</GlossaryTermRef>: Radiation treatment in which the total dose of radiation is divided into small doses and the treatments are given more than once a day. The total dose of radiation is also given over a shorter period of time (fewer days) compared to standard radiation therapy.
+              </ListItem>
+              <ListItem>
+                <GlossaryTermRef href="CDR0000046338">Intraoperative radiation therapy</GlossaryTermRef>: A cancer treatment that uses high-energy x-rays to kill cancer cells during cancer surgery.
+              </ListItem>
+              <ListItem>
+                <GlossaryTermRef href="CDR0000046701">Stereotactic radiosurgery</GlossaryTermRef>: A type of radiation therapy that uses a rigid head frame attached to the skull to aim <GlossaryTermRef href="CDR0000440106">high-dose radiation</GlossaryTermRef> beams directly at the tumors. This causes less damage to nearby healthy <GlossaryTermRef href="CDR0000046683">tissue</GlossaryTermRef>. This is also called stereotaxic radiosurgery and radiation surgery. This procedure does not involve surgery.
+              </ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_126">
+            <KeyPoint id="_392">Hyperthermia therapy</KeyPoint>
+            <Para id="_128">
+              <GlossaryTermRef href="CDR0000046263">Hyperthermia therapy</GlossaryTermRef> is a
+              treatment in which body tissue is heated above normal temperature to damage and
+              kill cancer cells or to make cancer cells more sensitive to the effects of
+              radiation and certain anticancer drugs.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_129">
+            <KeyPoint id="_393">Biologic therapy</KeyPoint>
+            <Para id="_131">
+              <GlossaryTermRef href="CDR0000045617">Biologic therapy</GlossaryTermRef> is a treatment that uses the patient’s <GlossaryTermRef href="CDR0000046356">immune system</GlossaryTermRef> to fight cancer. Substances made by the body or made in a laboratory are used to boost, direct, or restore the body’s natural defenses against cancer.  This type of cancer treatment is also called biotherapy or immunotherapy.
+            </Para>
+          </SummarySection>
+        </SummarySection>
+        <SummarySection id="_466">
+          <KeyPoint id="_467">Patients may want to think about taking part in a clinical trial.</KeyPoint>
+          <Para id="_466_23">
+            For some patients, taking part in a <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> may be the best treatment choice. Clinical trials are part of the cancer research process. Clinical trials are done to find out if new cancer  treatments are safe and effective or better than the standard treatment.
+          </Para>
+          <Para id="_466_24">Many of today's standard treatments for cancer are based on earlier clinical trials. Patients who take part in a clinical trial may receive the standard treatment or be among the first  to receive a new treatment.</Para>
+          <Para id="_466_25">Patients who take part in clinical trials also help improve the way cancer will be treated in the future. Even when clinical trials do not lead to effective new treatments, they often answer important questions and help move research forward.</Para>
+        </SummarySection>
+        <SummarySection id="_468">
+          <KeyPoint id="_469">Patients can enter clinical trials before, during, or after starting their cancer treatment.</KeyPoint>
+          <Para id="_468_29">
+            Some clinical trials only include patients who have not yet received treatment. Other trials test treatments for patients whose cancer has not gotten better. There are also clinical trials that test new ways to stop cancer from <GlossaryTermRef href="CDR0000046556">recurring</GlossaryTermRef> (coming back) or reduce the <GlossaryTermRef href="CDR0000046580">side effects</GlossaryTermRef> of cancer treatment.
+          </Para>
+          <Para id="_468_30">
+            Clinical trials are taking place in many parts of the country. See the Treatment Options section that follows for links to current treatment clinical trials. These have been retrieved from <GlossaryTermRef href="CDR0000044267">NCI's</GlossaryTermRef> listing of clinical trials.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_470">
+          <KeyPoint id="_471">Follow-up tests may be needed.</KeyPoint>
+          <Para id="_470_33">
+            Some of the tests that were done to <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef> the cancer or to find out the <GlossaryTermRef href="CDR0000045885">stage</GlossaryTermRef> of the cancer may be repeated. Some tests will be repeated in order to see how well the treatment is working. Decisions about whether to continue, change, or stop treatment may be based on the results of these tests. This is sometimes called re-staging.
+          </Para>
+          <Para id="_470_34">
+            Some of the tests will continue to be done from time to time after treatment has ended. The results of these tests can show if your condition has changed or if the cancer has <GlossaryTermRef href="CDR0000046556">recurred</GlossaryTermRef> (come back). These tests are sometimes called <GlossaryTermRef href="CDR0000044671">follow-up</GlossaryTermRef> tests or check-ups.
+          </Para>
+        </SummarySection>
+      </SummarySection>
+      <SummarySection id="_134" IncludedDevices="mobile screen">
+        <SectMetaData>
+          <SectionType>Treatment options by stage</SectionType>
+        </SectMetaData>
+        <Title>Section included for mobile and screen</Title>
+        <Para id="_134_37">
+          A link to a list of current <GlossaryTermRef href="CDR0000045961">clinical trials</GlossaryTermRef> is included for each treatment section. For some types or <GlossaryTermRef href="CDR0000045885">stages</GlossaryTermRef> of cancer, there may not be any trials listed. Check with your doctor for clinical trials that are not listed here but may be right for you.
+        </Para>
+        <SummarySection id="_512" IncludedDevices="screen">
+          <Title>Subsection included for screen only</Title>
+          <SummarySection id="_257">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000038825">adult brain stem glioma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Brain Stem Gliomas</Title>
+            <Para id="_152">
+              Treatment of <GlossaryTermRef href="CDR0000045624">brain stem gliomas</GlossaryTermRef> is <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, including <GlossaryTermRef href="CDR0000484407">hyperfractionated radiation therapy</GlossaryTermRef>.
+            </Para>
+            <Para id="_TrialSearch_257_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=38825&amp;tt=1&amp;format=1&amp;cn=1">adult brain stem glioma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_255">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000561966">adult pineal gland astrocytoma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Pineal Astrocytic Tumors</Title>
+            <Para id="_320">
+              Treatment of <GlossaryTermRef href="CDR0000046226">pineal</GlossaryTermRef> <GlossaryTermRef href="CDR0000269436">astrocytic</GlossaryTermRef> <GlossaryTermRef href="CDR0000046634">tumors</GlossaryTermRef> may include the
+              following:
+            </Para>
+            <ItemizedList id="_397" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, with or without <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>
+                A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000046686">external radiation therapy</GlossaryTermRef> with or without <GlossaryTermRef href="CDR0000046553">radiosensitizers</GlossaryTermRef>, <GlossaryTermRef href="CDR0000046338">intraoperative radiation therapy</GlossaryTermRef>, or <GlossaryTermRef href="CDR0000468790">hyperthermia therapy</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>
+                A clinical trial of external  radiation therapy, followed by new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045617">
+                  biologic
+                  therapy
+                </GlossaryTermRef>.
+              </ListItem>
+            </ItemizedList>
+            <Para id="_TrialSearch_255_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=561966&amp;tt=1&amp;format=1&amp;cn=1">adult pineal gland astrocytoma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_247">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000041741">adult pilocytic astrocytoma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Pilocytic Astrocytomas</Title>
+            <Para id="_137">
+              Treatment of <GlossaryTermRef href="CDR0000044341">pilocytic</GlossaryTermRef> <GlossaryTermRef href="CDR0000045602">astrocytoma</GlossaryTermRef> is usually <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> with or without <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>.
+            </Para>
+            <Para id="_TrialSearch_247_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=41741&amp;tt=1&amp;format=1&amp;cn=1">adult pilocytic astrocytoma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_249">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000041743">adult diffuse astrocytoma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Diffuse Astrocytomas</Title>
+            <Para id="_140">
+              Treatment of <GlossaryTermRef href="CDR0000044508">diffuse</GlossaryTermRef> <GlossaryTermRef href="CDR0000045602">astrocytoma</GlossaryTermRef> may include the following:
+            </Para>
+            <ItemizedList id="_394" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> with or without <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>
+                A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of radiation therapy with or
+                without <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> for <GlossaryTermRef href="CDR0000046634">tumors</GlossaryTermRef> that could not be completely removed by surgery.
+              </ListItem>
+              <ListItem>
+                A clinical trial of radiation therapy given when the tumor
+                <GlossaryTermRef href="CDR0000044078">progresses</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>
+                A clinical trial to compare <GlossaryTermRef href="CDR0000440106">high-dose</GlossaryTermRef> and low-<GlossaryTermRef href="CDR0000044664">dose</GlossaryTermRef> radiation
+                therapy.
+              </ListItem>
+            </ItemizedList>
+            <Para id="_TrialSearch_249_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=41743&amp;tt=1&amp;format=1&amp;cn=1">adult diffuse astrocytoma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_251">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000040858">adult anaplastic astrocytoma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Anaplastic Astrocytomas</Title>
+            <Para id="_144">
+              Treatment of <GlossaryTermRef href="CDR0000045591">anaplastic</GlossaryTermRef> <GlossaryTermRef href="CDR0000045602">astrocytoma</GlossaryTermRef> may include the
+              following:
+            </Para>
+            <ItemizedList id="_395" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, with or without
+                <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef>.
+              </ListItem>
+
+              <ListItem>
+                A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000046686">external radiation therapy</GlossaryTermRef> and one of the following: <ItemizedList id="_507" Style="dash">
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000484407">Hyperfractionated radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>Accelerated-fraction radiation therapy.</ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046701">Stereotactic radiosurgery</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046553">Radiosensitizers</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046263">Hyperthermia therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046345">Internal radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046338">Intraoperative radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                </ItemizedList>
+              </ListItem>
+              <ListItem>
+                A clinical trial of external  radiation therapy, followed by new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045617">
+                  biologic
+                  therapy
+                </GlossaryTermRef>.
+              </ListItem>
+              <ListItem>A clinical trial of chemotherapy combined with hyperfractionated radiation therapy or internal and external radiation therapy.</ListItem>
+              <ListItem>A clinical trial of chemotherapy placed into the brain during surgery.</ListItem>
+            </ItemizedList>
+            <Para id="_TrialSearch_251_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=40858&amp;tt=1&amp;format=1&amp;cn=1">adult anaplastic astrocytoma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+          <SummarySection id="_253">
+            <SectMetaData>
+              <SpecificDiagnosis ref="CDR0000038830">adult glioblastoma</SpecificDiagnosis>
+            </SectMetaData>
+            <Title>Glioblastoma</Title>
+            <Para id="_148">
+              Treatment of <GlossaryTermRef href="CDR0000045698">glioblastoma</GlossaryTermRef> may include the
+              following:
+            </Para>
+            <ItemizedList id="_396" Style="bullet">
+              <ListItem>
+                <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, with or without
+                <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef>.
+              </ListItem>
+              <ListItem>Chemotherapy placed into the brain during surgery.</ListItem>
+              <ListItem>Radiation therapy given at the same time as chemotherapy.</ListItem>
+              <ListItem>
+                A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000046686">external radiation therapy</GlossaryTermRef> and one of the following:<ItemizedList id="_508" Style="dash">
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000484407">Hyperfractionated radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>Accelerated-fraction radiation therapy.</ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046701">Stereotactic radiosurgery</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046553">Radiosensitizers</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046263">Hyperthermia therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046345">Internal radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                  <ListItem>
+                    <GlossaryTermRef href="CDR0000046338">Intraoperative radiation therapy</GlossaryTermRef>.
+                  </ListItem>
+                </ItemizedList>
+              </ListItem>
+              <ListItem>
+                A clinical trial of external  radiation therapy, followed by new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045617">
+                  biologic
+                  therapy
+                </GlossaryTermRef>.
+              </ListItem>
+              <ListItem>A clinical trial of a new treatment.</ListItem>
+            </ItemizedList>
+            <Para id="_TrialSearch_253_10">
+              Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=38830&amp;tt=1&amp;format=1&amp;cn=1">adult glioblastoma</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+            </Para>
+          </SummarySection>
+        </SummarySection>
+        <SummarySection id="_259" ExcludedDevices="screen">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000430660">adult oligodendroglial tumors</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection excluded for screen only</Title>
+          <Para id="_163">
+            Treatment of <GlossaryTermRef href="CDR0000046257">oligodendrogliomas</GlossaryTermRef> may
+            include the following:
+          </Para>
+          <ItemizedList id="_399" Style="bullet">
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> with or without <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045214">Chemotherapy</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of radiation therapy with or
+              without chemotherapy, for <GlossaryTermRef href="CDR0000046634">tumors</GlossaryTermRef> that could not be completely removed by surgery.
+            </ListItem>
+            <ListItem>A clinical trial of chemotherapy.</ListItem>
+          </ItemizedList>
+          <Para id="_167">
+            Treatment of <GlossaryTermRef href="CDR0000045591">anaplastic</GlossaryTermRef> oligodendroglioma may include the
+            following:
+          </Para>
+          <ItemizedList id="_400" Style="bullet">
+            <ListItem>
+              Surgery and radiation therapy, with or without
+              chemotherapy.
+            </ListItem>
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045650">Combination chemotherapy</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              Radiation therapy with or without <GlossaryTermRef href="CDR0000045650">combination chemotherapy</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              A clinical trial of a new treatment.
+            </ListItem>
+          </ItemizedList>
+          <Para id="_TrialSearch_259_10">
+            Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=430660&amp;tt=1&amp;format=1&amp;cn=1">adult oligodendroglial tumors</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_261" IncludedDevices="screen mobile">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000041195">adult mixed glioma</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection included for screen and mobile</Title>
+          <Para id="_171">
+            Treatment of <GlossaryTermRef href="CDR0000045344">mixed gliomas</GlossaryTermRef> may include the following:
+          </Para>
+        </SummarySection>
+        <SummarySection id="_263" IncludedDevices="">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000430659">adult ependymal tumors</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection included for nothing</Title>
+          <Para id="_156">
+            Treatment of <GlossaryTermRef href="CDR0000045702">grade</GlossaryTermRef> I and grade II <GlossaryTermRef href="CDR0000046432">ependymomas</GlossaryTermRef> is usually <GlossaryTermRef href="CDR0000045570">surgery</GlossaryTermRef> with or without <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>.
+          </Para>
+          <Para id="_159">
+            Treatment of grade III <GlossaryTermRef href="CDR0000045591">anaplastic</GlossaryTermRef> ependymoma may include the
+            following:
+          </Para>
+          <ItemizedList id="_402" Style="bullet">
+            <ListItem>Surgery and radiation therapy.</ListItem>
+            <ListItem>
+              A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> before, during, or after
+              radiation therapy.
+            </ListItem>
+          </ItemizedList>
+          <Para id="_TrialSearch_263_10">
+            Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=430659&amp;tt=1&amp;format=1&amp;cn=1">adult ependymal tumors</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_267" ExcludedDevices="mobile">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000038828">adult medulloblastoma</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection excluded for mobile only</Title>
+          <Para id="_175">
+            Treatment of <GlossaryTermRef href="CDR0000045780">medulloblastomas</GlossaryTermRef> may include the
+            following:
+          </Para>
+        </SummarySection>
+        <SummarySection id="_265" IncludedDevices="" ExcludedDevices="">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000041196">adult pineal parenchymal tumor</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection included for nothing, excluded for nothing</Title>
+          <Para id="_180">
+            Treatment of <GlossaryTermRef href="CDR0000046226">pineal</GlossaryTermRef> <GlossaryTermRef href="CDR0000044503">parenchymal</GlossaryTermRef> <GlossaryTermRef href="CDR0000046634">tumors</GlossaryTermRef> may include the
+            following:
+          </Para>
+          <ItemizedList id="_403" Style="bullet">
+            <ListItem>
+              <GlossaryTermRef href="CDR0000045570">Surgery</GlossaryTermRef> and <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef>, for <GlossaryTermRef href="CDR0000046228">pineocytomas</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              Surgery, radiation therapy, and <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef>, for <GlossaryTermRef href="CDR0000046227">pineoblastomas</GlossaryTermRef>.
+            </ListItem>
+            <ListItem>
+              A <GlossaryTermRef href="CDR0000045961">clinical trial</GlossaryTermRef> of <GlossaryTermRef href="CDR0000046686">external radiation therapy</GlossaryTermRef> and one of the following:<ItemizedList id="_510" Style="dash">
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046553">Radiosensitizers</GlossaryTermRef>.
+                </ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046263">Hyperthermia therapy</GlossaryTermRef>.
+                </ListItem>
+                <ListItem>
+                  <GlossaryTermRef href="CDR0000046338">Intraoperative radiation therapy</GlossaryTermRef>.
+                </ListItem>
+              </ItemizedList>
+            </ListItem>
+            <ListItem>
+              A clinical trial of external  radiation therapy, followed by new anticancer <GlossaryTermRef href="CDR0000348921">drugs</GlossaryTermRef> and <GlossaryTermRef href="CDR0000045617">
+                biologic
+                therapy
+              </GlossaryTermRef>.
+            </ListItem>
+          </ItemizedList>
+          <Para id="_TrialSearch_265_10">
+            Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=41196&amp;tt=1&amp;format=1&amp;cn=1">adult pineal parenchymal tumor</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+          </Para>
+        </SummarySection>
+        <SummarySection id="_269">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000377472">adult meningeal tumor</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Subsection with no filters.</Title>
+          <Para id="_189">
+            Treatment of <GlossaryTermRef href="CDR0000045702">grade</GlossaryTermRef> I <GlossaryTermRef href="CDR0000045783">meningiomas</GlossaryTermRef> may include the following:
+          </Para>
+        </SummarySection>
+        <SummarySection id="_271">
+          <SectMetaData>
+            <SpecificDiagnosis ref="CDR0000041197">adult central nervous system germ cell tumor</SpecificDiagnosis>
+          </SectMetaData>
+          <Title>Second subsection with no filters.</Title>
+          <Para id="_TrialSearch_271_10">
+            Check for U.S. clinical trials from NCI's list of cancer clinical trials that are now accepting patients with <ExternalRef xref="http://www.cancer.gov/Search/ClinicalTrialsLink.aspx?Diagnosis=41197&amp;tt=1&amp;format=1&amp;cn=1">adult central nervous system germ cell tumor</ExternalRef>. For more specific results, refine the search by using other search features, such as the location of the trial, the type of treatment, or the name of the drug.  General information about clinical trials is available from the <ExternalRef xref="http://www.cancer.gov/clinicaltrials">NCI Web site</ExternalRef>.
+          </Para>
+        </SummarySection>
+      </SummarySection>
+      <SummarySection id="_472">
+        <Title>Section with top-level tables</Title>
+        <Para id="_473">
+          Look! Tables!
+        </Para>
+        <Table id="_1_Table_No_attributes">
+          <Title>_1_Table_No_attributes </Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_2_Table_Include_Screen" IncludedDevices="screen" >
+          <Title>_2_Table_Include_Screen</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_3_Table_Include_Mobile" IncludedDevices="mobile" >
+          <Title>_3_Table_Include_Mobile</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_4_Table_Include_ScreenMobile" IncludedDevices="screen mobile" >
+          <Title>_4_Table_Include_ScreenMobile</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_5_Table_Exclude_Screen" ExcludedDevices="screen" >
+          <Title>_5_Table_Exclude_Screen</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_6_Table_Exclude_Mobile" ExcludedDevices="mobile" >
+          <Title>_6_Table_Exclude_Mobile</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_7_Table_Exclude_ScreenMobile" ExcludedDevices="mobile screen" >
+          <Title>_7_Table_Exclude_ScreenMobile</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_8_Table_Empty_Attributes" IncludedDevices="" ExcludedDevices="" >
+          <Title>_8_Table_Empty_Attributes</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_9_Table_IncludeNothing" IncludedDevices="" >
+          <Title>_9_Table_IncludeNothing</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+        <Table id="_10_Table_ExcludeNothing" ExcludedDevices="" >
+          <Title>_10_Table_ExcludeNothing</Title>
+          <TGroup Cols="2">
+            <ColSpec ColName="col1" ColNum="1" ColWidth="*" />
+            <ColSpec ColName="col2" ColNum="2" ColWidth="*" />
+            <TBody>
+              <Row>
+                <entry>Column 1, Row 1</entry>
+                <entry>Column 2, Row 1</entry>
+              </Row>
+              <Row>
+                <entry>Column 1, Row 2</entry>
+                <entry>Column 2, Row 2</entry>
+              </Row>
+            </TBody>
+          </TGroup>
+        </Table>
+      </SummarySection>
+
+      <SummarySection id="_MediaLinkSection">
+        <Title>Section with MediaLinks</Title>
+        <Para id="_MediaLinkSection_p">Pretty Pictures!</Para>
+        <MediaLink ref="CDR0000526538" alt="_1_MediaLink_No_Attributes" id="_1_MediaLink_No_Attributes" language="en" thumb="Yes" size="full">
+          <Caption language="en">_1_MediaLink_No_Attributes</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_2_MediaLink_Include_Screen" id="_2_MediaLink_Include_Screen" IncludedDevices="screen" language="en" thumb="Yes" size="full">
+          <Caption language="en">_2_MediaLink_Include_Screen</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_3_MediaLink_Include_Mobile" id="_3_MediaLink_Include_Mobile" IncludedDevices="mobile" language="en" thumb="Yes" size="full">
+          <Caption language="en">_3_MediaLink_Include_Mobile</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_4_MediaLink_Include_MobileScreen" id="_4_MediaLink_Include_MobileScreen" IncludedDevices="mobile screen" language="en" thumb="Yes" size="full">
+          <Caption language="en">_4_MediaLink_Include_MobileScreen</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_5_MediaLink_Include_Nothing" id="_5_MediaLink_Include_Nothing" IncludedDevices="" language="en" thumb="Yes" size="full">
+          <Caption language="en">_5_MediaLink_Include_Nothing</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_6_MediaLink_Exclude_Screen" id="_6_MediaLink_Exclude_Screen" ExcludedDevices="screen" language="en" thumb="Yes" size="full">
+          <Caption language="en">_6_MediaLink_Exclude_Screen</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_7_MediaLink_Exclude_Mobile" id="_7_MediaLink_Exclude_Mobile" ExcludedDevices="mobile" language="en" thumb="Yes" size="full">
+          <Caption language="en">_7_MediaLink_Exclude_Mobile</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_8_MediaLink_Exclude_MobileScreen" id="_8_MediaLink_Exclude_MobileScreen" ExcludedDevices="screen mobile" language="en" thumb="Yes" size="full">
+          <Caption language="en">_8_MediaLink_Exclude_MobileScreen</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_9_MediaLink_Exclude_Nothing" id="_9_MediaLink_Exclude_Nothing" ExcludedDevices="" language="en" thumb="Yes" size="full">
+          <Caption language="en">_9_MediaLink_Exclude_Nothing</Caption>
+        </MediaLink>
+        <MediaLink ref="CDR0000526538" alt="_10_MediaLink_EmptyAttributes" id="_10_MediaLink_EmptyAttributes" IncludedDevices="" ExcludedDevices="" language="en" thumb="Yes" size="full">
+          <Caption language="en">_10_MediaLink_EmptyAttributes</Caption>
+        </MediaLink>
+      </SummarySection>
+
+    <SummarySection id="_GetMore_3" IncludedDevices="screen">
+        <Title>Get More Information From NCI</Title>
+        <Para id="_GetMore_15">
+          <Emphasis>
+            <Strong>Call 1-800-4-CANCER</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_GetMore_16">For more information, U.S. residents may call the National Cancer Institute's (NCI's) Cancer Information Service toll-free at 1-800-4-CANCER (1-800-422-6237) Monday through Friday from 8:00 a.m. to 8:00 p.m., Eastern Time.  A trained Cancer Information Specialist is available to answer your questions.</Para>
+        <Para id="_GetMore_25">
+          <Emphasis>
+            <Strong>
+              Chat online
+            </Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_GetMore_26">
+          The <ExternalRef xref="https://cissecure.nci.nih.gov/livehelp/welcome.asp">NCI's LiveHelp®</ExternalRef> online chat service provides Internet users with the ability to chat online with an Information Specialist. The service is available from 8:00 a.m. to 11:00 p.m. Eastern time, Monday through Friday. Information Specialists can help Internet users find information on NCI Web sites and answer questions about cancer.
+        </Para>
+        <Para id="_GetMore_27">
+          <Emphasis>
+            <Strong>Write to us</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_GetMore_28">For more information from the NCI, please write to this address:</Para>
+        <ItemizedList id="_GetMore_29" Style="simple">
+          <ListItem>NCI Public Inquiries Office</ListItem>
+          <ListItem>Suite 3036A</ListItem>
+          <ListItem>6116 Executive Boulevard, MSC8322</ListItem>
+          <ListItem>Bethesda, MD 20892-8322</ListItem>
+        </ItemizedList>
+        <Para id="_GetMore_17">
+          <Emphasis>
+            <Strong>Search the NCI Web site</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_GetMore_18">
+          The <ExternalRef xref="http://cancer.gov">NCI Web site</ExternalRef> provides online access to information on cancer, clinical trials, and other Web sites and organizations that offer support and resources for cancer patients and their families.  For a quick search, use the search box in the upper right corner of each Web page. The results for a wide range of search terms will include a list of "Best Bets," editorially chosen Web pages that are most closely related to the search term entered.
+        </Para>
+        <Para id="_GetMore_30">There are also many other places to get materials and information about cancer treatment and services.      Hospitals in your area may have information about  local and regional agencies that have information on finances, getting to and from treatment, receiving care at home, and dealing with problems related to cancer treatment.</Para>
+        <Para id="_GetMore_19">
+          <Emphasis>
+            <Strong>Find Publications</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_GetMore_20">
+          The NCI has booklets and other materials for patients, health professionals, and the public.  These publications discuss types of cancer, methods of cancer treatment, coping with cancer, and clinical trials.  Some publications provide information on tests for cancer, cancer causes and prevention, cancer statistics, and NCI research activities.  NCI materials on these and other topics may be ordered online or printed directly from the <ExternalRef xref="https://cissecure.nci.nih.gov/ncipubs">NCI Publications Locator</ExternalRef>. These materials can also be ordered by telephone from the Cancer Information Service toll-free at 1-800-4-CANCER (1-800-422-6237).
+        </Para>
+      </SummarySection>
+      <SummarySection id="_211" IncludedDevices="screen">
+        <SectMetaData>
+          <SectionType>Changes to summary</SectionType>
+        </SectMetaData>
+        <Title>Changes to This Summary (10/22/2010)</Title>
+        <Para id="_212">
+          The <GlossaryTermRef href="CDR0000044271">PDQ</GlossaryTermRef> cancer information summaries are reviewed regularly and updated as new information becomes available.  This section describes the latest changes made to this summary as of the date above.
+        </Para>
+        <Para id="_213">Images were added to this summary..</Para>
+      </SummarySection>
+      <SummarySection id="_AboutPDQ_14" IncludedDevices="screen">
+        <Title>About PDQ</Title>
+        <Para id="_AboutPDQ_10">
+          <Emphasis>
+            <Strong>PDQ is a comprehensive cancer database available on NCI's Web site.</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_AboutPDQ_11">
+          PDQ is the National Cancer Institute's (NCI's) comprehensive cancer information database.  Most of the information contained in PDQ is available online at <ExternalRef xref="http://cancer.gov">NCI's Web site</ExternalRef>.  PDQ is provided as a service of the NCI.  The NCI is part of the National Institutes of Health, the federal government's focal point for biomedical research.
+        </Para>
+        <Para id="_AboutPDQ_3">
+          <Emphasis>
+            <Strong>PDQ contains cancer information summaries.</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_AboutPDQ_4">The PDQ database contains summaries of the latest published information on cancer prevention, detection, genetics, treatment, supportive care, and complementary and alternative medicine.  Most summaries are available in two versions.  The health professional versions provide detailed information written in technical language.  The patient versions are written in easy-to-understand, nontechnical language.  Both versions provide current and accurate cancer information. </Para>
+        <Para id="_AboutPDQ_5">
+          <Emphasis>
+            <Strong>The PDQ cancer information summaries are developed by cancer experts and reviewed regularly.</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_AboutPDQ_6">Editorial Boards made up of experts in oncology and related specialties are responsible for writing and maintaining the cancer information summaries.  The summaries are reviewed regularly and changes are made as new information becomes available.  The date on each summary ("Date Last Modified") indicates the time of the most recent change.</Para>
+        <Para id="_AboutPDQ_7">
+          <Emphasis>
+            <Strong>PDQ also contains information on clinical trials.</Strong>
+          </Emphasis>
+        </Para>
+        <Para id="_AboutPDQ_8">A clinical trial is a study to answer a scientific question, such as whether one treatment is better than another.  Trials are based on past studies and what has been learned in the laboratory.  Each trial answers certain scientific questions in order to find new and better ways to help cancer patients.  During treatment clinical trials, information is collected about the effects of a new treatment and how well it works.  If a clinical trial shows that a new treatment is better than one currently being used, the new treatment may become "standard." Patients may want to think about taking part in a clinical trial. Some clinical trials are open only to patients who have not started treatment.</Para>
+        <Para id="_AboutPDQ_9">
+          Listings of clinical trials are included in PDQ and are available online at <ExternalRef xref="http://cancer.gov/clinical_trials">NCI's Web site</ExternalRef>.  Descriptions of the trials are available in health professional and patient versions.  Many cancer doctors who take part in clinical trials are also listed in PDQ.  For more information, call the Cancer Information Service 1-800-4-CANCER (1-800-422-6237).
+        </Para>
+      </SummarySection>
+      <PatientVersionOf ref="CDR0000062900" />
+      <DateLastModified>2010-10-22</DateLastModified>
+    </Summary>

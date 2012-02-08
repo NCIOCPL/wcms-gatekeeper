@@ -24,6 +24,16 @@ namespace GateKeeper.DocumentObjects.Terminology
 
         #endregion
 
+        #region Constructors
+
+        public TerminologyDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.Terminology;
+        }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>

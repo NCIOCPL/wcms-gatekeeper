@@ -74,50 +74,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CMSManager\PSFolder.cs" />
     <Compile Include="Common\TesterHelper.cs" />
-    <Compile Include="DrugInfoSummary\DrugInfoSummaryDeleteTest.cs" />
-    <Compile Include="DrugInfoSummary\DrugInfoSummaryPushTest.cs" />
-    <Compile Include="DrugInfoSummary\DrugInfoSummarySaveTest.cs" />
-    <Compile Include="Gatekeeper\BatchTestFixture.cs" />
-    <Compile Include="Gatekeeper\ImportExportTest.cs" />
-    <Compile Include="Gatekeeper\IntegrationTestFixture.cs" />
-    <Compile Include="Gatekeeper\RequestTestFixture.cs" />
-    <Compile Include="Gatekeeper\WebServiceTestFixture.cs" />
-    <Compile Include="GeneticsProfessional\GenProfDeleteTest.cs" />
-    <Compile Include="GeneticsProfessional\GenProfPushTest.cs" />
-    <Compile Include="GlossaryTerm\GlossaryDeleteTest.cs" />
-    <Compile Include="GlossaryTerm\GlossaryTermSaveTest.cs" />
-    <Compile Include="GeneticsProfessional\GenProfSaveTest.cs" />
-    <Compile Include="GlossaryTerm\GlossaryPushTest.cs" />
+    <Compile Include="DeviceSpecificOutput\SummaryConditionalExtract.cs" />
+    <Compile Include="ModularProcessing\DeviceOrdering.cs" />
+    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummaryDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummaryPushTest.cs" />
+    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummarySaveTest.cs" />
+    <Compile Include="Extract\Summary.cs" />
+    <Compile Include="StorageIntegrated\Gatekeeper\BatchTestFixture.cs" />
+    <Compile Include="StorageIntegrated\Gatekeeper\ImportExportTest.cs" />
+    <Compile Include="StorageIntegrated\Gatekeeper\IntegrationTestFixture.cs" />
+    <Compile Include="StorageIntegrated\Gatekeeper\RequestTestFixture.cs" />
+    <Compile Include="StorageIntegrated\Gatekeeper\WebServiceTestFixture.cs" />
+    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfPushTest.cs" />
+    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryTermSaveTest.cs" />
+    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfSaveTest.cs" />
+    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryPushTest.cs" />
     <Compile Include="GlossaryTerm\GTRelInfoTest.cs" />
     <Compile Include="HiPerfTimer.cs" />
-    <Compile Include="Logging\LoggingTestFixture.cs" />
     <Compile Include="Media\AudioMediaTest.cs" />
-    <Compile Include="Media\MediaDeleteTest.cs" />
-    <Compile Include="Media\MediaPushTest.cs" />
-    <Compile Include="Media\MediaSaveTest.cs" />
-    <Compile Include="Messaging\MessagingTest.cs" />
-    <Compile Include="Organization\OrganizationDeleteTest.cs" />
-    <Compile Include="Organization\OrganizationPushTest.cs" />
-    <Compile Include="Organization\OrganizationSaveTest.cs" />
-    <Compile Include="PoliticalSubUnit\PoliticalSubUnitDeleteTest.cs" />
-    <Compile Include="PoliticalSubUnit\PoliticalSubUnitPushTest.cs" />
-    <Compile Include="PoliticalSubUnit\PoliticalSubUnitSaveTest.cs" />
+    <Compile Include="StorageIntegrated\Media\MediaDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\Media\MediaPushTest.cs" />
+    <Compile Include="StorageIntegrated\Media\MediaSaveTest.cs" />
+    <Compile Include="ModularProcessing\SummaryProcessingTargets.cs" />
+    <Compile Include="ModularProcessing\SummaryExtract.cs" />
+    <Compile Include="StorageIntegrated\Organization\OrganizationDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\Organization\OrganizationPushTest.cs" />
+    <Compile Include="StorageIntegrated\Organization\OrganizationSaveTest.cs" />
+    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitPushTest.cs" />
+    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitSaveTest.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Protocol\ProtocolSaveTest.cs" />
-    <Compile Include="Protocol\ProtocolPushTest.cs" />
-    <Compile Include="Protocol\ProtocolDeleteTest.cs" />
-    <Compile Include="Summary\SummaryPushTest.cs" />
-    <Compile Include="Summary\SummarySaveTest.cs" />
+    <Compile Include="StorageIntegrated\Protocol\ProtocolSaveTest.cs" />
+    <Compile Include="StorageIntegrated\Protocol\ProtocolPushTest.cs" />
+    <Compile Include="StorageIntegrated\Protocol\ProtocolDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\Summary\SummaryPushTest.cs" />
+    <Compile Include="StorageIntegrated\Summary\SummarySaveTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Summary\SummaryDeleteTest.cs" />
-    <Compile Include="Terminology\TerminologyDeleteTest.cs" />
-    <Compile Include="Terminology\TerminologyPushTest.cs" />
-    <Compile Include="Terminology\TerminologySaveTest.cs" />
+    <Compile Include="StorageIntegrated\Summary\SummaryDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\Terminology\TerminologyDeleteTest.cs" />
+    <Compile Include="StorageIntegrated\Terminology\TerminologyPushTest.cs" />
+    <Compile Include="StorageIntegrated\Terminology\TerminologySaveTest.cs" />
     <Compile Include="UTHelper.cs" />
     <Compile Include="Web References\GateKeeperWS\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -161,26 +165,34 @@
       <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
       <Name>DocumentObjects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Logging\Logging.csproj">
-      <Project>{1F7C618F-C8BB-4C19-B754-BFB9211B8773}</Project>
-      <Name>Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\RequestManager\RequestManager.csproj">
       <Project>{899D3B57-B535-4899-8ED5-2BD900065555}</Project>
       <Name>RequestManager</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UTResults\BaseLineUnitTestResult.xml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="sharedconfig\connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Web References\GateKeeperWS\GateKeeper.disco" />
     <None Include="Web References\GateKeeperWS\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <Content Include="CMSManager\! Important.txt" />
+    <Content Include="DocumentProcessors.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Summary-BreastPatient-NoMobile-62955.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Summary-BreastPatient-Mobile-62955.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="XMLData\GT46332.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -366,6 +378,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\ProtocolWithStudyCondition349374.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Summary-BreastPatient-62955.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\Summary-Conditional-Extract.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\SummaryAcupuncture445441.xml" />

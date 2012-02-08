@@ -13,7 +13,6 @@ using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DataAccess.CancerGov;
-using GateKeeper.Logging;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.DocumentObjects.Summary;
 

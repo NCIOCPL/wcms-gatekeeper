@@ -13,6 +13,23 @@ namespace GKManagers.BusinessObjects
         private int _previewRequestId = LocationNotPresent;
         private int _liveRequestId = LocationNotPresent;
 
+        private int _gateKeeperRequestDataID = LocationNotPresent;
+        private int _stagingRequestDataID = LocationNotPresent;
+        private int _previewRequestDataID = LocationNotPresent;
+        private int _liveRequestDataID = LocationNotPresent;
+
+        private string _gateKeeperDTDVersion = String.Empty;
+        private string _stagingDTDVersion = String.Empty;
+        private string _previewDTDVersion = String.Empty;
+        private string _liveDTDVersion = String.Empty;
+
+        private DateTime _completeReceivedTime;
+        private string _externalRequestId;
+        private int _groupId;
+        private RequestDataActionType _actionType;
+        private RequestStatusType _status;
+        private string _title;
+
         private CDRDocumentType _docType;
 
         #region Constructor
@@ -47,21 +64,46 @@ namespace GKManagers.BusinessObjects
         /// to this database.</param>
         /// <param name="docType">The document's CDRDocumentType value</param>
         public RequestLocationInternalIds(int cdrId, int gatekeeperRequestId, DateTime gatekeeperDate,
-                    int stagingRequestId, DateTime stagingDate, 
+                    int stagingRequestId, DateTime stagingDate,
                     int previewRequestId, DateTime previewDate,
-                    int liveRequestId, DateTime liveDate, CDRDocumentType docType)
+                    int liveRequestId, DateTime liveDate, CDRDocumentType docType,
+                    int gateKeeperRequestDataID, int stagingRequestDataID, int previewRequestDataID, int liveRequestDataID,
+                    string gateKeeperDTDVersion, string stagingDTDVersion, string previewDTDVersion, string liveDTDVersion,
+                    DateTime completeReceivedTime, string externalRequestId, int groupId, RequestDataActionType actionType, RequestStatusType status, string title
+            )
             : base(cdrId, gatekeeperDate, stagingDate, previewDate, liveDate)
         {
             _docType = docType;
 
             if (gatekeeperRequestId > 0)
-                _gatekeeperRequestId  = gatekeeperRequestId;
+                _gatekeeperRequestId = gatekeeperRequestId;
             if (stagingRequestId > 0)
-                _stagingRequestId  = stagingRequestId;
+                _stagingRequestId = stagingRequestId;
             if (previewRequestId > 0)
-                _previewRequestId  = previewRequestId;
+                _previewRequestId = previewRequestId;
             if (liveRequestId > 0)
-                _liveRequestId  = liveRequestId;
+                _liveRequestId = liveRequestId;
+
+            if (gateKeeperRequestDataID > 0)
+                _gateKeeperRequestDataID = gateKeeperRequestDataID;
+            if (stagingRequestDataID > 0)
+                _stagingRequestDataID = stagingRequestDataID;
+            if (previewRequestDataID > 0)
+                _previewRequestDataID = previewRequestDataID;
+            if (liveRequestDataID > 0)
+                _liveRequestDataID = liveRequestDataID;
+
+            _gateKeeperDTDVersion = gateKeeperDTDVersion;
+            _stagingDTDVersion = stagingDTDVersion;
+            _previewDTDVersion = previewDTDVersion;
+            _liveDTDVersion = liveDTDVersion;
+
+            _completeReceivedTime = completeReceivedTime;
+            _externalRequestId = externalRequestId;
+            _groupId = groupId;
+            _actionType = actionType;
+            _status = status;
+            _title = title;
         }
 
         #endregion
@@ -85,6 +127,54 @@ namespace GKManagers.BusinessObjects
         public int LiveReqId
         {
             get { return _liveRequestId; }
+        }
+
+        public int GateKeeperRequestDataID
+        { get { return _gateKeeperRequestDataID; } }
+        public int StagingRequestDataID
+        { get { return _stagingRequestDataID; } }
+        public int PreviewRequestDataID
+        { get { return _previewRequestDataID; } }
+        public int LiveRequestDataID
+        { get { return _liveRequestDataID; } }
+
+        public string GateKeeperDTDVersion
+        { get { return _gateKeeperDTDVersion; } }
+        public string StagingDTDVersion
+        { get { return _stagingDTDVersion; } }
+        public string PreviewDTDVersion
+        { get { return _previewDTDVersion; } }
+        public string LiveDTDVersion
+        { get { return _liveDTDVersion; } }
+
+        public DateTime CompleteReceivedTime
+        {
+            get { return _completeReceivedTime; }
+        }
+
+        public string ExternalRequestId
+        {
+            get { return _externalRequestId; }
+        }
+
+        public RequestDataActionType ActionType
+        {
+            get { return _actionType; }
+        }
+
+        public RequestStatusType Status
+        {
+            get { return _status; }
+        }
+
+        public int GroupId
+        {
+            get { return _groupId; }
+        }
+
+        public string Title
+        {
+            get { return _title; }
         }
 
         /// <summary>

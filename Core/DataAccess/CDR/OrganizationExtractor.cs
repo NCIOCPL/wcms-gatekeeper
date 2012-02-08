@@ -7,7 +7,6 @@ using GateKeeper.Common;
 using GateKeeper.Common.XPathKeys;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Organization;
-using GateKeeper.Logging;
 using GateKeeper.DataAccess.GateKeeper;
 
 namespace GateKeeper.DataAccess.CDR

@@ -11,7 +11,6 @@ using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
-using GateKeeper.Logging;
 
 namespace GateKeeper.ContentRendering
 {
@@ -474,11 +473,11 @@ namespace GateKeeper.ContentRendering
         /// Method to pre-render the summary document.
         /// </summary>
         /// <param name="document"></param>
-        public override void Render(Document document)
+        public override void Render(Document document, TargetedDevice targetedDevice)
         {
             try
             {
-                base.Render(document);
+                base.Render(document, targetedDevice);
 
                 SummaryDocument summary = (SummaryDocument)document;
                 XPathNavigator xNav = summary.PostRenderXml.CreateNavigator();
@@ -489,14 +488,18 @@ namespace GateKeeper.ContentRendering
                 foreach (SummarySection section in summary.SectionList)
                 {
                     XPathNavigator sectionNav = null;
-                    if (section.IsTopLevel)
-                    {
-                        sectionNav = xNav.SelectSingleNode(".//span[@name='Section_" + section.SectionID + "']");
-                        if( sectionNav == null )
-                            sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
-                    }
-                    else
-                        sectionNav = xNav.SelectSingleNode(".//a[@name='Section_" + section.SectionID + "']");
+
+                    string expression = string.Format(".//span[@name='Section_{0}']|.//div[@id='Section_{0}']|.//a[@name='Section_{0}']", section.SectionID);
+                    sectionNav = xNav.SelectSingleNode(expression);
+
+                    //if (section.IsTopLevel)
+                    //{
+                    //    sectionNav = xNav.SelectSingleNode(".//span[@id='Section_" + section.SectionID + "']");
+                    //    if( sectionNav == null )
+                    //        sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
+                    //}
+                    //else
+                    //    sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
                     if (sectionNav != null)
                     {
                         if (section.IsTopLevel)
@@ -516,7 +519,7 @@ namespace GateKeeper.ContentRendering
                         if (!sectionNav.HasChildren)
                         {
                             sectionNav.MoveToNext();
-                            if (sectionNav.Matches("Span") && !section.IsTopLevel)
+                            if (sectionNav.Matches("Span|h2|h3|h4|h5") && !section.IsTopLevel)
                             {
                                 if (sectionNav.GetAttribute("Class", string.Empty).Contains("Summary-SummarySection-Title") ||
                                     sectionNav.GetAttribute("class", string.Empty).Contains("Summary-SummarySection-Title"))
@@ -689,7 +692,7 @@ namespace GateKeeper.ContentRendering
                 doc.PreserveWhitespace = true;
 
                 doc.LoadXml(string.Format("<Para id=\"InternalUse\">{0}</Para>", item.Caption));
-                Render(doc.CreateNavigator(), sw);
+                Render(doc.CreateNavigator(), null, sw);
 
                 // Reload temp doc with the output from the transform.
                 doc.LoadXml(sw.ToString());

@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Security.Permissions;
+
+using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 
 namespace GateKeeper.ContentRendering
@@ -14,6 +17,13 @@ namespace GateKeeper.ContentRendering
     /// <summary>
     /// Base class for document rendering.
     /// </summary>
+    /// 
+    [XmlInclude(typeof(GeneticsProfessionalRenderer))]
+    [XmlInclude(typeof(GlossaryTermRenderer))]
+    [XmlInclude(typeof(MediaRenderer))]
+    [XmlInclude(typeof(ProtocolRenderer))]
+    [XmlInclude(typeof(SummaryRenderer))]
+    [XmlInclude(typeof(TerminologyRenderer))]
     public class DocumentRenderer
     {
         #region Fields
@@ -43,11 +53,27 @@ namespace GateKeeper.ContentRendering
         /// <param name="document"></param>
         public virtual void Render(Document document)
         {
+            // TODO: Convert all document renderers to use the 
+            // TargetedDevice override directly.
+            Render(document, TargetedDevice.screen);
+        }
+
+        /// <summary>
+        /// Common document type rendering implementation.
+        /// </summary>
+        /// <param name="document"></param>
+        public virtual void Render(Document document, TargetedDevice outputDevice)
+        {
+            // Maps to the $targetedDevice parameter available in the XSL transform.
+            // See: ms-help://MS.VSCC.v90/MS.MSDNQTR.v90.en/wd_xml/html/fe60aaa0-ae43-4b1c-9be1-426af66ba757.htm
+            XsltArgumentList renderParameters = new XsltArgumentList();
+            renderParameters.AddParam("targetedDevice", string.Empty, outputDevice.ToString());
+
             StringBuilder sb = new StringBuilder();
 
             System.IO.StringWriter sw = new System.IO.StringWriter(sb);
 
-            this.Render(document.Xml.CreateNavigator(), sw);
+            this.Render(document.Xml.CreateNavigator(), renderParameters, sw);
 
             document.Html = sb.ToString();
 #if DEBUG
@@ -55,10 +81,11 @@ namespace GateKeeper.ContentRendering
             if (Directory.Exists(path))
             {
                 string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".xml";
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(document.Html);
-                //Save the document to a file.
-                doc.Save(fileName);  
+                using (StreamWriter writer = File.CreateText(fileName))
+                {
+                    writer.Write(document.Html);
+                    writer.Close();
+                }
             }
 #endif
             document.PostRenderXml.LoadXml(sb.ToString());
@@ -69,9 +96,9 @@ namespace GateKeeper.ContentRendering
         /// </summary>
         /// <param name="navigator"></param>
         /// <param name="output"></param>
-        protected void Render(XPathNavigator navigator, System.IO.TextWriter output)
+        protected void Render(XPathNavigator navigator, XsltArgumentList parameters, System.IO.TextWriter output)
         {
-            this._transform.Transform(navigator, null, output);
+            this._transform.Transform(navigator, parameters, output);
         }
 
         /// <summary>
@@ -79,10 +106,11 @@ namespace GateKeeper.ContentRendering
         /// </summary>
         /// <param name="navigator"></param>
         /// <param name="output"></param>
-        protected void Render(XPathNavigator navigator, System.Xml.XmlWriter output)
+        protected void Render(XPathNavigator navigator, XsltArgumentList parameters, System.Xml.XmlWriter output)
         {
-            this._transform.Transform(navigator, null, output);
+            this._transform.Transform(navigator, parameters, output);
         }
+
 
         /// <summary>
         /// Loads the XSL pointed to by the file path into the Transform.

@@ -294,6 +294,7 @@ namespace GateKeeper.DocumentObjects.Protocol
         /// Default constructor.
         /// </summary>
         public ProtocolDocument()
+            : base()
         {
             this.DocumentType = DocumentType.Protocol;
         }

@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+
 using GateKeeper.Common;
 using GateKeeper.DataAccess;
+using GateKeeper.DataAccess.DataAccessWrappers;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DataAccess.CDR;
 using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.ContentRendering;
+using GKManagers.Processors;
 using GKManagers.BusinessObjects;
-
 using GKManagers.CMSDocumentProcessing;
 
 namespace GKManagers
@@ -42,56 +44,44 @@ namespace GKManagers
         {
             informationWriter("Start to promote summary document to the staging database.");
 
-            SummaryDocument summary = new SummaryDocument();
-            summary.WarningWriter = warningWriter;
-            summary.InformationWriter = informationWriter;
-            summary.VersionNumber = DataBlock.CdrVersion;
-            summary.DocumentID = DataBlock.CdrID;
-            if (DataBlock.ActionType == RequestDataActionType.Export)
+            ProcessorPool pool = ProcessorLoader.Load();
+            ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
+
+            foreach (ProcessingTarget target in processingTargets)
             {
-                // Extract summary data
+                informationWriter(string.Format("Processing for device: {0}.", target.TargetedDevice.ToString()));
+
+                SummaryDocument summary = new SummaryDocument();
+                summary.WarningWriter = warningWriter;
+                summary.InformationWriter = informationWriter;
                 summary.VersionNumber = DataBlock.CdrVersion;
-                XmlDocument summaryDoc = DataBlock.DocumentData;
-                SummaryExtractor extract = new SummaryExtractor();
-                extract.PrepareXml(summaryDoc, xPathManager);
-                extract.Extract(summaryDoc, summary);
-
-                // Rendering summary data
-                SummaryRenderer summaryRender = new SummaryRenderer();
-                summaryRender.Render(summary);
-
-                // Save summary data into the Percussion CMS.
-                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
+                summary.DocumentID = DataBlock.CdrID;
+                if (DataBlock.ActionType == RequestDataActionType.Export)
                 {
-                    processor.ProcessDocument(summary);
+                    // Extract summary data
+                    target.DocumentExtractor.Extract(DataBlock.DocumentData, summary, xPathManager, target.TargetedDevice);
+
+                    // Only render and save if the Summary supports the current target.
+                    if (summary.ValidOutputDevices.Contains(target.TargetedDevice))
+                    {
+                        // Rendering summary data
+                        target.DocumentRenderer.Render(summary, target.TargetedDevice);
+
+                        // Save summary data
+                        target.DocumentDataAccess.SaveDocument(summary, UserName, warningWriter, informationWriter);
+                    }
+                }
+                else if (DataBlock.ActionType == RequestDataActionType.Remove)
+                {
+                    target.DocumentDataAccess.DeleteDocument(summary, UserName, warningWriter, informationWriter);
+                }
+                else
+                {
+                    // There should never be any invalid request.
+                    throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
                 }
 
-                // Save summary metadata into database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.SaveDocument(summary, UserName);
-                }
             }
-            else if (DataBlock.ActionType == RequestDataActionType.Remove)
-            {
-                // Remove from Staging does nothing in Percussion.  This is by design.
-                // Attempting to remove the document at this stage would
-                // remove it from all stages.
-
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Staging, UserName);
-                }
-            }
-            else
-            {
-                // There should never be any invalid request.
-                throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
-            }
-
-            summary = null;
-
             informationWriter("Promoting summary document to the staging database succeeded.");
         }
 
@@ -106,39 +96,28 @@ namespace GKManagers
         {
             informationWriter("Start to promote summary document to the preview database.");
 
-            SummaryDocument summary = new SummaryDocument();
-            summary.WarningWriter = warningWriter;
-            summary.InformationWriter = informationWriter;
-            summary.DocumentID = DataBlock.CdrID;
-            if (DataBlock.ActionType == RequestDataActionType.Export)
-            {
-                // Save summary data into the Percussion CMS.
-                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.PromoteToPreview(summary.DocumentID);
-                }
+            ProcessorPool pool = ProcessorLoader.Load();
+            ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
 
-                // Push summary metadata to the preview database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.PushDocumentToPreview(summary, UserName);
-                }
-            }
-            else if (DataBlock.ActionType == RequestDataActionType.Remove)
+            foreach (ProcessingTarget target in processingTargets)
             {
-                // Remove from Preview does nothing in Percussion.  This is by design.
-                // Attempting to remove the document at this stage would it from all stages.
-
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
+                SummaryDocument summary = new SummaryDocument();
+                summary.WarningWriter = warningWriter;
+                summary.InformationWriter = informationWriter;
+                summary.DocumentID = DataBlock.CdrID;
+                if (DataBlock.ActionType == RequestDataActionType.Export)
                 {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Preview, UserName);
+                    target.DocumentDataAccess.PromoteToPreview(summary, UserName, warningWriter, informationWriter);
                 }
-            }
-            else
-            {
-                // There should never be any invalid request.
-                throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+                else if (DataBlock.ActionType == RequestDataActionType.Remove)
+                {
+                    target.DocumentDataAccess.RemoveFromPreview(summary, UserName, warningWriter, informationWriter);
+                }
+                else
+                {
+                    // There should never be any invalid request.
+                    throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+                }
             }
 
             informationWriter("Promoting summary document to the preview database succeeded.");
@@ -155,40 +134,28 @@ namespace GKManagers
         {
             informationWriter("Start to promote summary document to the live database.");
 
-            SummaryDocument summary = new SummaryDocument();
-            summary.WarningWriter = warningWriter;
-            summary.InformationWriter = informationWriter;
-            summary.DocumentID = DataBlock.CdrID;
-            if (DataBlock.ActionType == RequestDataActionType.Export)
-            {
-                // Save summary data into the Percussion CMS.
-                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.PromoteToLive(summary.DocumentID);
-                }
-                // Push summary metadata to the live database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.PushDocumentToLive(summary, UserName);
-                }
-            }
-            else if (DataBlock.ActionType == RequestDataActionType.Remove)
-            {
-                using (CancerInfoSummaryProcessor processor = new CancerInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.DeleteContentItem(summary.DocumentID);
-                }
+            ProcessorPool pool = ProcessorLoader.Load();
+            ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
 
-                // Remove summary data from database
-                using (SummaryQuery summaryQuery = new SummaryQuery())
-                {
-                    summaryQuery.DeleteDocument(summary, ContentDatabase.Live, UserName);
-                }
-            }
-            else
+            foreach (ProcessingTarget target in processingTargets)
             {
-                // There should never be any invalid request.
-                throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+                SummaryDocument summary = new SummaryDocument();
+                summary.WarningWriter = warningWriter;
+                summary.InformationWriter = informationWriter;
+                summary.DocumentID = DataBlock.CdrID;
+                if (DataBlock.ActionType == RequestDataActionType.Export)
+                {
+                    target.DocumentDataAccess.PromoteToLive(summary, UserName, warningWriter, informationWriter);
+                }
+                else if (DataBlock.ActionType == RequestDataActionType.Remove)
+                {
+                    target.DocumentDataAccess.RemoveFromLive(summary, UserName, warningWriter, informationWriter);
+                }
+                else
+                {
+                    // There should never be any invalid request.
+                    throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+                }
             }
 
             informationWriter("Promoting summary document to the live database succeeded.");

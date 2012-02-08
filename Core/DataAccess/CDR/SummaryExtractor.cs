@@ -12,18 +12,16 @@ using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.GateKeeper;
-using GateKeeper.Logging;
 
 namespace GateKeeper.DataAccess.CDR
 {
     /// <summary>
     /// Class to extract summary object from XML.
     /// </summary>
-    public class SummaryExtractor
+    public class SummaryExtractor : DocumentExtractor
     {
         #region fields
         private int _documentID = 0;
-        private DocumentXPathManager xPathManager;
         #endregion
 
         #region Private Methods
@@ -35,12 +33,12 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        private void ExtractMetadata(XPathNavigator xNav, SummaryDocument summary)
+        private void ExtractMetadata(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager)
         {
             string path = string.Empty;
             try
             {
-                // Extract summary metadata
+                // Main Summary URL.
                 path = xPathManager.GetXPath(SummaryXPath.URL);
                 XPathNavigator prettyUrlNav = xNav.SelectSingleNode(path);
                 string basePrettyURL = prettyUrlNav.GetAttribute(xPathManager.GetXPath(SummaryXPath.BasePrettyURL), string.Empty).Trim();
@@ -49,6 +47,27 @@ namespace GateKeeper.DataAccess.CDR
                     basePrettyURL = basePrettyURL.Substring(0, basePrettyURL.Length - 1);
                 }
                 summary.BasePrettyURL = basePrettyURL;
+                summary.ValidOutputDevices.Add(TargetedDevice.screen);  // Always valid for web.
+
+                // Mobile URL.  (Optional element)
+                path = xPathManager.GetXPath(SummaryXPath.MobileURL);
+                XPathNavigator mobileUrlNav = xNav.SelectSingleNode(path);
+                if (mobileUrlNav != null)
+                {
+                    string baseMobileURL = mobileUrlNav.GetAttribute(xPathManager.GetXPath(SummaryXPath.BaseMobileURL), string.Empty).Trim();
+                    if (string.IsNullOrEmpty(baseMobileURL))
+                    {
+                        throw new Exception("Extraction Error: MobileURL node is present, but contains no value.");
+                    }
+
+                    if (baseMobileURL.EndsWith("/"))
+                    {
+                        baseMobileURL = baseMobileURL.Substring(0, baseMobileURL.Length - 1);
+                    }
+                    summary.BaseMobileURL = baseMobileURL;
+                    summary.ValidOutputDevices.Add(TargetedDevice.mobile);
+                }
+
                 path = xPathManager.GetXPath(SummaryXPath.Title);
                 summary.Title = DocumentHelper.GetXmlDocumentValue(xNav, path);
                 // Get Summary short title
@@ -98,7 +117,7 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        private void ExtractRelations(XPathNavigator xNav, SummaryDocument summary)
+        private void ExtractRelations(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager)
         {
             // This is used to track error
             string path = xPathManager.GetXPath(SummaryXPath.PatientVersion);
@@ -146,7 +165,7 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        private void ExtractSummaryReferences(XPathNavigator xNav, SummaryDocument summary)
+        private void ExtractSummaryReferences(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager)
         {
             string path = string.Empty;
             try
@@ -170,26 +189,6 @@ namespace GateKeeper.DataAccess.CDR
                         }
                     }
                 }
-
-                // Prior to 11/16/10, the SummaryReferenceMap (formerly PrettyURLReferencMap) was never actually
-                // used anywhere else.  So this was useless code to begin with.
-                // TODO: Delete this block once we're completely certain it's unneeeded.
-                //
-                //path = xPathManager.GetXPath(SummaryXPath.Link);
-                //nodeIter = xNav.Select(path);
-                //while (nodeIter.MoveNext())
-                //{
-                //    if (nodeIter.Current.HasAttributes)
-                //    {
-                //        // Just add the reference for now...the corresponding value for the key will 
-                //        // be populated later.
-                //        string id = nodeIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.PrettyURLRef), string.Empty).Trim();
-                //        if (!summary.SummaryReferenceMap.ContainsKey(id))
-                //        {
-                //            summary.SummaryReferenceMap.Add(id, string.Empty);
-                //        }
-                //    }
-                //}
             }
             catch (Exception e)
             {
@@ -205,7 +204,7 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="sectionNav"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        private SummarySection ExtractSection(XPathNavigator sectionNav, ref int priority)
+        private SummarySection ExtractSection(XPathNavigator sectionNav, DocumentXPathManager xPathManager, ref int priority)
         {
             SummarySection summarySection = new SummarySection();
             try
@@ -260,9 +259,9 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="parentSectionID">The section ID (Guid) of the parent section</param>
         /// <param name="priority">Display order/priority</param>
         /// <param name="tableID">Identifier for each table (used as part of the pretty URL for each table enlarge section)</param>
-        private void ExtractTableSections(XPathNavigator sectionNav, SummaryDocument summary, Guid parentSectionID, int sectionPriority, ref int tableID)
+        private void ExtractTableSections(XPathNavigator sectionNav, SummaryDocument summary, Guid parentSectionID, TargetedDevice device, DocumentXPathManager xPathManager, int sectionPriority, ref int tableID)
         {
-            string path = xPathManager.GetXPath(SummaryXPath.SectTable);
+            string path = xPathManager.GetXPath(SummaryXPath.SectTable, device);
             try
             {
                 // Extract tables and create separate sections for them. 
@@ -274,7 +273,7 @@ namespace GateKeeper.DataAccess.CDR
 
                 while (tableIter.MoveNext())
                 {
-                    SummarySection tableSection = ExtractSection(tableIter.Current, ref priority);
+                    SummarySection tableSection = ExtractSection(tableIter.Current, xPathManager, ref priority);
 
                     tableSection.IsTableSection = true;
                     tableSection.SectionType = SummarySectionType.Table;
@@ -358,9 +357,10 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xNav"></param>
         /// <param name="summary"></param>
-        private void ExtractTopLevelSections(XPathNavigator xNav, SummaryDocument summary)
+        private void ExtractTopLevelSections(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager, TargetedDevice device)
         {
-            string path = xPathManager.GetXPath(SummaryXPath.TopSection);
+            string path = xPathManager.GetXPath(SummaryXPath.TopSection, device);
+
             try
             {
                 int pageNumber = 1;
@@ -372,7 +372,16 @@ namespace GateKeeper.DataAccess.CDR
                 int topSectionPriority = 0;
                 while (sectionIter.MoveNext())
                 {
-                    SummarySection topLevelSection = ExtractSection(sectionIter.Current, ref priority);
+                    SummarySection topLevelSection = ExtractSection(sectionIter.Current, xPathManager, ref priority);
+
+                    // Validate for items required in top-level sections.
+                    if (string.IsNullOrEmpty(topLevelSection.Title.Trim()))
+                    {
+                        String fmt = "Top-level section {0} is missing a required Title.";
+                        String msg = String.Format(fmt, topLevelSection.RawSectionID);
+                        throw new MissingElementException(msg);
+                    }
+
                     // Build pretty URL...
                     topLevelSection.PrettyUrl = summary.BasePrettyURL + "/Page" + pageNumber++; // increment page number for the next top-level section
                     summary.SectionList.Add(topLevelSection);
@@ -385,16 +394,17 @@ namespace GateKeeper.DataAccess.CDR
                         topSectionPriority = topLevelSection.Priority;
 
                     // Extract tables from the top-level section (if there are any)
-                    ExtractTableSections(sectionIter.Current, summary, topLevelSection.SummarySectionID, topSectionPriority, ref tableID);
+                    ExtractTableSections(sectionIter.Current, summary, topLevelSection.SummarySectionID, device, xPathManager, topSectionPriority, ref tableID);
 
                     // Handle sub-sections
-                    path = xPathManager.GetXPath(SummaryXPath.SubSection);
+                    path = xPathManager.GetXPath(SummaryXPath.SubSection, device);
+
                     XPathNodeIterator subSectionIter = sectionIter.Current.Select(path);
                     SummarySection secondLevelSection = new SummarySection();
                     SummarySection thirdLevelSection = new SummarySection();
                     while (subSectionIter.MoveNext())
                     {
-                        SummarySection subSection = ExtractSection(subSectionIter.Current, ref priority);
+                        SummarySection subSection = ExtractSection(subSectionIter.Current, xPathManager, ref priority);
                         subSection.ParentSummarySectionID = topLevelSection.SummarySectionID;
                         XPathNavigator nav = subSection.Xml.CreateNavigator();
                         // Check if the second level is a parent section.
@@ -424,8 +434,9 @@ namespace GateKeeper.DataAccess.CDR
                     }
 
                     // Handle media link reference id, apparently it is save as summary section level 5 in gatekeeper database
+                    string mediaLinkPath = xPathManager.GetXPath(SummaryXPath.MediaLink, device);
                     XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
-                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(xPathManager.GetXPath(SummaryXPath.MediaLink));
+                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(mediaLinkPath);
                     while (mediaLinkIter.MoveNext())
                     {
                         XPathNavigator mediaLink = mediaLinkIter.Current;
@@ -454,7 +465,7 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="referenceNodeList"></param>
         /// <returns></returns>
-        private string FormatReferences(List<XmlNode> referenceNodeList)
+        private string FormatReferences(List<XmlNode> referenceNodeList, DocumentXPathManager xPathManager)
         {
             // Buffer that contains the re-formatted references
             StringBuilder nodeBuffer = new StringBuilder("[");
@@ -641,21 +652,16 @@ namespace GateKeeper.DataAccess.CDR
         /// ideal input.
         /// </summary>
         /// <param name="xmlDoc">Source Summary XML document</param>
-        /// <remarks>This function is called before the XML is rendered
-        /// it takes in the original summary XML, which takes lists of references 
-        /// and re-formats them according to display rules (see example).
+        /// <remarks>This function modifies the summary XML to combine adjacent Reference nodes. (see example).
         /// </remarks>
         /// <example>Input: <Reference refidx="1" /><Reference refidx="2" />
         /// <Reference refidx="3" /><Reference refidx="4" /><Reference refidx="5" />
         /// <Reference refidx="7" /><Reference refidx="9" /> 
         /// should be converted to [1-4,5,6,9]</example>
-        public void PrepareXml(XmlDocument xmlDoc, DocumentXPathManager xPathMgr)
+        private void ConsolidateReferences(XmlDocument xmlDoc, DocumentXPathManager xPathManager)
         {
             try
             {
-                // Get Summary XPath
-                xPathManager = xPathMgr;
-
                 XPathNavigator xNav = xmlDoc.CreateNavigator();
                 xNav.MoveToFirst();
                 XPathNavigator referenceNav = xNav.SelectSingleNode(xPathManager.GetXPath(SummaryXPath.Reference));
@@ -666,7 +672,7 @@ namespace GateKeeper.DataAccess.CDR
                     List<XmlNode> referenceNodeList = GetReferenceNodeList(referenceNav);
 
                     // Format the list of reference nodes according to presentation rules 
-                    string formattedReferenceXml = FormatReferences(referenceNodeList);
+                    string formattedReferenceXml = FormatReferences(referenceNodeList, xPathManager);
 
                     XmlNode firstNode = referenceNodeList[0];
                     XmlNode lastNode = referenceNodeList[referenceNodeList.Count - 1];
@@ -715,10 +721,24 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xmlDoc">Summary XML</param>
         /// <param name="summary">Summary document object</param>
-        virtual public void Extract(XmlDocument xmlDoc, SummaryDocument summary)
+        /// <remarks>Extract must be run to determine what devices are valid for a document.
+        /// The caller is responsible for verifying that the device is supported for the
+        /// currently targetted device before proceeding with document processing.
+        /// </remarks>
+        public override void Extract(XmlDocument xmlDoc, Document document, DocumentXPathManager xPathManager, TargetedDevice targetedDevice)
         {
+            SummaryDocument summary = document as SummaryDocument;
+            if (summary == null)
+            {
+                string message = "Expected document of type SummaryDocument, found {0}.";
+                throw new DocumentTypeMismatchException(string.Format(message, document.GetType().Name));
+            }
+
             try
             {
+                // Consolidate adjacent references.
+                ConsolidateReferences(xmlDoc, xPathManager);
+
                 XPathNavigator xNav = xmlDoc.CreateNavigator();
 
                 // Extract the CDR ID...
@@ -735,16 +755,16 @@ namespace GateKeeper.DataAccess.CDR
                 DocumentHelper.CopyXml(xmlDoc, summary);
 
                 // Extract misc metadata...
-                ExtractMetadata(xNav, summary);
+                ExtractMetadata(xNav, summary, xPathManager);
 
                 // Handle summary relations...
-                ExtractRelations(xNav, summary);
+                ExtractRelations(xNav, summary, xPathManager);
 
                 // Handle summary references URL...
-                ExtractSummaryReferences(xNav, summary);
+                ExtractSummaryReferences(xNav, summary, xPathManager);
 
                 // Handle sections...
-                ExtractTopLevelSections(xNav, summary);
+                ExtractTopLevelSections(xNav, summary, xPathManager, targetedDevice);
 
                 // Handle modified and published dates
                 DocumentHelper.ExtractDates(xNav, summary, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));

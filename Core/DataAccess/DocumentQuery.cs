@@ -9,7 +9,6 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Configuration;
 using GateKeeper.DocumentObjects;
-using GateKeeper.Logging;
 using GateKeeper.DataAccess.StoreProcedures;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;

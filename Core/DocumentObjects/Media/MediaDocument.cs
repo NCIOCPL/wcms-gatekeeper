@@ -23,6 +23,12 @@ namespace GateKeeper.DocumentObjects.Media
         private string _encodingType = string.Empty;
         #endregion
 
+        public MediaDocument()
+            : base()
+        {
+            this.DocumentType = DocumentType.Media;
+        }
+
         #region Public Properties
 
         /// <summary>

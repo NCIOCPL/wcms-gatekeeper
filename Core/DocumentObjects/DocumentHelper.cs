@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
 using GateKeeper.Common;
-using GateKeeper.Logging;
 
 namespace GateKeeper.DocumentObjects
 {

@@ -37,7 +37,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// managed in the CMS.
         /// </summary>
         /// <param name="documentObject"></param>
-        public void ProcessDocument(Document documentObject)
+        public override void ProcessDocument(Document documentObject)
         {
             PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
 
@@ -92,7 +92,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// Deletes the content item.
         /// </summary>
         /// <param name="documentID">The document ID.</param>
-        public void DeleteContentItem(int documentID)
+        public override void DeleteContentItem(int documentID)
         {
             PercussionGuid identifier = GetCdrDocumentID(MediaContentType, documentID);
 
@@ -152,7 +152,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// Move the specified Media document from Staging to Preview.
         /// </summary>
         /// <param name="documentID">The document's CDR ID.</param>
-        public void PromoteToPreview(int documentID)
+        public override void PromoteToPreview(int documentID)
         {
             PercussionGuid identifier = GetCdrDocumentID(MediaContentType, documentID);
 
@@ -163,7 +163,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// Move the specified Media document from Preview to Live.
         /// </summary>
         /// <param name="documentID">The document's CDR ID.</param>
-        public void PromoteToLive(int documentID)
+        public override void PromoteToLive(int documentID)
         {
             PercussionGuid identifier = GetCdrDocumentID(MediaContentType, documentID);
 
