@@ -913,7 +913,7 @@ namespace GKManagers.CMSDocumentProcessing
                                     referencedContentItems.Add(referencedPage.ContentItemID);
 
                                     // Build the link.
-                                    string url = BuildSummaryRefUrl(referencedPage.BasePath, referencedPage.PageNumber, details.SectionID);
+                                    string url = referencedPage.GetReferenceUrl(details.SectionID);
                                     attrib = html.CreateAttribute("href");
                                     attrib.Value = url;
                                     attributeList.Append(attrib);
@@ -936,7 +936,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                                     // Build the link.
                                     attrib = html.CreateAttribute("href");
-                                    attrib.Value = BuildSummaryRefUrl(referencedPage.BasePath, referencedPage.PageNumber, null);
+                                    attrib.Value = referencedPage.GetReferenceUrl(null);
                                     attributeList.Append(attrib);
                                 }
                             }

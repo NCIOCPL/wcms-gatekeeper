@@ -31,8 +31,11 @@ namespace GKManagers.CMSDocumentProcessing
         /// <returns>PercussionGuid of the first page</returns>
         internal override SummaryPageInfo FindFirstPage(PercussionGuid root)
         {
+            SummaryPageInfo pageInfo = null;
+
             CMSProcessingSection config = CMSProcessingSection.Instance;
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, CancerInfoSummaryProcessorCommon.MobilePageSlotName);
+            bool isMobileReference = true;
 
             string siteBase = config.BaseFolders.MobileSiteBase;
 
@@ -40,15 +43,31 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 pageIDs = CMSController.SearchForItemsInSlot(root, CancerInfoSummaryProcessorCommon.StandardPageSlotName);
                 siteBase = config.BaseFolders.DesktopSiteBase;
+                isMobileReference = false;
             }
 
-            return FindFirstPage(pageIDs, siteBase);
+            PercussionGuid first = null;
+
+            if (pageIDs.Length > 0)
+            {
+                first = pageIDs[0];
+
+                // Load the actual page item.
+                PSItem item = CMSController.LoadContentItems(new PercussionGuid[] { first })[0];
+
+                string pagePath = CMSController.GetPathInSite(item, siteBase);
+
+                pageInfo = new SummaryPageInfo(1, pagePath, first, isMobileReference);
+            }
+
+            return pageInfo;
         }
 
         internal override SummaryPageInfo FindPageContainingSection(PercussionGuid root, string sectionID)
         {
             CMSProcessingSection config = CMSProcessingSection.Instance;
             string siteurl = config.BaseFolders.MobileSiteBase;
+            bool isMobileReference = true;
 
             // Look for pages in the mobile version first.
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(root, CancerInfoSummaryProcessorCommon.MobilePageSlotName);
@@ -58,15 +77,16 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 pageIDs = CMSController.SearchForItemsInSlot(root, CancerInfoSummaryProcessorCommon.StandardPageSlotName);
                 siteurl = config.BaseFolders.DesktopSiteBase;
+                isMobileReference = false;
             }
 
             if (pageIDs.Length <= 0)
                 throw new EmptySlotException(string.Format("Slot unexpectedly empty for content item {0}.", root));
 
-            return FindPageContainingSection(pageIDs, sectionID, siteurl);
+            return FindPageContainingSection(pageIDs, sectionID, siteurl, isMobileReference);
         }
 
-        internal SummaryPageInfo FindPageContainingSection(PercussionGuid[] pageIDs, string sectionID, string siteUrl)
+        internal SummaryPageInfo FindPageContainingSection(PercussionGuid[] pageIDs, string sectionID, string siteUrl, bool isMobileReference)
         {
             // Force the out parameters to have values.
            int pageNumber = int.MinValue;
@@ -115,7 +135,7 @@ namespace GKManagers.CMSDocumentProcessing
             if (pageNumber != int.MinValue)
                 pageNumber++;
 
-            return new SummaryPageInfo(pageNumber, itemFolder, containingItem);
+            return new SummaryPageInfo(pageNumber, itemFolder, containingItem, isMobileReference);
         }
 
     }
