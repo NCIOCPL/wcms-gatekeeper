@@ -23,7 +23,6 @@
   -->
   <PropertyGroup>
     <SourceLocation>$(BuildLocation)\source</SourceLocation>
-    <OutputFolder>$(BuildLocation)\output\</OutputFolder>
     <StagingLocation>$(BuildLocation)\staging</StagingLocation>
     <SVNRetrieveFrom>$(SVNBaseFolder)/branches/$(Branch)</SVNRetrieveFrom>
     <SVNTagsFolder>$(SVNBaseFolder)/tags/</SVNTagsFolder>
@@ -89,6 +88,8 @@
     <FakeProcMgrConfig Include="$(SourceLocation)\app\ProcMgr\app.config" />
     <FakeWebSvcConfig Include="$(SourceLocation)\app\WebSvc\web.config" />
     <FakeCDRPreviewConfig Include="$(SourceLocation)\app\CdrPreviewWS\web.config" />
+    <FakePromoTesterConfig Include="$(SourceLocation)\Test Harnesses\PromotionTester\app.config" />
+    <FakeUnitTestrConfig Include="$(SourceLocation)\Test Harnesses\UnitTest\UnitTest.dll.config" />
     <NonDeployedFiles Include="$(StagingLocation)\app\Admin\web.config" />
   </ItemGroup>
 
@@ -101,7 +102,7 @@
   -->
   <Target Name="Build">
     <!-- 
-      Create a fake web.config.  We don't version control the web.config
+      Create fake config files.  We don't version control the web.config
       in the application root folder, but the publishing portion of the
       build step will fail if it can't find one.  Rather than very painfully
       (and undoubted brittlely) trying to recreate the publishing step,
@@ -111,6 +112,8 @@
     <WriteLinesToFile File="@(FakeProcMgrConfig)" Lines="$(FakeConfigLines)" />
     <WriteLinesToFile File="@(FakeWebSvcConfig)" />
     <WriteLinesToFile File="@(FakeCDRPreviewConfig)" />
+    <WriteLinesToFile File="@(FakePromoTesterConfig)" Lines="$(FakeConfigLines)" />
+    <WriteLinesToFile File="@(FakeUnitTestrConfig)" Lines="$(FakeConfigLines)" />
 
     <!--
       In order to make publishing work, we have to specify locations for
@@ -120,39 +123,25 @@
     <Message Text="Clean up staging folder: $(StagingLocation)"/>
     <RemoveDir Directories="$(StagingLocation)" />
     <MakeDir Directories="$(StagingLocation)" />
-    <MakeDir Directories="$(OutputFolder)" />
 
     <!-- Write revision note file. -->
-    <Message Text="Notefile in $(OutputFolder)."/>
-    <WriteLinesToFile File="$(OutputFolder)$(BuildNoteFile)" Lines="Version: $(Branch);" />
-    <WriteLinesToFile File="$(OutputFolder)$(BuildNoteFile)" Lines="Revision: $(Revision)" />
-    <WriteLinesToFile File="$(OutputFolder)$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
+    <Message Text="Notefile in $(SourceLocation)."/>
+    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Version: $(Branch);" />
+    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Revision: $(Revision)" />
+    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
 
     <Message Text="Build applications"/>
-    <!--<MSBuild
-             Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; OutDir=$(OutputFolder); WarningLevel=0; WebProjectOutputDir=$(StagingLocation)\$(AdminFolder)"
-             Targets="$(AdminProjectname)" />
-    <Copy SourceFiles="$(OutputFolder)$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(AdminFolder)" />
-
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; OutDir=$(OutputFolder); WarningLevel=0; WebProjectOutputDir=$(StagingLocation)\$(WebSvcFolder)"
-             Targets="$(WebSvcProjectname)" />
-    <Copy SourceFiles="$(OutputFolder)$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(WebSvcFolder)" />-->
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;"
+             Targets="$(AdminProjectname);$(WebSvcProjectname);$(ProcMgrProjectname);$(CDRPreviewProjectname)"
+             />
 
-    <!--Properties="Configuration=Release; Platform=Any CPU; OutDir=$(OutputFolder); WarningLevel=0; WebProjectOutputDir=$(StagingLocation)\$(ProcMgrFolder)"-->
-    <MSBuild
-             Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; OutDir=$(OutputFolder)$(ProcMgrFolder)/; WarningLevel=0;"
-             Targets="$(ProcMgrProjectname);" />
-    <Copy SourceFiles="$(OutputFolder)$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(ProcMgrFolder)" />
+    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(AdminFolder)" />
+    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(WebSvcFolder)" />
+    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(ProcMgrFolder)" />
+    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(CDRPreviewFolder)" />
 
-    <!--<MSBuild
-             Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; OutDir=$(OutputFolder); WarningLevel=0; WebProjectOutputDir=$(StagingLocation)\$(CDRPreviewFolder)"
-             Targets="$(CDRPreviewProjectname)" />
-    <Copy SourceFiles="$(OutputFolder)$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(CDRPreviewFolder)" />-->
 
     <!-- Clean up temporary output location. -->
     <!--<RemoveDir Directories="$(OutputFolder)" />-->
