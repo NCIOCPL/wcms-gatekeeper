@@ -1,0 +1,1 @@
+msbuild BuildGateKeeper.xml /t:ALL /p:branch=bran1
