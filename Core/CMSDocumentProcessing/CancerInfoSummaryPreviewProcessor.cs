@@ -134,5 +134,30 @@ namespace GKManagers.CMSDocumentProcessing
         {
             get { return mediaRenderedContentList; }
         }
+
+        /// <summary>
+        /// Overrides DeleteContentItem to delete the entire content tree, not just the folder
+        /// containing a single pdqCancerInfoSummary object.
+        /// </summary>
+        /// <param name="itemGuid"></param>
+        public override void DeleteContentItem(PercussionGuid itemGuid)
+        {
+            // A null rootItem means the document has already been deleted.
+            // No further work is required.
+            if (itemGuid != null)
+            {
+                PercussionGuid summaryLink = LocateExistingSummaryLink(itemGuid);
+
+                // Get access to the PSFolderItem object for removing the folder and its content.
+                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { summaryLink.ID });
+
+                // Get path from the first item of the the PSFolderItem of the rootItem folder collection.
+                string folderPath = CMSController.GetPathInSite(rootItem[0]);
+
+                // Purge all the contents inside in the folder and remove  the folder.
+                CMSController.DeleteFolder(folderPath, true);
+            }
+
+        }
     }
 }

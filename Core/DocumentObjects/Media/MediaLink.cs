@@ -167,48 +167,48 @@ namespace GateKeeper.DocumentObjects.Media
         /// URL for the size-specific version of the image file to use for inline references.
         /// The URL is relative to the base location where Media documents are stored.
         /// </summary>
-        public string InlineImageUrl
-        {
-            get
-            {
-                string url;
-                int width = DeterminePixelSize();
+        //public string InlineImageUrl
+        //{
+        //    get
+        //    {
+        //        string url;
+        //        int width = DeterminePixelSize();
 
-                if (_size.Equals("as-is"))
-                    url = string.Format("CDR{0}.jpg", ReferencedCdrID);
-                else
-                    url = string.Format("CDR{0}-{1}.jpg", ReferencedCdrID, width);
+        //        if (_size.Equals("as-is"))
+        //            url = string.Format("CDR{0}.jpg", ReferencedCdrID);
+        //        else
+        //            url = string.Format("CDR{0}-{1}.jpg", ReferencedCdrID, width);
 
-                return url;
-            }
-        }
+        //        return url;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the width of the inline image.
         /// </summary>
         /// <value>The width of the inline image.</value>
-        public int InlineImageWidth
-        {
-            get { return DeterminePixelSize(); }
-        }
+        //public int InlineImageWidth
+        //{
+        //    get { return DeterminePixelSize(); }
+        //}
 
         /// <summary>
         /// URL to use when referencing the image file from within a pop-up.
         /// The URL is relative to the base location where Media documents are stored.
         /// </summary>
-        public string PopupImageUrl
-        {
-            get { return string.Format("CDR{0}-750.jpg", ReferencedCdrID); }
-        }
+        //public string PopupImageUrl
+        //{
+        //    get { return string.Format("CDR{0}-750.jpg", ReferencedCdrID); }
+        //}
 
         /// <summary>
         /// Gets the width of the popup image.
         /// </summary>
         /// <value>The width of the popup image.</value>
-        public int PopupImageWidth
-        {
-            get { return 750; }
-        }
+        //public int PopupImageWidth
+        //{
+        //    get { return 750; }
+        //}
         
         /// <summary>
         /// Gets or Sets the MimeType of the media.

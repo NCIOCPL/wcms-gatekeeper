@@ -458,6 +458,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <returns>true if no item matches the parameters.</returns>
         protected bool PrettyUrlIsAvailable(string sitePath, string path, string prettyUrlName)
         {
+            bool urlAvailable;
+
             PercussionGuid[] searchResults;
 
             Dictionary<string, string> fieldCriteria = new Dictionary<string, string>();
@@ -470,9 +472,35 @@ namespace GKManagers.CMSDocumentProcessing
 
             searchResults = CMSController.SearchForContentItems(null, path, fieldCriteria);
 
+            if (searchResults.Length > 0)
+            {
+                // Results were found, but because Percussion matches tokens within the name,
+                // we need to check to see whether there are any *exact* matches.
+                urlAvailable = true; // Assume no exact matches.
+                PSItem[] conflictingItems = CMSController.LoadContentItems(searchResults);
+                foreach (PSItem item in conflictingItems)
+                {
+                    // Compare values
+                    string fieldValue = PSItemUtils.GetFieldValue(item.Fields, "pretty_url_name");
+                    if (fieldValue.Equals(prettyUrlName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // An exact match was found.
+                        urlAvailable = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // No matching results found
+                urlAvailable = true;
+            }
+
+
+            // Restore default site path.
             CMSController.SiteRootPath = defaultPath;
 
-            return searchResults.Length == 0;
+            return urlAvailable;
         }
 
         /// <summary>

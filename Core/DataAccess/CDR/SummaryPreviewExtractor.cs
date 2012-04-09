@@ -35,7 +35,7 @@ namespace GateKeeper.DataAccess.CDR
             // append this unique to the base url
             string uniqueId = Math.Round((decimal)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000000).ToString();
 
-            ((SummaryDocument)document).BasePrettyURL = "/" + uniqueId;
+            ((SummaryDocument)document).BasePrettyURL = "/" + uniqueId + "/summary";
         }
     }
 }

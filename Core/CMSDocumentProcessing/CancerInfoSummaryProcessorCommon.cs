@@ -1204,7 +1204,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// the summary will be deleted.
         /// </summary>
         /// <param name="itemGuid">The root item guid of the summary content item.</param>
-        public void DeleteContentItem(PercussionGuid itemGuid)
+        public virtual void DeleteContentItem(PercussionGuid itemGuid)
         {
             // A null rootItem means the document has already been deleted.
             // No further work is required.
@@ -1817,11 +1817,11 @@ namespace GKManagers.CMSDocumentProcessing
         private FieldSet CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
         {
             FieldSet fields = new FieldSet();
-            fields.Add("inline_image_url", mediaLink.InlineImageUrl);
-            fields.Add("inline_image_width", mediaLink.InlineImageWidth.ToString());
+            //fields.Add("inline_image_url", mediaLink.InlineImageUrl);
+            //fields.Add("inline_image_width", mediaLink.InlineImageWidth.ToString());
 
-            fields.Add("popup_image_url", mediaLink.PopupImageUrl);
-            fields.Add("popup_image_width", mediaLink.PopupImageWidth.ToString());
+            //fields.Add("popup_image_url", mediaLink.PopupImageUrl);
+            //fields.Add("popup_image_width", mediaLink.PopupImageWidth.ToString());
 
             if (string.IsNullOrEmpty(mediaLink.Caption))
             {
