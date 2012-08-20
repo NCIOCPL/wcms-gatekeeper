@@ -69,6 +69,7 @@ namespace GKManagers.CMSDocumentProcessing
         readonly protected string CancerInfoSummaryLinkContentType;
         readonly protected string MediaLinkContentType;
         readonly protected string TableSectionContentType;
+        readonly protected string PermanentLinkContentType;
 
         readonly protected string[] SummaryContentTypes;
 
@@ -111,10 +112,11 @@ namespace GKManagers.CMSDocumentProcessing
             CancerInfoSummaryLinkContentType = PercussionConfig.ContentType.PDQCancerInfoSummaryLink.Value;
             MediaLinkContentType = PercussionConfig.ContentType.PDQMediaLink.Value;
             TableSectionContentType = PercussionConfig.ContentType.PDQTableSection.Value;
+            PermanentLinkContentType = PercussionConfig.ContentType.PDQPermanentLink.Value;
 
             SummaryContentTypes = new String[] {CancerInfoSummaryContentType, CancerInfoSummaryPageContentType,
                                            CancerInfoSummaryLinkContentType, MediaLinkContentType,
-                                           TableSectionContentType};
+                                           TableSectionContentType, PermanentLinkContentType};
         }
 
         #region IDocumentProcessor Members
@@ -157,13 +159,17 @@ namespace GKManagers.CMSDocumentProcessing
                 CMSController.SiteRootPath = sitePath;
 
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-
             PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+
+            // If Permanent Links exist, we need to worry about performing transitions
+            // this will return null for mobile and then potentially populated with values on the desktop
+            // as PermanentLink content items should not exist on Mobile
+            PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, pageIDs, subItems);
+            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
         }
 
         /// <summary>
@@ -183,15 +189,22 @@ namespace GKManagers.CMSDocumentProcessing
 
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
             PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+
+            // If Permanent Links exist, we need to worry about performing transitions
+            // this will return null for mobile and then potentially populated with values on the desktop
+            // as PermanentLink content items should not exist on Mobile
+            PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
+
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, pageIDs, subItems);
+            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
         }
 
         protected void PerformTransition(ItemTransitionDelegate transitionMethod,
             PercussionGuid summaryRootID,
             PercussionGuid summaryLinkID,
+            PercussionGuid[] permanentLinkIDs,
             PercussionGuid[] pageIDs,
             PercussionGuid[] subItems)
         {
@@ -200,6 +213,10 @@ namespace GKManagers.CMSDocumentProcessing
             // Root item and Link must move independently of each other and everything else.
             if (summaryRootID != null) transitionMethod(new PercussionGuid[] { summaryRootID });
             if (summaryLinkID != null) transitionMethod(new PercussionGuid[] { summaryLinkID });
+            if (permanentLinkIDs != null)
+            {
+                PerformSeparateTransitions(transitionMethod, permanentLinkIDs);
+            }
 
             // Pages and subPages are created new on each update and will therefore be in
             // a different state than the root and link items.
@@ -209,6 +226,28 @@ namespace GKManagers.CMSDocumentProcessing
             LogDetailedStep("End workflow transition.");
         }
 
+        /// <summary>
+        /// If there are multiple states for the same type of content, it will not transition properly 
+        /// with PerformTransitions. So, must use this function, which separates the content items by current
+        /// workflow position and then updates accordingly.
+        /// </summary>
+        /// <param name="transitionMethod">Abstracted method to promote items through the workflow.</param>
+        /// <param name="contentGuids">The Guids are needed to identify which content items will be transferred.</param>
+        protected void PerformSeparateTransitions(ItemTransitionDelegate transitionMethod, PercussionGuid[] contentGuids)
+        {
+            // If there are no content guids, there is no need to transition them
+            // And null will break a foreach
+            if (contentGuids != null)
+            {
+
+                // Transition each ID separately as only things with the same state can be transferred
+                // as a group
+                foreach (PercussionGuid id in contentGuids)
+                {
+                    transitionMethod(new PercussionGuid[] { id });
+                }
+            }
+        }
 
         /// <summary>
         /// Creates a new Summary document.
@@ -265,11 +304,21 @@ namespace GKManagers.CMSDocumentProcessing
             allPageRelationships.AddRange(desktopPageRelationships);
             allPageRelationships.AddRange(mobilePageRelationships);
 
+            LogDetailedStep("Begin Permanent Link evaluation.");
+            PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, summary.PermanentLinkList, GetTargetFolder(summary.BasePrettyURL));
+            //PercussionGuid[] toDeletePermanentLinkGuids = PermanetLinkData.DetectToDeletePermanentLinkRelationships();
+            PercussionGuid[] permanentLinkGuids = PermanentLinkData.GetOldGuids;
+            PSAaRelationship[] incomingPermanentLinkRelationships = new PSAaRelationship[0];
+            if (permanentLinkGuids.Length > 0)
+            {
+                incomingPermanentLinkRelationships = FindExternalRelationships(permanentLinkGuids);
+            }
+            LogDetailedStep("End Permanent Link evaluation.");
 
             // Is the summary in a state suitable for updating?
-            VerifyDocumentMayBeUpdated(summary, summaryRootID, summaryLinkID, allPageRelationships.ToArray());
+            VerifyDocumentMayBeUpdated(summary, summaryRootID, summaryLinkID, PermanentLinkData, incomingPermanentLinkRelationships, allPageRelationships.ToArray());
 
-            PerformUpdate(summary, summaryRootID, summaryLinkID,
+            PerformUpdate(summary, summaryRootID, summaryLinkID, PermanentLinkData,
                 desktopPageIDs, desktopSubItems, desktopPageRelationships,
                 mobilePageIDs, mobileSubItems, mobilePageRelationships,
                 sitePath);
@@ -282,7 +331,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryRootID"></param>
         /// <param name="sitePath"></param>
         protected abstract void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID,
-            PercussionGuid summaryLinkID,
+            PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
             PercussionGuid[] desktopPageIDs, PercussionGuid[] desktopSubItemIDs, PSAaRelationship[] incomingDesktopPageRelationships,
             PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath);
@@ -300,7 +349,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryLink">PercussionGuid of the composite document's root CancerInfoSummaryLink content item.</param>
         /// <param name="incomingPageRelationships">Array of Percussion Relationship structures for items linking
         /// to the individual summary pages.</param>
-        protected void VerifyDocumentMayBeUpdated(SummaryDocument summary, PercussionGuid summaryRoot, PercussionGuid summaryLink, PSAaRelationship[] incomingPageRelationships)
+        protected void VerifyDocumentMayBeUpdated(SummaryDocument summary, PercussionGuid summaryRoot, PercussionGuid summaryLink, PermanentLinkHelper PermanentLinkData, PSAaRelationship[] incomingPermanentLinkRelationships, PSAaRelationship[] incomingPageRelationships)
         {
             List<string> errorList = new List<string>();
 
@@ -317,8 +366,32 @@ namespace GKManagers.CMSDocumentProcessing
                 });
             }
 
+
             // Cache to prevent loading items repeatedly
             ItemCache itemStore = new ItemCache(CMSController);
+
+
+            // Inspect incoming relationships to Permanent Links
+            if (incomingPermanentLinkRelationships.Length > 0)
+            {
+                // At this time, we are choosing to not allow relationships to links that are going to be deleted
+                PercussionGuid[] toBeDeletedPermanentLinkGuids = PermanentLinkData.DetectToDeletePermanentLinkRelationships();
+            
+                foreach (PSAaRelationship relationship in incomingPermanentLinkRelationships)
+                {
+                    PercussionGuid dependentID = new PercussionGuid(relationship.dependentId);
+
+                    if (toBeDeletedPermanentLinkGuids.Contains(dependentID))
+                    {
+                        PercussionGuid parentID = new PercussionGuid(relationship.ownerId);
+                        PSItem parentItem = itemStore.LoadContentItem(parentID);
+
+                        errorList.Add(CISErrorBuilder.BuildPermanentLinkError(dependentID, summary.DocumentID, parentItem));
+                    }
+
+                }
+            }
+
 
             // Inspect items owning relationships to the pages.
             foreach (PSAaRelationship relationship in incomingPageRelationships)
@@ -1238,12 +1311,14 @@ namespace GKManagers.CMSDocumentProcessing
                 PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
                 PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+                PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, sitePath);
+                PercussionGuid[] permanentLinks = PermanentLinkData.DetectToDeletePermanentLinkRelationships();
 
                 // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
                 PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
 
-                VerifyDocumentMayBeDeleted(fullIDList.ToArray());
+                VerifyDocumentMayBeDeleted(fullIDList.ToArray(), permanentLinks);
 
                 CMSController.DeleteItemList(fullIDList);
             }
@@ -1254,12 +1329,24 @@ namespace GKManagers.CMSDocumentProcessing
         /// if the document is the target of any incoming relationships.
         /// </summary>
         /// <param name="documentCmsIdentifier">The document's ID in the CMS.</param>
-        protected void VerifyDocumentMayBeDeleted(PercussionGuid[] summaryIdentifers)
+        protected void VerifyDocumentMayBeDeleted(PercussionGuid[] summaryIdentifers, PercussionGuid[] permanentLinks)
         {
             // TODO: Modify this to call FindExternalRelationships().
 
             // The first item in the collection is always root.
             PercussionGuid rootItem = summaryIdentifers[0];
+
+            // Inspect incoming relationships to Permanent Links
+            PSAaRelationship[] incomingPermanentLinkRelationships = new PSAaRelationship[0];
+            if (permanentLinks.Length > 0)
+            {
+                incomingPermanentLinkRelationships = FindExternalRelationships(permanentLinks);
+            }
+            if (incomingPermanentLinkRelationships.Length > 0)
+            {
+                // If there are any relationships to any Permanent Link that will be deleted, throw an error
+                throw new Exception("A Permanent Link cannot be removed while something is linking to it.");
+            }
 
             /// Find all the incoming relationships.  (Need to include inline links!)
             PSAaRelationship[] incomingRelationship =
@@ -1346,6 +1433,20 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return summaryLinkID;
+        }
+
+        /// <summary>
+        /// Locates all PermanentLink content items within the root's folder.
+        /// </summary>
+        /// <param name="rootItemID">Needed to find the folder in which you're search for content.</param>
+        /// <returns>The CMS identifers for the embedded content items.</returns>
+        protected virtual PercussionGuid[] LocateExistingPermanentLinks(PercussionGuid rootItemID)
+        {
+            PSItem[] rootItem = CMSController.LoadContentItems(new long[] { rootItemID.ID });
+            VerifyItemHasPath(rootItem[0]);
+            string summaryPath = CMSController.GetPathInSite(rootItem[0]);
+            PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, summaryPath);
+            return PermanentLinkData.GetOldGuids;
         }
 
         /// <summary>

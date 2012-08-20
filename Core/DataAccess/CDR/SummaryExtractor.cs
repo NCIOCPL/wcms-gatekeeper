@@ -105,6 +105,103 @@ namespace GateKeeper.DataAccess.CDR
                         throw new Exception("Extraction Error: Attribute " + xPathManager.GetXPath(SummaryXPath.Replacement) + " should be a valid CDRID. CurrentValue=" + tempReplacementForID + ". Document CDRID= " + _documentID.ToString());
                     }
                 }
+
+
+                // Get Permanent Links in Summary Meta Data
+                path = xPathManager.GetXPath(SummaryXPath.PermanentLinkList);
+                XPathNavigator permanentLinkNav = xNav.SelectSingleNode(path);
+
+                // Document must have encasing list to consider further extraction
+                if (permanentLinkNav != null)
+                {
+                    // Only picks up items in the encasing list
+                    XPathNodeIterator nodeIter = permanentLinkNav.SelectChildren(XPathNodeType.Element);
+
+                    // Data that we will extract from the XML
+                    string id, sectionID, sectionTitle;
+
+                    // XPath Strings for extraction
+                    string idPath = xPathManager.GetXPath(SummaryXPath.PermanentLinkID);
+                    string sectionIDPath = xPathManager.GetXPath(SummaryXPath.PermanentLinkTargetID);
+                    string sectionTitlePath = xPathManager.GetXPath(SummaryXPath.PermanentLinkTitle);
+
+                    // Keep track of IDs so we can reject duplicates
+                    List<string> linkIDs = new List<string>();
+
+                    // Keep track of duplicates so we can provide a detailed exception
+                    List<PermanentLink> duplicates = new List<PermanentLink>();
+
+                    // For each Permanent Link found in the XML
+                    while (nodeIter.MoveNext())
+                    {
+                        // Ensures that each item in encasing list (PermanentLinkList) is the right type (PermanentLink)
+                        // Not grouped with "while" loop, so bad info can be ignored and document can continue
+                        path = xPathManager.GetXPath(SummaryXPath.PermanentLink);
+                        if (nodeIter.Current.LocalName.Equals(path))
+                        {
+                            // Values that the CDR team gives us
+                            id = null;
+                            sectionID = null;
+                            sectionTitle = null;
+
+                            // Only attempt to get information from Permanent Link if it has attributes
+                            if (nodeIter.Current.HasAttributes)
+                            {
+                                /*
+                                 * Please keep until updated DTD for 6.5
+                                 * 
+                                // Removes the beginning of the line _ for sections
+                                Regex regex = new Regex("^_", RegexOptions.IgnoreCase);
+
+                                id = nodeIter.Current.GetAttribute("id", string.Empty).Trim();
+                                id = regex.Replace(id, "", 1); // Replace leading _
+                                sectionID = nodeIter.Current.GetAttribute("PermaTargId", string.Empty).Trim();
+                                sectionID = regex.Replace(sectionID, "", 1);// Replace leading _
+                                sectionTitle = nodeIter.Current.GetAttribute("PermaTargTitle", string.Empty).Trim();
+                                */
+
+                                id = nodeIter.Current.GetAttribute(idPath, string.Empty).Trim();
+                                sectionID = nodeIter.Current.GetAttribute(sectionIDPath, string.Empty).Trim();
+                                sectionTitle = nodeIter.Current.GetAttribute(sectionTitlePath, string.Empty).Trim();
+
+                                // If CDR team does not give us all of the required info about the 
+                                // PermanentLink, reject it and throw a Null Error
+                                if (id != null && sectionID != null && sectionTitle != null)
+                                {
+                                    // If we have already encountered this link ID, collect it so we can
+                                    // throw a detailed exception
+                                    if (linkIDs.Contains(id))
+                                    {
+                                        // Add new incoming link to Duplicates list
+                                        duplicates.Add(new PermanentLink(id, sectionID, sectionTitle));
+                                        // Add other instance to Duplicates list
+                                        duplicates.Add(summary.PermanentLinkList.Find(link => link.ID == id));
+                                    }
+                                    else
+                                    {
+                                        // Add link ID to set of link IDs so we can check for duplicates
+                                        linkIDs.Add(id);
+
+                                        // Add link to Permanent Link List
+                                        summary.PermanentLinkList.Add(new PermanentLink(id, sectionID, sectionTitle));
+                                    }
+
+                                }
+                                else
+                                {
+                                    throw new NullReferenceException("Permanent Link contains null components.");
+                                }
+                            }
+                        }
+                    }
+
+                    // If there were any duplicate Permanent Links found, throw a detailed exception
+                    if (duplicates.Count > 0)
+                    {
+                        throw new Exception("Permanent Link Duplicates Found: " + duplicates.Count + " Permanent Links with the IDs [" + string.Join(",", duplicates.ConvertAll(duplicateLink => duplicateLink.ID).ToArray()) + "] linked to the Sections [" + string.Join(",", duplicates.ConvertAll(duplicateLink => duplicateLink.SectionID).ToArray()) + "]");
+                    }
+
+                } // This bracket ends the Permanent Link section
             }
             catch (Exception e)
             {
@@ -250,6 +347,8 @@ namespace GateKeeper.DataAccess.CDR
 
             return summarySection;
         }
+
+
 
         /// <summary>
         /// Method to extract tables and make separate "table enlarge" sections.
@@ -457,6 +556,86 @@ namespace GateKeeper.DataAccess.CDR
         }
 
         #endregion Extraction
+
+        #region Permanent Link Verification
+
+        /// <summary>
+        /// Determines if all Permanent Link targets even exist as a section.
+        /// </summary>
+        /// <param name="summary">Summary document needed for SectionList and PermanentLink Targets.</param>
+        private void VerifyPermanentLinkSections(SummaryDocument summary)
+        {
+            List<String> sectionsByIDs = summary.SectionList.ConvertAll(new Converter<SummarySection, String>(SummarySection.SectionByID));
+            List<String> permanentLinkTargetNonExistant = new List<String>();
+            foreach (PermanentLink possibility in summary.PermanentLinkList)
+            {
+                if (!sectionsByIDs.Contains(possibility.SectionID))
+                {
+                    permanentLinkTargetNonExistant.Add(possibility.SectionID);
+                }
+            }
+
+            if (permanentLinkTargetNonExistant.Count > 0)
+            {
+                throw new Exception("Extraction Error: Permanent Link Target Section(s) not found in summary document: ['" + string.Join("', '", permanentLinkTargetNonExistant.ToArray()) + "']");
+            }
+        }
+
+
+        /// <summary>
+        /// Verifies that there are no Permanent Links to device specific sections
+        /// </summary>
+        /// <param name="deviceSpecificSectionNav">Navigator pointing to the section that contains the device-specific attributes.</param>
+        /// <param name="summary">The Summary is needed so that this may be compared to Permanent Links (or whatever in the future).</param>
+        /// <param name="xPathManager"></param>
+        private void VerifyPermanentLinkDeviceSpecificSections(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager)
+        {
+            string path = string.Empty;
+            HashSet<String> sectionsWithSpecificDevices = new HashSet<String>(); // Sections with specific devices
+            try
+            {
+                // Access the path that determines whether the attribute "IncludedDevice" or "ExcludedDevice"
+                // exists in a SummarySection
+                path = xPathManager.GetXPath(SummaryXPath.SummarySectionDeviceSpecific);
+                XPathNodeIterator nodeIter = xNav.Select(path);
+
+                // For each section that has the attribute IncludedDevice or ExcludedDeivce
+                while (nodeIter.MoveNext())
+                {
+                    // Double check to make sure the found SummarySection has attributes
+                    if (nodeIter.Current.HasAttributes)
+                    {
+                        // Determine the id of this section; copied from ExtractSection (same idea/target)
+                        string id = nodeIter.Current.GetAttribute(xPathManager.GetXPath(CommonXPath.CDRID), string.Empty).Trim();
+
+                        // Add this sections ID to the list of sections with specific devices
+                        sectionsWithSpecificDevices.Add(id);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
+            }
+
+            // Determine if any of the Sections that were Device-Specific are linked to by PermanentLinks
+            List<String> permanentLinkSectionsWithExclusions = new List<String>();
+            foreach (PermanentLink permanentLink in summary.PermanentLinkList)
+            {
+                // If the PermanentLink has a section that is marked as device specific, add it to the list
+                if (sectionsWithSpecificDevices.Contains(permanentLink.SectionID))
+                {
+                    permanentLinkSectionsWithExclusions.Add(permanentLink.SectionID);
+                }
+            }
+            // If there is at least one PermanentLink to a section that is device specific, we must throw an error
+            if (permanentLinkSectionsWithExclusions.Count > 0)
+            {
+                throw new Exception("Extraction Error: Permanent Link Target Section must be found on every targeted device. Sections that have ExcludedDevices and IncludedDevices attributes: ['" + string.Join("', '", permanentLinkSectionsWithExclusions.ToArray()) + "']");
+            }
+        }
+
+        #endregion
 
         #region Reference Formatting
 
@@ -754,7 +933,7 @@ namespace GateKeeper.DataAccess.CDR
 
                 DocumentHelper.CopyXml(xmlDoc, summary);
 
-                // Extract misc metadata...
+                // Extract misc metadata and PermanentLinks...
                 ExtractMetadata(xNav, summary, xPathManager);
 
                 // Handle summary relations...
@@ -768,6 +947,13 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Handle modified and published dates
                 DocumentHelper.ExtractDates(xNav, summary, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
+
+                // Ensure that all permanent link targets are found in the document
+                VerifyPermanentLinkSections(summary);
+
+                // Ensure that all permanent link targets are found in every device
+                VerifyPermanentLinkDeviceSpecificSections(xNav, summary, xPathManager);
+
             }
             catch (Exception e)
             {

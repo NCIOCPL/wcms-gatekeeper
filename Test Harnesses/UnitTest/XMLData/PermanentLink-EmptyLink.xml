@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+        <Summary id="CDR0000062955" LegacyPDQID="813">
+          <SummaryMetaData>
+            <SummaryType>Treatment</SummaryType>
+            <SummaryAudience>Patients</SummaryAudience>
+            <SummaryLanguage>English</SummaryLanguage>
+            <SummaryDescription>Expert-reviewed information summary about the treatment of breast cancer.</SummaryDescription>
+            <SummaryURL xref="http://cancer.gov/cancertopics/pdq/treatment/breast/Patient">Breast Cancer (PDQ®): Treatment</SummaryURL>
+            <MainTopics>
+              <TermRef ref="CDR0000038832">breast cancer</TermRef>
+            </MainTopics>
+			<PermaTargs>
+			</PermaTargs>
+          </SummaryMetaData>
+          <SummaryTitle>714-X (PDQ®)</SummaryTitle>
+          <AltTitle TitleType="Short">714-X</AltTitle>
+          <SummarySection id="_1">
+            <Title>Overview</Title>
+            <ItemizedList id="_6" Style="bullet" Compact="No">
+              <ListItem>The main ingredient of 714-X is  <GlossaryTermRef href="CDR0000044001">camphor</GlossaryTermRef>, which comes from the wood and bark of the camphor tree (see <SummaryRef href="CDR0000446580#_20" url="/cancertopics/pdq/cam/714-X/patient">Question 1</SummaryRef>).</ListItem>
+              <ListItem>It is claimed that 714-X helps the <GlossaryTermRef href="CDR0000046356">immune system</GlossaryTermRef> fight <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> (see <SummaryRef href="CDR0000446580#_22" url="/cancertopics/pdq/cam/714-X/patient">Question 3</SummaryRef>).</ListItem>
+              <ListItem>No study of 714-X has been published in a peer-reviewed <GlossaryTermRef href="CDR0000044724">scientific</GlossaryTermRef> journal to show it is safe or effective in treating cancer (see <SummaryRef href="CDR0000446580#_25" url="/cancertopics/pdq/cam/714-X/patient">Question 6</SummaryRef>).</ListItem>
+              <ListItem>714-X is not approved by the <GlossaryTermRef href="CDR0000454785">US Food and Drug Administration</GlossaryTermRef>  for use in the United States (see <SummaryRef href="CDR0000446580#_27" url="/cancertopics/pdq/cam/714-X/patient">Question 8</SummaryRef>).</ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_2">
+            <Title>Questions and Answers About 714-X</Title>
+            <QandASet>
+              <QandAEntry id="_20">
+                <Question>What is 714-X?</Question>
+                <Answer>
+                  <Para id="_8">714-X is a chemical <GlossaryTermRef href="CDR0000422394">compound</GlossaryTermRef> that contains <GlossaryTermRef href="CDR0000044001">camphor</GlossaryTermRef>, a natural substance that comes from the wood and bark of the camphor tree.  Nitrogen, water, and salts are added to camphor to make 714-X.</Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_21">
+                <Question>What is the history of the discovery and use of 714-X as a complementary and alternative treatment for cancer?</Question>
+                <Answer>
+                  <Para id="_9">714-X was developed in the 1960s in  Canada, where it is still being made. Patients in Canada can get 714-X only from a doctor, for compassionate use (giving a treatment to patients before it is approved, because they have a life-threatening disease and there is no <GlossaryTermRef href="CDR0000348921">drug</GlossaryTermRef> or other therapy to treat the disease).   714-X is used in Mexico and some western European countries. It is not approved by the <GlossaryTermRef href="CDR0000454785">US Food and Drug Administration</GlossaryTermRef> (FDA) for use in the United States (see <SummaryRef href="CDR0000446580#_27" url="/cancertopics/pdq/cam/714-X/patient">Question 8</SummaryRef>). </Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_22">
+                <Question>What is the theory behind the claim that 714-X is useful in treating cancer?</Question>
+                <Answer>
+                  <Para id="_10">The development of 714-X was based on the theory that there are tiny living things in the <GlossaryTermRef href="CDR0000270735">blood</GlossaryTermRef> called somatids. According to this theory, some types of somatids are found only in the blood of people who have <GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> or other serious diseases. These types of somatids are said to make growth <GlossaryTermRef href="CDR0000045713">hormones</GlossaryTermRef> that cause cells to grow without control. The makers of 714-X state that by looking at the number and type of somatids in the blood, doctors can see if cancer is starting to form or can <GlossaryTermRef href="CDR0000046450">diagnose</GlossaryTermRef> cancer and predict where the cancer will spread. </Para>
+                  <Para id="_28">The theory states that cancer cells trap nitrogen needed by normal cells and make a <GlossaryTermRef href="CDR0000043986">toxic</GlossaryTermRef> substance that weakens the <GlossaryTermRef href="CDR0000046356">immune system</GlossaryTermRef>. 714-X is reported to help the body fight cancer cells in these ways: </Para>
+                  <ItemizedList id="_29" Style="bullet">
+                    <ListItem>The camphor in 714-X is said to prevent cancer cells from taking nitrogen from the body's normal cells. </ListItem>
+                    <ListItem>714-X is also said to   help the immune system by increasing the flow of <GlossaryTermRef href="CDR0000046305">lymph</GlossaryTermRef>, the colorless <GlossaryTermRef href="CDR0000044669">fluid</GlossaryTermRef> that travels through the body carrying <GlossaryTermRef href="CDR0000045993">white blood cells</GlossaryTermRef> that help fight <GlossaryTermRef href="CDR0000045364">infection</GlossaryTermRef> and disease. </ListItem>
+                  </ItemizedList>
+                  <Para id="_12">Some research studies are published in <GlossaryTermRef href="CDR0000044724">scientific</GlossaryTermRef> journals. Most scientific journals have experts who review research reports before they are published, to make sure that the evidence and conclusions are sound. This is called peer review. Studies published in peer-reviewed scientific journals are considered to be better evidence. No studies have been published in peer-reviewed scientific journals to support the theory of somatids in the development of cancer. Research  on the use of 714-X as a cancer treatment is discussed in <SummaryRef href="CDR0000446580#_24" url="/cancertopics/pdq/cam/714-X/patient">Question 5</SummaryRef> and <SummaryRef href="CDR0000446580#_25" url="/cancertopics/pdq/cam/714-X/patient">Question 6</SummaryRef>.</Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_23">
+                <Question>How is 714-X administered?</Question>
+                <Answer>
+                  <Para id="_13">714-X is usually given by <GlossaryTermRef href="CDR0000044678">injection</GlossaryTermRef> near the <GlossaryTermRef href="CDR0000045762">lymph nodes</GlossaryTermRef> in the <GlossaryTermRef href="CDR0000046375">groin</GlossaryTermRef>.  In some patients with <GlossaryTermRef href="CDR0000445043">lung</GlossaryTermRef> or <GlossaryTermRef href="CDR0000445073">oral cancer</GlossaryTermRef>, 714-X can be sprayed into the nose using a <GlossaryTermRef href="CDR0000044063">nebulizer</GlossaryTermRef> (a device that turns liquid into a fine spray).  The makers of 714-X do not recommend injecting it into a vein (<GlossaryTermRef href="CDR0000046682">intravenously</GlossaryTermRef>) or taking it by mouth.  </Para>
+                  <Para id="_14">The makers of 714-X suggest the following:</Para>
+                  <ItemizedList id="_15" Style="bullet">
+                    <ListItem>714-X is more effective if given early in the disease, before <GlossaryTermRef href="CDR0000045214">chemotherapy</GlossaryTermRef> or <GlossaryTermRef href="CDR0000044971">radiation therapy</GlossaryTermRef> is begun.</ListItem>
+                    <ListItem>714-X can be used along with <GlossaryTermRef href="CDR0000044950">conventional treatments</GlossaryTermRef>.</ListItem>
+                    <ListItem>
+                      <GlossaryTermRef href="CDR0000390323">Vitamin B</GlossaryTermRef>
+                      <Subscript>12</Subscript>
+                      <GlossaryTermRef href="CDR0000045916">supplements,</GlossaryTermRef>
+                      <GlossaryTermRef href="CDR0000045023">vitamin E</GlossaryTermRef> supplements, shark <GlossaryTermRef href="CDR0000044190">cartilage</GlossaryTermRef>, and <GlossaryTermRef href="CDR0000463134">alcohol</GlossaryTermRef> should not be used during treatment with 714-X.</ListItem>
+                  </ItemizedList>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_24">
+                <Question>Have any preclinical (laboratory or animal) studies been conducted using 714-X?</Question>
+                <Answer>
+                  <Para id="_30">Research in a laboratory or using animals is done to find out if a drug, procedure, or treatment is likely to be useful in humans. Animal <GlossaryTermRef href="CDR0000044091">tumor models</GlossaryTermRef> are used to learn how a cancer may <GlossaryTermRef href="CDR0000044078">progress</GlossaryTermRef> and to test new treatments. These <GlossaryTermRef href="CDR0000044517">preclinical studies</GlossaryTermRef> are done before any testing in humans is begun. </Para>
+                  <Para id="_16">No <GlossaryTermRef href="CDR0000044512">laboratory studies</GlossaryTermRef> of the safety and/or effectiveness of 714-X have been published in a peer-reviewed scientific journal.  A few animal experiments have been done, but the results of these experiments have not been reported in scientific journals.  The animal studies used a <GlossaryTermRef href="CDR0000044115">lymphosarcoma</GlossaryTermRef> tumor model in rats and <GlossaryTermRef href="CDR0000045368">lymphoma</GlossaryTermRef> tumor models in dogs and cows.  714-X was not found to be effective against cancer in these studies. </Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_25">
+                <Question>Have any clinical trials (research studies with people) of 714-X been conducted?</Question>
+                <Answer>
+                  <Para id="_17">No <GlossaryTermRef href="CDR0000045961">clinical trials</GlossaryTermRef> or other studies with cancer patients have been published in 
+peer-reviewed scientific journals to support the safety or effectiveness of 714-X.  A number of <GlossaryTermRef href="CDR0000043995">anecdotal reports</GlossaryTermRef> (incomplete descriptions of the medical and treatment history of one or more patients) and <GlossaryTermRef href="CDR0000044096">testimonials</GlossaryTermRef> (personal reports from people who claim to have been helped or <GlossaryTermRef href="CDR0000318813">cured</GlossaryTermRef> by the product) have been published in newspapers and other nonmedical literature.
+The <GlossaryTermRef href="CDR0000044266">National Cancer Institute</GlossaryTermRef> (NCI) reviewed the records of some cancer patients who used 714-X. This review was done to decide if NCI should begin a clinical trial of the product. Not enough information was available to support recommending a trial. See the <ExternalRef xref="http://www.cancer.gov/cam/attachments/714-X_follow.pdf">notice</ExternalRef> on the <ExternalRef xref="http://www.cancer.gov/cam/">Office of Cancer Complementary and Alternative Medicine Web site</ExternalRef>. 
+</Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_26">
+                <Question>Have any side effects or risks been reported from 714-X?</Question>
+                <Answer>
+                  <Para id="_18">The makers of 714-X claim that it is not harmful to humans.  The reported <GlossaryTermRef href="CDR0000046580">side effects</GlossaryTermRef> of treatment with 714-X are redness, tenderness, and swelling at the injection site.</Para>
+                </Answer>
+              </QandAEntry>
+              <QandAEntry id="_27">
+                <Question>Is  714-X approved by the FDA as a cancer treatment in the United States?</Question>
+                <Answer>
+                  <Para id="_19">The FDA has not approved 714-X for use in the United States.  </Para>
+                </Answer>
+              </QandAEntry>
+            </QandASet>
+          </SummarySection>
+          <SummarySection id="_3">
+            <SectMetaData>
+              <SectionType>Changes to summary</SectionType>
+            </SectMetaData>
+            <Title>Changes To This Summary (06/10/2009)</Title>
+            <Para id="_4">The <GlossaryTermRef href="CDR0000044271">PDQ</GlossaryTermRef><GlossaryTermRef href="CDR0000045333">cancer</GlossaryTermRef> information summaries are reviewed regularly and updated as
+new information becomes available.  This section describes the latest
+changes made to this summary as of the date above.</Para>
+            <Para id="_5">Editorial changes were made to this summary.</Para>
+          </SummarySection>
+          <SummarySection id="_AboutPDQ_2">
+            <Title>General CAM Information</Title>
+            <Para id="_AboutPDQ_3">Complementary and alternative medicine (CAM)—also referred to as integrative medicine—includes a broad range of healing philosophies, approaches, and therapies. A therapy is generally called complementary when it is used in addition to conventional treatments; it is often called alternative when it is used instead of conventional treatment. (Conventional treatments are those that are widely accepted and practiced by the mainstream medical community.) Depending on how they are used, some therapies can be considered either complementary or alternative. Complementary and alternative therapies are used in an effort to prevent illness, reduce stress, prevent or reduce side effects and symptoms, or control or cure disease. </Para>
+            <Para id="_AboutPDQ_4">Unlike conventional treatments for cancer, complementary and alternative therapies are often not covered by insurance companies. Patients should check with their insurance provider to find out about coverage for complementary and alternative therapies. </Para>
+            <Para id="_AboutPDQ_5">Cancer patients considering complementary and alternative therapies should discuss this decision with their doctor, nurse, or pharmacist as they would any therapeutic approach, because some complementary and alternative therapies may interfere with their standard treatment or may be harmful when used with conventional treatment. </Para>
+          </SummarySection>
+          <SummarySection id="_AboutPDQ_6">
+            <Title>Evaluation of CAM Approaches</Title>
+            <Para id="_AboutPDQ_7">It is important that the same rigorous scientific evaluation used to assess conventional approaches be used to evaluate CAM therapies. The National Cancer Institute (NCI) and the National Center for Complementary and Alternative Medicine (NCCAM) are sponsoring a number of clinical trials (research studies) at medical centers to evaluate CAM therapies for cancer. </Para>
+            <Para id="_AboutPDQ_8">Conventional approaches to cancer treatment have generally been studied for safety and effectiveness through a rigorous scientific process that includes clinical trials with large numbers of patients. Less is known about the safety and effectiveness of complementary and alternative methods. Few CAM therapies have undergone rigorous evaluation. A small number of CAM therapies originally considered to be purely alternative approaches are finding a place in cancer treatment—not as cures, but as complementary therapies that may help patients feel better and recover faster. One example is acupuncture. According to a panel of experts at a National Institutes of Health (NIH) Consensus Conference in November 1997, acupuncture has been found to be effective in the management of chemotherapy-associated nausea and vomiting and in controlling pain associated with surgery. In contrast, some approaches, such as the use of laetrile, have been studied and found ineffective or potentially harmful.</Para>
+            <Para id="_AboutPDQ_9">
+              <ExternalRef xref="http://www.cancer.gov/cam/bestcase_intro.html">The NCI Best Case Series Program</ExternalRef>, which was started  in 1991, is one way CAM approaches that are being used in practice are being investigated. The program is overseen by the NCI’s Office of Cancer Complementary and Alternative Medicine (OCCAM). Health care professionals who offer alternative cancer therapies submit their patients’ medical records and related materials to OCCAM. OCCAM conducts a critical review of the materials and develops follow-up research strategies for approaches deemed to warrant NCI-initiated research.</Para>
+          </SummarySection>
+          <SummarySection id="_QandA_2">
+            <Title>Questions to Ask Your Health Care Provider About CAM</Title>
+            <Para id="_QandA_3">When considering complementary and alternative therapies, patients should ask their health care provider the following questions: </Para>
+            <ItemizedList id="_QandA_4" Style="bullet">
+              <ListItem>What side effects can be expected?</ListItem>
+              <ListItem>What are the risks associated with this therapy?</ListItem>
+              <ListItem>Do the known benefits outweigh the risks?</ListItem>
+              <ListItem>What benefits can be expected from this therapy?</ListItem>
+              <ListItem>Will the therapy interfere with conventional treatment?</ListItem>
+              <ListItem>Is this therapy part of a clinical trial?</ListItem>
+              <ListItem>If so, who is sponsoring the trial?</ListItem>
+              <ListItem>Will the therapy be covered by health insurance?</ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <SummarySection id="_ToLearnMore_2">
+            <Title>To Learn More About CAM</Title>
+            <Para id="_ToLearnMore_3">
+              <Strong>
+                <Emphasis>National Center for Complementary and Alternative Medicine (NCCAM) </Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_4">The National Center for Complementary and Alternative Medicine (NCCAM) at the National Institutes of Health (NIH) facilitates research and evaluation of complementary and alternative practices, and provides information about a variety of approaches to health professionals and the public.</Para>
+            <ItemizedList id="_ToLearnMore_5" Style="simple">
+              <ListItem>NCCAM Clearinghouse</ListItem>
+              <ListItem>Post Office Box 7923 Gaithersburg, MD 20898–7923</ListItem>
+              <ListItem>Telephone: 1–888–644–6226 (toll free) 301–519–3153 (for International callers)</ListItem>
+              <ListItem>TTY (for deaf and hard of hearing callers): 1–866–464–3615</ListItem>
+              <ListItem>Fax: 1–866–464–3616</ListItem>
+              <ListItem>E-mail: FAKEEMAIL@FAKEEMAIL.FAKEEMAIL </ListItem>
+              <ListItem>Web site: <ExternalRef xref="http://nccam.nih.gov">http://nccam.nih.gov</ExternalRef></ListItem>
+            </ItemizedList>
+            <Para id="_ToLearnMore_15">
+              <Strong>
+                <Emphasis>CAM on PubMed</Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_16">NCCAM and the NIH National Library of Medicine (NLM) jointly developed <ExternalRef xref="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&amp;orig_db=PubMed&amp;cmd_current=Limits&amp;pmfilter_Subsets=Complementary+Medicine">CAM on PubMed</ExternalRef>, a free and easy-to-use search tool for finding CAM-related journal citations. As a subset of the NLM's PubMed bibliographic database, CAM on PubMed features more than 230,000 references and abstracts for CAM-related articles from scientific journals. This database also provides links to the Web sites of over 1,800 journals, allowing users to view full-text articles. (A subscription or other fee may be required to access full-text articles.) CAM on PubMed is available through the <ExternalRef xref="http://www.nlm.nih.gov/nccam/camonpubmed.html">NCCAM Web site</ExternalRef>. It can also be accessed through NLM <ExternalRef xref="http://www.ncbi.nlm.nih.gov/PubMed">PubMed</ExternalRef> bibliographic database by selecting the "Limits" tab and choosing "Complementary Medicine" as a subset.</Para>
+            <Para id="_ToLearnMore_17">
+              <Strong>
+                <Emphasis>Office of Cancer Complementary and Alternative Medicine</Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_18">The NCI Office of Cancer Complementary and Alternative Medicine (OCCAM) coordinates the activities of the NCI in the area of complementary and alternative medicine (CAM). OCCAM supports CAM cancer research and provides information about cancer-related CAM to health providers and the general public via the <ExternalRef xref="http://www.cancer.gov/cam/">NCI Web site</ExternalRef>. </Para>
+            <Para id="_ToLearnMore_19">
+              <Strong>
+                <Emphasis>National Cancer Institute (NCI) Cancer Information Service</Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_20">U.S. residents may call the NCI Cancer Information Service toll free at 1-800-4-CANCER (1-800-422-6237) Monday through Friday from 8:00 am to 8:00 pm. A trained Cancer Information Specialist is available to answer your questions.</Para>
+            <Para id="_ToLearnMore_8">
+              <Strong>
+                <Emphasis>Food and Drug Administration </Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_9">The Food and Drug Administration (FDA) regulates drugs and medical devices to ensure that they are safe and effective. </Para>
+            <ItemizedList id="_ToLearnMore_10" Style="simple">
+              <ListItem>Food and Drug Administration </ListItem>
+              <ListItem>5600 Fishers Lane </ListItem>
+              <ListItem>Rockville, MD 20857</ListItem>
+              <ListItem>Telephone: 1–888–463–6332 (toll free)</ListItem>
+              <ListItem>Web site: <ExternalRef xref="http://www.fda.gov/">http://www.fda.gov/</ExternalRef></ListItem>
+            </ItemizedList>
+            <Para id="_ToLearnMore_11">
+              <Strong>
+                <Emphasis>Federal Trade Commission </Emphasis>
+              </Strong>
+            </Para>
+            <Para id="_ToLearnMore_12">The Federal Trade Commission (FTC) enforces consumer protection laws. Publications available from the FTC include: </Para>
+            <ItemizedList id="_ToLearnMore_13" Style="bullet">
+              <ListItem>
+                <Emphasis>Who Cares: Sources of Information About Health Care Products and Services </Emphasis>
+              </ListItem>
+              <ListItem>
+                <Emphasis>Fraudulent Health Claims: Don’t Be Fooled </Emphasis>
+              </ListItem>
+            </ItemizedList>
+            <ItemizedList id="_ToLearnMore_14" Style="simple">
+              <ListItem>Consumer Response Center</ListItem>
+              <ListItem>Federal Trade Commission</ListItem>
+              <ListItem>CRC-240</ListItem>
+              <ListItem>Washington, DC 20580</ListItem>
+              <ListItem>Telephone: 1-877-FTC-HELP (1-877-382-4357) (toll free)</ListItem>
+              <ListItem>TTY (for deaf and  hearing impaired callers): 202-326-2502</ListItem>
+              <ListItem>Web site: <ExternalRef xref="http://www.ftc.gov/">http://www.ftc.gov/</ExternalRef></ListItem>
+            </ItemizedList>
+          </SummarySection>
+          <PatientVersionOf ref="CDR0000062972" />
+          <DateFirstPublished>2005-09-23</DateFirstPublished>
+          <DateLastModified>2009-06-10</DateLastModified>
+        </Summary>

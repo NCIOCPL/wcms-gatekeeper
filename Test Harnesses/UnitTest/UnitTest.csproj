@@ -75,53 +75,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMSManager\PSFolder.cs" />
-    <Compile Include="Common\TesterHelper.cs" />
-    <Compile Include="DeviceSpecificOutput\SummaryConditionalExtract.cs" />
+    <Compile Include="Extract\SummaryConditionalExtract.cs" />
+    <Compile Include="Extract\PermanentLink.cs" />
     <Compile Include="ModularProcessing\DeviceOrdering.cs" />
-    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummaryDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummaryPushTest.cs" />
-    <Compile Include="StorageIntegrated\DrugInfoSummary\DrugInfoSummarySaveTest.cs" />
     <Compile Include="Extract\Summary.cs" />
-    <Compile Include="StorageIntegrated\Gatekeeper\BatchTestFixture.cs" />
-    <Compile Include="StorageIntegrated\Gatekeeper\ImportExportTest.cs" />
     <Compile Include="StorageIntegrated\Gatekeeper\IntegrationTestFixture.cs" />
-    <Compile Include="StorageIntegrated\Gatekeeper\RequestTestFixture.cs" />
-    <Compile Include="StorageIntegrated\Gatekeeper\WebServiceTestFixture.cs" />
-    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfPushTest.cs" />
-    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryTermSaveTest.cs" />
-    <Compile Include="StorageIntegrated\GeneticsProfessional\GenProfSaveTest.cs" />
-    <Compile Include="StorageIntegrated\GlossaryTerm\GlossaryPushTest.cs" />
-    <Compile Include="GlossaryTerm\GTRelInfoTest.cs" />
     <Compile Include="HiPerfTimer.cs" />
-    <Compile Include="Media\AudioMediaTest.cs" />
-    <Compile Include="StorageIntegrated\Media\MediaDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\Media\MediaPushTest.cs" />
-    <Compile Include="StorageIntegrated\Media\MediaSaveTest.cs" />
     <Compile Include="ModularProcessing\SummaryProcessingTargets.cs" />
     <Compile Include="ModularProcessing\SummaryExtract.cs" />
-    <Compile Include="StorageIntegrated\Organization\OrganizationDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\Organization\OrganizationPushTest.cs" />
-    <Compile Include="StorageIntegrated\Organization\OrganizationSaveTest.cs" />
-    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitPushTest.cs" />
-    <Compile Include="StorageIntegrated\PoliticalSubUnit\PoliticalSubUnitSaveTest.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="StorageIntegrated\Protocol\ProtocolSaveTest.cs" />
-    <Compile Include="StorageIntegrated\Protocol\ProtocolPushTest.cs" />
-    <Compile Include="StorageIntegrated\Protocol\ProtocolDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\Summary\SummaryPushTest.cs" />
-    <Compile Include="StorageIntegrated\Summary\SummarySaveTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StorageIntegrated\Summary\SummaryDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\Terminology\TerminologyDeleteTest.cs" />
-    <Compile Include="StorageIntegrated\Terminology\TerminologyPushTest.cs" />
-    <Compile Include="StorageIntegrated\Terminology\TerminologySaveTest.cs" />
     <Compile Include="UTHelper.cs" />
     <Compile Include="Web References\GateKeeperWS\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -130,7 +97,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="UnitTest.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -187,252 +153,43 @@
     <Content Include="DocumentProcessors.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="XMLData\PermanentLink-BadSectionID.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-EmptyLink.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-EmptyList.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-Floater.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-None.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-One.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-Prefix.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-Three.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\PermanentLink-WithOtherTags.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="XMLData\Summary-BreastPatient-NoMobile-62955.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\Summary-BreastPatient-Mobile-62955.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="XMLData\GT46332.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GT46583.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GT512821.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GT572363.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GT663502.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696772.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696772Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696774.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696774Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696806.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696806Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696811.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\audio696811Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\CTGov363918.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\CTGovOverallOfficial363917.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\CTGovWithOverallContact360607.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\DrugInfoSummary487488.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\DrugInfoSummary487511.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\DrugInfoSummary495323.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\DrugInfoSummary502187.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GeneticsProfessional.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GeneticsProfessional2.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GenProf30010007.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GenProf30010173.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GenProf30010249.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GenProf30010355.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GlossaryTerm.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GlossaryTermWithMedia.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GlossaryTermWithMediaAndMutiLang.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GlossaryTermWithPronounciation.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\GlossaryTermWithSpanish.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\image415499.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\image415499Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\image415500.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\image415500Remove.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Media.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Media415499.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Media415511.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Media466541.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Organization27218.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Organization27271.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Organization346204.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Organization346415.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Organization34983.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\PoliticalSubUnit43856.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\PoliticalSubUnit43870.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\PoliticalSubUnit43920.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\PostXSL\CTGovOverallOfficial363917_PostXSL.xml" />
-    <Content Include="XMLData\PostXSL\CTGovWithOverallContact360607_PostXSL.xml" />
-    <Content Include="XMLData\PostXSL\ProtocolWithMultipleProtPerson271939_PostXSL_HP.xml" />
-    <Content Include="XMLData\PostXSL\SummaryAcupuncture445441_PostXSL.xml" />
-    <Content Include="XMLData\PostXSL\SummaryPatientVersionPostXSL.xml" />
-    <Content Include="XMLData\PostXSL\SummarySectionReference_PostXSL.xml" />
-    <Content Include="XMLData\PostXSL\SummaryWithL4_PostXSL.xml" />
-    <Content Include="XMLData\PostXSL\SummaryWithTable299612_PostXSL.xml" />
-    <Content Include="XMLData\Protocol517312.xml" />
-    <Content Include="XMLData\ProtocolClosed65755.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolCTGovWithOverallContact360607.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolCTGovWithOverallOfficial363917.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolCTGovWithSpecialChar460115.xml" />
-    <Content Include="XMLData\ProtocolCTGovWtihMultipleSites467954.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithDuplicateContactNullPerson446178.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithMultipleLeadOrg64184.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithMultiplePersonsInOneSite65504.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithMultipleProtPerson271939.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithMultipleSites491296.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithSpecialCategory347393.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithSpecialCategory67377.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\ProtocolWithStudyCondition349374.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="XMLData\Summary-BreastPatient-62955.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\Summary-Conditional-Extract.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryAcupuncture445441.xml" />
-    <Content Include="XMLData\SummaryEnglishHPWithReference62787.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryHPSpanish256668.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryPatientSpanish256762.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryPatientVersion258017.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryPatientWithMeida62955.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummarySectionReference257999.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummarySummaryRefLink62863.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\SummaryWithTable299612.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\Terminology.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyDefinition43236.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyDic37779.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyMenu.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyMenu41919.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyMenuChild39069.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyMenuGrandpa39347.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XMLData\TerminologyMenuParent37900.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -263,6 +263,52 @@ namespace GateKeeper.DocumentObjects.Summary
             }
         }
 
+
+        private List<PermanentLink> _permanentLinks;
+        public List<PermanentLink> PermanentLinkList
+        {
+            get
+            {
+                if (_permanentLinks == null)
+                    _permanentLinks = new List<PermanentLink>();
+                return _permanentLinks;
+            }
+        }
+
+        /*
+        private List<PermanentLink> _permanentLinkCreateList;
+        public List<PermanentLink> PermanentLinkCreateList
+        {
+            get
+            {
+                if (_permanentLinkCreateList == null)
+                    _permanentLinkCreateList = new List<PermanentLink>();
+                return _permanentLinkCreateList;
+            }
+        }
+
+        private List<PermanentLink> _permanentLinkUpdateList;
+        public List<PermanentLink> PermanentLinkUpdateList
+        {
+            get
+            {
+                if (_permanentLinkUpdateList == null)
+                    _permanentLinkUpdateList = new List<PermanentLink>();
+                return _permanentLinkUpdateList;
+            }
+        }
+
+        private List<PermanentLink> _permanentLinkDeleteList;
+        public List<PermanentLink> PermanentLinkDeleteList
+        {
+            get
+            {
+                if (_permanentLinkDeleteList == null)
+                    _permanentLinkDeleteList = new List<PermanentLink>();
+                return _permanentLinkDeleteList;
+            }
+        }
+        */
         /// <summary>
         /// Gets, sets summary ID of the document this summary replaces.
         /// Note: May be empty string if this is not a replace.

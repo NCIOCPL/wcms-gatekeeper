@@ -45,7 +45,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summary">The summary to update.</param>
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
-        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
             PercussionGuid[] desktopPageIDs, PercussionGuid[] desktopSubItemIDs, PSAaRelationship[] incomingDesktopPageRelationships,
             PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
@@ -86,7 +86,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 // Move existing document components to staging.
                 // Pages and sub-pages don't yet exist.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, null, null);
+                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], null, null);
 
                 CMSController.SiteRootPath = sitePath;
 
@@ -197,7 +197,7 @@ namespace GKManagers.CMSDocumentProcessing
             try
             {
                 // Move the entire composite document to staging.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, oldpageIDs, oldSubItems);
+                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], oldpageIDs, oldSubItems);
 
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
@@ -351,6 +351,16 @@ namespace GKManagers.CMSDocumentProcessing
                 docContentId = base.GetCdrDocumentID(contentType, config.BaseFolders.DesktopSiteBase, null, cdrID);
 
             return docContentId;
+        }
+
+        /// <summary>
+        /// Locates all PermanentLink content items within the root's folder.
+        /// </summary>
+        /// <param name="rootItemID">Needed to find the folder in which you're search for content.</param>
+        /// <returns>The CMS identifers for the embedded content items.</returns>
+        protected override PercussionGuid[] LocateExistingPermanentLinks(PercussionGuid rootItemID)
+        {
+            return new PercussionGuid[0];
         }
     }
 }

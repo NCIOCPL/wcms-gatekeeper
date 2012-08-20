@@ -20,7 +20,7 @@ namespace GKManagers.CMSManager.Configuration
 
         }
 
- 
+
         /// <summary>
         /// Gets the Site id value of the site specified by SiteRootPath.
         /// </summary>
@@ -43,7 +43,7 @@ namespace GKManagers.CMSManager.Configuration
             }
 
         }
-        #endregion        
+        #endregion
 
         [ConfigurationProperty("searchPath", IsRequired = true)]
         public ConfigValue SearchPath
@@ -82,6 +82,13 @@ namespace GKManagers.CMSManager.Configuration
         {
             get { return (NavonPublicTransitionElement)base["navonPublicTransitionName"]; }
         }
+
+        [ConfigurationProperty("transactionChunkSize")]
+        public TransactionChunkSizeElement TransactionChunkSize
+        {
+            get { return (TransactionChunkSizeElement)base["transactionChunkSize"]; }
+        }
+
     }
 
     public class ProtocolElement : ConfigurationElement
@@ -122,7 +129,7 @@ namespace GKManagers.CMSManager.Configuration
 
     public class PortElement : ConfigurationElement
     {
-        [ConfigurationProperty("value",IsRequired = true)]
+        [ConfigurationProperty("value", IsRequired = true)]
         public String Value
         {
             get

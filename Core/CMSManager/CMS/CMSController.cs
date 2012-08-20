@@ -1237,14 +1237,93 @@ namespace NCI.WCM.CMSManager.CMS
         public PSItemStatus[] CheckOutForEditing(PercussionGuid[] guidList)
         {
             long[] idList = Array.ConvertAll(guidList, guid => (long)guid.ID);
-            return PSWSUtils.PrepareForEdit(_contentService, idList);
+            List<PSItemStatus> statusList = new List<PSItemStatus>();
+
+            // Check out no more than maxChunkSize items at once.
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            int maxChunkSize = percussionConfig.TransactionChunkSize.Value;
+
+            int itemCount = idList.Length;
+            int loopCount = (itemCount / maxChunkSize);
+            int remainder = itemCount % maxChunkSize;
+
+            int subsetSize;
+            int first;
+
+            for (int i = 0; i <= loopCount; i++)
+            {
+                // Check items out in groups no larger than maxChunkSize.
+                subsetSize = (i < loopCount) ? maxChunkSize : remainder;
+                first = i * maxChunkSize;
+
+                try
+                {
+                    // As items are checked out, add them to statusList for eventual return.
+                    long[] listSubset = new long[subsetSize];
+                    Array.ConstrainedCopy(idList, first, listSubset, 0, subsetSize);
+                    PSItemStatus[] result = PSWSUtils.PrepareForEdit(_contentService, listSubset);
+                    statusList.AddRange(result);
+                }
+                catch (Exception ex)
+                {
+                    // Percussion loops through items during a checkout and in the event of an error
+                    // may leave some of them checked out.  We need to release those items.
+                    //
+                    // The statusList provides a means of rolling back the items from successful
+                    // chunks.
+                    //
+                    // We don't have the necessary information to rollback the items from the
+                    // chunk which failed.  We could check them back in, but that doesn't address
+                    // the workflow state, and Percussion is OK with allowing the same user to check
+                    // an item out twice.  On the plus side, the search mechanism seems to be slightly
+                    // more reliable when searching for items by the checkoutusername field, so that
+                    // should make it easier to deal with any needed manual fixes.
+
+                    // Release items one at a time. This is more expensive than a chunked call,
+                    // but if the chunk size has already resulted in an error has occured,
+                    // this is more likely to complete safely.
+                    statusList.ForEach(
+                        item => PSWSUtils.ReleaseFromEdit(_contentService, new PSItemStatus[] { item })
+                    );
+
+                    throw new CMSOperationalException("CheckOutForEditing failed. Items rolled back.", ex);
+                }
+            }
+
+
+            return statusList.ToArray();
         }
 
         public void ReleaseFromEditing(PSItemStatus[] statusList)
         {
-            if (statusList.Length > 0)
+            // Check in no more than maxChunkSize items at once.
+            PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
+            int maxChunkSize = percussionConfig.TransactionChunkSize.Value;
+
+            int itemCount = statusList.Length;
+            int loopCount = (itemCount / maxChunkSize);
+            int remainder = itemCount % maxChunkSize;
+
+            int subsetSize;
+            int first;
+
+            for (int i = 0; i <= loopCount; i++)
             {
-                PSWSUtils.ReleaseFromEdit(_contentService, statusList);
+                // Release items in groups no larger than maxChunkSize.
+                subsetSize = (i < loopCount) ? maxChunkSize : remainder;
+                first = i * maxChunkSize;
+
+                try
+                {
+                    // As items are checked out, add them to statusList for eventual return.
+                    PSItemStatus[] listSubset = new PSItemStatus[subsetSize];
+                    Array.ConstrainedCopy(statusList, first, listSubset, 0, subsetSize);
+                    PSWSUtils.ReleaseFromEdit(_contentService, listSubset);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 

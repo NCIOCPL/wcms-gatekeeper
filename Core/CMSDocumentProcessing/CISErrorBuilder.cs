@@ -56,5 +56,35 @@ namespace GKManagers.CMSDocumentProcessing
 
             return message;
         }
+
+        /// <summary>
+        /// Helper method to create an error message for Permanent Links that have an external 
+        /// relationship that is not permitted.
+        /// </summary>
+        /// <param name="targetPageID">PercussionGuid of the PermanentLink being referenced.</param>
+        /// <param name="targetCdrid">CDR ID containing the page being referenced.</param>
+        /// <param name="parentItem">The offending content item containing the reference.</param>
+        /// <returns>A nicely formatted error message.</returns>
+        /// <remarks>Originally to prevent a PermanentLink from being deleted if there is a 
+        /// CustomLink pointing to it.</remarks>
+        static public string BuildPermanentLinkError(PercussionGuid permanentLink, int targetCdrid, PSItem parentItem)
+        {
+            string message;
+            string fmt = "A Permanent Link in CDRD {0} is referenced by a non-PDQ content item that is not permitted. Referenced Permanent Link Percussion ID is '{1}', referred by the ID '{2}', found in path '{3}'.";
+
+            string path = string.Empty;
+            if (parentItem.Folders != null && parentItem.Folders.Length > 0)
+            {
+                path = parentItem.Folders[0].path;
+            }
+
+            string itemName = PSItemUtils.GetFieldValue(parentItem, "sys_title");
+
+            PercussionGuid parentID = new PercussionGuid(parentItem.id);
+
+            message = string.Format(fmt, targetCdrid, permanentLink, parentID, path);
+
+            return message;
+        }
     }
 }

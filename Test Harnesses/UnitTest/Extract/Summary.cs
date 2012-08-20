@@ -53,6 +53,7 @@ namespace GateKeeper.UnitTest.Extract
             Assert.IsTrue(summaryDoc.ValidOutputDevices.Contains(TargetedDevice.mobile), string.Format("ValidOutputDevices does not contain {0}.", TargetedDevice.mobile));
         }
 
+
         private void RunExtract(string filename, SummaryDocument summaryDoc)
         {
             XmlDocument document = new XmlDocument();

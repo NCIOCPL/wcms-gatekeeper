@@ -130,6 +130,13 @@ namespace GKManagers.CMSDocumentProcessing
                     CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
                 }
 
+                // Create All New Permanent Links (for a New Summary)
+                PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, document.PermanentLinkList, createPath);
+                PercussionGuid[] newPageIDs = Array.ConvertAll(summaryPageIDList, newPageID => new PercussionGuid(newPageID));
+                PermanentLinkData.SetURLs(newPageIDs, document.TopLevelSectionList);
+                List<long> permanentLinkIDs = PermanentLinkData.CreatePermanentLinks(createPath);
+                rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
+
                 // Find the Patient or Health Professional version and create a relationship.
                 LinkRootItemToAlternateAudienceVersion(summaryRoot, document.AudienceType);
 
@@ -153,7 +160,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summary">The summary to update.</param>
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
-        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper PermanentLinkData,
             PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems, PSAaRelationship[] incomingPageRelationships,
             PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
@@ -189,12 +196,13 @@ namespace GKManagers.CMSDocumentProcessing
             List<long> tableIDs;
             List<long> mediaLinkIDs;
             long[] newSummaryPageIDList;
+            List<long> permanentLinkIDs;
 
             try
             {
                 // Move the entire composite document to staging.
                 // This step is not required when creating items since creation takes place in staging.
-                PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, oldPageIDs, oldSubItems);
+                PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, PermanentLinkData.GetOldGuids, oldPageIDs, oldSubItems);
 
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
@@ -234,8 +242,10 @@ namespace GKManagers.CMSDocumentProcessing
 
                 LogDetailedStep("End page creation.");
 
+                
                 LogDetailedStep("Begin Relationship updates.");
 
+                //UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs, incomingPageRelationships, new StandardSummarySectionFinder(CMSController));
                 UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, summaryLinkID, oldPageIDs, newPageIDs, incomingPageRelationships, new StandardSummarySectionFinder(CMSController));
 
                 // Add new cancer information summary pages into the page slot.
@@ -245,6 +255,23 @@ namespace GKManagers.CMSDocumentProcessing
                 PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, pageSectionReferencedItems);
 
                 LogDetailedStep("End Relationship updates.");
+
+
+                // Update URLs for new and updating Permanent Links
+                // This step must go down here because the new page ids must be used to find the right
+                // sections, otherwise the URLs will update with old section/page locations. And, this
+                // step must go before the Permanent Links are created or updated so that the correct 
+                // values are used.
+                LogDetailedStep("Begin Permanent Link URL updates.");
+                PermanentLinkData.SetURLs(newPageIDs, summary.TopLevelSectionList);
+                LogDetailedStep("End Permanent Link URL updates.");
+
+                // Create the new Permanent Links in Percussion
+                // Add the returned guids to the rollback list just in case there's a problem.
+                LogDetailedStep("Begin Permanent Link creation.");
+                permanentLinkIDs = PermanentLinkData.CreatePermanentLinks(temporaryPath);
+                rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
+                LogDetailedStep("End Permanent Link creation.");
 
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
@@ -268,12 +295,20 @@ namespace GKManagers.CMSDocumentProcessing
             RemoveOldPages(oldPageIDs, oldSubItems);
 
             // Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList);
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
             CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
             // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
+
+            // Permanent Links Updates and Deletion must go outside of the try / catch block. This is 
+            // because these changes cannot be rolled back, so we must ensure that there will be no 
+            // errors encountered at this point.
+            LogDetailedStep("Begin Permanent Link updates and deletion.");
+            PermanentLinkData.UpdatePermanentLinks();
+            PermanentLinkData.DeletePermanentLinks();
+            LogDetailedStep("End Permanent Link updates and deletion.");
         }
 
         /// <summary>
@@ -328,12 +363,14 @@ namespace GKManagers.CMSDocumentProcessing
                 PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
                 PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+                PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, sitePath);
+                PercussionGuid[] permanentLinks = PermanentLinkData.DetectToDeletePermanentLinkRelationships();
 
                 // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
                 PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
 
-                VerifyDocumentMayBeDeleted(fullIDList.ToArray());
+                VerifyDocumentMayBeDeleted(fullIDList.ToArray(), permanentLinks);
 
                 // Additional check on mobile version content item for dependency before the 
                 // the standard version can be deleted.
@@ -348,7 +385,7 @@ namespace GKManagers.CMSDocumentProcessing
                     // It is important for verification that rootItem always be first.
                     PercussionGuid[] mobileFullIDList = CMSController.BuildGuidArray(mobileRootItem, mobilePageIDs, mobileSubItems, summaryLink);
 
-                    VerifyDocumentMayBeDeleted(mobileFullIDList.ToArray());
+                    VerifyDocumentMayBeDeleted(mobileFullIDList.ToArray(), new PercussionGuid[0]);
 
                     mobileFullIDList = CMSController.BuildGuidArray(mobilePageIDs, mobileSubItems);
 

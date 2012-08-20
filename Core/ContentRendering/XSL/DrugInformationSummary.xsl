@@ -51,16 +51,16 @@
 					
 					<xsl:choose>
 						<xsl:when test="position()=1">
-							<td valign="top" width="25%"><b>US Brand Name(s):</b></td>
+							<td valign="top" width="35%"><b>US Brand Name(s):</b></td>
 						</xsl:when>
 						<xsl:otherwise>
-							<td valign="top" width="25%"></td>
+							<td valign="top" width="35%"></td>
 						</xsl:otherwise>
 					</xsl:choose>
 					
 					<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0" /></td>
 					
-					<td valign="top" width="75%">
+					<td valign="top" width="65%">
             <xsl:apply-templates />
 					</td>
 					
@@ -78,16 +78,16 @@
 					
 					<xsl:choose>
 						<xsl:when test="position()=1">
-							<td valign="top" width="25%"><b>Other Name(s):</b></td>
+							<td valign="top" width="35%"><b>Other Name(s):</b></td>
 						</xsl:when>
 						<xsl:otherwise>
-							<td valign="top" width="25%"></td>
+							<td valign="top" width="35%"></td>
 						</xsl:otherwise>
 					</xsl:choose>
 
 					<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0" /></td>
 					
-					<td valign="top" width="75%">
+					<td valign="top" width="65%">
             <xsl:apply-templates />
 					</td>
 
@@ -98,16 +98,13 @@
 				</xsl:for-each>
 			</xsl:if>
 			
-			<tr>
-				<td valign="top" colspan="3"><img src="/images/spacer.gif" alt="" width="10" height="6" border="0"></img></td>
-			</tr>
+			<tr><td valign="top" colspan="3"><img src="/images/spacer.gif" alt="" width="10" height="6" border="0" /></td></tr>
 			
 			<xsl:if test="string-length(FDAApproved) &gt; 0">
 				<tr>
-				<td valign="top" width="28%"><b>FDA Approved:</b> </td>
-				<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0"></img>
-				</td>
-				<td valign="top" width="68%"><xsl:value-of select="FDAApproved"/></td>
+				<td valign="top" width="35%"><b>FDA Approved:</b> </td>
+				<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0"></img></td>
+				<td valign="top" width="65%"><xsl:value-of select="FDAApproved"/></td>
 				</tr>
 			</xsl:if>
 		</table>

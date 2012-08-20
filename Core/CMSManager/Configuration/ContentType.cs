@@ -78,5 +78,15 @@ namespace GKManagers.CMSManager.Configuration
             }
 
         }
+
+        [ConfigurationProperty("pdqPermanentLink")]
+        public PDQPermanentLinkElement PDQPermanentLink
+        {
+            get
+            {
+                return (PDQPermanentLinkElement)base["pdqPermanentLink"];
+            }
+
+        }
     }
 }

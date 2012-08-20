@@ -145,9 +145,8 @@
       <!-- If the section contains keypoints at any level, build up a list with
            appropriate nesting by recursively walking the SummarySection hierarchy. -->
         <xsl:if test="count(descendant-or-self::KeyPoint) != 0">
-				<table cellSpacing="0" cellPadding="0" width="100%" align="center" border="1">
-					<tr>
-						<td class="Summary-SummarySection-Keypoint-Title">
+          <div class="keyPoints">
+            <h4>
 							<xsl:choose>
 								<xsl:when test="/Summary/SummaryMetaData/SummaryLanguage != 'English'">
 									Puntos importantes de esta sección
@@ -155,11 +154,7 @@
 								<xsl:otherwise>Key Points for This Section 
 								</xsl:otherwise>
 							</xsl:choose>
-						</td>
-					</tr>
-					<tr>
-						<td>
-						<img src="/images/spacer.gif" width="1" height="5" alt="" border="0" />
+						</h4>
 
               <!-- Current node is a top-level SummarySection.  Keypoints are normally
                    found one-per sub-section, and generally none-at-all at the outermost
@@ -187,15 +182,10 @@
                   </ul>
                 </xsl:otherwise>
               </xsl:choose>
-              
-						<img src="/images/spacer.gif" width="1" height="5" alt="" border="0" />
-						</td>
-					</tr>	
-				</table>
+				  </div>
 				</xsl:if>
 		</xsl:if>
 		<xsl:apply-templates/>
-
 	</xsl:template>
 
   <!-- Match Summary Sections, but only when we're building a list of keypoints. -->
@@ -335,7 +325,6 @@
 		<xsl:element name="a">
 			<xsl:attribute name="name">ReferenceSection</xsl:attribute>
 		</xsl:element>
-		<p>
 		    <!-- When Language is English, use References. Otherwise, Biblioggrafia -->
 		    <Span Class="Summary-ReferenceSection">
 				<xsl:choose>
@@ -350,7 +339,6 @@
 			<ol>
 				<xsl:apply-templates/>
 			</ol>
-		</p>
 		<xsl:element name="a">
 			<xsl:attribute name="name">END_ReferenceSection</xsl:attribute>
 		</xsl:element>

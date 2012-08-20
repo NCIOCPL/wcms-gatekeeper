@@ -56,6 +56,7 @@
     <Compile Include="CancerInfoSummaryProcessorMobile.cs" />
     <Compile Include="CancerInfoSummarySectionFinder.cs" />
     <Compile Include="CISErrorBuilder.cs" />
+    <Compile Include="PermanentLinkHelper.cs" />
     <Compile Include="Configuration\BaseFolders.cs" />
     <Compile Include="Configuration\CMSProcessingSection.cs" />
     <Compile Include="Constants.cs" />

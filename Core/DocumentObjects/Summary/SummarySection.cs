@@ -276,6 +276,11 @@ namespace GateKeeper.DocumentObjects.Summary
             return sb.ToString();
         }
 
+        public static string SectionByID(SummarySection section)
+        {
+            //Return RawSection instead of Section so the _ doesn't become a problem
+            return section.RawSectionID;
+        }
         #endregion
     }
 }

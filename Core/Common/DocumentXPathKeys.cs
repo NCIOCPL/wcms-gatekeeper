@@ -60,6 +60,14 @@ namespace GateKeeper.Common.XPathKeys
         private static string _mediaLinkCaption = "SummaryMediaLinkCaption";
         private static string _alterTitle = "SummaryAlterTitle";
         private static string _titleType = "SummaryTitleType";
+        private static string _permanentLinkList = "PermaTargs";
+        private static string _permanentLink = "PermaTarg";
+        private static string _permanentLinkTitle = "PermaTargTitle";
+        private static string _permanentLinkTargetID = "PermaTargSectionId";
+        private static string _permanentLinkID = "PermaTargId";
+        private static string _summarySectionDeviceSpecific = "SummarySectionDeviceSpecific";
+
+
         #endregion
 
         #region public properties
@@ -149,6 +157,24 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string TitleType
         { get { return _titleType; } }
+
+        public static string PermanentLinkList
+        { get { return _permanentLinkList; } }
+
+        public static string PermanentLink
+        { get { return _permanentLink; } }
+
+        public static string PermanentLinkTitle
+        { get { return _permanentLinkTitle; } }
+
+        public static string PermanentLinkID
+        { get { return _permanentLinkID; } }
+
+        public static string PermanentLinkTargetID
+        { get { return _permanentLinkTargetID; } }
+
+        public static string SummarySectionDeviceSpecific
+        { get { return _summarySectionDeviceSpecific; } }
 
         #endregion
     }

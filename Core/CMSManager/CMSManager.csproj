@@ -80,10 +80,12 @@
     <Compile Include="Configuration\PDQDrugInfoSummaryElement.cs" />
     <Compile Include="Configuration\PDQMediaElement.cs" />
     <Compile Include="Configuration\PDQMediaLinkElement.cs" />
+    <Compile Include="Configuration\PDQPermanentLinkElement.cs" />
     <Compile Include="Configuration\PDQTableSectionElement.cs" />
     <Compile Include="Configuration\PreviewSettings.cs" />
     <Compile Include="Configuration\RepublishEditions.cs" />
     <Compile Include="CMS\SectionToCmsIDMap.cs" />
+    <Compile Include="Configuration\TransactionChunkSizeElement.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Configuration\PercussionConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
