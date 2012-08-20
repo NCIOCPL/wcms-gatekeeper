@@ -73,7 +73,6 @@
     <SvnCopy SourcePath="$(SVNRetrieveFrom)"
              DestinationPath="$(TagUrl)"
              Revision="$(Revision)"
-			 Username="$(SubversionUserid)" Password="$(SubversionPassword)"
              Message="Automatic build of Revision $(Revision) for the $(TargetEnvironment) environment."/>
 
   </Target>
@@ -100,7 +99,7 @@
   <!--
     Build the solution and copy only the necessary files to the staging folder.
   -->
-  <Target Name="Build">
+  <Target Name="BuildWebProjects">
     <!-- 
       Create fake config files.  We don't version control the web.config
       in the application root folder, but the publishing portion of the
@@ -180,7 +179,7 @@
       <Output TaskParameter="TargetOutputs" PropertyName="Revision"/>
     </CallTarget>
 
-    <CallTarget Targets="Build"/>
+    <CallTarget Targets="BuildWebProjects"/>
 
     <CallTarget Targets="ApplySourceCodeTag"/>
 
