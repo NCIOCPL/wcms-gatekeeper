@@ -43,7 +43,7 @@
 
     <Message Text="Fetching latest source code from $(SVNRetrieveFrom)"/>
     <SvnExport RepositoryPath="$(SVNRetrieveFrom)"
-      LocalPath="$(SourceLocation)" Username="$(SubversionUserid)" Password="$(SubversionPassword)">
+      LocalPath="$(SourceLocation)">
       <Output TaskParameter="Revision" PropertyName="Revision" />
     </SvnExport>
 
@@ -90,7 +90,7 @@
     <FakeCDRPreviewConfig Include="$(SourceLocation)\app\CdrPreviewWS\web.config" />
     <FakePromoTesterConfig Include="$(SourceLocation)\Test Harnesses\PromotionTester\app.config" />
     <FakeUnitTestrConfig Include="$(SourceLocation)\Test Harnesses\UnitTest\UnitTest.dll.config" />
-    <NonDeployedFiles Include="$(StagingLocation)\app\Admin\web.config" />
+    <NonDeployedFiles Include="$(SourceLocation)\app\*.pdb" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -109,7 +109,7 @@
       we just create a fake web.config and then delete it afterward.
     -->
     <WriteLinesToFile File="@(FakeAdminConfig)" />
-    <WriteLinesToFile File="@(FakeProcMgrConfig)" Lines="$(FakeConfigLines)" />
+    <!--<WriteLinesToFile File="@(FakeProcMgrConfig)" Lines="$(FakeConfigLines)" />-->
     <WriteLinesToFile File="@(FakeWebSvcConfig)" />
     <WriteLinesToFile File="@(FakeCDRPreviewConfig)" />
     <WriteLinesToFile File="@(FakePromoTesterConfig)" Lines="$(FakeConfigLines)" />
@@ -126,28 +126,29 @@
 
     <!-- Write revision note file. -->
     <Message Text="Notefile in $(SourceLocation)."/>
-    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Version: $(Branch);" />
-    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Revision: $(Revision)" />
-    <WriteLinesToFile File="$(SourceLocation)$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Version: $(Branch);" />
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Revision: $(Revision)" />
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
 
     <Message Text="Build applications"/>
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;"
-             Targets="$(AdminProjectname);$(WebSvcProjectname);$(ProcMgrProjectname);$(CDRPreviewProjectname)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0; WebProjectOutputDir=$(StagingLocation)"
+             Targets="$(AdminProjectname);$(WebSvcProjectname);$(CDRPreviewProjectname);"
              />
+               <!--$(ProcMgrProjectname);-->
 
-    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(AdminFolder)" />
-    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(WebSvcFolder)" />
-    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(ProcMgrFolder)" />
-    <Copy SourceFiles="$(SourceLocation)$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(CDRPreviewFolder)" />
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(AdminFolder)" />
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(WebSvcFolder)" />
+    <!--<Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(ProcMgrFolder)" />-->
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(CDRPreviewFolder)" />
 
 
     <!-- Clean up temporary output location. -->
     <!--<RemoveDir Directories="$(OutputFolder)" />-->
 
-    <!--<Message Text="NonDeployedFiles $(NonDeployedFiles)"/>
-    <Delete Files="@(NonDeployedFiles)" />-->
+    <Message Text="Debug NonDeployedFiles @(NonDeployedFiles)"/>
+    <!--<Delete Files="@(NonDeployedFiles)" />-->
 
     <Delete Files="@(FakeAdminConfig);@(FakeProcMgrConfig);@(FakeWebSvcConfig);@(FakeCDRPreviewConfig);@(NonDeployedFiles)" />
   </Target>
@@ -181,9 +182,9 @@
 
     <CallTarget Targets="Build"/>
 
-    <!--<CallTarget Targets="ApplySourceCodeTag"/>
+    <CallTarget Targets="ApplySourceCodeTag"/>
 
-    <CallTarget Targets="Deploy"/>-->
+    <!--<CallTarget Targets="Deploy"/>-->
 
   </Target>
 
