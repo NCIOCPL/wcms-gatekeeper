@@ -132,7 +132,7 @@
     <Message Text="Build applications"/>
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0; WebProjectOutputDir=$(StagingLocation)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0; OutDir=$(StagingLocation)\ "
              Targets="$(AdminProjectname);$(WebSvcProjectname);$(CDRPreviewProjectname);"
              />
                <!--$(ProcMgrProjectname);-->
