@@ -23,6 +23,7 @@
   -->
   <PropertyGroup>
     <SourceLocation>$(BuildLocation)\source</SourceLocation>
+    <OutputFolder>$(BuildLocation)\output\</OutputFolder>
     <StagingLocation>$(BuildLocation)\staging</StagingLocation>
     <SVNRetrieveFrom>$(SVNBaseFolder)/branches/$(Branch)</SVNRetrieveFrom>
     <SVNTagsFolder>$(SVNBaseFolder)/tags/</SVNTagsFolder>
@@ -132,10 +133,20 @@
     <Message Text="Build applications"/>
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0; OutDir=$(StagingLocation)\ "
-             Targets="$(AdminProjectname);$(WebSvcProjectname);$(CDRPreviewProjectname);"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)\$(AdminFolder) "
+             Targets="$(AdminProjectname);"
              />
-               <!--$(ProcMgrProjectname);-->
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)\$(WebSvcFolder) "
+             Targets="$(WebSvcProjectname);"
+             />
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)\$(CDRPreviewFolder) "
+             Targets="$(CDRPreviewProjectname);"
+             />
+    <!--$(ProcMgrProjectname);-->
 
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(AdminFolder)" />
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(SourceLocation)\App\$(WebSvcFolder)" />
