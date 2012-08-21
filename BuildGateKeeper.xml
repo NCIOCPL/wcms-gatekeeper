@@ -14,7 +14,7 @@
 
       source - Retrieval destination for Subversion.
       output - Holding bin for compiled binaries.
-      staging - Copy of all files to be deployed.
+      staging - Copy of all files to be deployed (i.e. without source code).
 
     $(SVNBaseFolder) is specified in build.config and is the application's
     root URL in Subversion.  The folder structure is assumed to follow the
@@ -74,7 +74,7 @@
     <SvnCopy SourcePath="$(SVNRetrieveFrom)"
              DestinationPath="$(TagUrl)"
              Revision="$(Revision)"
-             Message="Automatic build of Revision $(Revision) for the $(TargetEnvironment) environment."/>
+             Message="Automatic build of GateKeeper Revision $(Revision) for the $(TargetEnvironment) environment."/>
 
   </Target>
 
@@ -90,7 +90,7 @@
     <FakeCDRPreviewConfig Include="$(SourceLocation)\app\CdrPreviewWS\web.config" />
     <FakePromoTesterConfig Include="$(SourceLocation)\Test Harnesses\PromotionTester\app.config" />
     <FakeUnitTestrConfig Include="$(SourceLocation)\Test Harnesses\UnitTest\UnitTest.dll.config" />
-    <NonDeployedFiles Include="$(SourceLocation)\app\*.pdb" />
+    <NonDeployedFiles Include="$(SourceLocation)\app\*.pdb;$(SourceLocation)\app\*.pdb" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -100,7 +100,7 @@
   <!--
     Build the solution and copy only the necessary files to the staging folder.
   -->
-  <Target Name="BuildWebProjects">
+  <Target Name="Build">
     <!-- 
       Create fake config files.  We don't version control the web.config
       in the application root folder, but the publishing portion of the
@@ -183,13 +183,23 @@
     value is not defined, this step will be skipped.)
   -->
   <Target Name="Deploy" Condition="$(DeployLocation) != ''">
-    <!-- NOTE: *.config, robots.txt, and *.pdb are not copied. -->
+
+    <!-- Deploy executables -->
     <RoboCopy
         SourceFolder="$(StagingLocation)"
         DestinationFolder="$(DeployLocation)"
         Mirror="True"
-        ExcludeFiles="*.config;robots.txt;*.pdb"
+        ExcludeFiles="*.config;*.pdb;"
+        ExcludeFolders="sharedconfig"
     />
+
+    <!-- Deploy XSL -->
+    <RoboCopy
+        SourceFolder="$(SourceLocation)\Core\ContentRendering\XSL"
+        DestinationFolder="$(DeployLocation)"
+        Mirror="True"
+    />
+
   </Target>
 
   
@@ -203,11 +213,11 @@
       <Output TaskParameter="TargetOutputs" PropertyName="Revision"/>
     </CallTarget>
 
-    <CallTarget Targets="BuildWebProjects"/>
+    <CallTarget Targets="Build"/>
 
     <CallTarget Targets="ApplySourceCodeTag"/>
 
-    <!--<CallTarget Targets="Deploy"/>-->
+    <CallTarget Targets="Deploy"/>
 
   </Target>
 
