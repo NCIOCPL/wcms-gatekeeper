@@ -97,49 +97,35 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="XSL\Common\CommonElements.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Common\CommonInlineMarkup.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Common\CommonScripts.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Common\CommonTableFormatter.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Common\CustomTemplates.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Common\DeviceFilter.xslt" />
     <Content Include="XSL\Common\TableRender.xslt" />
     <Content Include="XSL\CTGOVProtocol.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\DrugInformationSummary.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\GeneticsProfessional.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Protocol_HP.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Protocol_Patient.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Protocol_Search_HP.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Protocol_Search_Patient.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\Protocol_StudyContacts.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XSL\README.txt" />
     <Content Include="XSL\Summary.xsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

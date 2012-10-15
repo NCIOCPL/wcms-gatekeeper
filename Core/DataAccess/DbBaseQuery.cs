@@ -31,31 +31,6 @@ namespace GateKeeper.DataAccess
             }
         }
 
-
-        /// <summary>
-        /// Return CancerGov staging Database Wrapper
-        /// </summary>
-        [Obsolete("The CancerGov Database is no longer in use.", true)]
-        protected DbWrapper CancerGovDBWrapper
-        {
-            get
-            {
-                return dbManager.GetDatabaseWrapper(ContentDatabase.CancerGov.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Return CancerGov staging Database Wrapper
-        /// </summary>
-        [Obsolete("The CancerGovStaging Database is no longer in use.", true)]
-        protected DbWrapper CancerGovStagingDBWrapper
-        {
-            get
-            {
-                return dbManager.GetDatabaseWrapper(ContentDatabase.CancerGovStaging.ToString());
-            }
-        }
-
         /// <summary>
         /// Return Preview Database Wrapper
         /// </summary>
