@@ -27,6 +27,7 @@
     <StagingLocation>$(BuildLocation)\staging\</StagingLocation>
     <SVNRetrieveFrom>$(SVNBaseFolder)/branches/$(Branch)</SVNRetrieveFrom>
     <SVNTagsFolder>$(SVNBaseFolder)/tags/</SVNTagsFolder>
+    <SVNBuildsFolder>$(SVNBaseFolder)/Builds/</SVNBuildsFolder>
   </PropertyGroup>
   
   <!--
@@ -138,37 +139,58 @@
     <!-- Admin tool -->
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)$(AdminFolder) "
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(AdminFolder) "
              Targets="$(AdminProjectname);"
              />
     <!-- Web service -->
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)$(WebSvcFolder) "
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(WebSvcFolder) "
              Targets="$(WebSvcProjectname);"
              />
     <!-- CDR Preview service -->
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(StagingLocation)$(CDRPreviewFolder) "
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(CDRPreviewFolder) "
              Targets="$(CDRPreviewProjectname);"
              />
     <!-- Process Manager -->
     <MSBuild
              Projects="$(SourceLocation)\$(SolutionName)"
-             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(StagingLocation)$(ProcMgrFolder)\ "
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder)$(ProcMgrFolder)\ "
              Targets="$(ProcMgrProjectname);"
              />
 
+    <!-- Copy built code to staging location. -->
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(AdminFolder)" DestinationFolder="$(StagingLocation)$(AdminFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(WebSvcFolder)" DestinationFolder="$(StagingLocation)$(WebSvcFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(CDRPreviewFolder)" DestinationFolder="$(StagingLocation)$(CDRPreviewFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(ProcMgrFolder)" DestinationFolder="$(StagingLocation)$(ProcMgrFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
 
+    <!-- Copy XSL to staging location. -->
+    <RoboCopy
+        SourceFolder="$(SourceLocation)\Core\ContentRendering\XSL" DestinationFolder="$(StagingLocation)\XSL"
+        Mirror="True"
+    />
+
+
+    <!-- Copy build note to staging location -->
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(AdminFolder)" />
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(WebSvcFolder)" />
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(ProcMgrFolder)" />
     <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(CDRPreviewFolder)" />
-
-
-    <!-- Clean up temporary output location. -->
-    <!--<RemoveDir Directories="$(OutputFolder)" />-->
 
     <Message Text="Debug NonDeployedFiles @(NonDeployedFiles)"/>
     <!--<Delete Files="@(NonDeployedFiles)" />-->
@@ -193,15 +215,37 @@
         ExcludeFolders="sharedconfig"
     />
 
-    <!-- Deploy XSL -->
-    <RoboCopy
-        SourceFolder="$(SourceLocation)\Core\ContentRendering\XSL"
-        DestinationFolder="$(DeployLocation)"
-        Mirror="True"
-    />
 
   </Target>
 
+  <Target Name="SaveExecutables">
+
+    <!--
+      Tag Name = R + RevisionNumber + TargetEnvironment
+    -->
+    <CreateProperty Value="$(Branch)-$(TargetEnvironment)-R$(Revision)">
+      <Output TaskParameter="Value" PropertyName="TagName"/>
+    </CreateProperty>
+
+    <CreateProperty Value="$(SVNBuildsFolder)$(TagName)">
+      <Output TaskParameter="Value" PropertyName="BuildsUrl" />
+    </CreateProperty>
+
+    <Message Text="Saving executables to: $(TagName)"/>
+    <!--
+      SvnClient is a wrapper for the svn command line.
+      The import command line orders repository and file system path
+      opposite of most other commands, so we have to do put the "wrong"
+      values in RepositoryPath and LocalPath.
+    -->
+    <SvnClient RepositoryPath="$(BuildLocation)\staging"
+      LocalPath="$(BuildsUrl)"
+      Command="import"
+      Message="Automatic build of GateKeeper Revision $(Revision) for the $(TargetEnvironment) environment."
+    />
+    
+
+  </Target>
   
   <!--
     The "main" target which defines the list and order of other
@@ -214,6 +258,8 @@
     </CallTarget>
 
     <CallTarget Targets="Build"/>
+
+    <CallTarget Targets="SaveExecutables"/>
 
     <CallTarget Targets="ApplySourceCodeTag"/>
 
