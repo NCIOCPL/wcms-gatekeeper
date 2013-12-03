@@ -121,6 +121,7 @@
     <Compile Include="AdminToolMasterPage.Master.designer.cs">
       <DependentUpon>AdminToolMasterPage.Master</DependentUpon>
     </Compile>
+    <Compile Include="Authentication\SSOAuthenticate.cs" />
     <Compile Include="BasePage.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>BasePage.aspx</DependentUpon>
