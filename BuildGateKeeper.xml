@@ -164,19 +164,19 @@
     <!-- Copy built code to staging location. -->
     <RoboCopy
         SourceFolder="$(OutputFolder)$(AdminFolder)" DestinationFolder="$(StagingLocation)$(AdminFolder)"
-        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig;dtd"
     />
     <RoboCopy
         SourceFolder="$(OutputFolder)$(WebSvcFolder)" DestinationFolder="$(StagingLocation)$(WebSvcFolder)"
-        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig;dtd"
     />
     <RoboCopy
         SourceFolder="$(OutputFolder)$(CDRPreviewFolder)" DestinationFolder="$(StagingLocation)$(CDRPreviewFolder)"
-        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig;dtd"
     />
     <RoboCopy
         SourceFolder="$(OutputFolder)$(ProcMgrFolder)" DestinationFolder="$(StagingLocation)$(ProcMgrFolder)"
-        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig;dtd"
     />
 
     <!-- Copy XSL to staging location. -->
@@ -212,7 +212,7 @@
         DestinationFolder="$(DeployLocation)"
         Mirror="True"
         ExcludeFiles="*.config;*.pdb;"
-        ExcludeFolders="sharedconfig"
+        ExcludeFolders="sharedconfig;dtd"
     />
 
 
