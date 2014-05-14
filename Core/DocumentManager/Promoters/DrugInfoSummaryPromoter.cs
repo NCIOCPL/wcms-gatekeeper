@@ -21,6 +21,8 @@ namespace GKManagers
     /// </summary>
     class DrugInfoSummaryPromoter: DocumentPromoterBase
     {
+        private bool _isPromoteToLiveFast = false; 
+
         #region Public methods
         public DrugInfoSummaryPromoter(RequestData dataBlock, int batchID,
             ProcessActionType action, string userName)
@@ -109,10 +111,14 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Promote the document to Preview into the Percussion CMS.
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
+                //the Percussion call is skipped for the Preview step for PromoteToLiveFast
+                if (!_isPromoteToLiveFast)
                 {
-                    processor.PromoteToPreview(drugInfoSummary.DocumentID);
+                    // Promote the document to Preview into the Percussion CMS.
+                    using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
+                    {
+                        processor.PromoteToPreview(drugInfoSummary.DocumentID);
+                    }
                 }
 
                 // Push drug info summary document to the preview database
@@ -190,6 +196,66 @@ namespace GKManagers
             }
 
             informationWriter("Promoting drug info summary document to the live database succeeded.");
+        }
+
+        /// <summary>
+        /// Method to call query class to push document to the preview and live database.
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="drugInfoSummary"></param>
+        protected override void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter)
+        {
+            informationWriter("Start to promote drug info summary document to the preview and live database in one step.");
+
+            _isPromoteToLiveFast = true;
+            //skip the Percussion call for the Preview Step by setting _isPromoteToLiveFast to true
+            this.PromoteToPreview(xPathManager, warningWriter, informationWriter);
+
+            informationWriter("Start to promote drug info summary document to the live database.");
+
+            DrugInfoSummaryDocument drugInfoSummary = new DrugInfoSummaryDocument();
+            drugInfoSummary.WarningWriter = warningWriter;
+            drugInfoSummary.InformationWriter = informationWriter;
+            drugInfoSummary.DocumentID = DataBlock.CdrID;
+            if (DataBlock.ActionType == RequestDataActionType.Export)
+            {
+                // Promote the document to Live into the Percussion CMS.
+                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
+                {
+                    processor.PromoteToLiveFast(drugInfoSummary.DocumentID);
+                }
+
+                // Push drug info summary document to the live database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.PushDocumentToLive(drugInfoSummary, UserName);
+                }
+            }
+            else if (DataBlock.ActionType == RequestDataActionType.Remove)
+            {
+                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
+                {
+                    processor.DeleteContentItem(drugInfoSummary.DocumentID);
+                }
+
+                // Remove drug info summary data from database
+                using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
+                {
+                    drugQuery.DeleteDocument(drugInfoSummary, ContentDatabase.Live, UserName);
+                }
+            }
+            else
+            {
+                // There should never be any invalid request.
+                throw new Exception("Promoter Error: Invalid drug info summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+            }
+
+            informationWriter("Promoting drug info summary document to the live database succeeded.");
+
+            informationWriter("Promoting drug info summary document to the preview and live database succeeded.");
+
         }
 
         #endregion

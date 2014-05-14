@@ -76,6 +76,9 @@
     <Compile Include="AudienceType.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermSimple.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermSimpleDefinition.cs" />
+    <Compile Include="GlossaryTerm\MediaLinkCollection.cs" />
     <Compile Include="GlossaryTerm\RelatedInformationLink.cs" />
     <Compile Include="PreviewTypes.cs" />
     <Compile Include="Protocol\OrganizationRoleType.cs" />

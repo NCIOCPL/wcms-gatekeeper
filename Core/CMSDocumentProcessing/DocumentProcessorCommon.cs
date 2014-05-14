@@ -126,6 +126,15 @@ namespace GKManagers.CMSDocumentProcessing
             throw new NotImplementedException();
         }
 
+        public virtual void PromoteToLiveFast(int documentCdrID, string sitePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void PromoteToLiveFast(int documentCdrID)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         /// <summary>
@@ -340,6 +349,42 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         /// <summary>
+        /// Moves the content items identified by idList to the Live state.
+        /// </summary>
+        /// <param name="idList">An array of ID values identifying content items to
+        /// be moved</param>
+        /// <remarks>If the targeted items are in the
+        /// CDRStaging or CDRStagingUpdate are valid workflow states.</remarks>
+        protected void TransitionItemsToLiveFast(PercussionGuid[] idList)
+        {
+            // GetWorkflowState() is guaranteed to return a valid state.
+            WorkflowState oldState = GetWorkflowState(idList);
+
+            // If we're already in Live, there's nothing to do.
+            if (oldState != WorkflowState.CDRLive)
+            {
+                WorkflowTransition transition = WorkflowTransition.Invalid;
+
+                switch (oldState)
+                {
+                    case WorkflowState.CDRStaging:
+                        transition = WorkflowTransition.PromoteToCDRLiveFastNew;//valid workflow transition when moving documents directly from staging to live
+                        break;
+                    case WorkflowState.CDRStagingUpdate:
+                        transition = WorkflowTransition.PromoteToCDRLiveFastUpdate;//valid workflow transition when moving documents directly from staging to live
+                        break;
+                    case WorkflowState.CDRPreview:
+                        transition = WorkflowTransition.PromoteToCDRLiveNew;
+                        break;
+                    case WorkflowState.CDRPreviewUpdate:
+                        transition = WorkflowTransition.PromoteToCDRLiveUpdate;
+                        break;
+                }
+                CMSController.PerformWorkflowTransition(idList, transition.ToString());
+            }
+        }
+
+        /// <summary>
         /// Retrieves the workflow state of the content items identifed by idList.
         /// </summary>
         /// <param name="idList">An array of content items for which the workflow state
@@ -393,6 +438,7 @@ namespace GKManagers.CMSDocumentProcessing
                 {
                     // CDRStaging
                     case WorkflowTransition.PromoteToCDRPreviewNew:
+                    case WorkflowTransition.PromoteToCDRLiveFastNew://new workflow transition to promote from staging to live & skip the preview step
                         state = WorkflowState.CDRStaging;
                         found = true;
                         break;
@@ -409,6 +455,7 @@ namespace GKManagers.CMSDocumentProcessing
                         break;
                     // CDRStaging Update
                     case WorkflowTransition.PromoteToCDRPreviewUpdate:
+                    case WorkflowTransition.PromoteToCDRLiveFastUpdate://new workflow transition to promote from staging to live & skip the preview step
                         state = WorkflowState.CDRStagingUpdate;
                         found = true;
                         break;
@@ -526,30 +573,32 @@ namespace GKManagers.CMSDocumentProcessing
         /// Determines whether the named path contains anything other than a Navon.
         /// </summary>
         /// <param name="path">Path to check.</param>
-        /// <returns>True if the folder is empty. (Navons are ignored.)</returns>
+        /// <returns>False if the folder is empty. (Navons are ignored.)</returns>
         protected bool PrettyUrlPathIsOccupied(string path)
         {
-            bool emptyOrNonexistant = true;
+            bool isPathOccupied = false;
 
             bool folderExists = CMSController.FolderExists(path);
             if (folderExists)
             {
                 PSItemSummary[] items = CMSController.FindFolderChildren(path);
-                if (items.Length == 1) // Check whether it's a Navon.
+                if (items.Length == 1) 
                 {
                     PSItem[] contentItem = CMSController.LoadContentItems(new PercussionGuid[] { new PercussionGuid(items[0].id) });
+                    // Check whether it's a Navon.
                     if (contentItem[0].contentType.Equals(NavonType, StringComparison.InvariantCultureIgnoreCase))
-                        emptyOrNonexistant = true;
+                        isPathOccupied = false;
                     else
-                        emptyOrNonexistant = false;
+                        //if there is only one item and it is anything other than a Navon the path is occupied
+                        isPathOccupied = true;
                 }
                 else if (items.Length > 1)
                 {
-                    emptyOrNonexistant = false;
+                    isPathOccupied = true;
                 }
             }
 
-            return emptyOrNonexistant;
+            return isPathOccupied;
         }
 
         protected String EscapeSystemTitle(String title)

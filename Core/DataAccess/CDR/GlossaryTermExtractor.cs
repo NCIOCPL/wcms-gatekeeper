@@ -182,6 +182,9 @@ namespace GateKeeper.DataAccess.CDR
                     string imgRef = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaRef));
                     int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
 
+                    // Get the audience this link is intended for.
+                    AudienceType audience = GetMediaLinkAudienceType(mediaLinkIter.Current);
+
                     string thumb = string.Empty;
                     string alt = string.Empty;
                     bool isThumb = false;
@@ -251,7 +254,7 @@ namespace GateKeeper.DataAccess.CDR
                             if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                             {
                                 MediaLink mediaLink = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, langCapMap[lang], mediaDocumentID, lang, isThumb, type, mediaXml);
-                                glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(mediaLink);
+                                glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(audience, mediaLink);
                             }
                             else
                             {
@@ -271,7 +274,7 @@ namespace GateKeeper.DataAccess.CDR
                         if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                         {
                             MediaLink mediaLink = new MediaLink(imgRef, cdrId, "", isInline, showEnlargeLink, minWidth, size, mediaLinkID, "", mediaDocumentID, lang, isThumb, type, mediaXml);
-                            glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(mediaLink);
+                            glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(audience, mediaLink);
                         }
                         else
                         {
@@ -285,6 +288,24 @@ namespace GateKeeper.DataAccess.CDR
             {
                 throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
             }
+        }
+
+        /// <summary>
+        /// Retrieves the intended audience for a MediaLink element.  If no audience is specified, default to Patient.
+        /// </summary>
+        /// <param name="element">Reference to a MedialLink element.</param>
+        /// <returns>A value of AudienceType.  If no audience is specified, AudienceType.Patient is returned.</returns>
+        private AudienceType GetMediaLinkAudienceType(XPathNavigator element)
+        {
+            string audienceTmp = DocumentHelper.GetAttribute(element, xPathManager.GetXPath(GlossaryTermXPath.MediaAudience));
+
+            // Convert string to MediaLink.AudienceType.  If the value is not recognized, default to Patient.
+            // The text values used in the MediaLink XML element are not compatible with GateKeeper's AudienceType.
+            // Using MediaLink.AudienceType enum as an intermediary allows us to avoid writing a string comparison.
+            MediaLink.AudienceType intermediary = ConvertEnum<MediaLink.AudienceType>.Convert(audienceTmp, MediaLink.AudienceType.Patient);
+
+            // Convert to GateKeeper AudienceType before returning.
+            return intermediary == MediaLink.AudienceType.Patient ? AudienceType.Patient : AudienceType.HealthProfessional;
         }
 
         private void ExtractRelatedInformation(XPathNavigator xNav, GlossaryTermDocument glossaryTermDoc)
@@ -301,78 +322,316 @@ namespace GateKeeper.DataAccess.CDR
                 XPathNodeIterator relatedInformations = xNav.Select(path);
                 foreach (XPathNavigator definitionNav in relatedInformations)
                 {
+                    // Look up the list of languages to use.
                     string useWith = DocumentHelper.GetAttribute(definitionNav, xPathManager.GetXPath(RelatedInformationXPath.UseWith));
-                    string url = string.Empty;
+                    Language[] applyToLanguage = DecodeLanguageToUse(DocumentHelper.GetAttribute(definitionNav, xPathManager.GetXPath(RelatedInformationXPath.UseWith)));
+
                     string name = definitionNav.Value;
-                    RelatedInformationLink relInfoLink = null;
+                    RelatedInformationLink.RelatedLinkType linkType = GetRelatedLinkType(definitionNav.Name);
 
-                    if (definitionNav.Name == "RelatedExternalRef")
-                        url = DocumentHelper.GetAttribute(definitionNav, xPathManager.GetXPath(RelatedInformationXPath.XRef));
-                    else
+                    if (linkType == RelatedInformationLink.RelatedLinkType.External)
                     {
-                        // For RelatedDrugSummaryRef & RelatedSummaryRef the href are the cdrids.
-                        // The documents are stored in database, so obtain the prettyurl 
-                        // using the documentid
-                        string cdrId = DocumentHelper.GetAttribute(definitionNav, xPathManager.GetXPath(RelatedInformationXPath.HRef));
-                        int documentId = 0;
-
-                        if (!Int32.TryParse(CDRHelper.ExtractCDRID(cdrId), out documentId))
-                        {
-                            throw new Exception("Failed to parse" +  definitionNav.Name + " document id from value: " + cdrId);
-                        }
-
-                        if (definitionNav.Name == "RelatedDrugSummaryRef")
-                        {
-                            DrugInfoSummaryQuery docQuery = new DrugInfoSummaryQuery();
-                            DrugInfoSummaryDocument drugDoc = docQuery.GetDocumentData(documentId);
-                            if (drugDoc != null)
-                                url = drugDoc.PrettyURL;
-                        }
-                        else if (definitionNav.Name == "RelatedSummaryRef")
-                        {
-                            SummaryQuery docQuery = new SummaryQuery();
-                            SummaryDocument summaryDoc = docQuery.GetDocumentData(documentId);
-                            if (summaryDoc != null)
-                                url = summaryDoc.PrettyURL;
-                        }
-
-                        //Cleanup up the URL that will be replaced by CDE at runtime.
-                        // 1. Url may have domain name example http://cancer.gov/
-                        if (!string.IsNullOrEmpty(url))
-                        {
-                            url = url.Trim().ToLower();
-                            if (url.IndexOf("http://") > -1)
-                                url = url.Substring(url.IndexOf("/", "http://".Length));
-
-                        }
-                        else
-                        {
-                            throw new Exception("Could not find document in database for " + definitionNav.Name + " document id from value: " + cdrId);
-                        }
+                        String url = DocumentHelper.GetAttribute(definitionNav, xPathManager.GetXPath(RelatedInformationXPath.XRef));
+                        linkType = RelatedInformationLink.RelatedLinkType.External;
+                        StoreRelatedExternalLink(glossaryTermDoc, name, url, applyToLanguage);
                     }
-
-                    // Special condition: useWith is not applicable to RelatedDrugSummaryRef and also the fact 
-                    // there are no Spanish drug summaries, so this ref will be applied only to English language.
-                    if (definitionNav.Name == "RelatedDrugSummaryRef")
-                        useWith = "en";
-
-                    if (string.IsNullOrEmpty(useWith) || useWith == "en" )
+                    else if (linkType == RelatedInformationLink.RelatedLinkType.DrugInfoSummary ||
+                        linkType == RelatedInformationLink.RelatedLinkType.Summary)
                     {
-                        relInfoLink = new RelatedInformationLink(name, url, Language.English);
-                        glossaryTermDoc.GlossaryTermTranslationMap[Language.English].RelatedInformationList.Add(relInfoLink);
+                        StoreRelatedPDQLinkSimple(glossaryTermDoc, definitionNav, name, linkType, applyToLanguage);
                     }
-
-                    if (string.IsNullOrEmpty(useWith) || useWith == "es")
+                    else if(linkType == RelatedInformationLink.RelatedLinkType.GlossaryTerm)
                     {
-                        relInfoLink = new RelatedInformationLink(name, url, Language.Spanish);
-                        glossaryTermDoc.GlossaryTermTranslationMap[Language.Spanish].RelatedInformationList.Add(relInfoLink);
+                        StoreRelatedGlossaryTerm(glossaryTermDoc, definitionNav, applyToLanguage);
                     }
                 }
             }
             catch (Exception e)
             {
-                throw new Exception("Extraction Error for RelatedInformation: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
+                //swallow this exception Glossary Term should be allowed to process even
+                //if related information fails
+                glossaryTermDoc.WarningWriter("Extraction Error for RelatedInformation: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString());
+                glossaryTermDoc.WarningWriter(e.ToString());
             }
+        }
+
+        /// <summary>
+        /// Implements the extraction of related glossary terms.
+        /// </summary>
+        /// <param name="glossaryTermDoc">The parent glossary term</param>
+        /// <param name="linkNav">An XmlNavigator pointing to the node containing the related item's reference.</param>
+        /// <param name="applyToLanguage">The list of languages the link with which the link is marked to appear.
+        /// This differ from the list of languages supported by both the parent and the related terms.</param>
+        private void StoreRelatedGlossaryTerm(GlossaryTermDocument glossaryTermDoc,
+            XPathNavigator linkNav, Language[] applyToLanguage)
+        {
+            // Use the document id to look up the prettyurl
+            string cdrId = DocumentHelper.GetAttribute(linkNav, xPathManager.GetXPath(RelatedInformationXPath.HRef));
+            int documentId = 0;
+
+            if (!Int32.TryParse(CDRHelper.ExtractCDRID(cdrId), out documentId))
+                throw new Exception("Failed to parse" + linkNav.Name + " document id from value: " + cdrId);
+
+            // Fetch the referenced glossary term so we can determine audiences, languages, etc.
+            GlossaryTermSimple relatedTerm = getRelatedGlossaryTerm(documentId, glossaryTermDoc.WarningWriter);
+
+            // The related glossary term only appears in the translations where it supports the language of that
+            // translation.  It also only appears when it has the same target audience as the definition.
+            // What ends up happening is that we check through the list of languages
+            foreach (Language lang in applyToLanguage)
+            {
+                // Make sure we're using the right version of the term name.
+                String termName = lang == Language.English ? relatedTerm.Name : relatedTerm.SpanishName;
+
+                if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
+                {
+                    GlossaryTermTranslation trans = glossaryTermDoc.GlossaryTermTranslationMap[lang];
+
+                    // The related glossary term only appears with definitions where the
+                    // related term supports the definition's targeted audience.
+                    foreach (GlossaryTermDefinition def in trans.DefinitionList)
+                    {
+                        RelatedInformationLink relInfoLink = null;
+
+                        // It is assumed that each definition has exactly 1 audience.
+                        AudienceType targetAudience = def.AudienceTypeList[0];
+                        switch (targetAudience)
+                        {
+                            case AudienceType.HealthProfessional:
+                                if (relatedTerm.HasHealthProfessionalDefinition)
+                                {
+                                    // Health Professional is always English, always /geneticsdictionary.
+                                    String url = String.Format("/geneticsdictionary?cdrid={0}", documentId);
+                                    relInfoLink = new RelatedInformationLink(termName, url, Language.English, RelatedInformationLink.RelatedLinkType.GlossaryTerm);
+                                }
+                                break;
+                            case AudienceType.Patient:
+                                if (relatedTerm.HasPatientDefinition)
+                                {
+                                    String url = null;
+
+                                    // Patient always has an English term, the Spanish term is optional
+                                    if (lang == Language.English)
+                                        url = String.Format("/dictionary?CdrID={0}", documentId);
+                                    else if (lang == Language.Spanish && relatedTerm.HasSpanishTerm)
+                                        url = String.Format("/diccionario?CdrID={0}", documentId);
+
+                                    // Check whether there is a related link for the current language.
+                                    if (url != null)
+                                        relInfoLink = new RelatedInformationLink(termName, url, lang, RelatedInformationLink.RelatedLinkType.GlossaryTerm);
+                                }
+                                break;
+                        }
+
+                        // Was a related link created for the current definition?
+                        if (relInfoLink != null)
+                            def.RelatedInformationList.Add(relInfoLink);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Implements the extraction of related links to summaries and drug info summaries.
+        /// </summary>
+        /// <param name="glossaryTermDoc">The parent glossary term</param>
+        /// <param name="linkNav">An XmlNavigator pointing to the node containing the related item's reference.</param>
+        /// <param name="name">The name to use when displaying the link to the related item.</param>
+        /// <param name="linkType">The type of document in the related link.</param>
+        /// <param name="applyToLanguage">The list of languages the link with which the link is marked to appear.</param>
+        private void StoreRelatedPDQLinkSimple(GlossaryTermDocument glossaryTermDoc,
+            XPathNavigator linkNav, String name, RelatedInformationLink.RelatedLinkType linkType, Language[] applyToLanguage)
+        {
+            String url = String.Empty;
+
+            // Use the document id to look up the prettyurl
+            string cdrId = DocumentHelper.GetAttribute(linkNav, xPathManager.GetXPath(RelatedInformationXPath.HRef));
+            int documentId = 0;
+
+            if (!Int32.TryParse(CDRHelper.ExtractCDRID(cdrId), out documentId))
+                throw new Exception("Failed to parse" + linkNav.Name + " document id from value: " + cdrId);
+
+            switch (linkType)
+            {
+                case RelatedInformationLink.RelatedLinkType.Summary:
+                    url = getRelatedSummaryUrl(documentId);
+                    break;
+                case RelatedInformationLink.RelatedLinkType.DrugInfoSummary:
+                    url = getRelatedDrugInfoSummaryUrl(documentId);
+                    break;
+                default:
+                    throw new Exception("Error in Extract: Unexpected document type: " + linkType.ToString());
+            }
+
+            // Trim any leading hostname (e.g. http://cancer.gov/foo becomes /foo)
+            if (!string.IsNullOrEmpty(url))
+            {
+                url = url.Trim().ToLower();
+
+                if (url.IndexOf("http://") > -1)
+                    url = url.Substring(url.IndexOf("/", "http://".Length));
+            }
+            else
+                throw new Exception("Could not find document url for " + linkNav.Name + " document id from value: " + cdrId);
+
+            // Special condition: RelatedDrugSummaryRef are English-only because there are Spanish drug summaries
+            // Force these ref to only be applied to English.
+            if (linkType == RelatedInformationLink.RelatedLinkType.DrugInfoSummary)
+                applyToLanguage = new Language[] { Language.English };
+
+
+            foreach (Language lang in applyToLanguage)
+            {
+                if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
+                {
+                    GlossaryTermTranslation trans = glossaryTermDoc.GlossaryTermTranslationMap[lang];
+                    RelatedInformationLink relInfoLink = new RelatedInformationLink(name, url, lang, RelatedInformationLink.RelatedLinkType.External);
+
+                    // External links are applied to all audiences.
+                    foreach (GlossaryTermDefinition def in trans.DefinitionList)
+                    {
+                        def.RelatedInformationList.Add(relInfoLink);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Implements the extraction of related external links.
+        /// </summary>
+        /// <param name="glossaryTermDoc">The parent glossary term</param>
+        /// <param name="name">The term name.</param>
+        /// <param name="url">The external link</param>
+        /// <param name="applyToLanguage">The list of languages the link with which the link is marked to appear.</param>
+        private void StoreRelatedExternalLink(GlossaryTermDocument glossaryTermDoc, String name, String url, Language[] applyToLanguage)
+        {
+            foreach (Language lang in applyToLanguage)
+            {
+                if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
+                {
+                    GlossaryTermTranslation trans = glossaryTermDoc.GlossaryTermTranslationMap[lang];
+                    RelatedInformationLink relInfoLink = new RelatedInformationLink(name, url, lang, RelatedInformationLink.RelatedLinkType.External);
+
+                    // External links are applied to all audiences.
+                    foreach (GlossaryTermDefinition def in trans.DefinitionList)
+                    {
+                        def.RelatedInformationList.Add(relInfoLink);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Examines a relationship reference name and find the RelatedInformationLink.RelatedLinkType enum value
+        /// matching that relationship type.
+        /// </summary>
+        /// <param name="linkTypeName">String containing the relationship refernce name.</param>
+        /// <returns>A RelatedInformationLink.RelatedLinkType value.  Throws an exception if the type is not known.</returns>
+        RelatedInformationLink.RelatedLinkType GetRelatedLinkType(String linkTypeName)
+        {
+            RelatedInformationLink.RelatedLinkType linkType;
+
+            if (string.Compare("RelatedExternalRef", linkTypeName) == 0)
+                linkType = RelatedInformationLink.RelatedLinkType.External;
+            else if (string.Compare("RelatedDrugSummaryRef", linkTypeName) == 0)
+                linkType = RelatedInformationLink.RelatedLinkType.DrugInfoSummary;
+            else if (string.Compare("RelatedSummaryRef", linkTypeName) == 0)
+                linkType = RelatedInformationLink.RelatedLinkType.Summary;
+            else if (string.Compare("RelatedGlossaryTermRef", linkTypeName) == 0)
+                linkType = RelatedInformationLink.RelatedLinkType.GlossaryTerm;
+            else
+            {
+                // This really should be something derived from Exception, but this part of the system
+                // isn't architected that way. :-/
+                throw new Exception("Extraction Error for RelatedInformation: Unknown link type: " + linkTypeName);
+            }
+
+            return linkType;
+        }
+
+        /// <summary>
+        /// Converts a (possibly empty) two-character language code into an array of Language values.
+        /// A blank language code is interpreted as "All known languages."
+        /// </summary>
+        /// <param name="languageCode">The two-character language code</param>
+        /// <returns>An array of Language values.</returns>
+        private Language[] DecodeLanguageToUse(String languageCode)
+        {
+            List<Language> languageList = new List<Language>();
+            languageCode = languageCode.Trim();
+
+            // A blank language code is interpreted as "All known languages."
+            if (string.IsNullOrEmpty(languageCode))
+            {
+                languageList.Add(Language.English);
+                languageList.Add(Language.Spanish);
+            }
+            else if (string.Compare("en", languageCode) == 0)
+                languageList.Add(Language.English);
+            else if (string.Compare("es", languageCode) == 0)
+                languageList.Add(Language.Spanish);
+
+            return languageList.ToArray();
+        }
+
+        /// <summary>
+        /// Helper method to look up the pretty URL for a related summary.
+        /// </summary>
+        /// <param name="documentId">The document's CDR ID.</param>
+        /// <returns>A string containing the pretty URL of the specified document.</returns>
+        private String getRelatedSummaryUrl(int documentId)
+        {
+            String url = string.Empty;
+
+            SummaryQuery docQuery = new SummaryQuery();
+            SummaryDocument summaryDoc = docQuery.GetDocumentData(documentId);
+            if (summaryDoc != null)
+                url = summaryDoc.PrettyURL;
+
+            return url;
+        }
+
+        /// <summary>
+        /// Helper method to look up the pretty URL for a related drug info summary.
+        /// </summary>
+        /// <param name="documentId">The document's CDR ID.</param>
+        /// <returns>A string containing the pretty URL of the specified document.</returns>
+        private String getRelatedDrugInfoSummaryUrl(int documentId)
+        {
+            String url = String.Empty;
+            DrugInfoSummaryQuery docQuery = new DrugInfoSummaryQuery();
+            DrugInfoSummaryDocument drugDoc = docQuery.GetDocumentData(documentId);
+            if (drugDoc != null)
+                url = drugDoc.PrettyURL;
+
+            return url;
+        }
+
+        /// <summary>
+        /// Helper method to look up the pretty URLs and names for a related glossary term.
+        /// (Looks up both English and Spanish names.)
+        /// Yes, the out params are less than ideal, but creating a new type for this
+        /// single method, for a single extract, is even less ideal.
+        /// </summary>
+        /// <param name="documentId">The term's CDR ID.</param>
+        /// <param name="englishName">Term's english name [Out].</param>
+        /// <param name="englishUrl">Dictionary URL for the english term [Out].</param>
+        /// <param name="spanishName">Term's spanish name [Out].</param>
+        /// <param name="spanishUrl">Dictionary URL for the english term [Out].</param>
+        private GlossaryTermSimple getRelatedGlossaryTerm(int documentId, HistoryEntryWriter logWriter)
+        {
+            GlossaryTermSimple term =null;
+            try
+            {
+                GlossaryTermQuery query = new GlossaryTermQuery();
+                term = query.GetGlossaryTerm(documentId);
+            }
+            catch (Exception ex)
+            {
+                // Swallow the exception.  Not finding the related term shouldn't be fatal.
+                logWriter("HistoryEntryWriter.getRelatedGlossaryTerm(). Error retrieveing documentId = " + documentId + ". " + ex.ToString());
+            }
+            return term;
         }
 
         #endregion

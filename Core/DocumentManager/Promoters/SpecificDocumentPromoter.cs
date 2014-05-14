@@ -62,5 +62,17 @@ namespace GKManagers
             informationWriter("PromoteToLive()");
             throw new NotImplementedException("DO NOT USE SpecificDocumentPromoter.  WRITE A NEW CLASS!!!");
         }
+
+        protected override void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter)
+        {
+            /// Implementation for promoting a specific document type from
+            /// Preview to Live
+            DocMgrLogBuilder.Instance.CreateCritical(typeof(SpecificDocumentPromoter), "PromoteToLiveFast",
+                "Sample class SpecificDocumentPromoter is not intended for use in production.");
+            informationWriter("PromoteToLive()");
+            throw new NotImplementedException("DO NOT USE SpecificDocumentPromoter.  WRITE A NEW CLASS!!!");
+        }
     }
 }

@@ -13,8 +13,31 @@ namespace GateKeeper.DocumentObjects.Media
     [Serializable]
     public class MediaLink
     {
+        /// <summary>
+        // MIME type for audio links.
+        /// </summary>
         public const string AudioType = "audio/mpeg";
+
+        /// <summary>
+        // MIME type for image links.
+        /// </summary>
         public const string ImageType = "image/jpeg";
+
+        /// <summary>
+        /// Local enum for distinguishing a Media Link's intended audience.  The text values
+        /// used in the MediaLink XML element are not compatible with GateKeeper's AudienceType
+        /// enum.  This enum allows for the use of Convert.Enum instead of a more error-prone
+        /// string comparison.
+        /// </summary>
+        public enum AudienceType
+        {
+            Undefined = 0,
+            Patient = 1,
+            // Not consistent with other GateKeeper enums, but this matches the
+            // text used by the CDR for specifying media links and makes for more-reliable
+            // matches via ConvertEnum<T>.
+            Health_professionals = 4
+        };
 
         #region Fields
 
@@ -162,54 +185,6 @@ namespace GateKeeper.DocumentObjects.Media
             set { _html = value; }
         }
 
-
-        /// <summary>
-        /// URL for the size-specific version of the image file to use for inline references.
-        /// The URL is relative to the base location where Media documents are stored.
-        /// </summary>
-        //public string InlineImageUrl
-        //{
-        //    get
-        //    {
-        //        string url;
-        //        int width = DeterminePixelSize();
-
-        //        if (_size.Equals("as-is"))
-        //            url = string.Format("CDR{0}.jpg", ReferencedCdrID);
-        //        else
-        //            url = string.Format("CDR{0}-{1}.jpg", ReferencedCdrID, width);
-
-        //        return url;
-        //    }
-        //}
-
-        /// <summary>
-        /// Gets the width of the inline image.
-        /// </summary>
-        /// <value>The width of the inline image.</value>
-        //public int InlineImageWidth
-        //{
-        //    get { return DeterminePixelSize(); }
-        //}
-
-        /// <summary>
-        /// URL to use when referencing the image file from within a pop-up.
-        /// The URL is relative to the base location where Media documents are stored.
-        /// </summary>
-        //public string PopupImageUrl
-        //{
-        //    get { return string.Format("CDR{0}-750.jpg", ReferencedCdrID); }
-        //}
-
-        /// <summary>
-        /// Gets the width of the popup image.
-        /// </summary>
-        /// <value>The width of the popup image.</value>
-        //public int PopupImageWidth
-        //{
-        //    get { return 750; }
-        //}
-        
         /// <summary>
         /// Gets or Sets the MimeType of the media.
         /// </summary>

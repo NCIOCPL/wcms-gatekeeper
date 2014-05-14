@@ -22,7 +22,7 @@ namespace PromotionTester
 where:
 
     <file>  is a serialized RequestData object.
-    <promotionAction> is one of PromoteToStaging, PromoteToPreview, PromoteToLive
+    <promotionAction> is one of PromoteToStaging, PromoteToPreview, PromoteToLive, PromoteToLiveFast
 ";
         #endregion
 
@@ -69,9 +69,16 @@ where:
                     promotions.Add(ProcessActionType.PromoteToPreview);
                     promotions.Add(ProcessActionType.PromoteToLive);
                 }
+                else if (args[1].ToLower() == "promotetolivefast")
+                {
+                    //PromoteToLiveFast action list is a special case - build list separately
+                    //skip the PromoteToPreview step
+                    promotions.Add(ProcessActionType.PromoteToStaging);
+                    promotions.Add(ProcessActionType.PromoteToLiveFast);
+                }
                 else
-                { 
-                    promotions.Add( GetPromotionAction(args[1]) );
+                {
+                    promotions.Add(GetPromotionAction(args[1]));
                 }
 
                 RequestData data = DeserializeData(args[0]);

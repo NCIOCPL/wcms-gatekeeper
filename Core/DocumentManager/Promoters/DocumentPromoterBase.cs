@@ -67,6 +67,10 @@ namespace GKManagers
                                 HistoryEntryWriter warningWriter,
                                 HistoryEntryWriter informationWriter);
 
+        protected abstract void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter);
+
         public void Promote(DocumentXPathManager xPathManager)
         {
             try
@@ -120,6 +124,16 @@ namespace GKManagers
                 case ProcessActionType.PromoteToLive:
                     WriteHistoryInformationEntry("Promoting to Live.");
                     PromoteToLive(xPathManager, WriteHistoryWarningEntry, WriteHistoryInformationEntry);
+                    _dataBlock.Location = RequestDataLocationType.Live;
+                    RequestManager.SaveDocumentLocation(_dataBlock);
+                    break;
+
+                case ProcessActionType.PromoteToLiveFast:
+                    WriteHistoryInformationEntry("Promoting to Live Fast.");
+                    PromoteToLiveFast(xPathManager, WriteHistoryWarningEntry, WriteHistoryInformationEntry);
+                    //For Gatekeeper and CDR accounting save the location of the document for both Preview and Live 
+                    _dataBlock.Location = RequestDataLocationType.Preview;
+                    RequestManager.SaveDocumentLocation(_dataBlock);
                     _dataBlock.Location = RequestDataLocationType.Live;
                     RequestManager.SaveDocumentLocation(_dataBlock);
                     break;

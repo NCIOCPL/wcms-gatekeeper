@@ -126,6 +126,17 @@ namespace GKManagers.CMSDocumentProcessing
             TransitionItemsToLive(new PercussionGuid[1] { identifier });
         }
 
+        /// <summary>
+        /// Move the specified DrugInfoSummary document from Staging to Live
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public override void PromoteToLiveFast(int documentID)
+        {
+            PercussionGuid identifier = GetCdrDocumentID(DrugInfoSummaryContentType, documentID);
+
+            TransitionItemsToLiveFast(new PercussionGuid[1] { identifier });
+        }
+
         #endregion
 
         #region Disposable Pattern Members

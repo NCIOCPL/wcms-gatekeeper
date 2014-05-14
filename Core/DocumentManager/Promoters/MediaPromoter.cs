@@ -21,6 +21,8 @@ namespace GKManagers
     /// </summary>
     class MediaPromoter : DocumentPromoterBase
     {
+        private bool _isPromoteToLiveFast = false; 
+
         #region Public methods
         public MediaPromoter(RequestData dataBlock, int batchID,
             ProcessActionType action, string userName)
@@ -114,7 +116,9 @@ namespace GKManagers
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
                 MediaExtractor.Extract(DataBlock.DocumentData, media, DataBlock.CdrID, xPathManager);
-                if (ApplyMediaProcessor(media))
+
+                //the Percussion call is skipped for the Preview step for PromoteToLiveFast
+                if (ApplyMediaProcessor(media) && (!_isPromoteToLiveFast))
                 {
                     using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
                     {
@@ -211,6 +215,77 @@ namespace GKManagers
             }
 
             informationWriter("Promoting media document to the live database succeeded.");
+        }
+
+        /// <summary>
+        /// Method to call query class to push document to the preview and live database.
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="drugInfoSummary"></param>
+        protected override void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter)
+        {
+            informationWriter("Start to promote media document to the preview and live database in one step.");
+
+            _isPromoteToLiveFast = true;
+            //skip the Percussion call for the Preview Step by setting _isPromoteToLiveFast
+            this.PromoteToPreview(xPathManager, warningWriter, informationWriter);
+
+            informationWriter("Start to promote media document to the live database.");
+
+            MediaDocument media = new MediaDocument();
+            media.WarningWriter = warningWriter;
+            media.InformationWriter = informationWriter;
+            media.DocumentID = DataBlock.CdrID;
+            if (DataBlock.ActionType == RequestDataActionType.Export)
+            {
+                MediaExtractor.Extract(DataBlock.DocumentData, media, DataBlock.CdrID, xPathManager);
+
+                if (ApplyMediaProcessor(media))
+                {
+                    using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                    {
+                        processor.PromoteToLiveFast(media.DocumentID);
+                    }
+                }
+
+                // Push media document to the live database
+                using (MediaQuery mediaQuery = MediaPromoter.CreateMediaQueryObject(media))
+                {
+                    mediaQuery.PushDocumentToLive(media, UserName);
+                }
+            }
+            else if (DataBlock.ActionType == RequestDataActionType.Remove)
+            {
+                // Remove media from CMS, for audio types this will remove content item from CMS.
+                using (MediaProcessor processor = new MediaProcessor(warningWriter, informationWriter))
+                {
+                    processor.DeleteContentItem(media.DocumentID);
+                }
+
+                // Remove media data from database for all types.
+                using (MediaQuery mediaQuery = new MediaQuery())
+                {
+                    mediaQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
+                }
+
+                // For image remove media from file system.
+                using (ImageMediaQuery imageMediaQuery = new ImageMediaQuery())
+                {
+                    imageMediaQuery.DeleteDocument(media, ContentDatabase.Staging, UserName);
+                }
+            }
+            else
+            {
+                // There should never be any invalid request.
+                throw new Exception("Promoter Error: Invalid media request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+            }
+
+            informationWriter("Promoting media document to the live database succeeded.");
+
+            informationWriter("Promoting media document to the preview and live database succeeded.");
+
         }
 
         /// <summary>

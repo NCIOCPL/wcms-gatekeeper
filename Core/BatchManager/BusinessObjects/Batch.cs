@@ -60,9 +60,19 @@ namespace GKManagers.BusinessObjects
                 throw new Exception(message);
             }
 
-            for (ProcessActionType action = startAction; action <= endAction; ++action)
+            //PromoteToLiveFast action list is a special case - build list separately
+            //skip the PromoteToPreview step
+            if (startAction == ProcessActionType.PromoteToStaging && endAction == ProcessActionType.PromoteToLive)
             {
-                Actions.Add(action);
+                Actions.Add(ProcessActionType.PromoteToStaging);
+                Actions.Add(ProcessActionType.PromoteToLiveFast);
+            }
+            else
+            {
+                for (ProcessActionType action = startAction; action <= endAction; ++action)
+                {
+                    Actions.Add(action);
+                }
             }
         }
 

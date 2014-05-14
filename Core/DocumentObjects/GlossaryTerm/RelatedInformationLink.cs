@@ -13,6 +13,38 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
     public class RelatedInformationLink
     {
         /// <summary>
+        /// Enumerated list of document types a related link might reference.
+        /// </summary>
+        public enum RelatedLinkType
+        {
+            /// <summary>
+            /// Unknown document type.
+            /// </summary>
+            Undefined = 0,
+            /// <summary>
+            /// External (unmanaged)
+            /// </summary>
+            External = 1,
+            /// <summary>
+            /// Cancer Summary
+            /// </summary>
+            Summary = 2,
+            /// <summary>
+            /// Drug info Summary
+            /// </summary>
+            DrugInfoSummary = 4,
+            /// <summary>
+            /// A glossary term.
+            /// </summary>
+            GlossaryTerm = 8
+        }
+
+        /// <summary>
+        /// Notes the type of document the related link references.
+        /// </summary>
+        public RelatedLinkType LinkType { get; set; }
+
+        /// <summary>
         /// Name of the relatedinformation link
         /// </summary>
         public string Name { get; set; }
@@ -37,11 +69,12 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         public RelatedInformationLink()
         { }
 
-        public RelatedInformationLink(string name, string url, Language language)
+        public RelatedInformationLink(string name, string url, Language language, RelatedLinkType linkType)
         {
             Name = name;
             Url = url;
             Language = language;
+            LinkType = linkType;
         }
     }
 }

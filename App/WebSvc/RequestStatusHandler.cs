@@ -82,6 +82,7 @@ namespace GateKeeper
                         SqlParameter reqID = new SqlParameter("@requestID", SqlDbType.Int);
                         reqID.Value = int.Parse(_requestID);
                         xdoc = GetStatus("usp_getRequestStatusSummary", reqID);
+                        WebServiceLogBuilder.Instance.CreateInformation(this.GetType(), "Process Request", "Request Id: " + _requestID); 
                     }
                     break;
 
@@ -154,7 +155,8 @@ namespace GateKeeper
                 {
                     string format = "Error -- {0}";
                     string message = string.Format(format, ex.Message);
-                    WebServiceLogBuilder.Instance.CreateError(this.GetType(), "GetStatus", message);
+                    string detailedErrorMessage = string.Format("Stored Proc: {0}. Sql Param Name: {1}. Sql Param Value: {2}", sprocName, id != null ? id.ToString() : "(NULL)", !System.DBNull.Value.Equals(id) ? id.Value.ToString() : "(NULL)");
+                    WebServiceLogBuilder.Instance.CreateError(this.GetType(), "GetStatus", detailedErrorMessage, ex);
                     response = SetResponseType(message);
                 }
             }

@@ -273,6 +273,8 @@ namespace GKManagers.CMSDocumentProcessing
                 rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
                 LogDetailedStep("End Permanent Link creation.");
 
+               
+
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
                 ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLinkID.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
@@ -294,14 +296,6 @@ namespace GKManagers.CMSDocumentProcessing
             // No links from other summaries to table sections and media links.
             RemoveOldPages(oldPageIDs, oldSubItems);
 
-            // Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
-            CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
-            CMSController.DeleteFolders(new PSFolder[] { tempFolder });
-
-            // Handle a potential change of URL.
-            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
-
             // Permanent Links Updates and Deletion must go outside of the try / catch block. This is 
             // because these changes cannot be rolled back, so we must ensure that there will be no 
             // errors encountered at this point.
@@ -309,6 +303,20 @@ namespace GKManagers.CMSDocumentProcessing
             PermanentLinkData.UpdatePermanentLinks();
             PermanentLinkData.DeletePermanentLinks();
             LogDetailedStep("End Permanent Link updates and deletion.");
+          
+            // Move the new items into the main folder.
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
+            CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
+            CMSController.DeleteFolders(new PSFolder[] { tempFolder });
+
+            //Add the PermanentLinks that are marked as 'Update' to the list of PermanentLinkIds that were created
+            permanentLinkIDs.AddRange(Array.ConvertAll(PermanentLinkData.GetOldGuids, guid => (long)guid.ID));
+            componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
+            
+            // Handle a potential change of URL.
+            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
+
+            
         }
 
         /// <summary>
@@ -393,6 +401,29 @@ namespace GKManagers.CMSDocumentProcessing
                 }
 
                 CMSController.DeleteItemList(fullIDList);
+            }
+        }
+
+        protected override void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
+            PercussionGuid summaryLinkItemID, PercussionGuid[] summaryComponentIDList)
+        {
+            string newPath = GetTargetFolder(targetURL);
+            PSItem[] keyItems = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootItemID, summaryLinkItemID });
+            string oldPath = CMSController.GetPathInSite(keyItems[0]);  // Root item.
+
+            if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Move the CancerInformationSummary and all its components. The link item is moved separately.
+                CMSController.GuaranteeFolder(newPath, FolderManager.NavonAction.MakePublic);
+                CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
+
+                // Link item only applicable to desktop summaries.
+                oldPath = CMSController.GetPathInSite(keyItems[1]); 
+                newPath = GetParentFolder(targetURL);
+                if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    CMSController.MoveContentItemFolder(oldPath, newPath, new PercussionGuid[] { summaryLinkItemID });
+                }
             }
         }
     }

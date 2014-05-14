@@ -61,6 +61,7 @@ namespace GateKeeper.DataAccess.StoreProcedures
         #region Fields
             private static string _spClearGlossaryData = "dbo.usp_clearExtractedGlossaryData";
             private static string _spSaveGlossaryTerm = "dbo.usp_saveGlossaryTerm";
+            private static string _spGetGlossaryTerm = "dbo.usp_GetGlossaryTerm";
             private static string _spSaveGTDefinition = "dbo.usp_saveGlossaryTermDefinition";
             private static string _spSaveGTDefinitionAudi = "dbo.usp_saveGlossaryTermDefinitionAudience";
             private static string _spSaveGTDefinitionDic = "dbo.usp_saveGlossaryTermDefinitionDictionary";
@@ -74,6 +75,9 @@ namespace GateKeeper.DataAccess.StoreProcedures
 
             public static string SP_SAVE_GLOSSARY_TERM
             { get { return _spSaveGlossaryTerm; } }
+
+            public static string SP_GET_GLOSSARY_TERM
+            { get { return _spGetGlossaryTerm; } }
 
             public static string SP_SAVE_GT_DEFINITION
             { get { return _spSaveGTDefinition; } }

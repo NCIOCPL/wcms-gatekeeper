@@ -19,13 +19,12 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         private string _html = string.Empty;
         private string _pronounciation = string.Empty;
         private string _termName = string.Empty;
-        private List<MediaLink> _mediaLinkList = new List<MediaLink>();
+        private MediaLinkCollection _mediaLinkList = new MediaLinkCollection();
         private List<GlossaryTermDefinition> _definitionList = new List<GlossaryTermDefinition>();
-        private List<RelatedInformationLink> _relatedInformationList = new List<RelatedInformationLink>();
 
         #endregion
 
-
+        
         #region Constructors
 
         /// <summary>
@@ -103,10 +102,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// <summary>
         /// Gets, sets a collection of media links (usually links to image files).
         /// </summary>
-        public List<MediaLink> MediaLinkList
+        public MediaLinkCollection MediaLinkList
         {
             get { return _mediaLinkList; }
-            internal set { _mediaLinkList = value; }
         }
 
         public List<GlossaryTermDefinition> DefinitionList
@@ -115,51 +113,102 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             set { _definitionList = value; }
         }
 
-        public List<RelatedInformationLink> RelatedInformationList
-        {
-            get { return _relatedInformationList; }
-            set { _relatedInformationList = value; }
-        }
-
-        public string RelatedInformationHTML
-        {
-            get;
-            set;
-        }
-
         #endregion
 
         #region Public Methods
 
         /// <summary>
-        /// Returns a System.String that represents the GlossaryTermTranslation.
+        /// Retrieves the rendered markup for the translation's audio MediaLink object.
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        /// <returns>Markup to render the audio MediaLink, if it exists.  Otherwise returns String.empty.</returns>
+        public String GetAudioMarkup()
         {
-            StringBuilder sb = new StringBuilder(base.ToString());
+            String markup;
+            MediaLink audioLink = null;
 
-            sb.Append(string.Format(" TermName = {0} Language = {1} Html = {2}\n",
-                this.TermName, this.Language, this.Html));
-
-            sb.Append("Media links: \n");
-            foreach (MediaLink link in this.MediaLinkList)
+            // For a given language, the pronunciation is the same, regardless of
+            // audience, so just find the first audio link for the language, without
+            // requiring an audience to be specified.
+            foreach (AudienceType audience in MediaLinkList.Audiences)
             {
-                sb.Append(link.ToString());
+                foreach (MediaLink ml in MediaLinkList[audience])
+                {
+                    if (ml.Language == this.Language && ml.Type.Contains("audio"))
+                    {
+                        audioLink = ml;
+                        break;
+                    }
+                }
             }
 
-            sb.Append("Definitions: \n");
-            // foreach (GlossaryTermDefinition def in this.DefinitionList)
-            // {
-            //     sb.Append(def.ToString());
-            // }
+            markup = (audioLink == null) ? String.Empty : audioLink.Html;
 
-            return sb.ToString();
+            return markup;
+        }
+
+        /// <summary>
+        /// Retrieves the markup for this translation's image MediaLink objects.
+        /// </summary>
+        /// <param name="audience">The intended audience for the images.</param>
+        /// <returns>If any image MediaLinks exist, the markup to render the whole set is returned.
+        /// If no image MediaLink exists, String.empty is returned.</returns>
+        public String GetImageMarkup(AudienceType audience)
+        {
+            String markup = String.Empty;
+
+            foreach (MediaLink ml in MediaLinkList[audience])
+            {
+                if (ml.Language == this.Language && (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image")))
+                {
+                    markup += ml.Html;
+                }
+            }
+
+            return markup;
+        }
+
+        /// <summary>
+        /// Retrieves the CDRID of the images associated with this translation.
+        /// </summary>
+        /// <param name="audience">The intended audience for the images.</param>
+        /// <returns>A List containing the CDRIDs of the iamges.  If no images are associated with the translation, an empty 
+        /// list is returned.</returns>
+        public List<int> GetImageIDColl(AudienceType audience)
+        {
+            List<int> cdridCollection = new List<int>();
+
+            foreach (MediaLink ml in MediaLinkList[audience])
+            {
+                if (ml.Language == this.Language && (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image")))
+                {
+                    cdridCollection.Add(ml.MediaDocumentId);
+                }
+            }
+
+            return cdridCollection;
+        }
+
+        /// <summary>
+        /// Retrieves the captions of the images associated with this translation.
+        /// </summary>
+        /// <param name="audience">The intended audience for the images.</param>
+        /// <returns>A List containing the captions of the iamges.  If no images are associated with the translation, an empty 
+        /// list is returned.</returns>
+        public List<String> GetImageCaptionColl(AudienceType audience)
+        {
+            List<String> captionCollection = new List<String>();
+
+            foreach (MediaLink ml in MediaLinkList[audience])
+            {
+                if (ml.Language == this.Language && (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image")))
+                {
+                    captionCollection.Add(ml.Html);
+                }
+            }
+
+            return captionCollection;
         }
 
         #endregion
-
-
-
     }
 }

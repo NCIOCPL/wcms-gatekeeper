@@ -20,6 +20,7 @@ using NCI.WCM.CMSManager.PercussionWebSvc;
 
 namespace GKManagers.CMSDocumentProcessing
 {
+
     /// <summary>
     /// This class is derived from the standard CancerInfoSummaryProcessorStandard. This method re-implements 
     /// the method ProcessDocument of the base class. This class in addition to processing the document into
@@ -57,9 +58,14 @@ namespace GKManagers.CMSDocumentProcessing
                                         percussionConfig.SiteId.Value,
                                         percussionConfig.PreviewSettings.ItemFilter.Value);
 
-                string perviewMediaPath = percussionConfig.PreviewSettings.PreviewImageContentLocation.Value;
+                string previewMediaPath = percussionConfig.PreviewSettings.PreviewImageContentLocation.Value;
 
-                // For medialinks generate the required media output to the file system.
+                //before using the previewMediaPath make sure the directory (PreviewMediaHtml) for the images exists
+                //if not, create the directory to avoid errors
+                if (!Directory.Exists(previewMediaPath))
+                    Directory.CreateDirectory(previewMediaPath);
+                                                                                   
+                //For medialinks generate the required media output to the file system.
                 foreach (MediaLink mediaLink in ((SummaryDocument)documentObject).MediaLinkSectionList)
                 {
                     PercussionGuid mediaItemID = MediaLinkIDMap[mediaLink.Id];
@@ -81,7 +87,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                     mediaRenderedContentList.Add(mediaItemID.ID.ToString(), mediaHtml);
 
-                    using (StreamWriter outfile = new StreamWriter(perviewMediaPath + @"\" + mediaContentFileName))
+                    using (StreamWriter outfile = new StreamWriter(previewMediaPath + @"\" + mediaContentFileName))
                     {
                         outfile.Write(mediaHtml);
                     }

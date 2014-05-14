@@ -22,7 +22,8 @@ namespace GKManagers.BusinessObjects
 
         PromoteToStaging = 1,
         PromoteToPreview = 2,
-        PromoteToLive = 3
+        PromoteToLive = 3,
+        PromoteToLiveFast = 4
     }
 
     enum BatchListFilterType

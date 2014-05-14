@@ -93,6 +93,9 @@ namespace GateKeeper.DataAccess
         /// <returns>html in parameter reference</returns>
         public static void GlossaryPreview(ref string html, ref string headerHtml, GlossaryTermDocument glossary)
         {
+            string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
+            string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
+
             StringBuilder sb = new StringBuilder();
             headerHtml = createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
@@ -104,36 +107,8 @@ namespace GateKeeper.DataAccess
 
                 // Get Definition HTML
 
-                // Pronunciation
-                string pron = string.Empty;
-
-                // Pronuncation audio
-                string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
-                foreach (MediaLink ml in trans.MediaLinkList)
-                {
-                    if (ml.Language == lang && ml.Type == MediaLink.AudioType)
-                    {
-                        string mlHtml = ml.Html;
-                        // Replace media link 
-                        mlHtml = mlHtml.Replace("[_audioMediaLocation]", mediaPath);
-                        mlHtml = mlHtml.Replace("&amps;", "&");
-
-                        // Fix audio icon relative to pub-preview.
-                        mlHtml = mlHtml.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
-
-                        pron += " " + mlHtml;
-                    }
-                }
-
-
-                // Pronuncation key
-                if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
-                {
-                    pron += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span>";
-                }
 
                 // Body.
-                
                 foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
                 {
                     if (count > 0)
@@ -142,7 +117,22 @@ namespace GateKeeper.DataAccess
                         sb.Append("<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>");
                     }
 
-                    sb.AppendFormat("<span class=\"header-A\">{0}</span>&nbsp;{1}<br/>", trans.TermName, pron);
+                    // Retrieve rendered markup for audio.
+                    String pronunciation = trans.GetAudioMarkup();
+                    if (!String.IsNullOrEmpty(pronunciation))
+                    {
+                        pronunciation = pronunciation.Replace("[_audioMediaLocation]", mediaPath);
+                        // Fix audio icon relative to pub-preview.
+                        pronunciation = pronunciation.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
+                    }
+
+                    // Pronuncation key
+                    if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
+                    {
+                        pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span>";
+                    }
+
+                    sb.AppendFormat("<span class=\"header-A\">{0}</span>&nbsp;{1}<br/>", trans.TermName, pronunciation);
                     sb.Append("<img width=\"10\" height=\"5\" border=\"0\" src=\"/images/spacer.gif\"/><br/>");
 
 
@@ -165,27 +155,22 @@ namespace GateKeeper.DataAccess
                     sb.Append(defHtml);
 
                     // Use the GK rendered HTML for Related Links.
-                    if (trans.RelatedInformationHTML != String.Empty)
+                    if (gtDef.RelatedInformationHTML != String.Empty)
                     {
                         sb.Append("<div id=\"pnlRelatedInfo\"><br/>");
-                        sb.Append(trans.RelatedInformationHTML);
+                        sb.Append(gtDef.RelatedInformationHTML);
                         sb.Append("</div>");
                     }
 
-                    // Images.
+                    // Retrieve rendered markup for images.
                     sb.Append("<p>");
-                    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
-                    foreach (MediaLink ml in trans.MediaLinkList)
+                    String imageHtml = trans.GetImageMarkup(gtDef.AudienceTypeList[0]);
+                    if (!String.IsNullOrEmpty(imageHtml))
                     {
-                        if (ml.Language == lang && ml.Type == MediaLink.ImageType)
-                        {
-                            string mlHtml = ml.Html;
-                            // Replace media link 
-                            mlHtml = mlHtml.Replace("[__imagelocation]", imagePath);
-                            mlHtml = mlHtml.Replace("&amps;", "&");
-                            sb.Append(mlHtml);
-                        }
+                        imageHtml = imageHtml.Replace("[__imagelocation]", imagePath);
                     }
+                    sb.Append(imageHtml);
+
 
                     sb.Append("</p></td></tr></tbody>");
                     sb.Append("</table>");
@@ -201,6 +186,7 @@ namespace GateKeeper.DataAccess
 
             html += sb.ToString();
         }
+
 
         public static void GeneticsProfessionalPreview(ref string html, ref string headerHtml, GeneticsProfessionalDocument geneticsProfessional)
         {

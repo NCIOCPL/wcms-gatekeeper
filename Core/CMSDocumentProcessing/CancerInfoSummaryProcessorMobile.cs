@@ -279,8 +279,8 @@ namespace GKManagers.CMSDocumentProcessing
             CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
-            //// Handle a potential change of URL.
-            //UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
+            // Handle a potential change of URL.
+            UpdateDocumentURL(summary.BaseMobileURL, summaryRoot, summaryLink, componentIDs);
 
             // Restore original site path.
             CMSController.SiteRootPath = originalSitePath;

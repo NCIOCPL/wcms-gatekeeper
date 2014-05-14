@@ -1234,6 +1234,44 @@ namespace NCI.WCM.CMSManager.CMS
             return returnList;
         }
 
+        public PercussionGuid[] SearchForContentItemsByDependent(PercussionGuid dependent, string slotname, string templateName)
+        {
+            PercussionGuid[] returnList = new PercussionGuid[] { };
+
+            // Check for any relationships.
+            PSAaRelationshipFilter filter = new PSAaRelationshipFilter();
+
+            // Only return relationships for the most recent revision.
+            filter.limitToEditOrCurrentOwnerRevision = true;
+
+            if (dependent != null)
+            {
+                filter.Dependent = new long[] { dependent.ID };
+            }
+            
+            if (!string.IsNullOrEmpty(slotname))
+            {
+                filter.slot = slotname;
+            }
+
+            if (!string.IsNullOrEmpty(templateName))
+                filter.template = templateName;
+            
+            PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
+
+            if (relationships.Length > 0)
+            {
+                int relCount = relationships.Length;
+                returnList = new PercussionGuid[relCount];
+                for (int i = 0; i < relCount; i++)
+                {                    
+                    returnList[i] = new PercussionGuid(relationships[i].ownerId);
+                }
+            }
+
+            return returnList;
+        }
+
         public PSItemStatus[] CheckOutForEditing(PercussionGuid[] guidList)
         {
             long[] idList = Array.ConvertAll(guidList, guid => (long)guid.ID);

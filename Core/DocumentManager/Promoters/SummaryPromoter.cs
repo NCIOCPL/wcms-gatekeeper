@@ -161,6 +161,50 @@ namespace GKManagers
             informationWriter("Promoting summary document to the live database succeeded.");
         }
 
+        /// <summary>
+        /// Method to call query class to push document to the preview and live database.
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="drugInfoSummary"></param>
+        protected override void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter)
+        {
+
+            informationWriter("Start to promote summary document to the live database using PromoteToLiveFast.");
+
+            ProcessorPool pool = ProcessorLoader.Load();
+            ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
+
+            foreach (ProcessingTarget target in processingTargets)
+            {
+                SummaryDocument summary = new SummaryDocument();
+                summary.WarningWriter = warningWriter;
+                summary.InformationWriter = informationWriter;
+                summary.DocumentID = DataBlock.CdrID;
+                if (DataBlock.ActionType == RequestDataActionType.Export)
+                {
+                    target.DocumentDataAccess.PromoteToLiveFast(summary, UserName, warningWriter, informationWriter);
+
+                }
+                else if (DataBlock.ActionType == RequestDataActionType.Remove)
+                {
+                    //remove the document from Preview and Live
+                    target.DocumentDataAccess.RemoveFromPreview(summary, UserName, warningWriter, informationWriter);
+                    target.DocumentDataAccess.RemoveFromLive(summary, UserName, warningWriter, informationWriter);
+
+                }
+                else
+                {
+                    // There should never be any invalid request.
+                    throw new Exception("Promoter Error: Invalid summary request. RequestID = " + DataBlock.RequestDataID.ToString() + "; CDRID = " + DataBlock.CdrID.ToString());
+                }
+            }
+
+            informationWriter("Promoting summary document to the live database succeeded using PromoteToLiveFast.");
+
+        }
+
         #endregion
     }
 }

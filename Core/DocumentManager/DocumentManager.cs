@@ -405,7 +405,8 @@ namespace GKManagers
         {
             // Caches only exists on Preview & Live. There's nothing to do on Staging.
             if (action == ProcessActionType.PromoteToPreview ||
-                action == ProcessActionType.PromoteToLive)
+                action == ProcessActionType.PromoteToLive ||
+                action == ProcessActionType.PromoteToLiveFast)
             {
                 // Shortcut for multiple types.
                 DocumentTypeFlag protocolCacheTypes = DocumentTypeFlag.Protocol | DocumentTypeFlag.CTGovProtocol;
@@ -449,24 +450,32 @@ namespace GKManagers
         {
 
             // Publishing only takes place for Preview & Live. There's nothing to do on Staging.
-            if ((action == ProcessActionType.PromoteToPreview || action == ProcessActionType.PromoteToLive)
+            if ((action == ProcessActionType.PromoteToPreview || action == ProcessActionType.PromoteToLive || action == ProcessActionType.PromoteToLiveFast)
                 && documentTypeTracker.Contains(CmsManagedTypes))
             {
                 CMSController controller = new CMSController();
 
-                CMSController.CMSPublishingTarget target;
+                List<CMSController.CMSPublishingTarget> target = new List<CMSController.CMSPublishingTarget>();
+
                 if (action == ProcessActionType.PromoteToPreview)
                 {
-                    target = CMSController.CMSPublishingTarget.CDRPreview;
+                    target.Add(CMSController.CMSPublishingTarget.CDRPreview); 
                 }
-                else
+                else if (action == ProcessActionType.PromoteToLive)
                 {
-                    target = CMSController.CMSPublishingTarget.CDRLive;
+                    target.Add(CMSController.CMSPublishingTarget.CDRLive);
                 }
-
-                BatchManager.AddBatchHistoryEntry(batchInfo.BatchID, batchInfo.UserName,
-                    string.Format("Begin CMS publishing for stage {0}: {1}", action, target));
-                controller.StartPublishing(target);
+                else if (action == ProcessActionType.PromoteToLiveFast)
+                {
+                    target.Add(CMSController.CMSPublishingTarget.CDRPreview);
+                    target.Add(CMSController.CMSPublishingTarget.CDRLive);
+                }
+                foreach (CMSController.CMSPublishingTarget targetItem in target)
+                {
+                    BatchManager.AddBatchHistoryEntry(batchInfo.BatchID, batchInfo.UserName,
+                        string.Format("Begin CMS publishing for stage {0}: {1}", action, targetItem));
+                    controller.StartPublishing(targetItem);
+                }
             }
         }
 
@@ -532,6 +541,18 @@ namespace GKManagers
                     if (docData.Location < RequestDataLocationType.Preview)
                     {
                         format = "{0} failed. The document was not found in Preview.";
+                        isOK = false;
+                    }
+                    break;
+
+                case ProcessActionType.PromoteToLiveFast:
+                    compareSource = locationMap.MatchStagingVersion;
+                    compareDestination = locationMap.MatchLiveVersion;
+                    previousVersionExists = locationMap.StagingVersionExists;
+                    groupIsPresent = locationMap.GroupIsPresentInStaging;
+                    if (docData.Location < RequestDataLocationType.Staging)
+                    {
+                        format = "{0} failed. The document was not found in Staging.";
                         isOK = false;
                     }
                     break;
@@ -765,6 +786,7 @@ namespace GKManagers
             switch (action)
             {
                 case ProcessActionType.PromoteToLive:
+                case ProcessActionType.PromoteToLiveFast:
                     location = "Live";
                     break;
 

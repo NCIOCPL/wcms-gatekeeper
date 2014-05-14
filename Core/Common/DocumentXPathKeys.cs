@@ -201,6 +201,7 @@ namespace GateKeeper.Common.XPathKeys
         private static string _mediaLanguage = "GlossaryTermMediaLanguage";
         private static string _mediaCaption = "GlossaryTermMediaCaption";
         private static string _mediaType = "GlossaryTermMediaType";
+        private static string _mediaAudience = "GlossaryTermMediaAudience";
 
         #endregion
 
@@ -261,6 +262,9 @@ namespace GateKeeper.Common.XPathKeys
 
         public static string MediaType
         { get { return _mediaType; } }
+
+        public static string MediaAudience
+        { get { return _mediaAudience; } }
 
         #endregion
     }

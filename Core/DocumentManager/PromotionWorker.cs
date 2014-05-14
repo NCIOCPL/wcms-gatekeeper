@@ -199,6 +199,13 @@ namespace GKManagers
                         updater = locationMap.DeleteLiveVersion;
                     break;
 
+                case ProcessActionType.PromoteToLiveFast:
+                    if (actionType == RequestDataActionType.Export)
+                        updater = locationMap.UpdateLiveVersion;
+                    else
+                        updater = locationMap.DeleteLiveVersion;
+                    break;
+
                 default:
                     {
                         string format = "Unknown promotion action: {0}.";

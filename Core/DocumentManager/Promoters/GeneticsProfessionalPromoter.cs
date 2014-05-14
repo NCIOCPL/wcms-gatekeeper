@@ -157,6 +157,24 @@ namespace GKManagers
             informationWriter("Promoting genetics professional document to the live database succeeded.");
         }
 
+        /// <summary>
+        /// Method to call query class to push document to the preview and live database.
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="drugInfoSummary"></param>
+        protected override void PromoteToLiveFast(DocumentXPathManager xPathManager,
+                                HistoryEntryWriter warningWriter,
+                                HistoryEntryWriter informationWriter)
+        {
+            informationWriter("Start to promote genetics professional document to the preview and live database in one step.");
+
+            this.PromoteToPreview(xPathManager, warningWriter, informationWriter);
+            this.PromoteToLive(xPathManager, warningWriter, informationWriter);
+
+            informationWriter("Promoting genetics professional document to the preview and live database succeeded.");
+        }
+
+
         #endregion
     }
 }

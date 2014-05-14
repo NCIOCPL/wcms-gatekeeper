@@ -5,14 +5,16 @@ using System.Data;
 using System.Data.Common;
 using System.Collections;
 using System.Transactions;
+
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+
+using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DataAccess;
-using Microsoft.Practices.EnterpriseLibrary.Data;
-using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
-
 
 namespace GateKeeper.DataAccess.CancerGov
 {
@@ -76,6 +78,84 @@ namespace GateKeeper.DataAccess.CancerGov
             }
 
             return bSuccess;
+        }
+
+        /// <summary>
+        /// Retrieve a brief summary of a definition.
+        /// </summary>
+        /// <param name="cdrID">The ID of the GlossaryTerm to retrieve</param>
+        /// <returns>A GlossaryTermSimple object containing the requested GlossaryTerm document.</returns>
+        public GlossaryTermSimple GetGlossaryTerm(int cdrID)
+        {
+            Database db = StagingDBWrapper.SetDatabase();
+            GlossaryTermSimple term = null;
+
+            // Get document data
+            IDataReader reader = null;
+            try
+            {
+                string spGetData = SPGlossaryTerm.SP_GET_GLOSSARY_TERM;
+                using (DbCommand getCommand = db.GetStoredProcCommand(spGetData))
+                {
+                    getCommand.CommandType = CommandType.StoredProcedure;
+                    db.AddInParameter(getCommand, "@GlossaryTermID", DbType.Int32, cdrID);
+
+                    DataSet ds = db.ExecuteDataSet(getCommand);
+
+                    reader = db.ExecuteReader(getCommand);
+                    if (reader.Read())
+                    {
+                        // Get the Term names and pronunciation
+                        String name = reader["TermName"].ToString();
+                        String spanishName = reader["SpanishTermName"].ToString();
+                        String pronunciation = reader["TermPronunciation"].ToString();
+
+                        term = new GlossaryTermSimple(cdrID, name, spanishName, pronunciation);
+
+                        // Get as many definitions as exist.
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            // Retreive fields
+                            String tmpAudience = reader["Audience"].ToString();
+                            String tmpLanguage = reader["Language"].ToString();
+                            String definitionText = reader["DefinitionText"].ToString();
+                            String definitionHtml = reader["DefinitionHTML"].ToString();
+                            String mediaHtml = reader["MediaHTML"].ToString();
+                            String audioHtml = reader["AudioMediaHTML"].ToString();
+                            String relatedLinksHtml = reader["RelatedInformationHtml"].ToString();
+
+                            // Convert the two tempoaries into strong types.
+                            Language language = ConvertEnum<Language>.Convert(tmpLanguage);
+
+                            // Audience is stored as either "Patient" or "Health professional".  The latter can't be converted
+                            // as an enum, so we end up with a string compare.
+                            AudienceType audience;
+                            if (String.Compare(tmpAudience, "Patient", true) == 0)
+                                audience = AudienceType.Patient;
+                            else if (String.Compare(tmpAudience, "Health professional", true) == 0)
+                                audience = AudienceType.HealthProfessional;
+                            else
+                                throw new Exception("Don't know how to convert audience type: '" + tmpAudience + "'");
+
+                            GlossaryTermSimpleDefinition definition =
+                                new GlossaryTermSimpleDefinition(audience, language, definitionText, definitionHtml, mediaHtml, audioHtml, relatedLinksHtml);
+                            term.DefinitionList.Add(definition);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error: Retrieveing GlossaryTerm data from CDR staging database failed. Document CDRID=" + cdrID, ex);
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
+            }
+
+            return term;
         }
 
         /// <summary>
@@ -336,39 +416,24 @@ namespace GateKeeper.DataAccess.CancerGov
                 foreach (Language language in GTDocument.GlossaryTermTranslationMap.Keys)
                 {
                     GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
-                    string mediaLink = string.Empty;
-                    string audioMediaHTML = string.Empty;
                     string relatedInformationHtml = String.Empty;
-                    string mediaCaption = string.Empty;
-                    int mediaID = 0;
-
-                    #region Media Links
-                    foreach (MediaLink ml in trans.MediaLinkList)
-                    {
-                        if (ml.Language == language)
-                        {
-                            if (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image"))
-                            {
-                                // TODO:REMOVE the repacement is done for string comparison purpose
-                                mediaLink = mediaLink + ml.Html.Replace("&amps;", "&");
-                                mediaCaption = ml.Caption;
-                                mediaID = ml.ReferencedCdrID;
-
-                            }
-                            else if (ml.Type.Contains("audio"))
-                                audioMediaHTML = audioMediaHTML + ml.Html;
-                        }
-                    }
-                    
-                    #endregion
-
-                    #region RelatedInformation
-                    relatedInformationHtml = trans.RelatedInformationHTML;
-                    #endregion
 
                     #region GlossaryTerm Definition
                     foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
                     {
+                        // Each definition has a discrete audience.
+                        AudienceType currAudience = gtDef.AudienceTypeList[0];
+
+                        // If a pronunciation is associated with this translation, find the markup to save.
+                        string audioMediaHTML = trans.GetAudioMarkup();
+
+                        // If an image is associated with this definition, find the values to store in the DB.
+                        // Otherwise, store non-NULL "blank" values.
+                        string imageMediaHTML = trans.GetImageMarkup(currAudience);
+                        List<string> imageCaptions = trans.GetImageCaptionColl(currAudience);
+                        List<int> imageMediaIDs = trans.GetImageIDColl(currAudience);
+
+
                         //Save Glossary Term Definition
                         String spGlossaryTermDefinition = SPGlossaryTerm.SP_SAVE_GT_DEFINITION;
                         int definitionID = 0;
@@ -378,12 +443,21 @@ namespace GateKeeper.DataAccess.CancerGov
                             db.AddInParameter(spDefCommand, "@GlossaryTermID", DbType.Int32, GTDocument.DocumentID);
                             db.AddInParameter(spDefCommand, "@Language", DbType.String, language.ToString().Trim());
                             db.AddInParameter(spDefCommand, "@UpdateUserID", DbType.String, userID);
-                            db.AddInParameter(spDefCommand, "@MediaHTML", DbType.String, mediaLink.Trim());
+                            db.AddInParameter(spDefCommand, "@MediaHTML", DbType.String, imageMediaHTML);
                             db.AddInParameter(spDefCommand, "@AudioMediaHTML", DbType.String, audioMediaHTML.Trim());
-                            db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, relatedInformationHtml.Trim());
+                            db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, gtDef.RelatedInformationHTML.Trim());
                             db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
-                            db.AddInParameter(spDefCommand, "@MediaCaption", DbType.String, mediaCaption.Trim());
-                            db.AddInParameter(spDefCommand, "@MediaID", DbType.Int32, mediaID);
+
+                            // THIS IS WRONG!!!!
+                            // The business rules allow for multiple images to be referenced from a single definition,
+                            // however the current database schema and front-end code don't support multiple.
+                            // At present, the MediaCaption and MediaId are only used by CancerTypeHomePage on the mobile site.
+                            // This is recorded in OCEPROJECT-756
+                            db.AddInParameter(spDefCommand, "@MediaCaption", DbType.String,
+                                (imageCaptions.Count != 0) ? imageCaptions[0] : string.Empty);
+                            db.AddInParameter(spDefCommand, "@MediaID", DbType.Int32,
+                                (imageMediaIDs.Count != 0) ? imageMediaIDs[0] : 0);
+
                             // Replace summaryref with prettyURL
                             string html = gtDef.Html.Trim();
                             //TODO: Fix SummaryRef tags in Glossary Terms.
@@ -438,6 +512,7 @@ namespace GateKeeper.DataAccess.CancerGov
                 throw new Exception("Database Error: Saving glossary term definition failed. Document CDRID=" + GTDocument.DocumentID.ToString(), e);
             }
         }
+
         #endregion
 
     }

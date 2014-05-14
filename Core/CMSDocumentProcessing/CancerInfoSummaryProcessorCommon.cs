@@ -35,6 +35,8 @@ namespace GKManagers.CMSDocumentProcessing
 
         const int ShortTitleLength = 64;
 
+        protected const string SummaryLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
+
         protected const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
         protected const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         protected const string SummaryRefSlot = "pdqCancerInformationSummaryRef";
@@ -201,6 +203,38 @@ namespace GKManagers.CMSDocumentProcessing
             PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
         }
 
+        /// <summary>
+        /// Move the specified Summary document from Staging to Live and skip Preview Step
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public override void PromoteToLiveFast(int documentID)
+        {
+            PromoteToLiveFast(documentID, null);
+        }
+
+        public override void PromoteToLiveFast(int documentID, string sitePath)
+        {
+            LogDetailedStep("Cancer Info Summary Promote To Live Fast");
+
+            // Allow override of the path where the operation will take place.
+            if (!string.IsNullOrEmpty(sitePath))
+                CMSController.SiteRootPath = sitePath;
+
+            PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
+            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+
+            // If Permanent Links exist, we need to worry about performing transitions
+            // this will return null for mobile and then potentially populated with values on the desktop
+            // as PermanentLink content items should not exist on Mobile
+            PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
+
+            PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
+            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.  
+
+            PerformTransition(TransitionItemsToLiveFast, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
+                        
+        }
+
         protected void PerformTransition(ItemTransitionDelegate transitionMethod,
             PercussionGuid summaryRootID,
             PercussionGuid summaryLinkID,
@@ -275,6 +309,14 @@ namespace GKManagers.CMSDocumentProcessing
             try
             {
                 summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+                string slotName = "";
+                slotName = summary.AudienceType == PatientAudience ? slotName = PatientVersionLinkSlot : slotName = HealthProfVersionLinkSlot;
+                PercussionGuid[] foundIDs = CMSController.SearchForContentItemsByDependent(summaryRootID, slotName, SummaryLinkSnippetTemplate);
+                if (foundIDs != null && foundIDs.Length > 0)
+                {
+                    //there should be just one SummaryLinkItem that will be returned
+                    summaryLinkID = foundIDs[0];
+                }
             }
             catch (FolderAssociationException ex)
             {
@@ -305,7 +347,11 @@ namespace GKManagers.CMSDocumentProcessing
             allPageRelationships.AddRange(mobilePageRelationships);
 
             LogDetailedStep("Begin Permanent Link evaluation.");
-            PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, summary.PermanentLinkList, GetTargetFolder(summary.BasePrettyURL));
+            PSItem[] summaryRootItem = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootID });
+            //get the existing item path for the Permanent Link Helper 
+            //this will ensure no errors are thrown if the URL changes when updating summaries
+            string existingItemPath = CMSController.GetPathInSite(summaryRootItem[0]);
+            PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, summary.PermanentLinkList, existingItemPath);
             //PercussionGuid[] toDeletePermanentLinkGuids = PermanetLinkData.DetectToDeletePermanentLinkRelationships();
             PercussionGuid[] permanentLinkGuids = PermanentLinkData.GetOldGuids;
             PSAaRelationship[] incomingPermanentLinkRelationships = new PSAaRelationship[0];
@@ -745,7 +791,7 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
-        protected void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
+        protected virtual void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
             PercussionGuid summaryLinkItemID, PercussionGuid[] summaryComponentIDList)
         {
             string newPath = GetTargetFolder(targetURL);
@@ -757,10 +803,6 @@ namespace GKManagers.CMSDocumentProcessing
                 // Move the CancerInformationSummary and all its components. The link item is moved separately.
                 CMSController.GuaranteeFolder(newPath, FolderManager.NavonAction.MakePublic);
                 CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
-
-                oldPath = CMSController.GetPathInSite(keyItems[1]); // Link item.
-                newPath = GetParentFolder(targetURL);
-                CMSController.MoveContentItemFolder(oldPath, newPath, new PercussionGuid[] { summaryLinkItemID });
             }
         }
 
@@ -1035,7 +1077,7 @@ namespace GKManagers.CMSDocumentProcessing
             string url;
 
             // Page numbers are natural numbers (1, 2, 3...), not zero-based.
-            if (pageNumber > 1)
+            if (pageNumber > 0)
             {
                 if (string.IsNullOrEmpty(sectionID))
                     url = string.Format("{0}/Page{1}", baseUrl, pageNumber);

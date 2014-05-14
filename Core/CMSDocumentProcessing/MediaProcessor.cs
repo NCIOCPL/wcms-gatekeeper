@@ -170,6 +170,17 @@ namespace GKManagers.CMSDocumentProcessing
             TransitionItemsToLive(new PercussionGuid[1] { identifier });
         }
 
+        /// <summary>
+        /// Move the specified Media document from Staging to Live skipping the Preview Step
+        /// </summary>
+        /// <param name="documentID">The document's CDR ID.</param>
+        public override void PromoteToLiveFast(int documentID)
+        {
+            PercussionGuid identifier = GetCdrDocumentID(MediaContentType, documentID);
+
+            TransitionItemsToLiveFast(new PercussionGuid[1] { identifier });
+        }
+
         #endregion
 
 

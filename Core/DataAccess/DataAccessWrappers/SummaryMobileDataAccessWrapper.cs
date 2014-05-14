@@ -9,6 +9,8 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
 {
     public class SummaryMobileDataAccessWrapper : DocumentDataAccess
     {
+        private bool _isPromoteToLiveFast = false;
+
         /// <summary>
         /// Performs the steps to save a summary document to persistent storage in the Staging state.
         /// </summary>
@@ -65,11 +67,15 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
         /// <remarks>Errors result in System.Exception being thrown. The calling routine is responsible for
         /// catching the exception and recording it.</remarks>
         public override void PromoteToPreview(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
-        {
-            // Save summary data into the Percussion CMS.
-            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
+        {   
+            //skip CMS call if PromoteToLiveFast
+            if (!_isPromoteToLiveFast)
             {
-                processor.PromoteToPreview(document.DocumentID, SitePathOverride);
+                // Save summary data into the Percussion CMS.
+                using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
+                {
+                    processor.PromoteToPreview(document.DocumentID, SitePathOverride);
+                }
             }
 
             // Push summary metadata to the preview database
@@ -143,6 +149,35 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
             using (SummaryQuery summaryQuery = new SummaryQuery())
             {
                 summaryQuery.DeleteDocument(document, ContentDatabase.Live, username);
+            }
+        }
+
+        /// <summary>
+        /// Moves a summary document to the Live workflow state.
+        /// </summary>
+        /// <param name="document">An object derived from Document to be stored.</param>
+        /// <param name="username">String containing the name of the user who initiated the operation.</param>
+        /// <param name="warningWriter">A HistoryEntryWriter for recording warning messages.</param>
+        /// <param name="informationWriter">A HistoryEntryWriter for recording informational messages.</param>
+        /// <remarks>Errors result in System.Exception being thrown. The calling routine is responsible for
+        /// catching the exception and recording it.</remarks>
+        public override void PromoteToLiveFast(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
+        {
+            //_isPromoteToLiveFast set to true so that the Preview step will skip the Percussion call
+            _isPromoteToLiveFast = true;
+
+            this.PromoteToPreview(document, username, warningWriter, informationWriter);
+
+            // Save summary data into the Percussion CMS.
+            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
+            {
+                processor.PromoteToLiveFast(document.DocumentID, SitePathOverride);
+            }
+
+            // Push summary metadata to the live database
+            using (SummaryQuery summaryQuery = new SummaryQuery())
+            {
+                summaryQuery.PushDocumentToLive(document, username);
             }
         }
     }
