@@ -77,6 +77,13 @@ namespace GKManagers.CMSManager.Configuration
             get { return (RepublishEditionListElement)base["liveRepublishEditionList"]; }
         }
 
+        [ConfigurationProperty("liveFastRepublishEditionList", IsRequired = true)]
+        public RepublishEditionListElement LiveFastRepublishEditionList
+        {
+            get { return (RepublishEditionListElement)base["liveFastRepublishEditionList"]; }
+        }
+
+
         [ConfigurationProperty("navonPublicTransitionName")]
         public NavonPublicTransitionElement NavonPublicTransition
         {

@@ -202,7 +202,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             {
                 if (ml.Language == this.Language && (string.IsNullOrEmpty(ml.Type) || ml.Type.Contains("image")))
                 {
-                    captionCollection.Add(ml.Html);
+                    captionCollection.Add(ml.Caption);
                 }
             }
 

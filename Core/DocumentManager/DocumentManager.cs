@@ -467,8 +467,7 @@ namespace GKManagers
                 }
                 else if (action == ProcessActionType.PromoteToLiveFast)
                 {
-                    target.Add(CMSController.CMSPublishingTarget.CDRPreview);
-                    target.Add(CMSController.CMSPublishingTarget.CDRLive);
+                    target.Add(CMSController.CMSPublishingTarget.CDRLiveFast);
                 }
                 foreach (CMSController.CMSPublishingTarget targetItem in target)
                 {

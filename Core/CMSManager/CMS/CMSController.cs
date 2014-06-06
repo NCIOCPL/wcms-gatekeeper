@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 using GKManagers.CMSManager.Configuration;
 using NCI.WCM.CMSManager.PercussionWebSvc;
+using System.Xml.Linq;
+using System.IO;
+using System.Threading;
 
 namespace NCI.WCM.CMSManager.CMS
 {
@@ -1062,14 +1065,15 @@ namespace NCI.WCM.CMSManager.CMS
         {
             CDRStaging = 0, // For completeness, not really useful.
             CDRPreview = 1,
-            CDRLive = 2
+            CDRLive = 2,
+            CDRLiveFast = 3
         }
 
 
         public void StartPublishing(CMSPublishingTarget target)
         {
             // Preview and Live are the only CMS publishing editions we would run.
-            if (target == CMSPublishingTarget.CDRPreview || target == CMSPublishingTarget.CDRLive)
+            if (target == CMSPublishingTarget.CDRPreview || target == CMSPublishingTarget.CDRLive || target == CMSPublishingTarget.CDRLiveFast)
             {
                 // Server communication information.
                 PercussionConfig percussionConfig = (PercussionConfig)System.Configuration.ConfigurationManager.GetSection("PercussionConfig");
@@ -1085,7 +1089,8 @@ namespace NCI.WCM.CMSManager.CMS
                 {
                     string activationUrl = string.Format(publishingUrlFormat, protocol, host, port, edition);
                     WebRequest request = WebRequest.Create(activationUrl);
-                    WebResponse response = request.GetResponse();
+                    WebResponse response = request.GetResponse();            
+                    
                 });
 
             }
@@ -1099,8 +1104,10 @@ namespace NCI.WCM.CMSManager.CMS
 
             if (target == CMSPublishingTarget.CDRPreview)
                 textValue = percussionConfig.PreviewRepublishEditionList.Value.Trim();
-            else
+            else if (target == CMSPublishingTarget.CDRLive)
                 textValue = percussionConfig.LiveRepublishEditionList.Value.Trim();
+            else
+                textValue = percussionConfig.LiveFastRepublishEditionList.Value.Trim();
 
             if (!string.IsNullOrEmpty(textValue))
                 editionList = textValue.Split(new char[] { ',' });
