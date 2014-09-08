@@ -127,6 +127,7 @@
     <Content Include="XSL\README.txt" />
     <Content Include="XSL\Summary.xsl">
     </Content>
+    <Content Include="XSL\SummaryVersion2.xsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
