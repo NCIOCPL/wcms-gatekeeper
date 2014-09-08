@@ -98,17 +98,17 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Find the list of content items referenced by table sections.
                 // After the table sections are created, these are used to create relationships.
-                List<List<PercussionGuid>> tableSectionReferencedItems =
-                    ResolveSectionSummaryReferences(document, document.TableSectionList, new MobileSummarySectionFinder(CMSController));
+                //List<List<PercussionGuid>> tableSectionReferencedItems =
+                //    ResolveSectionSummaryReferences(document, document.TableSectionList, new MobileSummarySectionFinder(CMSController));
 
                 // Create the sub-pages
-                List<long> tableIDs;
-                List<long> mediaLinkIDs;
-                CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
+                //List<long> tableIDs;
+                //List<long> mediaLinkIDs;
+                //CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
                 // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                PSAaRelationship[] tableExternalRelationships =
-                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+                //PSAaRelationship[] tableExternalRelationships =
+                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
 
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
@@ -190,8 +190,8 @@ namespace GKManagers.CMSDocumentProcessing
             PSFolder tempFolder = null;
 
             // Raw content IDs for new content items.
-            List<long> tableIDs;
-            List<long> mediaLinkIDs;
+            //List<long> tableIDs;
+            //List<long> mediaLinkIDs;
             long[] newSummaryPageIDList;
 
             try
@@ -206,15 +206,15 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Find the list of content items referenced by table sections.
                 // After the table sections are created, these are used to create relationships.
-                List<List<PercussionGuid>> tableSectionReferencedItems =
-                    ResolveSectionSummaryReferences(summary, summary.TableSectionList, new MobileSummarySectionFinder(CMSController));
+                //List<List<PercussionGuid>> tableSectionReferencedItems =
+                //    ResolveSectionSummaryReferences(summary, summary.TableSectionList, new MobileSummarySectionFinder(CMSController));
 
                 // Create the new sub-page items in a temporary location.
-                CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
+                //CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
                 // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                PSAaRelationship[] tableExternalRelationships =
-                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+                //PSAaRelationship[] tableExternalRelationships =
+                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
 
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
@@ -275,7 +275,7 @@ namespace GKManagers.CMSDocumentProcessing
             RemoveOldPages(oldpageIDs, oldSubItems);
 
             //// Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList);
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs, */newSummaryPageIDList);
             CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 

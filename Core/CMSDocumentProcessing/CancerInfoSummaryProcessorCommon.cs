@@ -734,34 +734,36 @@ namespace GKManagers.CMSDocumentProcessing
             List<PercussionGuid> rollbackList,
             out List<long> tableIDs, out List<long> mediaLinkIDs)
         {
-            // Create the embeddable content items and resolve the item references.
+            mediaLinkIDs = null;
+            tableIDs = null;
+            //// Create the embeddable content items and resolve the item references.
 
-            LogDetailedStep("Begin CreateSubPages.");
+            //LogDetailedStep("Begin CreateSubPages.");
 
-            // Create the MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
-            mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
-            rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
+            //// Create the MediaLinks
+            //List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
+            //mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
+            //rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
 
-            // Resolve MediaLink inline slots within the pages.
-            SectionToCmsIDMap mediaLinkIDMap = null;
-            _mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
-            mediaLinkIDMap = _mediaLinkIDMap;
-            ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+            //// Resolve MediaLink inline slots within the pages.
+            //SectionToCmsIDMap mediaLinkIDMap = null;
+            //_mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
+            //mediaLinkIDMap = _mediaLinkIDMap;
+            //ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
-            // Resolve MediaLink references within table sections.
-            ResolveTableSectionMediaLinkInlineSlots(summary.TableSectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+            //// Resolve MediaLink references within table sections.
+            //ResolveTableSectionMediaLinkInlineSlots(summary.TableSectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
-            // Create the Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
-            tableIDs = CMSController.CreateContentItemList(tableList);
-            rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
+            //// Create the Table sections
+            //List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
+            //tableIDs = CMSController.CreateContentItemList(tableList);
+            //rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
 
-            // Resolve Table inline slots within the pages.
-            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
-            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
+            //// Resolve Table inline slots within the pages.
+            //SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
+            //ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
 
-            LogDetailedStep("End CreateSubPages.");
+            //LogDetailedStep("End CreateSubPages.");
         }
 
         /// <summary>
@@ -823,128 +825,128 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        protected void ResolveInlineSlots(List<SummarySection> sectionList, SectionToCmsIDMap itemIDMap, string templateName)
-        {
-            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+        //protected void ResolveInlineSlots(List<SummarySection> sectionList, SectionToCmsIDMap itemIDMap, string templateName)
+        //{
+        //    PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
 
-            foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
-            {
-                XmlDocument html = section.Html;
-                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //    foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
+        //    {
+        //        XmlDocument html = section.Html;
+        //        XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (itemIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = itemIDMap[target].ID;
+        //            if (itemIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = itemIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
-            }
-        }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// Resolves medialink inline slots contained within table sections
-        /// </summary>
-        /// <param name="tableSectionList"></param>
-        /// <param name="mediaLinkIDMap"></param>
-        /// <param name="templateName"></param>
-        protected void ResolveTableSectionMediaLinkInlineSlots(List<SummarySection> tableSectionList, SectionToCmsIDMap mediaLinkIDMap, string templateName)
-        {
-            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+        ///// <summary>
+        ///// Resolves medialink inline slots contained within table sections
+        ///// </summary>
+        ///// <param name="tableSectionList"></param>
+        ///// <param name="mediaLinkIDMap"></param>
+        ///// <param name="templateName"></param>
+        //protected void ResolveTableSectionMediaLinkInlineSlots(List<SummarySection> tableSectionList, SectionToCmsIDMap mediaLinkIDMap, string templateName)
+        //{
+        //    PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
 
-            // NOTE: Unlike ResolveInlineSlots for SummarySection lists, this has no where clause.
-            foreach (SummarySection section in tableSectionList)
-            {
-                XmlDocument html = section.Html;
-                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //    // NOTE: Unlike ResolveInlineSlots for SummarySection lists, this has no where clause.
+        //    foreach (SummarySection section in tableSectionList)
+        //    {
+        //        XmlDocument html = section.Html;
+        //        XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = mediaLinkIDMap[target].ID;
+        //            if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = mediaLinkIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
 
-                // Lather, rinse and repeast for the full-size HTML.
-                html = section.StandaloneHTML;
-                nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //        // Lather, rinse and repeast for the full-size HTML.
+        //        html = section.StandaloneHTML;
+        //        nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = mediaLinkIDMap[target].ID;
+        //            if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = mediaLinkIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
-            }
-        }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Replaces SummaryRef placeholder tags with links to the individual summary sections.
@@ -1082,7 +1084,9 @@ namespace GKManagers.CMSDocumentProcessing
                 if (string.IsNullOrEmpty(sectionID))
                     url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
                 else
-                    url = string.Format("{0}/Page{1}#Section{2}", baseUrl, pageNumber, sectionID);
+                    //removed the word section from the url
+                    //as sections are represented using their ids
+                    url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
             }
             else
             {
@@ -1106,7 +1110,9 @@ namespace GKManagers.CMSDocumentProcessing
             if (string.IsNullOrEmpty(sectionID))
                 url = string.Format("{0}", baseUrl);
             else
-                url = string.Format("{0}/#Section{1}", baseUrl, sectionID);
+                //removed the word section from the url
+                //as sections are represented using their ids
+                url = string.Format("{0}/#{1}", baseUrl, sectionID);
 
             return url;
         }
@@ -1576,42 +1582,42 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="documentID"></param>
         /// <returns></returns>
-        public void BuildGlossaryTermRefLink(ref string html, string tag)
-        {
-            // TODO:  This doesn't belong in the data layer!!!!
-            string startTag = "<a Class=\"" + tag + "\"";
-            string endTag = "</a>";
-            int startIndex = html.IndexOf(startTag, 0);
-            string sectionHTML = html;
-            string collectHTML = string.Empty;
-            string partC = string.Empty;
-            while (startIndex >= 0)
-            {
-                string partA = sectionHTML.Substring(0, startIndex);
-                string left = sectionHTML.Substring(startIndex);
-                int endIndex = left.IndexOf(endTag) + endTag.Length;
-                string partB = left.Substring(0, endIndex);
-                partC = left.Substring(endIndex);
+        //public void BuildGlossaryTermRefLink(ref string html, string tag)
+        //{
+        //    // TODO:  This doesn't belong in the data layer!!!!
+        //    string startTag = "<a Class=\"" + tag + "\"";
+        //    string endTag = "</a>";
+        //    int startIndex = html.IndexOf(startTag, 0);
+        //    string sectionHTML = html;
+        //    string collectHTML = string.Empty;
+        //    string partC = string.Empty;
+        //    while (startIndex >= 0)
+        //    {
+        //        string partA = sectionHTML.Substring(0, startIndex);
+        //        string left = sectionHTML.Substring(startIndex);
+        //        int endIndex = left.IndexOf(endTag) + endTag.Length;
+        //        string partB = left.Substring(0, endIndex);
+        //        partC = left.Substring(endIndex);
 
-                // Combine
-                // Do not add extra space after the GlossaryTermRef if following sign
-                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
-                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
-                    collectHTML += partA.Trim();
-                else
-                    collectHTML += " " + partA.Trim();
+        //        // Combine
+        //        // Do not add extra space after the GlossaryTermRef if following sign
+        //        // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
+        //        if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
+        //            collectHTML += partA.Trim();
+        //        else
+        //            collectHTML += " " + partA.Trim();
 
-                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
-                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
-                    collectHTML += partB;
-                else
-                    collectHTML += " " + partB;
+        //        // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
+        //        if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
+        //            collectHTML += partB;
+        //        else
+        //            collectHTML += " " + partB;
 
-                sectionHTML = partC.Trim();
-                startIndex = sectionHTML.IndexOf(startTag, 0);
-            }
-            html = collectHTML + partC;
-        }
+        //        sectionHTML = partC.Trim();
+        //        startIndex = sectionHTML.IndexOf(startTag, 0);
+        //    }
+        //    html = collectHTML + partC;
+        //}
 
         public string GetLanguageCode(Language language)
         {
@@ -1707,15 +1713,20 @@ namespace GKManagers.CMSDocumentProcessing
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
             // This kind of manipulation particularly shouldn't happen in the
             // routine that creates field/value pairs!
-            if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
-            {
-                string glossaryTermTag = "Summary-GlossaryTermRef";
-                BuildGlossaryTermRefLink(ref html, glossaryTermTag);
-            }
+            //if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
+            //{
+            //    string glossaryTermTag = "Summary-GlossaryTermRef";
+            //    BuildGlossaryTermRefLink(ref html, glossaryTermTag);
+            //}
 
-            fields.Add("bodyfield", html);
+            string bodyField = html + (string.IsNullOrEmpty(summarySection.TOC) ? null : summarySection.TOC);
+            //save the script tag used for table of contents and section html 
+            // as part of the body field
+            fields.Add("bodyfield", bodyField);
 
-            // TODO: Implement table of contents.
+            //leave the Table Of  Contents field blank for Percussion
+            // Table of Contents being generated using Javascript
+            summarySection.TOC = "";
             fields.Add("table_of_contents", (string.IsNullOrEmpty(summarySection.TOC) ? null : summarySection.TOC));
 
             string longTitle = summarySection.Title;
