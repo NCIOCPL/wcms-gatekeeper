@@ -128,6 +128,7 @@
     <Content Include="XSL\Summary-NEW.xsl" />
     <Content Include="XSL\Summary.xsl">
     </Content>
+    <Content Include="XSL\SummaryV2.xsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
