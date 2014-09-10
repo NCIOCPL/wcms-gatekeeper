@@ -162,7 +162,13 @@
          Note: We only want to add this diff if there exist subsections
     ===================================================================== -->
 
-                <xsl:if                       test = "descendant::SummarySection">
+                <xsl:if                       test = "(descendant::SummarySection 
+                                           and
+                                           $audience = 'healthprofessional')
+                                           or
+                                           ($audience = 'patient'
+                                            and
+                                            not(descendant::KeyPoint))">
                   <xsl:element                 name = "div">
                     <xsl:attribute              name = "id">
                       <xsl:text>_toc_section</xsl:text>
@@ -180,6 +186,9 @@
                 <!-- KeyPoints Box -->
                 <xsl:choose>
                   <xsl:when                    test = "../descendant::KeyPoint">
+                    <!--
+      <xsl:call-template          name = "keypointsbox_old"/>
+      -->
                     <xsl:call-template          name = "keypointsbox"/>
                   </xsl:when>
                   <!-- Table of Contents -->
@@ -219,55 +228,100 @@
     </html>
   </xsl:template>
 
+
   <!--
   This JavaScript calls the TOC function to attach the TOC to the DIV
   element with ID="_toc_section_N" N=1,2,3,...
   =================================================================== -->
   <xsl:template                  name = "addTOC">
     <script type="text/javascript"
-            src="http://cdr.dev.cancer.gov/cgi-bin/cdr/STOC.js"></script>
+            src="http://cdr.dev.cancer.gov/cgi-bin/cdr/STOC_new.js"></script>
 
     <script id="sectionToc" type="text/javascript">
+      <xsl:text>
+       $(function(){
+      <!-- Full document TOC -->
+          $("#_toc_article").stoc({ search: "article", start: 3, depth: 3,
+          tocTitleEn: "Table of content for this document",
+          tocTitleEs: "Tabla de contenidos para esta (document???)"});
+      </xsl:text>
+
       <xsl:choose>
-        <!-- Full document TOC -->
-        <xsl:when test = "$audience = 'patient'">
-          $(function(){
-          $("#_toc_article").stoc({ search: "article",
-          start: 3});
+        <xsl:when                    test = "$audience = 'patient'">
+          <xsl:for-each             select = "/Summary/SummarySection">
+            <xsl:variable              name = "thisSection"
+                                     select = "count(
+                                          preceding-sibling::SummarySection) + 1"/>
+            <xsl:choose>
+              <xsl:when                  test = "descendant::KeyPoint">
+                <xsl:text>
+          $("#_toc_section</xsl:text>
+                <xsl:value-of          select = "./@id"/>
+                <xsl:text>_</xsl:text>
+                <xsl:value-of          select = "$thisSection"/>
+                <xsl:text>").stoc({search: "#_section</xsl:text>
+                <xsl:value-of          select = "./@id"/>
+                <xsl:text>_</xsl:text>
+                <xsl:value-of          select = "$thisSection"/>
+                <xsl:text>", start: 4</xsl:text>
+                <xsl:text>, depth: 2</xsl:text>
+                <xsl:text>, kp: 1</xsl:text>
+                <xsl:text>});</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if                     test = "descendant::SummarySection">
+                  <xsl:text>
+         $("#_toc_section</xsl:text>
+                  <xsl:value-of       select = "./@id"/>
+                  <xsl:text>_</xsl:text>
+                  <xsl:value-of select = "$thisSection"/>
+                  <xsl:text>").stoc({search: "#_section</xsl:text>
+                  <xsl:value-of       select = "./@id"/>
+                  <xsl:text>_</xsl:text>
+                  <xsl:value-of select = "$thisSection"/>
+                  <xsl:text>",</xsl:text>
+                  <xsl:text> start: 4,</xsl:text>
+                  <xsl:text> depth: 2,</xsl:text>
+                  <xsl:text> tocTitleEn:"Table of content for this section", </xsl:text>
+                  <xsl:text> tocTitleEs:"Tabla de contenidos para esta secci&#243;n"</xsl:text>
+                  <xsl:text>});</xsl:text>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          $(function(){
-          $("#_toc_article").stoc({ search: "article",
-          start: 3});
-
           <!-- 
-     Create TOC for HP sections
-     (but suppress TOC header if no subsections exist)
-     ================================================================= -->
+      Create TOC for HP sections
+      (but suppress TOC header if no subsections exist)
+      ================================================================= -->
           <xsl:for-each              select = "/Summary/SummarySection">
             <xsl:variable               name = "thisSection"
                                       select = "count(
-                                      preceding-sibling::SummarySection) + 1"/>
+                                          preceding-sibling::SummarySection) + 1"/>
             <xsl:if                     test = "descendant::SummarySection">
               <xsl:text>
          $("#_toc_section</xsl:text>
-
               <xsl:value-of       select = "./@id"/>
               <xsl:text>_</xsl:text>
               <xsl:value-of select = "$thisSection"/>
               <xsl:text>").stoc({search: "#_section</xsl:text>
               <xsl:value-of       select = "./@id"/>
-
               <xsl:text>_</xsl:text>
               <xsl:value-of select = "$thisSection"/>
-              <xsl:text>"});</xsl:text>
+              <xsl:text>",</xsl:text>
+              <xsl:text> start: 4,</xsl:text>
+              <xsl:text> depth: 2,</xsl:text>
+              <xsl:text> tocTitleEn:"Table of content for this section", </xsl:text>
+              <xsl:text> tocTitleEs:"Tabla de contenidos para esta secci&#243;n"</xsl:text>
+              <xsl:text>});</xsl:text>
             </xsl:if>
           </xsl:for-each>
-          <xsl:text>
-        });</xsl:text>
 
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:text>
+         });</xsl:text>
     </script>
   </xsl:template>
 
@@ -335,9 +389,23 @@
   Display the Keypoints as Titles within the text
   ================================================================ -->
   <xsl:template                  match = "KeyPoint">
-    <xsl:element                   name = "h3">
+    <xsl:variable                  name = "nestedKp">
+      <xsl:choose>
+        <xsl:when                 test = "count(ancestor::SummarySection) + 2 > 6">
+          <xsl:text>h6</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of          select = "concat('h',count(ancestor::SummarySection) + 2)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:element                   name = "{$nestedKp}">
       <xsl:attribute                name = "id">
         <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:attribute                name = "type">
+        <xsl:text>keypoint</xsl:text>
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
@@ -918,9 +986,9 @@
         <xsl:attribute               name = "title">
           <xsl:value-of             select = "@alt"/>
         </xsl:attribute>
-        <xsl:attribute               name = "border">
+        <!--<xsl:attribute               name = "border">
           <xsl:value-of             select = "'1'"/>
-        </xsl:attribute>
+        </xsl:attribute>-->
         <xsl:attribute               name = "src">
           <!--
      Next Line For Testing on DEV only !!! 
@@ -931,10 +999,10 @@
                                            substring-after(@ref, 'CDR'))"/>
           <xsl:text>-571.jpg</xsl:text>
         </xsl:attribute>
-        <xsl:attribute               name = "class">
+        <!--<xsl:attribute               name = "class">
           <xsl:text>cdrMediaImage </xsl:text>
           <xsl:value-of             select = "@size"/>
-        </xsl:attribute>
+        </xsl:attribute>-->
       </xsl:element>
       <xsl:apply-templates/>
     </xsl:element>
@@ -1123,25 +1191,26 @@
     NAMED TEMPLATES
 ======================================================================== -->
   <!--
-  Template to create the Keypoint box
+  Template to create the Keypoint box (created with JavaScript)
   ================================================================ -->
   <xsl:template                   name = "keypointsbox">
-    <xsl:if test = "descendant::KeyPoint">
-      <div class="keyPoints">
+    <xsl:if                        test = "descendant::KeyPoint">
+      <div                          class = "keyPoints">
         <h4>Key Points for This Section</h4>
-        <ul>
-          <xsl:for-each               select = "descendant::KeyPoint">
-            <li>
-              <xsl:element                name = "a">
-                <xsl:attribute             name = "href">
-                  <xsl:text>#</xsl:text>
-                  <xsl:value-of           select = "@id"/>
-                </xsl:attribute>
-                <xsl:value-of            select = "."/>
-              </xsl:element>
-            </li>
-          </xsl:for-each>
-        </ul>
+        <xsl:element                 name = "div">
+          <xsl:attribute              name = "id">
+            <xsl:text>_toc_section</xsl:text>
+            <xsl:value-of             select = "./@id"/>
+            <xsl:text>_</xsl:text>
+            <xsl:value-of             select = "count(
+                                          preceding-sibling::SummarySection) + 1"/>
+          </xsl:attribute>
+          <!--
+      <xsl:attribute              name = "class">
+       <xsl:text>on-this-pageXXX</xsl:text>
+      </xsl:attribute>
+      -->
+        </xsl:element>
       </div>
     </xsl:if>
   </xsl:template>

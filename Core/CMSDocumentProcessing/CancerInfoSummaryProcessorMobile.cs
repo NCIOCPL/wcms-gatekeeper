@@ -46,8 +46,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
         protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
-            PercussionGuid[] desktopPageIDs, PercussionGuid[] desktopSubItemIDs, PSAaRelationship[] incomingDesktopPageRelationships,
-            PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
+            PercussionGuid[] desktopPageIDs, /*PercussionGuid[] desktopSubItemIDs,*/ PSAaRelationship[] incomingDesktopPageRelationships,
+            PercussionGuid[] mobilePageIDs, /*PercussionGuid[] mobileSubItemIDs,*/ PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
         {
             if (string.IsNullOrEmpty(sitePath))
@@ -63,7 +63,7 @@ namespace GKManagers.CMSDocumentProcessing
             else
             {
                 UpdateMobilePageStructure(summary, summaryLinkID, summaryRootID,
-                    mobilePageIDs, mobileSubItemIDs, incomingMobilePageRelationships, sitePath);
+                    mobilePageIDs, /*mobileSubItemIDs,*/ incomingMobilePageRelationships, sitePath);
             }
         }
 
@@ -86,7 +86,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 // Move existing document components to staging.
                 // Pages and sub-pages don't yet exist.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], null, null);
+                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], null/*, null*/);
 
                 CMSController.SiteRootPath = sitePath;
 
@@ -156,7 +156,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void UpdateMobilePageStructure(SummaryDocument summary,
             PercussionGuid summaryLink, PercussionGuid summaryRoot,
-            PercussionGuid[] oldpageIDs, PercussionGuid[] oldSubItems, PSAaRelationship[] incomingPageRelationships,
+            PercussionGuid[] oldpageIDs, /*PercussionGuid[] oldSubItems,*/ PSAaRelationship[] incomingPageRelationships,
             string sitePath)
         {
             // For undoing failed updates.
@@ -197,7 +197,7 @@ namespace GKManagers.CMSDocumentProcessing
             try
             {
                 // Move the entire composite document to staging.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], oldpageIDs, oldSubItems);
+                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], oldpageIDs/*, oldSubItems*/);
 
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
@@ -272,7 +272,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
             // No links from other summaries to table sections and media links.
-            RemoveOldPages(oldpageIDs, oldSubItems);
+            RemoveOldPages(oldpageIDs/*, oldSubItems*/);
 
             //// Move the new items into the main folder.
             PercussionGuid[] componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs, */newSummaryPageIDList);

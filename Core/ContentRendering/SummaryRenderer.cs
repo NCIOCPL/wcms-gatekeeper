@@ -490,41 +490,24 @@ namespace GateKeeper.ContentRendering
                     sectionNav = xNav.SelectSingleNode(expression);
 
                     if (sectionNav != null)
-                    {                        
-                        if (section.IsTopLevel)
-                        {
-                            //for top level sections
-                            //add script tag created in the XSLT
-                            //it is needed for generating table of contents
-                            XPathNavigator scriptForTableOfContents = null;
-                            //<script id="sectionToc" type="text/javascript">
-                            string scriptExpression = (".//script[@id='sectionToc']");
-                            scriptForTableOfContents = xNav.SelectSingleNode(scriptExpression);
-                            
-                            if (scriptForTableOfContents != null)
-                            {
-                                // Save the results of the transform into the Html property
-                                section.Html.LoadXml(sectionNav.OuterXml);
-                                section.TOC = scriptForTableOfContents.OuterXml;
-                            }
-                            else
-                                section.Html.LoadXml(sectionNav.OuterXml);
-                        }
-                        else
-                        {
-                            // Save the results of the transform into the Html property
-                            section.Html.LoadXml(sectionNav.OuterXml);
-                        }
-                        //get the section titles
+                    {
+                        //set the section title 
                         //this takes care of special tags like GeneName being part of the title
                         XPathNavigator titleNav = null;
-                        string titleExpression = string.Format(".//h3[contains(@id,'_{0}_toc')]|.//h4[@id='_{0}_toc']|.//h5[@id='_{0}_toc']|.//h6[@id='_{0}_toc']", section.SectionID);
+                        string titleExpression = string.Format(".//h2[@id='_{0}_toc']|.//h3[@id='_{0}_toc']|.//h4[@id='_{0}_toc']|.//h5[@id='_{0}_toc']|.//h6[@id='_{0}_toc']", section.SectionID);
                         titleNav = sectionNav.SelectSingleNode(titleExpression);
                         if (titleNav != null)
                         {
                             section.Title = titleNav.InnerXml;
+                            //top level section titles come from the Percussion template 
+                            //the tag can be deleted from the HTML
+                            if (section.IsTopLevel)
+                                titleNav.DeleteSelf();
                         }
-                            
+
+                        // Save the results of the transform into the Html property
+                        section.Html.LoadXml(sectionNav.OuterXml);
+
                     }
                     else
                     {
