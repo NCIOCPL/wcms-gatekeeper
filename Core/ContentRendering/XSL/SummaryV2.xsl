@@ -1,6 +1,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output                   method = "xml"/>
   <xsl:param                      name = "section"/>
+  <xsl:param                      name = "targetedDevice"
+                               select = "'screen'"/>
   <xsl:param                      name = "pp"
                                 select = "'N'"/>
   <xsl:param                      name = "default.table.width"
@@ -146,88 +148,89 @@
                 <xsl:number/>
               </xsl:variable>
 
-              <xsl:element                  name = "section">
-                <xsl:attribute               name = "id">
-                  <xsl:text>_section</xsl:text>
-                  <xsl:value-of             select = "./@id"/>
-                  <xsl:text>_</xsl:text>
-                  <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
-                </xsl:attribute>
+              <xsl:if                       test = "($targetedDevice = 'screen')
+                                          or
+                                          ($targetedDevice = 'mobile'
+                                           and
+                                           not(@ExcludedDevices))">
+                <xsl:element                  name = "section">
+                  <xsl:attribute               name = "id">
+                    <xsl:text>_section</xsl:text>
+                    <xsl:value-of             select = "./@id"/>
+                    <xsl:text>_</xsl:text>
+                    <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
+                  </xsl:attribute>
 
-                <!-- The section title of the top SummarySection has to be
+                  <!-- The section title of the top SummarySection has to be
          printed above the keypoints box or the TOC -->
-                <xsl:apply-templates       select = "Title"/>
+                  <xsl:apply-templates       select = "Title"/>
 
-                <!-- Create a hook for the TOC for this section 
+                  <!-- Create a hook for the TOC for this section 
          Note: We only want to add this diff if there exist subsections
     ===================================================================== -->
 
-                <xsl:if                       test = "(descendant::SummarySection 
+                  <xsl:if                       test = "(descendant::SummarySection 
                                            and
                                            $audience = 'healthprofessional')
                                            or
                                            ($audience = 'patient'
                                             and
                                             not(descendant::KeyPoint))">
-                  <xsl:element                 name = "div">
-                    <xsl:attribute              name = "id">
-                      <xsl:text>_toc_section</xsl:text>
-                      <xsl:value-of             select = "./@id"/>
-                      <xsl:text>_</xsl:text>
-                      <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
-                    </xsl:attribute>
-                    <xsl:attribute              name = "class">
-                      <xsl:text>on-this-page</xsl:text>
-                    </xsl:attribute>
-                  </xsl:element>
-                </xsl:if>
+                    <xsl:element                 name = "div">
+                      <xsl:attribute              name = "id">
+                        <xsl:text>_toc_section</xsl:text>
+                        <xsl:value-of             select = "./@id"/>
+                        <xsl:text>_</xsl:text>
+                        <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
+                      </xsl:attribute>
+                      <xsl:attribute              name = "class">
+                        <xsl:text>on-this-page</xsl:text>
+                      </xsl:attribute>
+                    </xsl:element>
+                  </xsl:if>
 
+                  <!-- KeyPoints Box -->
+                  <xsl:choose>
+                    <xsl:when                    test = "../descendant::KeyPoint">
+                      <xsl:call-template          name = "keypointsbox"/>
+                    </xsl:when>
+                  </xsl:choose>
 
-                <!-- KeyPoints Box -->
-                <xsl:choose>
-                  <xsl:when                    test = "../descendant::KeyPoint">
-                    <!--
-      <xsl:call-template          name = "keypointsbox_old"/>
-      -->
-                    <xsl:call-template          name = "keypointsbox"/>
-                  </xsl:when>
-                  <!-- Table of Contents -->
-                  <!--
-     <xsl:when                    test = "SummarySection/Title">
-      <div class="on-this-page">
-       <h4>Table of Contents for this page (bad)</h4>
-       -->
-                  <!--
-       <xsl:call-template          name = "toc"/>
-       -->
-                  <!--
-       <xsl:if                     test = "SummarySection[Title]">
-       <ul>
-       <xsl:apply-templates      select = "SummarySection"
-                                   mode = "toc"/>
-       </ul>
-       </xsl:if>
-      </div>
-     </xsl:when>
-     -->
-                </xsl:choose>
+                  <xsl:apply-templates        select = "*[not(self::Title)]">
+                    <xsl:with-param              name = "topSection"
+                                               select = "$topSection"/>
+                  </xsl:apply-templates>
 
-                <xsl:apply-templates        select = "*[not(self::Title)]">
-                  <xsl:with-param              name = "topSection"
-                                             select = "$topSection"/>
-                </xsl:apply-templates>
-
-              </xsl:element>
+                </xsl:element>
+              </xsl:if>
             </xsl:for-each>
           </article>
         </div>
 
         <xsl:call-template              name = "addTOC"/>
+        <xsl:call-template              name = "SuperSizeMe"/>
 
       </body>
     </html>
   </xsl:template>
 
+  <!--
+  Template to use jQuery to create Enlarge buttons for Tables and 
+  Images
+  =================================================================== -->
+  <xsl:template                  name = "SuperSizeMe">
+    <script type="text/javascript"
+            src="http://cdr.dev.cancer.gov/cgi-bin/cdr/Enlarge.js"></script>
+
+    <script type="text/javascript">
+      <xsl:text>
+       $(function() {
+          $( ".expandable_container > img" ).supersizeme( {text: 'Enlarge'} );
+          $( "table" ).supersizeme( {text: 'Enlarge'} );
+        });
+      </xsl:text>
+    </script>
+  </xsl:template>
 
   <!--
   This JavaScript calls the TOC function to attach the TOC to the DIV
@@ -241,7 +244,7 @@
       <xsl:text>
        $(function(){
       <!-- Full document TOC -->
-          $("#_toc_article").stoc({ search: "article", start: 3, depth: 3,
+          $("#_toc_article").stoc({ search: "article", start: 2, depth: 3,
           tocTitleEn: "Table of content for this document",
           tocTitleEs: "Tabla de contenidos para esta (document???)"});
       </xsl:text>
@@ -263,7 +266,7 @@
                 <xsl:value-of          select = "./@id"/>
                 <xsl:text>_</xsl:text>
                 <xsl:value-of          select = "$thisSection"/>
-                <xsl:text>", start: 4</xsl:text>
+                <xsl:text>", start: 3</xsl:text>
                 <xsl:text>, depth: 2</xsl:text>
                 <xsl:text>, kp: 1</xsl:text>
                 <xsl:text>});</xsl:text>
@@ -280,7 +283,7 @@
                   <xsl:text>_</xsl:text>
                   <xsl:value-of select = "$thisSection"/>
                   <xsl:text>",</xsl:text>
-                  <xsl:text> start: 4,</xsl:text>
+                  <xsl:text> start: 3,</xsl:text>
                   <xsl:text> depth: 2,</xsl:text>
                   <xsl:text> tocTitleEn:"Table of content for this section", </xsl:text>
                   <xsl:text> tocTitleEs:"Tabla de contenidos para esta secci&#243;n"</xsl:text>
@@ -310,7 +313,7 @@
               <xsl:text>_</xsl:text>
               <xsl:value-of select = "$thisSection"/>
               <xsl:text>",</xsl:text>
-              <xsl:text> start: 4,</xsl:text>
+              <xsl:text> start: 3,</xsl:text>
               <xsl:text> depth: 2,</xsl:text>
               <xsl:text> tocTitleEn:"Table of content for this section", </xsl:text>
               <xsl:text> tocTitleEs:"Tabla de contenidos para esta secci&#243;n"</xsl:text>
@@ -356,17 +359,16 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "SummaryTitle">
-    <!-- h1><xsl:apply-templates/></h1 -->
-    <h1>
-      <xsl:value-of                select = "substring-before(.,
-                                                      '(PDQ')"/>
+    <xsl:element                  name = "h1">
+      <xsl:value-of              select = "substring-before(., '(PDQ')"/>
       <xsl:text>(PDQ</xsl:text>
-      <xsl:element                  name = "sup">
+      <xsl:element                 name = "sup">
         <xsl:text>&#174;</xsl:text>
       </xsl:element>
       <xsl:text>)</xsl:text>
-    </h1>
+    </xsl:element>
   </xsl:template>
+
 
   <!--
   Template for Top SummarySections
@@ -374,15 +376,23 @@
   <xsl:template                  match = "SummarySection">
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
-    <xsl:element                  name = "section">
-      <xsl:attribute               name = "id">
-        <xsl:value-of             select = "@id"/>
-      </xsl:attribute>
-      <xsl:apply-templates>
-        <xsl:with-param          name = "topSection"
-                               select = "$topSection"/>
-      </xsl:apply-templates>
-    </xsl:element>
+    <xsl:choose>
+      <xsl:when                      test = "$targetedDevice = 'screen'
+                                          or
+                                          ($targetedDevice = 'mobile'
+                                           and
+                                           not(@ExcludedDevices='mobile'))">
+        <xsl:element                  name = "section">
+          <xsl:attribute               name = "id">
+            <xsl:value-of             select = "@id"/>
+          </xsl:attribute>
+          <xsl:apply-templates>
+            <xsl:with-param              name = "topSection"
+                                       select = "$topSection"/>
+          </xsl:apply-templates>
+        </xsl:element>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
   <!--
@@ -420,13 +430,13 @@
                                  select = "'title'"/>
     <xsl:choose>
       <xsl:when                     test = "$topSection = 'title'">
-        <h3>
+        <xsl:element                 name = "h2">
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "parent::SummarySection/@id"/>
             <xsl:text>_toc</xsl:text>
           </xsl:attribute>
           <xsl:apply-templates/>
-        </h3>
+        </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <!--
@@ -436,11 +446,11 @@
      ================================================================== -->
         <xsl:variable               name = "nestedLevel">
           <xsl:choose>
-            <xsl:when                 test = "count(ancestor::*) + 1 > 6">
+            <xsl:when                 test = "count(ancestor::*) + 0 > 6">
               <xsl:text>h6</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of          select = "concat('h',count(ancestor::*) + 1)"/>
+              <xsl:value-of          select = "concat('h',count(ancestor::*) + 0)"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -945,67 +955,63 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "MediaLink">
-    <xsl:element                   name = "figure">
-      <xsl:attribute                name = "class">
-        <xsl:text>image-center</xsl:text>
-      </xsl:attribute>
-
-      <!--
-   Display the 'Enlarge' button
-   ============================= -->
-      <xsl:element                   name = "a">
+    <xsl:if                        test = "($targetedDevice = 'screen')
+                                          or
+                                          ($targetedDevice = 'mobile'
+                                           and
+                                           (not(@ExcludedDevices)
+                                            or
+                                            @IncludedDevices))">
+      <xsl:element                   name = "figure">
+        <xsl:attribute                name = "id">
+          <xsl:text>figure</xsl:text>
+        </xsl:attribute>
+        <!-- Add expandable_container as a hook for the JavaScript enlarge/collapse
+         generation -->
         <xsl:attribute                name = "class">
-          <xsl:text>article-image-enlarge</xsl:text>
+          <xsl:text>image-center</xsl:text>
+          <xsl:text> expandable_container</xsl:text>
         </xsl:attribute>
-        <xsl:attribute                name = "target">
-          <xsl:text>_blank</xsl:text>
-        </xsl:attribute>
-        <xsl:attribute                name = "href">
-          <!--
-     Next Line For Testing on DEV only !!! 
-     ===================================== -->
-          <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
-          <xsl:text>/images/cdr/live/CDR</xsl:text>
-          <xsl:value-of              select = "number(
-                                           substring-after(@ref, 'CDR'))"/>
-          <xsl:text>.jpg</xsl:text>
-        </xsl:attribute>
-        <xsl:value-of               select = "$strEnlarge"/>
-      </xsl:element>
 
-      <!--
+
+        <!--
     Display the Image
     ============================= -->
-      <xsl:element                  name = "img">
-        <xsl:attribute               name = "id">
-          <xsl:value-of             select = "@id"/>
-        </xsl:attribute>
-        <xsl:attribute               name = "alt">
-          <xsl:value-of             select = "@alt"/>
-        </xsl:attribute>
-        <xsl:attribute               name = "title">
-          <xsl:value-of             select = "@alt"/>
-        </xsl:attribute>
-        <!--<xsl:attribute               name = "border">
-          <xsl:value-of             select = "'1'"/>
-        </xsl:attribute>-->
-        <xsl:attribute               name = "src">
+        <xsl:element                  name = "img">
+          <xsl:attribute               name = "id">
+            <xsl:value-of             select = "@id"/>
+          </xsl:attribute>
+          <xsl:attribute               name = "alt">
+            <xsl:value-of             select = "@alt"/>
+          </xsl:attribute>
+          <xsl:attribute               name = "title">
+            <xsl:value-of             select = "@alt"/>
+          </xsl:attribute>
           <!--
+     <xsl:attribute               name = "border">
+      <xsl:value-of             select = "'1'"/>
+     </xsl:attribute>
+     -->
+          <xsl:attribute               name = "src">
+            <!--
      Next Line For Testing on DEV only !!! 
      ===================================== -->
-          <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
-          <xsl:text>/images/cdr/live/CDR</xsl:text>
-          <xsl:value-of              select = "number(
+            <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
+            <xsl:text>/images/cdr/live/CDR</xsl:text>
+            <xsl:value-of              select = "number(
                                            substring-after(@ref, 'CDR'))"/>
-          <xsl:text>-571.jpg</xsl:text>
-        </xsl:attribute>
-        <!--<xsl:attribute               name = "class">
-          <xsl:text>cdrMediaImage </xsl:text>
-          <xsl:value-of             select = "@size"/>
-        </xsl:attribute>-->
+            <xsl:text>-750.jpg</xsl:text>
+          </xsl:attribute>
+          <!--
+     <xsl:attribute               name = "class">
+      <xsl:text>cdrMediaImage </xsl:text>
+      <xsl:value-of             select = "@size"/>
+     </xsl:attribute>
+     -->
+        </xsl:element>
+        <xsl:apply-templates/>
       </xsl:element>
-      <xsl:apply-templates/>
-    </xsl:element>
+    </xsl:if>
   </xsl:template>
 
 
@@ -1030,18 +1036,20 @@
   ================================================================ -->
   <xsl:template                  match = "Table">
     <!-- Provide the 'Enlarge' link -->
-    <xsl:element                   name = "p">
-      <xsl:attribute                name = "class">
-        <xsl:text>table-enlarge</xsl:text>
-      </xsl:attribute>
+    <!-- 
+   <xsl:element                   name = "p">
+    <xsl:attribute                name = "class">
+     <xsl:text>table-enlarge</xsl:text>
+    </xsl:attribute>
 
-      <xsl:element                  name = "a">
-        <xsl:attribute               name = "href">
-          <xsl:text>/DADA</xsl:text>
-        </xsl:attribute>
-        <xsl:value-of              select = "$strEnlarge"/>
-      </xsl:element>
+    <xsl:element                  name = "a">
+     <xsl:attribute               name = "href">
+      <xsl:text>/DADA</xsl:text>
+     </xsl:attribute>
+     <xsl:value-of              select = "$strEnlarge"/>
     </xsl:element>
+   </xsl:element>
+   -->
 
     <!-- Display the Table -->
     <xsl:apply-templates        select = "TGroup"/>
@@ -1195,23 +1203,23 @@
   ================================================================ -->
   <xsl:template                   name = "keypointsbox">
     <xsl:if                        test = "descendant::KeyPoint">
-      <div                          class = "keyPoints">
-        <h4>Key Points for This Section</h4>
-        <xsl:element                 name = "div">
-          <xsl:attribute              name = "id">
-            <xsl:text>_toc_section</xsl:text>
-            <xsl:value-of             select = "./@id"/>
-            <xsl:text>_</xsl:text>
-            <xsl:value-of             select = "count(
+      <xsl:element                 name = "div">
+        <xsl:attribute             name="class">
+          <xsl:text>keyPoints</xsl:text>
+        </xsl:attribute>
+          <xsl:element                  name = "h3">
+            <xsl:text>Key Points for This Section</xsl:text>
+          </xsl:element>
+          <xsl:element                 name = "div">
+            <xsl:attribute              name = "id">
+              <xsl:text>_toc_section</xsl:text>
+              <xsl:value-of             select = "./@id"/>
+              <xsl:text>_</xsl:text>
+              <xsl:value-of             select = "count(
                                           preceding-sibling::SummarySection) + 1"/>
-          </xsl:attribute>
-          <!--
-      <xsl:attribute              name = "class">
-       <xsl:text>on-this-pageXXX</xsl:text>
-      </xsl:attribute>
-      -->
-        </xsl:element>
-      </div>
+            </xsl:attribute>
+          </xsl:element>
+      </xsl:element>
     </xsl:if>
   </xsl:template>
 
@@ -1301,8 +1309,12 @@ Template for Creating a table (from CALS)
 ============================================================== -->
   <xsl:template                    match = "TGroup">
     <xsl:element                   name = "table">
+      <xsl:attribute                name = "id">
+        <xsl:value-of              select = "../@id"/>
+      </xsl:attribute>
       <xsl:attribute                name = "class">
         <xsl:text>table-default</xsl:text>
+        <xsl:text> expandable_container</xsl:text>
       </xsl:attribute>
 
       <xsl:if test="@PgWide=1">
