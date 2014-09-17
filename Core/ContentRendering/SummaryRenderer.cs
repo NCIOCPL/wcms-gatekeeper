@@ -21,14 +21,14 @@ namespace GateKeeper.ContentRendering
     {
         #region Fields
 
-        private SummarySection _lastTopLevelSection = null;
-        private StringBuilder _currentSectionTOC = new StringBuilder();
-        private Language _language;
+//        private SummarySection _lastTopLevelSection = null;
+//        private StringBuilder _currentSectionTOC = new StringBuilder();
+//        private Language _language;
 
-        const string tablePlaceholder = @"
-<div inlinetype=""rxvariant"" objectid=""{0}"">
-  Placeholder slot
-</div>";
+//        const string tablePlaceholder = @"
+//<div inlinetype=""rxvariant"" objectid=""{0}"">
+//  Placeholder slot
+//</div>";
 
         #endregion Fields
 
