@@ -123,15 +123,16 @@
       <body>
         <div class="contentzone">
           <article id="_article">
-            <xsl:apply-templates     select = "SummaryMetaData"/>
-            <xsl:apply-templates     select = "SummaryTitle"/>
+            <xsl:apply-templates         select = "SummaryMetaData"/>
+            <xsl:apply-templates         select = "SummaryTitle"/>
 
-            <!-- hook for full document TOC -->
-            <xsl:element                name = "div">
-              <xsl:attribute              name = "id">
+            <!-- create container to insert full document TOC -->
+            <xsl:element                   name = "div">
+              <xsl:attribute                name = "id">
                 <xsl:text>_toc_article</xsl:text>
               </xsl:attribute>
-              <xsl:attribute              name = "class">
+              <!-- Style it -->
+              <xsl:attribute                name = "class">
                 <xsl:text>on-this-page</xsl:text>
               </xsl:attribute>
             </xsl:element>
@@ -141,64 +142,72 @@
    for the References section
    This is also where we're creating the KeyPoints box and the TOC
    =================================================================== -->
-            <!-- changed this from $page to SummarySection -->
             <xsl:for-each                select = "SummarySection">
               <xsl:variable                 name = "topSection">
                 <xsl:text>section_</xsl:text>
                 <xsl:number/>
               </xsl:variable>
 
-              <xsl:if                       test = "($targetedDevice = 'screen')
-                                          or
-                                          ($targetedDevice = 'mobile'
-                                           and
-                                           not(@ExcludedDevices))">
-                <xsl:element                  name = "section">
-                  <xsl:attribute               name = "id">
+              <xsl:if                       test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
+                <xsl:element                 name = "section">
+                  <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
-                    <xsl:value-of             select = "./@id"/>
+                    <xsl:value-of            select = "./@id"/>
                     <xsl:text>_</xsl:text>
-                    <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
+                    <xsl:value-of            select = "count(preceding-sibling::SummarySection) + 1"/>
                   </xsl:attribute>
 
                   <!-- The section title of the top SummarySection has to be
-         printed above the keypoints box or the TOC -->
-                  <xsl:apply-templates       select = "Title"/>
+           printed above the keypoints box or the TOC -->
+                  <xsl:apply-templates      select = "Title"/>
 
-                  <!-- Create a hook for the TOC for this section 
-         Note: We only want to add this diff if there exist subsections
-    ===================================================================== -->
-
-                  <xsl:if                       test = "(descendant::SummarySection 
+                  <!-- Create a container for the TOC for this section 
+           Note: We only want to add this diff if there exist subsections
+      ===================================================================== -->
+                  <xsl:if                     test = "(descendant::SummarySection 
                                            and
                                            $audience = 'healthprofessional')
                                            or
                                            ($audience = 'patient'
                                             and
                                             not(descendant::KeyPoint))">
-                    <xsl:element                 name = "div">
-                      <xsl:attribute              name = "id">
+                    <xsl:element               name = "div">
+                      <xsl:attribute            name = "id">
                         <xsl:text>_toc_section</xsl:text>
-                        <xsl:value-of             select = "./@id"/>
+                        <!--remove section id from TOC for HP<xsl:value-of           select = "./@id"/>
                         <xsl:text>_</xsl:text>
-                        <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>
+                        <xsl:value-of          select = "count(preceding-sibling::SummarySection) + 1"/>-->
                       </xsl:attribute>
-                      <xsl:attribute              name = "class">
+                      <xsl:attribute            name = "class">
                         <xsl:text>on-this-page</xsl:text>
                       </xsl:attribute>
+                      <!--Percussion does not allow empty divs-->
+                      <xsl:text> </xsl:text>
                     </xsl:element>
                   </xsl:if>
 
                   <!-- KeyPoints Box -->
-                  <xsl:choose>
-                    <xsl:when                    test = "../descendant::KeyPoint">
-                      <xsl:call-template          name = "keypointsbox"/>
-                    </xsl:when>
-                  </xsl:choose>
+                  <xsl:if                     test = "../descendant::KeyPoint">
+                    <xsl:call-template         name = "keypointsbox"/>
+                  </xsl:if>
 
-                  <xsl:apply-templates        select = "*[not(self::Title)]">
-                    <xsl:with-param              name = "topSection"
-                                               select = "$topSection"/>
+                  <xsl:apply-templates      select = "*[not(self::Title)]">
+                    <xsl:with-param            name = "topSection"
+                                             select = "$topSection"/>
                   </xsl:apply-templates>
 
                 </xsl:element>
@@ -220,18 +229,18 @@
   =================================================================== -->
   <xsl:template                  name = "SuperSizeMe">
     <script type="text/javascript"
-            src="http://cdr.dev.cancer.gov/cgi-bin/cdr/Enlarge.js"></script>
+            src="http://cdr.dev.cancer.gov/cgi-bin/cdr/Enlarge_new.js"></script>
 
     <script type="text/javascript">
       <xsl:text>
        $(function() {
-          $( ".expandable_container > img" ).supersizeme( {text: 'Enlarge'} );
-          $( "table" ).supersizeme( {text: 'Enlarge'} );
+          $( ".expandable_container > img" ).supersizeme( { } );
+          $( "table" ).supersizeme( { } );
         });
       </xsl:text>
     </script>
   </xsl:template>
-
+  
   <!--
   This JavaScript calls the TOC function to attach the TOC to the DIV
   element with ID="_toc_section_N" N=1,2,3,...
@@ -268,7 +277,7 @@
                 <xsl:value-of          select = "$thisSection"/>
                 <xsl:text>", start: 3</xsl:text>
                 <xsl:text>, depth: 2</xsl:text>
-                <xsl:text>, kp: 1</xsl:text>
+                <!-- xsl:text>, kp: 1</xsl:text -->
                 <xsl:text>});</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -329,6 +338,8 @@
   </xsl:template>
 
 
+
+
   <!--
   Template to display basic meta data information
   *** for testing only ***
@@ -377,18 +388,28 @@
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
     <xsl:choose>
-      <xsl:when                      test = "$targetedDevice = 'screen'
-                                          or
-                                          ($targetedDevice = 'mobile'
-                                           and
-                                           not(@ExcludedDevices='mobile'))">
-        <xsl:element                  name = "section">
-          <xsl:attribute               name = "id">
-            <xsl:value-of             select = "@id"/>
+      <xsl:when                     test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
+        <xsl:element                 name = "section">
+          <xsl:attribute              name = "id">
+            <xsl:value-of            select = "@id"/>
           </xsl:attribute>
           <xsl:apply-templates>
-            <xsl:with-param              name = "topSection"
-                                       select = "$topSection"/>
+            <xsl:with-param             name = "topSection"
+                                      select = "$topSection"/>
           </xsl:apply-templates>
         </xsl:element>
       </xsl:when>
@@ -405,7 +426,8 @@
           <xsl:text>h6</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of          select = "concat('h',count(ancestor::SummarySection) + 2)"/>
+          <xsl:value-of          select = "concat('h',
+                                        count(ancestor::SummarySection) + 1)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -955,65 +977,73 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "MediaLink">
-    <xsl:if                        test = "($targetedDevice = 'screen')
-                                          or
-                                          ($targetedDevice = 'mobile'
-                                           and
-                                           (not(@ExcludedDevices)
-                                            or
-                                            @IncludedDevices))">
-      <xsl:element                   name = "figure">
-        <xsl:attribute                name = "id">
+    <xsl:if                        test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
+      <xsl:element                  name = "figure">
+        <xsl:attribute               name = "id">
           <xsl:text>figure</xsl:text>
+          <xsl:value-of             select = "@id"/>
         </xsl:attribute>
         <!-- Add expandable_container as a hook for the JavaScript enlarge/collapse
-         generation -->
-        <xsl:attribute                name = "class">
+          generation -->
+        <xsl:attribute               name = "class">
           <xsl:text>image-center</xsl:text>
           <xsl:text> expandable_container</xsl:text>
         </xsl:attribute>
 
 
         <!--
-    Display the Image
-    ============================= -->
-        <xsl:element                  name = "img">
-          <xsl:attribute               name = "id">
-            <xsl:value-of             select = "@id"/>
+     Display the Image
+     ============================= -->
+        <xsl:element                 name = "img">
+          <xsl:attribute              name = "id">
+            <xsl:value-of            select = "@id"/>
           </xsl:attribute>
-          <xsl:attribute               name = "alt">
-            <xsl:value-of             select = "@alt"/>
+          <xsl:attribute              name = "alt">
+            <xsl:value-of            select = "@alt"/>
           </xsl:attribute>
-          <xsl:attribute               name = "title">
-            <xsl:value-of             select = "@alt"/>
+          <xsl:attribute              name = "title">
+            <xsl:value-of            select = "@alt"/>
           </xsl:attribute>
           <!--
-     <xsl:attribute               name = "border">
-      <xsl:value-of             select = "'1'"/>
-     </xsl:attribute>
-     -->
-          <xsl:attribute               name = "src">
+      <xsl:attribute              name = "border">
+       <xsl:value-of            select = "'1'"/>
+      </xsl:attribute>
+      -->
+          <xsl:attribute              name = "src">
             <!--
-     Next Line For Testing on DEV only !!! 
-     ===================================== -->
+      Next Line For Testing on DEV only !!! 
+      ===================================== -->
             <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
             <xsl:text>/images/cdr/live/CDR</xsl:text>
-            <xsl:value-of              select = "number(
-                                           substring-after(@ref, 'CDR'))"/>
+            <xsl:value-of             select = "number(
+                                            substring-after(@ref, 'CDR'))"/>
             <xsl:text>-750.jpg</xsl:text>
           </xsl:attribute>
           <!--
-     <xsl:attribute               name = "class">
-      <xsl:text>cdrMediaImage </xsl:text>
-      <xsl:value-of             select = "@size"/>
-     </xsl:attribute>
-     -->
+      <xsl:attribute               name = "class">
+       <xsl:text>cdrMediaImage </xsl:text>
+       <xsl:value-of             select = "@size"/>
+      </xsl:attribute>
+      -->
         </xsl:element>
         <xsl:apply-templates/>
       </xsl:element>
     </xsl:if>
   </xsl:template>
-
 
   <!--
   ================================================================ -->
@@ -1035,8 +1065,23 @@
   Template for Tables
   ================================================================ -->
   <xsl:template                  match = "Table">
-    <!-- Provide the 'Enlarge' link -->
-    <!-- 
+    <xsl:if                        test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
+      <!-- Provide the 'Enlarge' link -->
+      <!-- 
    <xsl:element                   name = "p">
     <xsl:attribute                name = "class">
      <xsl:text>table-enlarge</xsl:text>
@@ -1051,8 +1096,9 @@
    </xsl:element>
    -->
 
-    <!-- Display the Table -->
-    <xsl:apply-templates        select = "TGroup"/>
+      <!-- Display the Table -->
+      <xsl:apply-templates        select = "TGroup"/>
+    </xsl:if>
   </xsl:template>
 
   <!--
@@ -1203,22 +1249,35 @@
   ================================================================ -->
   <xsl:template                   name = "keypointsbox">
     <xsl:if                        test = "descendant::KeyPoint">
-      <xsl:element                 name = "div">
-        <xsl:attribute             name="class">
+      <xsl:element                   name = "div">
+        <xsl:attribute                name = "class">
           <xsl:text>keyPoints</xsl:text>
         </xsl:attribute>
-          <xsl:element                  name = "h3">
-            <xsl:text>Key Points for This Section</xsl:text>
-          </xsl:element>
-          <xsl:element                 name = "div">
-            <xsl:attribute              name = "id">
-              <xsl:text>_toc_section</xsl:text>
-              <xsl:value-of             select = "./@id"/>
-              <xsl:text>_</xsl:text>
-              <xsl:value-of             select = "count(
-                                          preceding-sibling::SummarySection) + 1"/>
-            </xsl:attribute>
-          </xsl:element>
+
+        <xsl:element                  name = "h3">
+          <xsl:choose>
+            <xsl:when                   test = "$language = 'en'">
+              <xsl:text>Key Points for This Section</xsl:text>
+            </xsl:when>
+            <xsl:when                   test = "$language = 'es'">
+              <xsl:text>Puntos importantes de esta secci&#243;n</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>*** language not defined ***</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:element>
+        <xsl:element                 name = "div">
+          <xsl:attribute              name = "id">
+            <xsl:text>_toc_section</xsl:text>
+            <!--remove section id from keypoints<xsl:value-of             select = "./@id"/>
+            <xsl:text>_</xsl:text>
+            <xsl:value-of             select = "count(
+                                          preceding-sibling::SummarySection) + 1"/>-->
+          </xsl:attribute>
+          <!--Percussion does not allow empty divs-->
+          <xsl:text> </xsl:text>
+        </xsl:element>
       </xsl:element>
     </xsl:if>
   </xsl:template>
