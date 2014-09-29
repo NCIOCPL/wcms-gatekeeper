@@ -53,6 +53,21 @@ namespace GKPreviews
                     // Generate the CMS HTML rendering of the content item
                     contentHtml = processor.ProcessCMSPreview(summary, contentItemGuid);
 
+                    //NVCG update- Add dates to the bottom of the page and remove them from the header content
+                    string updatedText = "Updated";
+                    string date = String.Format("{0:MMMM dd, yyyy}", summary.LastModifiedDate);
+
+                    if (summary.Language == Language.Spanish)
+                    {
+                        updatedText = "Actualización";
+                        date = String.Format("{0:MMMM dd, yyyy}", CovertToSpanishFormat(summary.LastModifiedDate));
+                    }
+
+                    contentHtml += "<div class=\"document-dates\"><ul>";
+                    if (summary.LastModifiedDate != DateTime.MinValue && summary.LastModifiedDate != null)
+                        contentHtml += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
+                    contentHtml += "</ul></div>";
+
                     headerContent = createHeaderZoneContent(summary);
 
                 }
@@ -90,23 +105,25 @@ namespace GKPreviews
                     audience = "Versión para pacientes";
             }
 
-            string updatedText = "Last Modified";
-            string date = String.Format("{0:MM/dd/yyyy}", document.LastModifiedDate);
+            //string updatedText = "Last Modified";
+            //string date = String.Format("{0:MM/dd/yyyy}", document.LastModifiedDate);
 
-            if (document.Language == Language.Spanish)
-            {
-                updatedText = "Actualizado";
-                date = String.Format("{0:MM/dd/yyyy}", CovertToSpanishFormat(document.LastModifiedDate));
-            }
+            //if (document.Language == Language.Spanish)
+            //{
+            //    updatedText = "Actualizado";
+            //    date = String.Format("{0:MM/dd/yyyy}", CovertToSpanishFormat(document.LastModifiedDate));
+            //}
 
 
             html += string.Format("<div id=\"cgvLanguageDate\"><div class=\"language-dates\"><div class=\"version-language\">" +
                  "<ul><li class=\"one active\">{0}</li></ul></div>", audience);
 
-            html += "<div class=\"document-dates\"><ul>";
-            if (document.LastModifiedDate != DateTime.MinValue && document.LastModifiedDate != null)
-                html += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
-            html += "</ul></div></div></div>";
+            //html += "<div class=\"document-dates\"><ul>";
+            //if (document.LastModifiedDate != DateTime.MinValue && document.LastModifiedDate != null)
+            //    html += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
+            //html += "</ul></div></div></div>";
+
+            html += "</div></div>";
 
             return html;
         }

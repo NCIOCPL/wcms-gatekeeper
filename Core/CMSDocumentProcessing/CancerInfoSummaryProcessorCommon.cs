@@ -254,9 +254,11 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Pages and subPages are created new on each update and will therefore be in
             // a different state than the root and link items.
-            PercussionGuid[] pageCollection = CMSController.BuildGuidArray(pageIDs/*, subItems*/);
-            if (pageCollection.Length > 0) transitionMethod(pageCollection);
-
+            if (pageIDs != null)
+            {
+                PercussionGuid[] pageCollection = CMSController.BuildGuidArray(pageIDs/*, subItems*/);
+                if (pageCollection.Length > 0) transitionMethod(pageCollection);
+            }
             LogDetailedStep("End workflow transition.");
         }
 

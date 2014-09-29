@@ -126,16 +126,21 @@
             <xsl:apply-templates         select = "SummaryMetaData"/>
             <xsl:apply-templates         select = "SummaryTitle"/>
 
-            <!-- create container to insert full document TOC -->
-            <xsl:element                   name = "div">
-              <xsl:attribute                name = "id">
-                <xsl:text>_toc_article</xsl:text>
-              </xsl:attribute>
-              <!-- Style it -->
-              <xsl:attribute                name = "class">
-                <xsl:text>on-this-page</xsl:text>
-              </xsl:attribute>
-            </xsl:element>
+            <!--
+   There are no TOC or KeyPoint boxes on mobile
+   =================================================================== -->
+            <xsl:if                        test = "$targetedDevice = 'screen'">
+              <!-- create container to insert full document TOC -->
+              <xsl:element                  name = "div">
+                <xsl:attribute               name = "id">
+                  <xsl:text>_toc_article</xsl:text>
+                </xsl:attribute>
+                <!-- Style it -->
+                <xsl:attribute               name = "class">
+                  <xsl:text>on-this-page</xsl:text>
+                </xsl:attribute>
+              </xsl:element>
+            </xsl:if>
 
             <!--
    We have to loop over each top section in order to set the numbering
@@ -171,45 +176,57 @@
                     <xsl:value-of            select = "count(preceding-sibling::SummarySection) + 1"/>
                   </xsl:attribute>
 
-                  <!-- The section title of the top SummarySection has to be
+                  <div                  data-role = "collapsible"
+                                   data-collapsed = "true"
+                                     data-iconpos = "right"
+                                             name = "Section{@id}"
+                                               id = "Section{@id}">
+                    <!-- The section title of the top SummarySection has to be
            printed above the keypoints box or the TOC -->
-                  <xsl:apply-templates      select = "Title"/>
+                    <xsl:apply-templates      select = "Title"/>
 
-                  <!-- Create a container for the TOC for this section 
+                    <!-- Create a container for the TOC for this section 
            Note: We only want to add this diff if there exist subsections
       ===================================================================== -->
-                  <xsl:if                     test = "(descendant::SummarySection 
+                    <xsl:if                     test = "(descendant::SummarySection 
                                            and
                                            $audience = 'healthprofessional')
                                            or
                                            ($audience = 'patient'
                                             and
                                             not(descendant::KeyPoint))">
-                    <xsl:element               name = "div">
-                      <xsl:attribute            name = "id">
-                        <xsl:text>_toc_section</xsl:text>
-                        <!--remove section id from TOC for HP<xsl:value-of           select = "./@id"/>
-                        <xsl:text>_</xsl:text>
-                        <xsl:value-of          select = "count(preceding-sibling::SummarySection) + 1"/>-->
-                      </xsl:attribute>
-                      <xsl:attribute            name = "class">
-                        <xsl:text>on-this-page</xsl:text>
-                      </xsl:attribute>
-                      <!--Percussion does not allow empty divs-->
-                      <xsl:text> </xsl:text>
-                    </xsl:element>
-                  </xsl:if>
+                      <xsl:element               name = "div">
+                        <xsl:attribute            name = "id">
+                          <xsl:text>_toc_section</xsl:text>
+                          <!--<xsl:value-of           select = "./@id"/>
+                          <xsl:text>_</xsl:text>
+                          <xsl:value-of          select = "count(preceding-sibling::SummarySection) + 1"/>-->
+                        </xsl:attribute>
+                        <xsl:attribute            name = "class">
+                          <xsl:text>on-this-page</xsl:text>
+                        </xsl:attribute>
+                        <!-- for percussion-->
+                        <xsl:text> </xsl:text>
+                      </xsl:element>
+                    </xsl:if>
 
-                  <!-- KeyPoints Box -->
-                  <xsl:if                     test = "../descendant::KeyPoint">
-                    <xsl:call-template         name = "keypointsbox"/>
-                  </xsl:if>
+                    <!--
+      There are no TOC or KeyPoint boxes on mobile
+      These only get created for the desktop.
+      =================================================================== -->
+                    <xsl:if                     test = "../descendant::KeyPoint
+                                          and
+                                          not($targetedDevice = 'mobile')">
+                      <!-- xsl:call-template         name = "keypointsboxJS"/ -->
+                      <xsl:call-template         name = "keypointsbox"/>
+                    </xsl:if>
 
-                  <xsl:apply-templates      select = "*[not(self::Title)]">
-                    <xsl:with-param            name = "topSection"
-                                             select = "$topSection"/>
-                  </xsl:apply-templates>
+                    <xsl:apply-templates      select = "*[not(self::Title)]">
+                      <xsl:with-param            name = "topSection"
+                                               select = "$topSection"/>
+                    </xsl:apply-templates>
 
+                  </div>
                 </xsl:element>
               </xsl:if>
             </xsl:for-each>
@@ -265,7 +282,7 @@
                                      select = "count(
                                           preceding-sibling::SummarySection) + 1"/>
             <xsl:choose>
-              <xsl:when                  test = "descendant::KeyPoint">
+              <xsl:when                  test = "descendant::KeyPointXXX">
                 <xsl:text>
           $("#_toc_section</xsl:text>
                 <xsl:value-of          select = "./@id"/>
@@ -451,13 +468,32 @@
     <xsl:param                     name = "topSection"
                                  select = "'title'"/>
     <xsl:choose>
-      <xsl:when                     test = "$topSection = 'title'">
+      <xsl:when                     test = "$topSection = 'title'
+                                          and
+                                          not($targetedDevice = 'mobile')">
         <xsl:element                 name = "h2">
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "parent::SummarySection/@id"/>
             <xsl:text>_toc</xsl:text>
           </xsl:attribute>
           <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:when>
+      <xsl:when                     test = "$topSection = 'title'
+                                          and
+                                          $targetedDevice = 'mobile'">
+        <xsl:element                 name = "h2">
+          <xsl:attribute              name = "id">
+            <xsl:value-of            select = "parent::SummarySection/@id"/>
+            <xsl:text>_toc</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute              name = "class">
+            <xsl:text>section_heading</xsl:text>
+          </xsl:attribute>
+
+          <xsl:element                name = "span">
+            <xsl:apply-templates/>
+          </xsl:element>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
@@ -1001,7 +1037,7 @@
           generation -->
         <xsl:attribute               name = "class">
           <xsl:text>image-center</xsl:text>
-          <xsl:text> expandable_container</xsl:text>
+          <xsl:text> expandable-container</xsl:text>
         </xsl:attribute>
 
 
@@ -1249,17 +1285,24 @@
   ================================================================ -->
   <xsl:template                   name = "keypointsbox">
     <xsl:if                        test = "descendant::KeyPoint">
-      <xsl:element                   name = "div">
-        <xsl:attribute                name = "class">
+      <xsl:element                  name = "div">
+        <xsl:attribute               name = "class">
           <xsl:text>keyPoints</xsl:text>
         </xsl:attribute>
 
-        <xsl:element                  name = "h3">
+        <!--
+     KeyPoint box header
+     ==================== -->
+        <xsl:element                 name = "h3">
+          <xsl:attribute              name = "id">
+            <xsl:value-of            select = "@id"/>
+            <xsl:text>_kpBoxHdr</xsl:text>
+          </xsl:attribute>
           <xsl:choose>
-            <xsl:when                   test = "$language = 'en'">
+            <xsl:when                  test = "$language = 'en'">
               <xsl:text>Key Points for This Section</xsl:text>
             </xsl:when>
-            <xsl:when                   test = "$language = 'es'">
+            <xsl:when                  test = "$language = 'es'">
               <xsl:text>Puntos importantes de esta secci&#243;n</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -1267,20 +1310,69 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:element>
+
+        <!--
+     KeyPoint box container
+     ====================== -->
         <xsl:element                 name = "div">
           <xsl:attribute              name = "id">
-            <xsl:text>_toc_section</xsl:text>
-            <!--remove section id from keypoints<xsl:value-of             select = "./@id"/>
+            <xsl:text>_kp_section</xsl:text>
+            <xsl:value-of            select = "./@id"/>
             <xsl:text>_</xsl:text>
-            <xsl:value-of             select = "count(
-                                          preceding-sibling::SummarySection) + 1"/>-->
+            <xsl:value-of            select = "count(
+                                            preceding-sibling::SummarySection) 
+                                                                         + 1"/>
           </xsl:attribute>
-          <!--Percussion does not allow empty divs-->
-          <xsl:text> </xsl:text>
+
+          <!-- 
+      Creating the nested list containing the key point links
+      ======================================================= -->
+          <xsl:element                name = "ul">
+            <xsl:call-template         name = "createKeyPointBox"/>
+          </xsl:element>
         </xsl:element>
       </xsl:element>
     </xsl:if>
   </xsl:template>
+
+  <!--
+  Template to create the individual LI elements.
+  If Sub-sections with key points exist create another UL
+  ================================================================ -->
+  <xsl:template                   name = "createKeyPointBox">
+    <xsl:for-each                select = "SummarySection">
+      <xsl:element                  name = "li">
+        <xsl:apply-templates       select = "KeyPoint"
+                                     mode = "kpBox"/>
+
+        <!--
+     Nested Keypoint list
+     ==================== -->
+        <xsl:if                      test = "SummarySection/KeyPoint">
+          <xsl:element                name = "ul">
+            <xsl:call-template         name = "createKeyPointBox"/>
+          </xsl:element>
+        </xsl:if>
+
+      </xsl:element>
+    </xsl:for-each>
+  </xsl:template>
+
+
+  <!--
+  Template to add the anchor tag to each key point.
+  ================================================================ -->
+  <xsl:template                  match = "KeyPoint"
+                                  mode = "kpBox">
+    <xsl:element                   name = "a">
+      <xsl:attribute                name = "href">
+        <xsl:text>#</xsl:text>
+        <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:value-of               select = "."/>
+    </xsl:element>
+  </xsl:template>
+
 
   <!--
   Template to create the TOC for a page
@@ -1373,7 +1465,7 @@ Template for Creating a table (from CALS)
       </xsl:attribute>
       <xsl:attribute                name = "class">
         <xsl:text>table-default</xsl:text>
-        <xsl:text> expandable_container</xsl:text>
+        <xsl:text> expandable-container</xsl:text>
       </xsl:attribute>
 
       <xsl:if test="@PgWide=1">

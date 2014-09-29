@@ -76,18 +76,18 @@ namespace GateKeeper.ContentRendering
             this.Render(document.Xml.CreateNavigator(), renderParameters, sw);
 
             document.Html = sb.ToString();
-#if DEBUG
-            string path = "C:\\temp\\Output\\";
-            if (Directory.Exists(path))
-            {
-                string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".xml";
-                using (StreamWriter writer = File.CreateText(fileName))
-                {
-                    writer.Write(document.Html);
-                    writer.Close();
-                }
-            }
-#endif
+//#if DEBUG
+//            string path = "C:\\temp\\Output\\";
+//            if (Directory.Exists(path))
+//            {
+//                string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".xml";
+//                using (StreamWriter writer = File.CreateText(fileName))
+//                {
+//                    writer.Write(document.Html);
+//                    writer.Close();
+//                }
+//            }
+//#endif
             document.PostRenderXml.LoadXml(sb.ToString());
         }
 

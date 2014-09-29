@@ -14,10 +14,12 @@
     <script src="<% =currentHost %>/CDRPreviewWS/common/popevents.js" type="text/javascript"></script>    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/modernizr-1.7.min.js" type="text/javascript"></script>
+    <script src="<%=serverUrl%>/PublishedContent/js/NCIGeneralJS.js" type="text/javascript"></script>
     <%--<script src="<%=serverUrl%>/PublishedContent/js/jquery.ui.position.js" type="text/javascript"></script>--%>
     <script src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript"></script>
     <script src="<% =currentHost %>/CDRPreviewWS/common/wcmsAudio.js" type="text/javascript"></script>
-    
+    <script src="http://cdr.dev.cancer.gov/cgi-bin/cdr/STOC.js" type="text/javascript"></script>
+    <script src="http://cdr.dev.cancer.gov/cgi-bin/cdr/Enlarge.js" type="text/javascript"></script>
 <!-- This is to make content width follow different rules for IE7 and below -->
 <!--[if lt IE 8]>
 <style type="text/css">
@@ -66,9 +68,11 @@ ul.ctpListPageList {
             <!-- Main Content Area -->
             <div class="contentzone contentzone-defaultTemplateContentContainer">
                 <a name="skiptocontent"></a>
-                <div id="cgvBody" class="cgvBody-defaultTemplateContentContainer">
-                    <% =result %>
-                </div>
+                <article>
+                    <div id="cgvBody" class="cgvBody-defaultTemplateContentContainer">
+                        <% =result %>
+                    </div>
+                </article>
             </div>
             <!-- End Content Area -->
         </div>

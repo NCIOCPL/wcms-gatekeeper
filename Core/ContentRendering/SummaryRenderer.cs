@@ -499,9 +499,9 @@ namespace GateKeeper.ContentRendering
                         if (titleNav != null)
                         {
                             section.Title = titleNav.InnerXml;
-                            //top level section titles come from the Percussion template 
+                            //top level section titles come from the Percussion template for Desktop summaries
                             //the tag can be deleted from the HTML
-                            if (section.IsTopLevel)
+                            if (section.IsTopLevel && targetedDevice != TargetedDevice.mobile)
                                 titleNav.DeleteSelf();
                         }
 
