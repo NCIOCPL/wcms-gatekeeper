@@ -1587,7 +1587,7 @@ namespace GKManagers.CMSDocumentProcessing
         //public void BuildGlossaryTermRefLink(ref string html, string tag)
         //{
         //    // TODO:  This doesn't belong in the data layer!!!!
-        //    string startTag = "<a Class=\"" + tag + "\"";
+        //    string startTag = "<a class=\"" + tag + "\"";
         //    string endTag = "</a>";
         //    int startIndex = html.IndexOf(startTag, 0);
         //    string sectionHTML = html;
@@ -1715,9 +1715,9 @@ namespace GKManagers.CMSDocumentProcessing
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
             // This kind of manipulation particularly shouldn't happen in the
             // routine that creates field/value pairs!
-            //if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
+            //if (summarySection.Html.OuterXml.Contains("definition"))
             //{
-            //    string glossaryTermTag = "Summary-GlossaryTermRef";
+            //    string glossaryTermTag = "definition";
             //    BuildGlossaryTermRefLink(ref html, glossaryTermTag);
             //}
                        

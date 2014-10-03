@@ -936,6 +936,9 @@
       <xsl:attribute                name = "class">
         <xsl:text>definition</xsl:text>
       </xsl:attribute>
+      <xsl:attribute                name = "type">
+        <xsl:text>GlossaryTermRefs</xsl:text>
+      </xsl:attribute>
       <xsl:attribute                name = "href">
         <!--
      Next Line For Testing on DEV only !!! 
@@ -1534,21 +1537,21 @@ Template for Creating a table (from CALS)
           <xsl:value-of select="TGroup/@Align"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:choose>
+      <!-- <xsl:choose>
         <xsl:when test="@Frame='TOPBOT'">
           <xsl:attribute name="style">border-top:thin solid black; border-bottom:thin solid black;</xsl:attribute>
         </xsl:when>
-        <!-- Should be coming from CSS 
+        Should be coming from CSS 
       <xsl:when test="@Frame='None'">
         <xsl:attribute name="border">0</xsl:attribute>
       </xsl:when>
-      -->
-        <!-- Should be coming from CSS 
-      -->
+      
+      Should be coming from CSS 
+     
         <xsl:otherwise>
           <xsl:attribute name="border">1</xsl:attribute>
         </xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose> -->
 
       <xsl:variable name="colgroup">
         <colgroup>
@@ -1827,9 +1830,9 @@ Template for Creating a table (from CALS)
         </xsl:attribute>
       </xsl:if>
 
-      <xsl:if test="@RowSep='1'">
+      <!--<xsl:if test="@RowSep='1'">
         <xsl:attribute name="style">border-bottom:thin solid black</xsl:attribute>
-      </xsl:if>
+      </xsl:if>-->
 
       <xsl:if test="not(preceding-sibling::*)
                   and ancestor::Row/@id">
