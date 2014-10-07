@@ -137,7 +137,7 @@
                 </xsl:attribute>
                 <!-- Style it -->
                 <xsl:attribute               name = "class">
-                  <xsl:text>on-this-page</xsl:text>
+                  <xsl:text>pdq-on-this-page</xsl:text>
                 </xsl:attribute>
               </xsl:element>
             </xsl:if>
@@ -251,7 +251,7 @@
           <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>-->
         </xsl:attribute>
         <xsl:attribute               name = "class">
-          <xsl:text>on-this-page</xsl:text>
+          <xsl:text>pdq-on-this-page</xsl:text>
         </xsl:attribute>
         <xsl:text> </xsl:text>
       </xsl:element>
@@ -654,7 +654,7 @@
               <xsl:text>list-dash</xsl:text>
             </xsl:when>
             <xsl:when                    test = ". = 'simple'">
-              <xsl:text>no-bullets</xsl:text>
+              <xsl:text>pdq-address-block</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>style_undefined</xsl:text>
@@ -863,10 +863,12 @@
       <xsl:attribute                name = "id">
         <xsl:value-of              select = "@id"/>
       </xsl:attribute>
-      <strong>
-        <xsl:apply-templates select = "Question"/>
-      </strong>
-      <xsl:apply-templates       select = "Answer"/>
+
+      <xsl:element                  name = "strong">
+        <xsl:apply-templates       select = "Question"/>
+      </xsl:element>
+
+      <xsl:apply-templates        select = "Answer"/>
     </xsl:element>
   </xsl:template>
 
@@ -1537,21 +1539,23 @@ Template for Creating a table (from CALS)
           <xsl:value-of select="TGroup/@Align"/>
         </xsl:attribute>
       </xsl:if>
-      <!-- <xsl:choose>
-        <xsl:when test="@Frame='TOPBOT'">
-          <xsl:attribute name="style">border-top:thin solid black; border-bottom:thin solid black;</xsl:attribute>
-        </xsl:when>
-        Should be coming from CSS 
+      <!-- Should be coming from CSS 
+    <xsl:choose>
+      <xsl:when test="@Frame='TOPBOT'">
+        <xsl:attribute name="style">border-top:thin solid black; border-bottom:thin solid black;</xsl:attribute>
+      </xsl:when>
+      -->
+      <!-- Should be coming from CSS 
       <xsl:when test="@Frame='None'">
         <xsl:attribute name="border">0</xsl:attribute>
       </xsl:when>
-      
-      Should be coming from CSS 
-     
-        <xsl:otherwise>
-          <xsl:attribute name="border">1</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose> -->
+      -->
+      <!-- Should be coming from CSS 
+      <xsl:otherwise>
+        <xsl:attribute name="border">0</xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
+      -->
 
       <xsl:variable name="colgroup">
         <colgroup>
@@ -1600,8 +1604,9 @@ Template for Creating a table (from CALS)
   <!-- 
 =====================================================================
 ===================================================================== -->
-  <xsl:template                    match = "THead | 
-                                          TFoot">
+  <xsl:template                    match = "THead | TFoot">
+    <xsl:param                     name = "topSection"
+                                 select = "'tbody'"/>
     <xsl:element                    name = "{name(.)}">
       <!-- Only display Align attribute if it's not center. Coming from CSS -->
       <xsl:if                       test = "@Align">
@@ -1628,9 +1633,21 @@ Template for Creating a table (from CALS)
           <xsl:value-of           select = "@Valign"/>
         </xsl:attribute>
       </xsl:if>
-
-      <xsl:apply-templates/>
+      
+      <!-- Only apply to footer-->
+      <xsl:if test="name(.) = 'TFoot'">
+        <xsl:attribute               name="class">
+          <xsl:text>pdq-footer</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      
+      <xsl:apply-templates>
+        <xsl:with-param            name = "topSection"
+                                 select = "$topSection"/>
+      </xsl:apply-templates>
+      
     </xsl:element>
+   
   </xsl:template>
 
 
@@ -1709,10 +1726,14 @@ Template for Creating a table (from CALS)
 ========================================================================= -->
 
   <xsl:template                    match = "THead/Row/entry">
+    <xsl:param                     name = "topSection"
+                                 select = "'thcell'"/>
     <xsl:call-template name="process.cell">
+      <xsl:with-param name = "topSection" select = "$topSection"/>
       <xsl:with-param name="cellgi">th</xsl:with-param>
     </xsl:call-template>
   </xsl:template>
+
 
   <!--
 =========================================================================
@@ -1730,7 +1751,10 @@ Template for Creating a table (from CALS)
 =========================================================================
 ========================================================================= -->
   <xsl:template                    match = "TFoot/Row/entry">
+    <xsl:param                     name = "topSection"
+                                 select = "'tfcell'"/>
     <xsl:call-template name="process.cell">
+      <xsl:with-param name = "topSection" select = "$topSection"/>
       <xsl:with-param name="cellgi">td</xsl:with-param>
     </xsl:call-template>
   </xsl:template>
