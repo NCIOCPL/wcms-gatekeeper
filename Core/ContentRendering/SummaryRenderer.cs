@@ -485,8 +485,8 @@ namespace GateKeeper.ContentRendering
                 foreach (SummarySection section in summary.SectionList)
                 {
                     XPathNavigator sectionNav = null;
-                    //top level section have <section id="_section_1" and subsections <section id="_1"
-                    string expression = string.Format(".//section[contains(@id,'_section_{0}')]|.//section[@id='_{0}']", section.SectionID);
+                    //top level section have <section id="_section_1_" and subsections <section id="_1"
+                    string expression = string.Format(".//section[contains(@id,'_section_{0}_')]|.//section[@id='_{0}']", section.SectionID);
                     sectionNav = xNav.SelectSingleNode(expression);
 
                     if (sectionNav != null)

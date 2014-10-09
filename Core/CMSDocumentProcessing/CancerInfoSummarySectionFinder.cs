@@ -153,7 +153,7 @@ namespace GKManagers.CMSDocumentProcessing
                 XPathNavigator xNav = section.Html.CreateNavigator();
                 //updated the expression such that it searches for all elements where the value id attribute
                 //matches the id passed in 
-                XPathNavigator node = xNav.SelectSingleNode(string.Format("//*[contains(@id,'{0}')]", sectionID));
+                XPathNavigator node = xNav.SelectSingleNode(string.Format("//*[@id='{0}']", sectionID));
                 if (node != null)
                 {
                     pageNumber = pageCounter;
