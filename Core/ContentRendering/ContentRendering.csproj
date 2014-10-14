@@ -125,9 +125,9 @@
     <Content Include="XSL\Protocol_StudyContacts.xsl">
     </Content>
     <Content Include="XSL\README.txt" />
-    <Content Include="XSL\Summary.xsl">
+    <Content Include="XSL\SummaryOriginal.xsl">
     </Content>
-    <Content Include="XSL\SummaryV2.xsl" />
+    <Content Include="XSL\Summary.xsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
