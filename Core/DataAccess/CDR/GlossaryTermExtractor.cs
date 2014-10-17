@@ -274,7 +274,18 @@ namespace GateKeeper.DataAccess.CDR
                         if (glossaryTermDoc.GlossaryTermTranslationMap.ContainsKey(lang))
                         {
                             MediaLink mediaLink = new MediaLink(imgRef, cdrId, "", isInline, showEnlargeLink, minWidth, size, mediaLinkID, "", mediaDocumentID, lang, isThumb, type, mediaXml);
-                            glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(audience, mediaLink);
+                            //if no audience is set up for audio type 
+                            //audience is both HealthProfessional and Patient 
+                            string audienceTmp = DocumentHelper.GetAttribute(mediaLinkIter.Current, xPathManager.GetXPath(GlossaryTermXPath.MediaAudience));
+                            if (string.IsNullOrEmpty(audienceTmp))
+                            {
+                                glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(AudienceType.HealthProfessional, mediaLink);
+                                glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(AudienceType.Patient, mediaLink);
+                            }
+                            else
+                            {
+                                glossaryTermDoc.GlossaryTermTranslationMap[lang].MediaLinkList.Add(audience, mediaLink);
+                            }
                         }
                         else
                         {
