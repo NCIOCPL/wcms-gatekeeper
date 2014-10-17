@@ -584,19 +584,24 @@
   <xsl:template                  match = "ItemizedList">
     <xsl:param                     name = "topSection"
                                  select = "'il'"/>
-    <xsl:apply-templates         select ="ListTitle"/>
-    <xsl:element                   name = "ul">
-      <xsl:attribute                name = "id">
-        <xsl:value-of              select = "@id"/>
+    <xsl:element                   name = "div">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-content-list</xsl:text>
       </xsl:attribute>
-      <xsl:apply-templates        select = "@Style"/>
-      <xsl:apply-templates        select ="ListItem">
-        <xsl:with-param          name = "topSection"
-                               select = "$topSection"/>
-      </xsl:apply-templates>
+
+      <xsl:apply-templates        select = "ListTitle"/>
+      <xsl:element                  name = "ul">
+        <xsl:attribute               name = "id">
+          <xsl:value-of             select = "@id"/>
+        </xsl:attribute>
+        <xsl:apply-templates       select = "@Style"/>
+        <xsl:apply-templates       select = "ListItem">
+          <xsl:with-param             name = "topSection"
+                                    select = "$topSection"/>
+        </xsl:apply-templates>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
-
   <!--
   An itemized list will be converted into a DD/DL if the style is
   simple
@@ -671,16 +676,22 @@
   <xsl:template                  match = "OrderedList">
     <xsl:param                     name = "topSection"
                                  select = "'ol'"/>
-    <xsl:apply-templates         select ="ListTitle"/>
-    <xsl:element                   name = "ol">
-      <xsl:attribute                name = "id">
-        <xsl:value-of              select = "@id"/>
+    <xsl:element                   name = "div">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-content-list</xsl:text>
       </xsl:attribute>
-      <xsl:apply-templates        select = "@Style"/>
-      <xsl:apply-templates        select ="ListItem">
-        <xsl:with-param          name = "topSection"
-                               select = "$topSection"/>
-      </xsl:apply-templates>
+
+      <xsl:apply-templates        select = "ListTitle"/>
+      <xsl:element                  name = "ol">
+        <xsl:attribute               name = "id">
+          <xsl:value-of             select = "@id"/>
+        </xsl:attribute>
+        <xsl:apply-templates       select = "@Style"/>
+        <xsl:apply-templates       select = "ListItem">
+          <xsl:with-param             name = "topSection"
+                                    select = "$topSection"/>
+        </xsl:apply-templates>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
 
@@ -709,13 +720,14 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "ListTitle">
-    <strong>
-      <em>
-        <xsl:apply-templates/>
-      </em>
-    </strong>
-  </xsl:template>
+    <xsl:element                   name = "p">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-list-title</xsl:text>
+      </xsl:attribute>
 
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
 
   <!--
   Template to add a Note/Nota to the text
