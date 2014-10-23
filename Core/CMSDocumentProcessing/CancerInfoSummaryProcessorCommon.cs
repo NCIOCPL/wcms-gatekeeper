@@ -33,7 +33,9 @@ namespace GKManagers.CMSDocumentProcessing
 
         #region Constants
 
-        const int ShortTitleLength = 64;
+        //changed this length from 64 to 100 to make sure it matches short_title length
+        //in percussion
+        const int ShortTitleLength = 100;
 
         protected const string SummaryLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
 
