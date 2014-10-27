@@ -1334,12 +1334,17 @@
 
 
   <!--
+  Template as a workaround for the Chrome superscript issue
   ================================================================ -->
   <xsl:template                  match = "Superscript">
-    <xsl:element                   name = "sup">
+    <xsl:element                   name = "span">
+      <xsl:attribute                name = "class">
+        <xsl:text>sup</xsl:text>
+      </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
+
 
   <!--
   ================================================================ -->
