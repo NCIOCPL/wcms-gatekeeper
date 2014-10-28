@@ -18,8 +18,8 @@
     <%--<script src="<%=serverUrl%>/PublishedContent/js/jquery.ui.position.js" type="text/javascript"></script>--%>
     <script src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript"></script>
     <script src="<% =currentHost %>/CDRPreviewWS/common/wcmsAudio.js" type="text/javascript"></script>
-    <script src="http://cdr.dev.cancer.gov/cgi-bin/cdr/STOC.js" type="text/javascript"></script>
-    <script src="http://cdr.dev.cancer.gov/cgi-bin/cdr/Enlarge.js" type="text/javascript"></script>
+    <script src="<%=serverUrl%>/PublishedContent/js/STOC.js" type="text/javascript"></script>
+    <script src="<%=serverUrl%>/PublishedContent/js/Enlarge.js" type="text/javascript"></script>
 <!-- This is to make content width follow different rules for IE7 and below -->
 <!--[if lt IE 8]>
 <style type="text/css">
