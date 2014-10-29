@@ -173,7 +173,7 @@ namespace GKPreviews
 
             // Create the cgvLanguageDate html content
             html += "<div class=\"language-dates\"><div class=\"document-dates\">" +
-                        "<div class=\"slot-item only-SI\"><ul>";
+                "<div class=\"slot-item only-SI\"><ul style=\"float:right;\">";
 
             if (document.FirstPublishedDate != DateTime.MinValue)
             {
