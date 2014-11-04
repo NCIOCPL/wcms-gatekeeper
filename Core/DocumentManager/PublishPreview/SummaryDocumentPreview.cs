@@ -94,15 +94,15 @@ namespace GKPreviews
         "<h1>{1}</h1></div></div>", "title_cancertopics.jpg", document.Title);
 
             // Create the cgvLanguageDate html content
-            string audience = "Health Professional Version";
+            string audience = "Health Professional";
             if (document.Language == Language.Spanish)
-                audience = "Versión para profesionales de salud";
+                audience = "Profesionales de salud";
 
             if (document.AudienceType == "Patients")
             {
                 audience = "Patient";
                 if (document.Language == Language.Spanish)
-                    audience = "Versión para pacientes";
+                    audience = "Pacientes";
             }
 
             //string updatedText = "Last Modified";
