@@ -795,6 +795,8 @@
 
           <xsl:apply-templates/>
           <xsl:if                    test = "@PMID">
+            <!-- add space before pubmed link-->
+            <xsl:text>&#160;</xsl:text>
             <xsl:element              name = "a">
               <xsl:attribute           name = "href">
                 <xsl:text>http://www.ncbi.nlm.nih.gov/entrez/query.fcgi</xsl:text>
