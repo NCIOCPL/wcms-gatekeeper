@@ -175,7 +175,9 @@
                     <xsl:text>_</xsl:text>
                     <xsl:value-of            select = "count(preceding-sibling::SummarySection) + 1"/>
                   </xsl:attribute>
-
+                  <xsl:attribute             name="class">
+                    <xsl:text>pdq-sections</xsl:text>
+                  </xsl:attribute>
 
                   <!--
       Mobile needs an extra div
