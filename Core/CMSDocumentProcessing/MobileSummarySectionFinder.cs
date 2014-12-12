@@ -121,7 +121,9 @@ namespace GKManagers.CMSDocumentProcessing
                 XmlDocument bodyHtml = new XmlDocument();
                 bodyHtml.LoadXml(bodyField);
                 XPathNavigator xNav = bodyHtml.CreateNavigator();
-                XPathNavigator node = xNav.SelectSingleNode(string.Format("//a[@name='Section{0}']", sectionID));
+                //updated the expression such that it searches for all elements where the value id attribute
+                //matches the id passed in 
+                XPathNavigator node = xNav.SelectSingleNode(string.Format("//*[@id='{0}']", sectionID));
                 if (node != null)
                 {
                     pageNumber = i;

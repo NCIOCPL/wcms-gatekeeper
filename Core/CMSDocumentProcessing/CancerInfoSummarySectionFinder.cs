@@ -104,7 +104,9 @@ namespace GKManagers.CMSDocumentProcessing
                 XmlDocument bodyHtml = new XmlDocument();
                 bodyHtml.LoadXml(bodyField);
                 XPathNavigator xNav = bodyHtml.CreateNavigator();
-                XPathNavigator node = xNav.SelectSingleNode(string.Format("//a[@name='Section{0}']", sectionID));
+                //updated the expression such that it searches for all elements where the value id attribute
+                //matches the id passed in 
+                XPathNavigator node = xNav.SelectSingleNode(string.Format("//*[contains(@id,'{0}')]", sectionID));
                 if (node != null)
                 {
                     pageNumber = i;
@@ -145,11 +147,13 @@ namespace GKManagers.CMSDocumentProcessing
                     pageNumber = pageCounter;
                     break;
                 }
-
+                
                 // A "section number" can actually identify any block-level (?) element in the
                 // section HTML.  So next we look there.
                 XPathNavigator xNav = section.Html.CreateNavigator();
-                XPathNavigator node = xNav.SelectSingleNode(string.Format("//a[@name='Section{0}']", sectionID));
+                //updated the expression such that it searches for all elements where the value id attribute
+                //matches the id passed in 
+                XPathNavigator node = xNav.SelectSingleNode(string.Format("//*[@id='{0}']", sectionID));
                 if (node != null)
                 {
                     pageNumber = pageCounter;

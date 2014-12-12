@@ -58,40 +58,40 @@ namespace GKManagers.CMSDocumentProcessing
                                         percussionConfig.SiteId.Value,
                                         percussionConfig.PreviewSettings.ItemFilter.Value);
 
-                string previewMediaPath = percussionConfig.PreviewSettings.PreviewImageContentLocation.Value;
+                //string previewMediaPath = percussionConfig.PreviewSettings.PreviewImageContentLocation.Value;
 
-                //before using the previewMediaPath make sure the directory (PreviewMediaHtml) for the images exists
-                //if not, create the directory to avoid errors
-                if (!Directory.Exists(previewMediaPath))
-                    Directory.CreateDirectory(previewMediaPath);
+                ////before using the previewMediaPath make sure the directory (PreviewMediaHtml) for the images exists
+                ////if not, create the directory to avoid errors
+                //if (!Directory.Exists(previewMediaPath))
+                //    Directory.CreateDirectory(previewMediaPath);
                                                                                    
-                //For medialinks generate the required media output to the file system.
-                foreach (MediaLink mediaLink in ((SummaryDocument)documentObject).MediaLinkSectionList)
-                {
-                    PercussionGuid mediaItemID = MediaLinkIDMap[mediaLink.Id];
+                ////For medialinks generate the required media output to the file system.
+                //foreach (MediaLink mediaLink in ((SummaryDocument)documentObject).MediaLinkSectionList)
+                //{
+                //    PercussionGuid mediaItemID = MediaLinkIDMap[mediaLink.Id];
 
-                    string mediaHtml = CMSController.Render(mediaItemID,
-                                            percussionConfig.PreviewSettings.PDQImageTemplateName.Value,
-                                            percussionConfig.PreviewSettings.PublishPreviewContextId.Value,
-                                            percussionConfig.SiteId.Value,
-                                            percussionConfig.PreviewSettings.ItemFilter.Value);
+                //    string mediaHtml = CMSController.Render(mediaItemID,
+                //                            percussionConfig.PreviewSettings.PDQImageTemplateName.Value,
+                //                            percussionConfig.PreviewSettings.PublishPreviewContextId.Value,
+                //                            percussionConfig.SiteId.Value,
+                //                            percussionConfig.PreviewSettings.ItemFilter.Value);
 
-                    mediaHtml = mediaHtml.Replace("/images/spacer.gif", ConfigurationManager.AppSettings["ServerURL"] + "/images/spacer.gif");
-                    mediaHtml = mediaHtml.Replace("/stylesheets", ConfigurationManager.AppSettings["ServerURL"] + "/stylesheets");
+                //    mediaHtml = mediaHtml.Replace("/images/spacer.gif", ConfigurationManager.AppSettings["ServerURL"] + "/images/spacer.gif");
+                //    mediaHtml = mediaHtml.Replace("/stylesheets", ConfigurationManager.AppSettings["ServerURL"] + "/stylesheets");
 
-                    // For Image media the image url references should be pointing to CDR server
-                    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
-                    mediaHtml = mediaHtml.Replace("/images/cdr/live/", imagePath);
+                //    // For Image media the image url references should be pointing to CDR server
+                //    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
+                //    mediaHtml = mediaHtml.Replace("/images/cdr/live/", imagePath);
 
-                    string mediaContentFileName = mediaItemID.ID.ToString() + ".html";
+                //    string mediaContentFileName = mediaItemID.ID.ToString() + ".html";
 
-                    mediaRenderedContentList.Add(mediaItemID.ID.ToString(), mediaHtml);
+                //    mediaRenderedContentList.Add(mediaItemID.ID.ToString(), mediaHtml);
 
-                    using (StreamWriter outfile = new StreamWriter(previewMediaPath + @"\" + mediaContentFileName))
-                    {
-                        outfile.Write(mediaHtml);
-                    }
-                }
+                //    using (StreamWriter outfile = new StreamWriter(previewMediaPath + @"\" + mediaContentFileName))
+                //    {
+                //        outfile.Write(mediaHtml);
+                //    }
+                //}
             }
             else
             {

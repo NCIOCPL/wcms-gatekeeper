@@ -33,7 +33,9 @@ namespace GKManagers.CMSDocumentProcessing
 
         #region Constants
 
-        const int ShortTitleLength = 64;
+        //changed this length from 64 to 100 to make sure it matches short_title length
+        //in percussion
+        const int ShortTitleLength = 100;
 
         protected const string SummaryLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
 
@@ -169,9 +171,9 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
-            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+            //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
+            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs/*, subItems*/);
         }
 
         /// <summary>
@@ -198,9 +200,9 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
-            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+            //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
 
-            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
+            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs/*, subItems*/);
         }
 
         /// <summary>
@@ -229,9 +231,9 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid[] permanentLinkIDs = LocateExistingPermanentLinks(summaryRootID);
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
-            PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.  
+            //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.  
 
-            PerformTransition(TransitionItemsToLiveFast, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs, subItems);
+            PerformTransition(TransitionItemsToLiveFast, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs/*, subItems*/);
                         
         }
 
@@ -239,8 +241,8 @@ namespace GKManagers.CMSDocumentProcessing
             PercussionGuid summaryRootID,
             PercussionGuid summaryLinkID,
             PercussionGuid[] permanentLinkIDs,
-            PercussionGuid[] pageIDs,
-            PercussionGuid[] subItems)
+            PercussionGuid[] pageIDs/*,
+            PercussionGuid[] subItems*/)
         {
             LogDetailedStep("Begin workflow transition.");
 
@@ -254,9 +256,11 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Pages and subPages are created new on each update and will therefore be in
             // a different state than the root and link items.
-            PercussionGuid[] pageCollection = CMSController.BuildGuidArray(pageIDs, subItems);
-            if (pageCollection.Length > 0) transitionMethod(pageCollection);
-
+            if (pageIDs != null)
+            {
+                PercussionGuid[] pageCollection = CMSController.BuildGuidArray(pageIDs/*, subItems*/);
+                if (pageCollection.Length > 0) transitionMethod(pageCollection);
+            }
             LogDetailedStep("End workflow transition.");
         }
 
@@ -326,11 +330,11 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Lookup desktop pages, table sections and MediaLinks.
             PercussionGuid[] desktopPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, StandardPageSlotName);
-            PercussionGuid[] desktopSubItems = LocateMediaLinksAndTableSections(desktopPageIDs); // Table sections and MediaLinks.
+            //PercussionGuid[] desktopSubItems = LocateMediaLinksAndTableSections(desktopPageIDs); // Table sections and MediaLinks.
 
             // Lookup mobile pages, table sections and MediaLinks.
             PercussionGuid[] mobilePageIDs = CMSController.SearchForItemsInSlot(summaryRootID, MobilePageSlotName);
-            PercussionGuid[] mobileSubItems = LocateMediaLinksAndTableSections(mobilePageIDs); // Table sections and MediaLinks.
+            //PercussionGuid[] mobileSubItems = LocateMediaLinksAndTableSections(mobilePageIDs); // Table sections and MediaLinks.
 
             LogDetailedStep("End gathering content items.");
 
@@ -365,8 +369,8 @@ namespace GKManagers.CMSDocumentProcessing
             VerifyDocumentMayBeUpdated(summary, summaryRootID, summaryLinkID, PermanentLinkData, incomingPermanentLinkRelationships, allPageRelationships.ToArray());
 
             PerformUpdate(summary, summaryRootID, summaryLinkID, PermanentLinkData,
-                desktopPageIDs, desktopSubItems, desktopPageRelationships,
-                mobilePageIDs, mobileSubItems, mobilePageRelationships,
+                desktopPageIDs, /*desktopSubItems,*/ desktopPageRelationships,
+                mobilePageIDs, /*mobileSubItems,*/ mobilePageRelationships,
                 sitePath);
         }
 
@@ -378,8 +382,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="sitePath"></param>
         protected abstract void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID,
             PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
-            PercussionGuid[] desktopPageIDs, PercussionGuid[] desktopSubItemIDs, PSAaRelationship[] incomingDesktopPageRelationships,
-            PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
+            PercussionGuid[] desktopPageIDs, /*PercussionGuid[] desktopSubItemIDs,*/ PSAaRelationship[] incomingDesktopPageRelationships,
+            PercussionGuid[] mobilePageIDs, /*PercussionGuid[] mobileSubItemIDs,*/ PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath);
 
 
@@ -516,11 +520,11 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        protected void RemoveOldPages(PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems)
+        protected void RemoveOldPages(PercussionGuid[] oldPageIDs/*, PercussionGuid[] oldSubItems*/)
         {
-            PercussionGuid[] combinedIDList = CMSController.BuildGuidArray(oldPageIDs, oldSubItems);
+            //PercussionGuid[] combinedIDList = CMSController.BuildGuidArray(oldPageIDs, oldSubItems);
 
-            CMSController.DeleteItemList(combinedIDList);
+            CMSController.DeleteItemList(oldPageIDs);
         }
 
         /// <summary>
@@ -734,34 +738,36 @@ namespace GKManagers.CMSDocumentProcessing
             List<PercussionGuid> rollbackList,
             out List<long> tableIDs, out List<long> mediaLinkIDs)
         {
-            // Create the embeddable content items and resolve the item references.
+            mediaLinkIDs = null;
+            tableIDs = null;
+            //// Create the embeddable content items and resolve the item references.
 
-            LogDetailedStep("Begin CreateSubPages.");
+            //LogDetailedStep("Begin CreateSubPages.");
 
-            // Create the MediaLinks
-            List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
-            mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
-            rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
+            //// Create the MediaLinks
+            //List<ContentItemForCreating> medialLinkList = CreatePDQMediaLink(summary, createPath);
+            //mediaLinkIDs = CMSController.CreateContentItemList(medialLinkList);
+            //rollbackList.AddRange(CMSController.BuildGuidArray(mediaLinkIDs));
 
-            // Resolve MediaLink inline slots within the pages.
-            SectionToCmsIDMap mediaLinkIDMap = null;
-            _mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
-            mediaLinkIDMap = _mediaLinkIDMap;
-            ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+            //// Resolve MediaLink inline slots within the pages.
+            //SectionToCmsIDMap mediaLinkIDMap = null;
+            //_mediaLinkIDMap = BuildItemIDMap(summary.MediaLinkSectionList, MediaLinkIDAccessor, mediaLinkIDs);
+            //mediaLinkIDMap = _mediaLinkIDMap;
+            //ResolveInlineSlots(summary.SectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
-            // Resolve MediaLink references within table sections.
-            ResolveTableSectionMediaLinkInlineSlots(summary.TableSectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
+            //// Resolve MediaLink references within table sections.
+            //ResolveTableSectionMediaLinkInlineSlots(summary.TableSectionList, mediaLinkIDMap, MediaLinkSnippetTemplate);
 
-            // Create the Table sections
-            List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
-            tableIDs = CMSController.CreateContentItemList(tableList);
-            rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
+            //// Create the Table sections
+            //List<ContentItemForCreating> tableList = CreatePDQTableSections(summary, createPath);
+            //tableIDs = CMSController.CreateContentItemList(tableList);
+            //rollbackList.AddRange(CMSController.BuildGuidArray(tableIDs));
 
-            // Resolve Table inline slots within the pages.
-            SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
-            ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
+            //// Resolve Table inline slots within the pages.
+            //SectionToCmsIDMap tableIDMap = BuildItemIDMap(summary.TableSectionList, SummarySectionIDAccessor, tableIDs);
+            //ResolveInlineSlots(summary.SectionList, tableIDMap, TableSectionSnippetTemplate);
 
-            LogDetailedStep("End CreateSubPages.");
+            //LogDetailedStep("End CreateSubPages.");
         }
 
         /// <summary>
@@ -823,128 +829,128 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
-        protected void ResolveInlineSlots(List<SummarySection> sectionList, SectionToCmsIDMap itemIDMap, string templateName)
-        {
-            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+        //protected void ResolveInlineSlots(List<SummarySection> sectionList, SectionToCmsIDMap itemIDMap, string templateName)
+        //{
+        //    PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
 
-            foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
-            {
-                XmlDocument html = section.Html;
-                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //    foreach (SummarySection section in sectionList.Where(item => item.IsTopLevel))
+        //    {
+        //        XmlDocument html = section.Html;
+        //        XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (itemIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = itemIDMap[target].ID;
+        //            if (itemIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = itemIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
-            }
-        }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// Resolves medialink inline slots contained within table sections
-        /// </summary>
-        /// <param name="tableSectionList"></param>
-        /// <param name="mediaLinkIDMap"></param>
-        /// <param name="templateName"></param>
-        protected void ResolveTableSectionMediaLinkInlineSlots(List<SummarySection> tableSectionList, SectionToCmsIDMap mediaLinkIDMap, string templateName)
-        {
-            PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
+        ///// <summary>
+        ///// Resolves medialink inline slots contained within table sections
+        ///// </summary>
+        ///// <param name="tableSectionList"></param>
+        ///// <param name="mediaLinkIDMap"></param>
+        ///// <param name="templateName"></param>
+        //protected void ResolveTableSectionMediaLinkInlineSlots(List<SummarySection> tableSectionList, SectionToCmsIDMap mediaLinkIDMap, string templateName)
+        //{
+        //    PercussionGuid snippetTemplate = CMSController.TemplateNameManager[templateName];
 
-            // NOTE: Unlike ResolveInlineSlots for SummarySection lists, this has no where clause.
-            foreach (SummarySection section in tableSectionList)
-            {
-                XmlDocument html = section.Html;
-                XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //    // NOTE: Unlike ResolveInlineSlots for SummarySection lists, this has no where clause.
+        //    foreach (SummarySection section in tableSectionList)
+        //    {
+        //        XmlDocument html = section.Html;
+        //        XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = mediaLinkIDMap[target].ID;
+        //            if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = mediaLinkIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
 
-                // Lather, rinse and repeast for the full-size HTML.
-                html = section.StandaloneHTML;
-                nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
+        //        // Lather, rinse and repeast for the full-size HTML.
+        //        html = section.StandaloneHTML;
+        //        nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
-                foreach (XmlNode node in nodeList)
-                {
-                    XmlAttributeCollection attributeList = node.Attributes;
+        //        foreach (XmlNode node in nodeList)
+        //        {
+        //            XmlAttributeCollection attributeList = node.Attributes;
 
-                    XmlAttribute reference = attributeList["objectid"];
-                    XmlAttribute attrib;
+        //            XmlAttribute reference = attributeList["objectid"];
+        //            XmlAttribute attrib;
 
-                    if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
-                    {
-                        string target = reference.Value;
-                        long dependent = mediaLinkIDMap[target].ID;
+        //            if (mediaLinkIDMap.ContainsSectionKey(reference.Value))
+        //            {
+        //                string target = reference.Value;
+        //                long dependent = mediaLinkIDMap[target].ID;
 
-                        attrib = html.CreateAttribute("sys_dependentid");
-                        attrib.Value = dependent.ToString();
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("sys_dependentid");
+        //                attrib.Value = dependent.ToString();
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("contenteditable");
-                        attrib.Value = "false";
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("contenteditable");
+        //                attrib.Value = "false";
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("rxinlineslot");
-                        attrib.Value = InlineTemplateSlotID;
-                        attributeList.Append(attrib);
+        //                attrib = html.CreateAttribute("rxinlineslot");
+        //                attrib.Value = InlineTemplateSlotID;
+        //                attributeList.Append(attrib);
 
-                        attrib = html.CreateAttribute("sys_dependentvariantid");
-                        attrib.Value = snippetTemplate.ID.ToString();
-                        attributeList.Append(attrib);
-                    }
-                }
-            }
-        }
+        //                attrib = html.CreateAttribute("sys_dependentvariantid");
+        //                attrib.Value = snippetTemplate.ID.ToString();
+        //                attributeList.Append(attrib);
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Replaces SummaryRef placeholder tags with links to the individual summary sections.
@@ -1082,7 +1088,9 @@ namespace GKManagers.CMSDocumentProcessing
                 if (string.IsNullOrEmpty(sectionID))
                     url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
                 else
-                    url = string.Format("{0}/Page{1}#Section{2}", baseUrl, pageNumber, sectionID);
+                    //removed the word section from the url
+                    //as sections are represented using their ids
+                    url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
             }
             else
             {
@@ -1106,7 +1114,9 @@ namespace GKManagers.CMSDocumentProcessing
             if (string.IsNullOrEmpty(sectionID))
                 url = string.Format("{0}", baseUrl);
             else
-                url = string.Format("{0}/#Section{1}", baseUrl, sectionID);
+                //removed the word section from the url
+                //as sections are represented using their ids
+                url = string.Format("{0}/#{1}", baseUrl, sectionID);
 
             return url;
         }
@@ -1352,13 +1362,13 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
-                PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+                //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
                 PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, sitePath);
                 PercussionGuid[] permanentLinks = PermanentLinkData.DetectToDeletePermanentLinkRelationships();
 
                 // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
-                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
+                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs/*, subItems*/, summaryLink);
 
                 VerifyDocumentMayBeDeleted(fullIDList.ToArray(), permanentLinks);
 
@@ -1497,35 +1507,35 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="pageIDList">An array of pages to search for items in inline slots.</param>
         /// <returns>The CMS identifers for the embedded content items.</returns>
-        protected PercussionGuid[] LocateMediaLinksAndTableSections(PercussionGuid[] pageIDList)
-        {
-            List<PercussionGuid> subItems = new List<PercussionGuid>();
+        //protected PercussionGuid[] LocateMediaLinksAndTableSections(PercussionGuid[] pageIDList)
+        //{
+        //    List<PercussionGuid> subItems = new List<PercussionGuid>();
 
-            // Locate media links and tables as immediate children of the pages.
-            Array.ForEach(pageIDList, pageID =>
-            {
-                PercussionGuid[] items = CMSController.SearchForItemsInSlot(pageID, InlineSlot);
-                subItems.AddRange(items);
-            });
+        //    // Locate media links and tables as immediate children of the pages.
+        //    Array.ForEach(pageIDList, pageID =>
+        //    {
+        //        PercussionGuid[] items = CMSController.SearchForItemsInSlot(pageID, InlineSlot);
+        //        subItems.AddRange(items);
+        //    });
 
 
-            // Locate sub-items as childlren of each other.
-            // E.g. a TableSection contains a MediaLink.
-            HashSet<PercussionGuid> lowerItems = new HashSet<PercussionGuid>();
-            subItems.ForEach(subItem =>
-            {
-                PercussionGuid[] items = CMSController.SearchForItemsInSlot(subItem, InlineSlot);
-                Array.ForEach(items, item =>
-                {
-                    if (!lowerItems.Contains(item))
-                        lowerItems.Add(item);
-                });
-            });
+        //    // Locate sub-items as childlren of each other.
+        //    // E.g. a TableSection contains a MediaLink.
+        //    HashSet<PercussionGuid> lowerItems = new HashSet<PercussionGuid>();
+        //    subItems.ForEach(subItem =>
+        //    {
+        //        PercussionGuid[] items = CMSController.SearchForItemsInSlot(subItem, InlineSlot);
+        //        Array.ForEach(items, item =>
+        //        {
+        //            if (!lowerItems.Contains(item))
+        //                lowerItems.Add(item);
+        //        });
+        //    });
 
-            subItems.AddRange(lowerItems);
+        //    subItems.AddRange(lowerItems);
 
-            return subItems.Distinct().ToArray();
-        }
+        //    return subItems.Distinct().ToArray();
+        //}
 
         /// <summary>
         /// Searches for all content items which refer to the root item as their alternate
@@ -1576,42 +1586,42 @@ namespace GKManagers.CMSDocumentProcessing
         /// </summary>
         /// <param name="documentID"></param>
         /// <returns></returns>
-        public void BuildGlossaryTermRefLink(ref string html, string tag)
-        {
-            // TODO:  This doesn't belong in the data layer!!!!
-            string startTag = "<a Class=\"" + tag + "\"";
-            string endTag = "</a>";
-            int startIndex = html.IndexOf(startTag, 0);
-            string sectionHTML = html;
-            string collectHTML = string.Empty;
-            string partC = string.Empty;
-            while (startIndex >= 0)
-            {
-                string partA = sectionHTML.Substring(0, startIndex);
-                string left = sectionHTML.Substring(startIndex);
-                int endIndex = left.IndexOf(endTag) + endTag.Length;
-                string partB = left.Substring(0, endIndex);
-                partC = left.Substring(endIndex);
+        //public void BuildGlossaryTermRefLink(ref string html, string tag)
+        //{
+        //    // TODO:  This doesn't belong in the data layer!!!!
+        //    string startTag = "<a class=\"" + tag + "\"";
+        //    string endTag = "</a>";
+        //    int startIndex = html.IndexOf(startTag, 0);
+        //    string sectionHTML = html;
+        //    string collectHTML = string.Empty;
+        //    string partC = string.Empty;
+        //    while (startIndex >= 0)
+        //    {
+        //        string partA = sectionHTML.Substring(0, startIndex);
+        //        string left = sectionHTML.Substring(startIndex);
+        //        int endIndex = left.IndexOf(endTag) + endTag.Length;
+        //        string partB = left.Substring(0, endIndex);
+        //        partC = left.Substring(endIndex);
 
-                // Combine
-                // Do not add extra space after the GlossaryTermRef if following sign
-                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
-                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
-                    collectHTML += partA.Trim();
-                else
-                    collectHTML += " " + partA.Trim();
+        //        // Combine
+        //        // Do not add extra space after the GlossaryTermRef if following sign
+        //        // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
+        //        if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
+        //            collectHTML += partA.Trim();
+        //        else
+        //            collectHTML += " " + partA.Trim();
 
-                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
-                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
-                    collectHTML += partB;
-                else
-                    collectHTML += " " + partB;
+        //        // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
+        //        if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
+        //            collectHTML += partB;
+        //        else
+        //            collectHTML += " " + partB;
 
-                sectionHTML = partC.Trim();
-                startIndex = sectionHTML.IndexOf(startTag, 0);
-            }
-            html = collectHTML + partC;
-        }
+        //        sectionHTML = partC.Trim();
+        //        startIndex = sectionHTML.IndexOf(startTag, 0);
+        //    }
+        //    html = collectHTML + partC;
+        //}
 
         public string GetLanguageCode(Language language)
         {
@@ -1707,15 +1717,14 @@ namespace GKManagers.CMSDocumentProcessing
             // TODO: Move Summary-GlossaryTermRef Extract/Render out of the data access layer!
             // This kind of manipulation particularly shouldn't happen in the
             // routine that creates field/value pairs!
-            if (summarySection.Html.OuterXml.Contains("Summary-GlossaryTermRef"))
-            {
-                string glossaryTermTag = "Summary-GlossaryTermRef";
-                BuildGlossaryTermRefLink(ref html, glossaryTermTag);
-            }
-
+            //if (summarySection.Html.OuterXml.Contains("definition"))
+            //{
+            //    string glossaryTermTag = "definition";
+            //    BuildGlossaryTermRefLink(ref html, glossaryTermTag);
+            //}
+                       
             fields.Add("bodyfield", html);
-
-            // TODO: Implement table of contents.
+                       
             fields.Add("table_of_contents", (string.IsNullOrEmpty(summarySection.TOC) ? null : summarySection.TOC));
 
             string longTitle = summarySection.Title;
@@ -1733,78 +1742,78 @@ namespace GKManagers.CMSDocumentProcessing
             return fields;
         }
 
-        protected List<ContentItemForCreating> CreatePDQTableSections(SummaryDocument document, string creationPath)
-        {
-            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+        //protected List<ContentItemForCreating> CreatePDQTableSections(SummaryDocument document, string creationPath)
+        //{
+        //    // Content items may be re-created during an update, therefore we must pass the create path from the caller.
 
-            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
-            int i;
+        //    List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+        //    int i;
 
-            for (i = 0; i <= document.TableSectionList.Count - 1; i++)
-            {
-                ContentItemForCreating contentItem = new ContentItemForCreating(TableSectionContentType, CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), creationPath);
-                contentItemList.Add(contentItem);
-            }
+        //    for (i = 0; i <= document.TableSectionList.Count - 1; i++)
+        //    {
+        //        ContentItemForCreating contentItem = new ContentItemForCreating(TableSectionContentType, CreateFieldValueMapPDQTableSection(document, document.TableSectionList[i]), creationPath);
+        //        contentItemList.Add(contentItem);
+        //    }
 
-            return contentItemList;
-        }
+        //    return contentItemList;
+        //}
 
-        protected FieldSet CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
-        {
-            FieldSet fields = new FieldSet();
-            string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
+        //protected FieldSet CreateFieldValueMapPDQTableSection(SummaryDocument summary, SummarySection tableSection)
+        //{
+        //    FieldSet fields = new FieldSet();
+        //    string prettyURLName = tableSection.PrettyUrl.Substring(tableSection.PrettyUrl.LastIndexOf('/') + 1);
 
-            fields.Add("pretty_url_name", prettyURLName);
+        //    fields.Add("pretty_url_name", prettyURLName);
 
-            string summaryTitle = summary.Title;
-            fields.Add("long_title", summaryTitle);
+        //    string summaryTitle = summary.Title;
+        //    fields.Add("long_title", summaryTitle);
 
-            // Short title is a maximum of 64 characters long,
-            // Need to allow three characters for the " - " and the length of prettyURLName.
-            int decorationLength = Math.Min(3 + prettyURLName.Length, ShortTitleLength);
-            int shortLength = Math.Min(ShortTitleLength, summaryTitle.Length);
-            string shortTitleLead;
-            if ((shortLength + decorationLength) > ShortTitleLength)
-            {
-                int copyLength = ShortTitleLength - decorationLength;
-                shortTitleLead = summaryTitle.Substring(0, copyLength);
-            }
-            else
-                shortTitleLead = summaryTitle;
-            fields.Add("short_title", string.Format("{0} - {1}", shortTitleLead, prettyURLName));
+        //    // Short title is a maximum of 64 characters long,
+        //    // Need to allow three characters for the " - " and the length of prettyURLName.
+        //    int decorationLength = Math.Min(3 + prettyURLName.Length, ShortTitleLength);
+        //    int shortLength = Math.Min(ShortTitleLength, summaryTitle.Length);
+        //    string shortTitleLead;
+        //    if ((shortLength + decorationLength) > ShortTitleLength)
+        //    {
+        //        int copyLength = ShortTitleLength - decorationLength;
+        //        shortTitleLead = summaryTitle.Substring(0, copyLength);
+        //    }
+        //    else
+        //        shortTitleLead = summaryTitle;
+        //    fields.Add("short_title", string.Format("{0} - {1}", shortTitleLead, prettyURLName));
 
-            if (!string.IsNullOrEmpty(tableSection.Title))
-            {
-                fields.Add("table_title", tableSection.Title);
-            }
+        //    if (!string.IsNullOrEmpty(tableSection.Title))
+        //    {
+        //        fields.Add("table_title", tableSection.Title);
+        //    }
 
-            fields.Add("inline_table", tableSection.Html.OuterXml);
-            fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
+        //    fields.Add("inline_table", tableSection.Html.OuterXml);
+        //    fields.Add("fullsize_table", tableSection.StandaloneHTML.OuterXml);
 
-            fields.Add("date_next_review", "1/1/2100");
+        //    fields.Add("date_next_review", "1/1/2100");
 
-            if (summary.LastModifiedDate == DateTime.MinValue)
-                fields.Add("date_last_modified", null);
-            else
-                fields.Add("date_last_modified", summary.LastModifiedDate.ToString());
+        //    if (summary.LastModifiedDate == DateTime.MinValue)
+        //        fields.Add("date_last_modified", null);
+        //    else
+        //        fields.Add("date_last_modified", summary.LastModifiedDate.ToString());
 
-            if (summary.FirstPublishedDate == DateTime.MinValue)
-            {
-                fields.Add("date_first_published", null);
-            }
-            else
-            {
-                fields.Add("date_first_published", summary.FirstPublishedDate.ToString());
-            }
+        //    if (summary.FirstPublishedDate == DateTime.MinValue)
+        //    {
+        //        fields.Add("date_first_published", null);
+        //    }
+        //    else
+        //    {
+        //        fields.Add("date_first_published", summary.FirstPublishedDate.ToString());
+        //    }
 
-            fields.Add("sys_title", prettyURLName);
+        //    fields.Add("sys_title", prettyURLName);
 
-            // HACK: This relies on Percussion not setting anything else in the login session.
-            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+        //    // HACK: This relies on Percussion not setting anything else in the login session.
+        //    fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
 
-            return fields;
-        }
+        //    return fields;
+        //}
 
         protected List<ContentItemForCreating> CreatePDQCancerInfoSummary(SummaryDocument document, string creationPath)
         {
@@ -1823,7 +1832,7 @@ namespace GKManagers.CMSDocumentProcessing
             FieldSet fields = new FieldSet();
             string prettyURLName = GetSummaryPrettyUrlName(summary.BasePrettyURL);
 
-            string TOC = BuildTableOfContents(summary);
+            string TOC = "";// BuildTableOfContents(summary);
 
             // Explicitly set pretty_url_name to null so the CI Summary will be
             // the folder's default document.
@@ -1872,42 +1881,42 @@ namespace GKManagers.CMSDocumentProcessing
             return fields;
         }
 
-        protected string BuildTableOfContents(SummaryDocument summary)
-        {
-            // TODO:  Replace BuildTableOfContents() with something a bit less hackish.
-            // At the very least, it would be nice to drop the table and hard-coded
-            // spacer URL.
+        //protected string BuildTableOfContents(SummaryDocument summary)
+        //{
+        //    // TODO:  Replace BuildTableOfContents() with something a bit less hackish.
+        //    // At the very least, it would be nice to drop the table and hard-coded
+        //    // spacer URL.
 
-            StringBuilder sb = new StringBuilder();
+        //    StringBuilder sb = new StringBuilder();
 
-            int lastNestingLevel = 1;
+        //    int lastNestingLevel = 1;
 
-            // The Table of Contents consists of section titles for the top three levels.
-            summary.SectionList.ForEach(section =>
-            {
-                if (section.Level <= 3 &&
-                    !string.IsNullOrEmpty(section.Title))
-                {
-                    if (section.Level > lastNestingLevel)
-                        sb.Append("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr><td><img src=\"http://www.cancer.gov/images/spacer.gif\" border=\"0\" width=\"30\" height=\"1\" alt=\"\"></td><td width=\"100%\">");
-                    else if (section.Level < lastNestingLevel)
-                        sb.Append("</td></tr></table>");
+        //    // The Table of Contents consists of section titles for the top three levels.
+        //    summary.SectionList.ForEach(section =>
+        //    {
+        //        if (section.Level <= 3 &&
+        //            !string.IsNullOrEmpty(section.Title))
+        //        {
+        //            if (section.Level > lastNestingLevel)
+        //                sb.Append("<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr><td><img src=\"http://www.cancer.gov/images/spacer.gif\" border=\"0\" width=\"30\" height=\"1\" alt=\"\"></td><td width=\"100%\">");
+        //            else if (section.Level < lastNestingLevel)
+        //                sb.Append("</td></tr></table>");
 
-                    sb.AppendFormat("<a href=\"#Section{0}\">{1}</a><br />", section.RawSectionID, section.Title);
+        //            sb.AppendFormat("<a href=\"#Section{0}\">{1}</a><br />", section.RawSectionID, section.Title);
 
-                    lastNestingLevel = section.Level;
-                }
+        //            lastNestingLevel = section.Level;
+        //        }
 
-            });
+        //    });
 
-            // Clean up any lingering tables.
-            if (lastNestingLevel > 2)
-                sb.Append("</td></tr></table>");
-            if (lastNestingLevel > 1)
-                sb.Append("</td></tr></table>");
+        //    // Clean up any lingering tables.
+        //    if (lastNestingLevel > 2)
+        //        sb.Append("</td></tr></table>");
+        //    if (lastNestingLevel > 1)
+        //        sb.Append("</td></tr></table>");
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
 
         protected List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
         {
@@ -1938,57 +1947,57 @@ namespace GKManagers.CMSDocumentProcessing
 
         }
 
-        protected List<ContentItemForCreating> CreatePDQMediaLink(SummaryDocument document, string creationPath)
-        {
-            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+        //protected List<ContentItemForCreating> CreatePDQMediaLink(SummaryDocument document, string creationPath)
+        //{
+        //    // Content items may be re-created during an update, therefore we must pass the create path from the caller.
 
-            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+        //    List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            for (int i = 0; i < document.MediaLinkSectionList.Count; i++)
-            {
-                if (document.MediaLinkSectionList[i] != null)
-                {
-                    ContentItemForCreating contentItem =
-                        new ContentItemForCreating(MediaLinkContentType, CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1), creationPath);
-                    contentItemList.Add(contentItem);
-                }
-            }
+        //    for (int i = 0; i < document.MediaLinkSectionList.Count; i++)
+        //    {
+        //        if (document.MediaLinkSectionList[i] != null)
+        //        {
+        //            ContentItemForCreating contentItem =
+        //                new ContentItemForCreating(MediaLinkContentType, CreateFieldValueMapPDQMediaLink(document, document.MediaLinkSectionList[i], i + 1), creationPath);
+        //            contentItemList.Add(contentItem);
+        //        }
+        //    }
 
-            return contentItemList;
-        }
+        //    return contentItemList;
+        //}
 
-        private FieldSet CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
-        {
-            FieldSet fields = new FieldSet();
-            //fields.Add("inline_image_url", mediaLink.InlineImageUrl);
-            //fields.Add("inline_image_width", mediaLink.InlineImageWidth.ToString());
+        //private FieldSet CreateFieldValueMapPDQMediaLink(SummaryDocument summary, MediaLink mediaLink, int listOffset)
+        //{
+        //    FieldSet fields = new FieldSet();
+        //    //fields.Add("inline_image_url", mediaLink.InlineImageUrl);
+        //    //fields.Add("inline_image_width", mediaLink.InlineImageWidth.ToString());
 
-            //fields.Add("popup_image_url", mediaLink.PopupImageUrl);
-            //fields.Add("popup_image_width", mediaLink.PopupImageWidth.ToString());
+        //    //fields.Add("popup_image_url", mediaLink.PopupImageUrl);
+        //    //fields.Add("popup_image_width", mediaLink.PopupImageWidth.ToString());
 
-            if (string.IsNullOrEmpty(mediaLink.Caption))
-            {
-                fields.Add("caption_text", null); 
-            }
-            else
-            {
-                fields.Add("caption_text", mediaLink.Caption);
-            }
-            fields.Add("long_description", mediaLink.Alt);
-            fields.Add("pretty_url_name", "image" + listOffset);
-            fields.Add("section_id", mediaLink.Id);
-            fields.Add("sys_title", "image" + listOffset);
+        //    if (string.IsNullOrEmpty(mediaLink.Caption))
+        //    {
+        //        fields.Add("caption_text", null); 
+        //    }
+        //    else
+        //    {
+        //        fields.Add("caption_text", mediaLink.Caption);
+        //    }
+        //    fields.Add("long_description", mediaLink.Alt);
+        //    fields.Add("pretty_url_name", "image" + listOffset);
+        //    fields.Add("section_id", mediaLink.Id);
+        //    fields.Add("sys_title", "image" + listOffset);
 
-            // HACK: This relies on Percussion not setting anything else in the login session.
-            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+        //    // HACK: This relies on Percussion not setting anything else in the login session.
+        //    fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
-            // Update the size_style_class and mobile_image_id for use in image html.
-            fields.Add("size_style_class", mediaLink.Size);
+        //    // Update the size_style_class and mobile_image_id for use in image html.
+        //    fields.Add("size_style_class", mediaLink.Size);
 
-            fields.Add("mobile_image_id", "CDR" + mediaLink.ReferencedCdrID.ToString());
+        //    fields.Add("mobile_image_id", "CDR" + mediaLink.ReferencedCdrID.ToString());
 
-            return fields;
-        }
+        //    return fields;
+        //}
 
         /// <summary>
         /// Receives a Cancer Information Summary's pretty URL and converts it into

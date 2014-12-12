@@ -21,14 +21,14 @@ namespace GateKeeper.ContentRendering
     {
         #region Fields
 
-        private SummarySection _lastTopLevelSection = null;
-        private StringBuilder _currentSectionTOC = new StringBuilder();
-        private Language _language;
+//        private SummarySection _lastTopLevelSection = null;
+//        private StringBuilder _currentSectionTOC = new StringBuilder();
+//        private Language _language;
 
-        const string tablePlaceholder = @"
-<div inlinetype=""rxvariant"" objectid=""{0}"">
-  Placeholder slot
-</div>";
+//        const string tablePlaceholder = @"
+//<div inlinetype=""rxvariant"" objectid=""{0}"">
+//  Placeholder slot
+//</div>";
 
         #endregion Fields
 
@@ -54,324 +54,324 @@ namespace GateKeeper.ContentRendering
 
         #region Private Methods
 
-        #region Enlarged Table Reference Handling Methods
+        //#region Enlarged Table Reference Handling Methods
 
-        /// <summary>
-        /// Method to determine if any references are contained in the summary section and 
-        /// extract them to a dictionary.
-        /// </summary>
-        /// <param name="xNav"></param>
-        /// <returns>List of reference numbers used in the summary section</returns>
-        /// <remarks>Example: 1.29, 1.32...etc </remarks>
-        private static List<string> ExtractReferenceLinks(XPathNavigator xNav)
-        {
-            List<string> referenceLinkList = new List<string>();
-            try
-            {
-                XPathNodeIterator nodeIter = xNav.Select(".//a[starts-with(@href, '#Reference')]");
+        ///// <summary>
+        ///// Method to determine if any references are contained in the summary section and 
+        ///// extract them to a dictionary.
+        ///// </summary>
+        ///// <param name="xNav"></param>
+        ///// <returns>List of reference numbers used in the summary section</returns>
+        ///// <remarks>Example: 1.29, 1.32...etc </remarks>
+        //private static List<string> ExtractReferenceLinks(XPathNavigator xNav)
+        //{
+        //    List<string> referenceLinkList = new List<string>();
+        //    try
+        //    {
+        //        XPathNodeIterator nodeIter = xNav.Select(".//a[starts-with(@href, '#Reference')]");
 
-                List<string> referenceList = new List<string>();
-                List<int> numberList = new List<int>();
-                while (nodeIter.MoveNext())
-                {
-                    string referenceNumber = nodeIter.Current.GetAttribute("href", string.Empty).Replace("#Reference", string.Empty);
+        //        List<string> referenceList = new List<string>();
+        //        List<int> numberList = new List<int>();
+        //        while (nodeIter.MoveNext())
+        //        {
+        //            string referenceNumber = nodeIter.Current.GetAttribute("href", string.Empty).Replace("#Reference", string.Empty);
                     
-                    if (!referenceList.Contains(referenceNumber))
-                    {
-                        numberList.Add(Int32.Parse(referenceNumber.Substring(referenceNumber.IndexOf(".") + 1)));
-                        referenceList.Add(referenceNumber);
-                       // referenceLinkList.Add(referenceNumber);
+        //            if (!referenceList.Contains(referenceNumber))
+        //            {
+        //                numberList.Add(Int32.Parse(referenceNumber.Substring(referenceNumber.IndexOf(".") + 1)));
+        //                referenceList.Add(referenceNumber);
+        //               // referenceLinkList.Add(referenceNumber);
 
-                    }
-                }
+        //            }
+        //        }
 
-                // Sort the reference in ascending order then add into final list
-                numberList.Sort();
-                foreach (int num in numberList)
-                {
-                    foreach (string reference in referenceList)
-                    {
-                        int subItem = Int32.Parse(reference.Substring(reference.IndexOf(".") + 1));
-                        if (subItem == num)
-                            referenceLinkList.Add(reference);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Rendering reference link failed.", e);
-            }
+        //        // Sort the reference in ascending order then add into final list
+        //        numberList.Sort();
+        //        foreach (int num in numberList)
+        //        {
+        //            foreach (string reference in referenceList)
+        //            {
+        //                int subItem = Int32.Parse(reference.Substring(reference.IndexOf(".") + 1));
+        //                if (subItem == num)
+        //                    referenceLinkList.Add(reference);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Rendering reference link failed.", e);
+        //    }
 
-            return referenceLinkList;
-        }
+        //    return referenceLinkList;
+        //}
 
-        /// <summary>
-        /// Parse out all the references and re-format them so they can be added to 
-        /// the bottom of the table section.
-        /// </summary>
-        /// <param name="referenceSectionNav"></param>
-        /// <param name="referenceList"></param>
-        /// <returns></returns>
-        private string FormatReferences(XPathNavigator referenceSectionNav, List<string> referenceList)
-        {
-            string finalReferenceLinks = string.Empty;
-            try
-            {
-                // If there are no references, don't bother with a reference section
-                if (referenceList.Count != 0)
-                {
-                    string title = string.Empty;
-                    switch (_language)
-                    {
-                        case Language.English:
-                            title = "<p><Span Class=\"Summary-ReferenceSection\">References</Span>";
-                            break;
-                        case Language.Spanish:
-                            title = "<p><Span Class=\"Summary-ReferenceSection\">Bibliografía</Span>";
-                             break;
-                    }
+        ///// <summary>
+        ///// Parse out all the references and re-format them so they can be added to 
+        ///// the bottom of the table section.
+        ///// </summary>
+        ///// <param name="referenceSectionNav"></param>
+        ///// <param name="referenceList"></param>
+        ///// <returns></returns>
+        //private string FormatReferences(XPathNavigator referenceSectionNav, List<string> referenceList)
+        //{
+        //    string finalReferenceLinks = string.Empty;
+        //    try
+        //    {
+        //        // If there are no references, don't bother with a reference section
+        //        if (referenceList.Count != 0)
+        //        {
+        //            string title = string.Empty;
+        //            switch (_language)
+        //            {
+        //                case Language.English:
+        //                    title = "<p><Span Class=\"Summary-ReferenceSection\">References</Span>";
+        //                    break;
+        //                case Language.Spanish:
+        //                    title = "<p><Span Class=\"Summary-ReferenceSection\">Bibliografía</Span>";
+        //                     break;
+        //            }
 
-                    StringBuilder tempBuffer = new StringBuilder(title);
-                    // Begin ordered list of references...
-                    tempBuffer.Append("<ol>");
+        //            StringBuilder tempBuffer = new StringBuilder(title);
+        //            // Begin ordered list of references...
+        //            tempBuffer.Append("<ol>");
 
-                    foreach (string referenceNumber in referenceList)
-                    {
-                        // Note: Looking for the target of the reference: "<li><a name="Reference1.29" />Zeegers MP,..." 
-                        // with xpath //li[a[@name='Reference1.29']]  <li value="29">
-                        XPathNavigator xnav = referenceSectionNav.SelectSingleNode("//li[a[@name='Reference" + referenceNumber + "']]");
+        //            foreach (string referenceNumber in referenceList)
+        //            {
+        //                // Note: Looking for the target of the reference: "<li><a name="Reference1.29" />Zeegers MP,..." 
+        //                // with xpath //li[a[@name='Reference1.29']]  <li value="29">
+        //                XPathNavigator xnav = referenceSectionNav.SelectSingleNode("//li[a[@name='Reference" + referenceNumber + "']]");
 
-                        if (xnav != null)
-                        {
-                            int dot = referenceNumber.IndexOf(".");
-                            string value = referenceNumber.Substring(dot + 1);
-                            tempBuffer.Append("<li value=\"" + value + "\">" + xnav.InnerXml + "</li>");
-                            tempBuffer.Append("\n");
-                        }
-                    }
+        //                if (xnav != null)
+        //                {
+        //                    int dot = referenceNumber.IndexOf(".");
+        //                    string value = referenceNumber.Substring(dot + 1);
+        //                    tempBuffer.Append("<li value=\"" + value + "\">" + xnav.InnerXml + "</li>");
+        //                    tempBuffer.Append("\n");
+        //                }
+        //            }
 
-                    // End ordered list of references...
-                    tempBuffer.Append("</ol></p>");
+        //            // End ordered list of references...
+        //            tempBuffer.Append("</ol></p>");
 
-                    finalReferenceLinks = tempBuffer.ToString();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Formating reference section failed.", e);
-            }
-            return finalReferenceLinks;
-        }
+        //            finalReferenceLinks = tempBuffer.ToString();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Formating reference section failed.", e);
+        //    }
+        //    return finalReferenceLinks;
+        //}
 
-        /// <summary>
-        /// Handles references to the table enlarge HTML.
-        /// </summary>
-        /// <param name="sourceTableSectionNav">Navigator that points to table section: <a name="Section_130"><table...</param>
-        private void ProcessTableForStandalone(XPathNavigator sourceTableSectionNav, out string referenceSection)
-        {
-            try
-            {
-                string tableSection = sourceTableSectionNav.InnerXml;
+        ///// <summary>
+        ///// Handles references to the table enlarge HTML.
+        ///// </summary>
+        ///// <param name="sourceTableSectionNav">Navigator that points to table section: <a name="Section_130"><table...</param>
+        //private void ProcessTableForStandalone(XPathNavigator sourceTableSectionNav, out string referenceSection)
+        //{
+        //    try
+        //    {
+        //        string tableSection = sourceTableSectionNav.InnerXml;
 
-                // Remove the table's title.
-                int indexStart = tableSection.IndexOf("<span");
-                int indexEnd = tableSection.IndexOf("</span>");
-                if (indexStart > 0 && indexEnd > 0)
-                {
-                    string firstStr = tableSection.Substring(0, indexStart);
-                    string secondStr = tableSection.Substring(indexEnd + 7);
-                    tableSection = firstStr + secondStr;
-                }
+        //        // Remove the table's title.
+        //        int indexStart = tableSection.IndexOf("<span");
+        //        int indexEnd = tableSection.IndexOf("</span>");
+        //        if (indexStart > 0 && indexEnd > 0)
+        //        {
+        //            string firstStr = tableSection.Substring(0, indexStart);
+        //            string secondStr = tableSection.Substring(indexEnd + 7);
+        //            tableSection = firstStr + secondStr;
+        //        }
 
-                tableSection = tableSection.Replace("width=\"90%\"", "width=\"100%\"");
-                tableSection = tableSection.Replace(">Enlarge<", "><");
-                tableSection = tableSection.Replace(">Ampliar<", "><");
-                // TODO:REMOVE- Replace this line for string comparison purpose.
-                tableSection = tableSection.Replace("Summary-SummarySection-Small", "Summary");
+        //        tableSection = tableSection.Replace("width=\"90%\"", "width=\"100%\"");
+        //        tableSection = tableSection.Replace(">Enlarge<", "><");
+        //        tableSection = tableSection.Replace(">Ampliar<", "><");
+        //        // TODO:REMOVE- Replace this line for string comparison purpose.
+        //        tableSection = tableSection.Replace("Summary-SummarySection-Small", "Summary");
 
-                // This code is designed to add any references used in the table at the bottom of the section:
+        //        // This code is designed to add any references used in the table at the bottom of the section:
 
-                // Note: (must be the one from the section in which the original table was found)
-                List<string> referenceLinks = ExtractReferenceLinks(sourceTableSectionNav);
+        //        // Note: (must be the one from the section in which the original table was found)
+        //        List<string> referenceLinks = ExtractReferenceLinks(sourceTableSectionNav);
 
-                // Find the reference section "<a name="ReferenceSection">" following the table section...
-                XPathNavigator referenceSectionNav =
-                    sourceTableSectionNav.SelectSingleNode("./following::a[@name='ReferenceSection']");
+        //        // Find the reference section "<a name="ReferenceSection">" following the table section...
+        //        XPathNavigator referenceSectionNav =
+        //            sourceTableSectionNav.SelectSingleNode("./following::a[@name='ReferenceSection']");
 
-                // Call FormatReferences() to pull out and format the reference link "targets" from the
-                // reference section (order list (<ol> block of references)...
-                string formattedReferenceSection = FormatReferences(referenceSectionNav, referenceLinks);
+        //        // Call FormatReferences() to pull out and format the reference link "targets" from the
+        //        // reference section (order list (<ol> block of references)...
+        //        string formattedReferenceSection = FormatReferences(referenceSectionNav, referenceLinks);
 
-                // Add re-formatted references ordered list to the bottom of the table enlarge section...
-                sourceTableSectionNav.InnerXml = tableSection;
-                referenceSection = formattedReferenceSection;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Enlarging section table failed.", e);
-            }
-        }
+        //        // Add re-formatted references ordered list to the bottom of the table enlarge section...
+        //        sourceTableSectionNav.InnerXml = tableSection;
+        //        referenceSection = formattedReferenceSection;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Enlarging section table failed.", e);
+        //    }
+        //}
 
-        /// <summary>
-        /// Adds the appropriate CSS classes to the table.
-        /// </summary>
-        /// <param name="sectionNav">Navigator pointing to the section that contains a table</param>
-        /// <param name="summary"></param>
-        /// <param name="sectionID">Section ID of the table enlarge section</param>
-        private void AddTableLinks(XPathNavigator sectionNav, SummaryDocument summary, string sectionID, SummarySectionType sectionType)
-        {
-            try
-            {
-                XPathNodeIterator tableSectionIter = sectionNav.Select(".//TableSectionXML");
+        ///// <summary>
+        ///// Adds the appropriate CSS classes to the table.
+        ///// </summary>
+        ///// <param name="sectionNav">Navigator pointing to the section that contains a table</param>
+        ///// <param name="summary"></param>
+        ///// <param name="sectionID">Section ID of the table enlarge section</param>
+        //private void AddTableLinks(XPathNavigator sectionNav, SummaryDocument summary, string sectionID, SummarySectionType sectionType)
+        //{
+        //    try
+        //    {
+        //        XPathNodeIterator tableSectionIter = sectionNav.Select(".//TableSectionXML");
 
-                while (tableSectionIter.MoveNext())
-                {
-                    string tableSectionID = string.Empty;
-                    XPathNavigator subSectionNav = tableSectionIter.Current.SelectSingleNode(".//a[starts-with(@name, 'SectionXML_')]");
-                    if (subSectionNav != null && subSectionNav.HasAttributes)
-                    {
-                        tableSectionID = subSectionNav.GetAttribute("name", string.Empty).Replace("SectionXML_", string.Empty);
-                        string tableSectionXml = tableSectionIter.Current.InnerXml;
+        //        while (tableSectionIter.MoveNext())
+        //        {
+        //            string tableSectionID = string.Empty;
+        //            XPathNavigator subSectionNav = tableSectionIter.Current.SelectSingleNode(".//a[starts-with(@name, 'SectionXML_')]");
+        //            if (subSectionNav != null && subSectionNav.HasAttributes)
+        //            {
+        //                tableSectionID = subSectionNav.GetAttribute("name", string.Empty).Replace("SectionXML_", string.Empty);
+        //                string tableSectionXml = tableSectionIter.Current.InnerXml;
 
-                        if (sectionType == SummarySectionType.Reference || sectionType == SummarySectionType.SummarySection)
-                        {
-                            // Add "small" classes to the elements in the source table...
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"SummaryRef\"", "Class=\"SummaryRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //SummaryRef
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-ProtocolRef\"", "Class=\"Summary-ProtocolRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //ProtocolRef
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-LOERef\"", "Class=\"Summary-LOERef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //Summary-LOERef
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-GlossaryTermRef\"", "Class=\"Summary-GlossaryTermRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //GlossaryTermRef
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Protocol-GeneName\"", "Class=\"Protocol-GeneName-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //GeneName
-                            tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Protocol-ExternalRef\"", "Class=\"Protocol-ExternalRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //ExternalRef
-                            tableSectionXml = Regex.Replace(tableSectionXml, "<a\\s+href=\"#Reference", "<a Class=\"SummarySection-Table-Small\"  href=\"#Reference", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //Reference
-                        }
+        //                if (sectionType == SummarySectionType.Reference || sectionType == SummarySectionType.SummarySection)
+        //                {
+        //                    // Add "small" classes to the elements in the source table...
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"SummaryRef\"", "Class=\"SummaryRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //SummaryRef
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-ProtocolRef\"", "Class=\"Summary-ProtocolRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //ProtocolRef
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-LOERef\"", "Class=\"Summary-LOERef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //Summary-LOERef
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Summary-GlossaryTermRef\"", "Class=\"Summary-GlossaryTermRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //GlossaryTermRef
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Protocol-GeneName\"", "Class=\"Protocol-GeneName-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //GeneName
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "class=\"Protocol-ExternalRef\"", "Class=\"Protocol-ExternalRef-Small\"", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //ExternalRef
+        //                    tableSectionXml = Regex.Replace(tableSectionXml, "<a\\s+href=\"#Reference", "<a Class=\"SummarySection-Table-Small\"  href=\"#Reference", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline); //Reference
+        //                }
 
-                        // Replace the top level of xml with nodes that will be saved into database
-                        tableSectionIter.Current.InnerXml = tableSectionXml;
-                        string formatedTableXml = tableSectionIter.Current.InnerXml;
-                        if (!formatedTableXml.StartsWith("<a name=\"TableSection\"></a>"))
-                        {
-                            formatedTableXml = "<a name=\"TableSection\"></a><a name=\"Section_" + tableSectionID + "\"></a>" + formatedTableXml;
-                            tableSectionIter.Current.InnerXml = formatedTableXml;
-                        }
+        //                // Replace the top level of xml with nodes that will be saved into database
+        //                tableSectionIter.Current.InnerXml = tableSectionXml;
+        //                string formatedTableXml = tableSectionIter.Current.InnerXml;
+        //                if (!formatedTableXml.StartsWith("<a name=\"TableSection\"></a>"))
+        //                {
+        //                    formatedTableXml = "<a name=\"TableSection\"></a><a name=\"Section_" + tableSectionID + "\"></a>" + formatedTableXml;
+        //                    tableSectionIter.Current.InnerXml = formatedTableXml;
+        //                }
 
-                        // Get the section title
-                        XPathNavigator titleNav = tableSectionIter.Current.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
-                        // Set the section title
-                        string title = string.Empty;
-                        if (titleNav != null)
-                        {
-                            title = titleNav.InnerXml.Trim();
-                            title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
-                            titleNav.InnerXml = title;
-                        }
-                    }
-                }  // End while loop
+        //                // Get the section title
+        //                XPathNavigator titleNav = tableSectionIter.Current.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
+        //                // Set the section title
+        //                string title = string.Empty;
+        //                if (titleNav != null)
+        //                {
+        //                    title = titleNav.InnerXml.Trim();
+        //                    title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
+        //                    titleNav.InnerXml = title;
+        //                }
+        //            }
+        //        }  // End while loop
 
-                // Clean up the TableSectionXML tags.
-                // TODO: Ideally, this would be done in the same loop as above.
-                // Editing the current node of an XPathNodeIterator loses position,
-                // so we have to search for the node repeatedly.
-                List<XPathNavigator> tableSectionNodes = new List<XPathNavigator>();
-                tableSectionIter = sectionNav.Select(".//TableSectionXML");
-                while (tableSectionIter.MoveNext())
-                {
-                    tableSectionIter.Current.OuterXml = tableSectionIter.Current.InnerXml;
-                    tableSectionIter = sectionNav.Select(".//TableSectionXML");
-                }
+        //        // Clean up the TableSectionXML tags.
+        //        // TODO: Ideally, this would be done in the same loop as above.
+        //        // Editing the current node of an XPathNodeIterator loses position,
+        //        // so we have to search for the node repeatedly.
+        //        List<XPathNavigator> tableSectionNodes = new List<XPathNavigator>();
+        //        tableSectionIter = sectionNav.Select(".//TableSectionXML");
+        //        while (tableSectionIter.MoveNext())
+        //        {
+        //            tableSectionIter.Current.OuterXml = tableSectionIter.Current.InnerXml;
+        //            tableSectionIter = sectionNav.Select(".//TableSectionXML");
+        //        }
 
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Adding table link failed. SectionID = " + sectionID.ToString(), e);
-            }
-        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Adding table link failed. SectionID = " + sectionID.ToString(), e);
+        //    }
+        //}
 
-        #endregion Enlarged Table Reference Handling Methods
+        //#endregion Enlarged Table Reference Handling Methods
 
-        /// <summary>
-        /// Build table of contents.
-        /// </summary>
-        /// <param name="summary"></param>
-        /// <param name="section"></param>
-        private void BuildTOC(SummaryDocument summary, SummarySection currentSection)
-        {
-            try
-            {
-                // Build TOC for each level 1 (top level) section (only based on levels 2 and 3 => ignore other levels)
-                switch (currentSection.Level)
-                {
-                    case 1:
-                        if (this._lastTopLevelSection != null)
-                        {
-                            // Find last top level section and set it's TOC equal to the current TOC 
-                            // (top-level sections TOCs are comprised of all 2nd and 3rd level sections under it)
-                            this._lastTopLevelSection.TOC = this._currentSectionTOC.ToString();
-                            this._currentSectionTOC = new StringBuilder();
-                        }
-                        // Keep track of the current top level section, so the TOC can be saved off when we encounter
-                        // the next top level section
-                        this._lastTopLevelSection = currentSection;
-                        break;
-                    case 2:
-                        if (!currentSection.IsTableSection && currentSection.Title.Trim().Length > 0)
-                        {
-                            this._currentSectionTOC.Append(string.Format("<a href=\"#Section_{0}\">{1}</a><br>\n",
-                                currentSection.SectionID, currentSection.Title));
-                        }
-                        break;
-                    case 3:
-                        if (currentSection.Title.Trim().Length > 0)
-                        {
-                            this._currentSectionTOC.Append(
-                            string.Format("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#Section_{0}\">{1}</a><br>\n",
-                                currentSection.SectionID, currentSection.Title));
-                        }
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Building table of contents failed.", e);
-            }
-        }
+        ///// <summary>
+        ///// Build table of contents.
+        ///// </summary>
+        ///// <param name="summary"></param>
+        ///// <param name="section"></param>
+        //private void BuildTOC(SummaryDocument summary, SummarySection currentSection)
+        //{
+        //    try
+        //    {
+        //        // Build TOC for each level 1 (top level) section (only based on levels 2 and 3 => ignore other levels)
+        //        switch (currentSection.Level)
+        //        {
+        //            case 1:
+        //                if (this._lastTopLevelSection != null)
+        //                {
+        //                    // Find last top level section and set it's TOC equal to the current TOC 
+        //                    // (top-level sections TOCs are comprised of all 2nd and 3rd level sections under it)
+        //                    this._lastTopLevelSection.TOC = this._currentSectionTOC.ToString();
+        //                    this._currentSectionTOC = new StringBuilder();
+        //                }
+        //                // Keep track of the current top level section, so the TOC can be saved off when we encounter
+        //                // the next top level section
+        //                this._lastTopLevelSection = currentSection;
+        //                break;
+        //            case 2:
+        //                if (!currentSection.IsTableSection && currentSection.Title.Trim().Length > 0)
+        //                {
+        //                    this._currentSectionTOC.Append(string.Format("<a href=\"#Section_{0}\">{1}</a><br>\n",
+        //                        currentSection.SectionID, currentSection.Title));
+        //                }
+        //                break;
+        //            case 3:
+        //                if (currentSection.Title.Trim().Length > 0)
+        //                {
+        //                    this._currentSectionTOC.Append(
+        //                    string.Format("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#Section_{0}\">{1}</a><br>\n",
+        //                        currentSection.SectionID, currentSection.Title));
+        //                }
+        //                break;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Building table of contents failed.", e);
+        //    }
+        //}
 
-        /// <summary>
-        /// Method to extract level 5 elements (OLs, ULs, Ps, PREs...etc).
-        /// </summary>
-        /// <param name="level5Iter"></param>
-        /// <param name="idAttribute"></param>
-        /// <param name="summary"></param>
-        /// <param name="parentSectionID"></param>
-        /// <remarks>Note: priority is not set for the level 5 sections, 
-        /// this must be set prior to saving to the database</remarks>
-        private void ExtractLevel5Elements(XPathNodeIterator level5Iter, string idAttribute, SummaryDocument summary, Guid parentSectionID, ref int priority)
-        {
-            // HACK: This method processes rendered level 5 elements (post XSL) by 
-            // looking for any element that has an __id attribute
-            // TODO: Refactor extraction to parse out the elements
-            // Reset the priority for the previous added items
-            if (summary.Level5SectionList.Count > 0)
-            {
-                foreach (SummarySection sect in summary.Level5SectionList)
-                {
-                    sect.Priority = priority++;
-                }
-            }
-            while (level5Iter.MoveNext())
-            {
-                string ID = DocumentHelper.GetAttribute(level5Iter.Current, idAttribute).Trim();
-                if (ID.Length > 0)
-                {
-                    /* The unmodified section ID is passed as the sectID parameter, but
-                     * a modified version is used in creating the sectionTitle.  See the
-                     * notes accompanying the SummarySection.RawID and SummarySection.SectionID
-                     * properties for details. */
-                    string trimmedID = (string.IsNullOrEmpty(ID) ? string.Empty : ID.Substring(1));
-                    summary.AddLevel5Section(ID, "Reference " + trimmedID,
-                        parentSectionID, SummarySectionType.Reference, priority++);
-                }
-            }
-        }
+        ///// <summary>
+        ///// Method to extract level 5 elements (OLs, ULs, Ps, PREs...etc).
+        ///// </summary>
+        ///// <param name="level5Iter"></param>
+        ///// <param name="idAttribute"></param>
+        ///// <param name="summary"></param>
+        ///// <param name="parentSectionID"></param>
+        ///// <remarks>Note: priority is not set for the level 5 sections, 
+        ///// this must be set prior to saving to the database</remarks>
+        //private void ExtractLevel5Elements(XPathNodeIterator level5Iter, string idAttribute, SummaryDocument summary, Guid parentSectionID, ref int priority)
+        //{
+        //    // HACK: This method processes rendered level 5 elements (post XSL) by 
+        //    // looking for any element that has an __id attribute
+        //    // TODO: Refactor extraction to parse out the elements
+        //    // Reset the priority for the previous added items
+        //    if (summary.Level5SectionList.Count > 0)
+        //    {
+        //        foreach (SummarySection sect in summary.Level5SectionList)
+        //        {
+        //            sect.Priority = priority++;
+        //        }
+        //    }
+        //    while (level5Iter.MoveNext())
+        //    {
+        //        string ID = DocumentHelper.GetAttribute(level5Iter.Current, idAttribute).Trim();
+        //        if (ID.Length > 0)
+        //        {
+        //            /* The unmodified section ID is passed as the sectID parameter, but
+        //             * a modified version is used in creating the sectionTitle.  See the
+        //             * notes accompanying the SummarySection.RawID and SummarySection.SectionID
+        //             * properties for details. */
+        //            string trimmedID = (string.IsNullOrEmpty(ID) ? string.Empty : ID.Substring(1));
+        //            summary.AddLevel5Section(ID, "Reference " + trimmedID,
+        //                parentSectionID, SummarySectionType.Reference, priority++);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Method to extract media links and render links into html output format
@@ -449,21 +449,21 @@ namespace GateKeeper.ContentRendering
 
         //}
 
-        /// <summary>
-        /// Return the maximun priority number
-        /// </summary>
-        /// <param name="summary"></param>
-        private int GetMaxPriority(SummaryDocument summary)
-        {
-            int priority = 0;
-            foreach (SummarySection section in summary.SectionList)
-            {
-                if (section.Priority > priority)
-                    priority = section.Priority;
-            }
-            return priority;
+        ///// <summary>
+        ///// Return the maximun priority number
+        ///// </summary>
+        ///// <param name="summary"></param>
+        //private int GetMaxPriority(SummaryDocument summary)
+        //{
+        //    int priority = 0;
+        //    foreach (SummarySection section in summary.SectionList)
+        //    {
+        //        if (section.Priority > priority)
+        //            priority = section.Priority;
+        //    }
+        //    return priority;
 
-        }
+        //}
 
         #endregion Private Methods
 
@@ -481,133 +481,45 @@ namespace GateKeeper.ContentRendering
 
                 SummaryDocument summary = (SummaryDocument)document;
                 XPathNavigator xNav = summary.PostRenderXml.CreateNavigator();
-                _language = summary.Language;
-                int priority = GetMaxPriority(summary);
-
-                // Break apart the PostRenderXML document...
+              
                 foreach (SummarySection section in summary.SectionList)
                 {
                     XPathNavigator sectionNav = null;
-
-                    string expression = string.Format(".//span[@name='Section_{0}']|.//div[@id='Section_{0}']|.//a[@name='Section_{0}']", section.SectionID);
+                    //top level section have <section id="_section_1_" and subsections <section id="_1"
+                    string expression = string.Format(".//section[contains(@id,'_section_{0}_')]|.//section[@id='_{0}']", section.SectionID);
                     sectionNav = xNav.SelectSingleNode(expression);
 
-                    //if (section.IsTopLevel)
-                    //{
-                    //    sectionNav = xNav.SelectSingleNode(".//span[@id='Section_" + section.SectionID + "']");
-                    //    if( sectionNav == null )
-                    //        sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
-                    //}
-                    //else
-                    //    sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
                     if (sectionNav != null)
                     {
-                        if (section.IsTopLevel)
+                        //set the section title 
+                        //this takes care of special tags like GeneName being part of the title
+                        XPathNavigator titleNav = null;
+                        string titleExpression = string.Format(".//h2[@id='_{0}_toc']|.//h3[@id='_{0}_toc']|.//h4[@id='_{0}_toc']|.//h5[@id='_{0}_toc']|.//h6[@id='_{0}_toc']", section.SectionID);
+                        titleNav = sectionNav.SelectSingleNode(titleExpression);
+                        if (titleNav != null)
                         {
-                            // Format any tables in the section (Note: These are the 
-                            // tables that the table enlarge (handled above) were 
-                            // generated from)
-                            AddTableLinks(sectionNav, summary, section.SectionID, section.SectionType);
-
-                            // HACK: Need to extract level 5 sections from the HTML 
-                            ExtractLevel5Elements(sectionNav.Select(".//*[@__id]"),
-                                "__id", summary, section.SummarySectionID, ref priority);
-                        }
-
-                        // Assign section title
-                        // Move to the next node to get the title information.
-                        if (!sectionNav.HasChildren)
-                        {
-                            sectionNav.MoveToNext();
-                            if (sectionNav.Matches("Span|h2|h3|h4|h5") && !section.IsTopLevel)
-                            {
-                                if (sectionNav.GetAttribute("Class", string.Empty).Contains("Summary-SummarySection-Title") ||
-                                    sectionNav.GetAttribute("class", string.Empty).Contains("Summary-SummarySection-Title"))
-                                    section.Title = sectionNav.InnerXml;
-                            }
-                            // Move back to the original position.
-                            sectionNav.MoveToPrevious();
-                        }
-                        else
-                        {
-                            // HACK:  This is a hack in the absolute worst sense.  By the time a
-                            // top-level section gets here, the title isn't present in the rendered
-                            // HTML and can't be fished out of the XML to replace any markup in the existing title.
-                            // Prior to the WCM rollout, the bad XML was just dumped into the database
-                            // and later sent to the browser where it was simply ignored.  That doesn't work
-                            // with WCM, Percussion's use of Tidy detects the tag and refuses to save
-                            // the document.  So we're left with the hack of stripping out a non-HTML tag
-                            // and at least not having it look any worse than before.
-                            if (!string.IsNullOrEmpty(section.Title))
-                            {
-                                section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
-                                
-                                // COMMENTED CODE - because the code changes is apparently breaking rich text. The code change was made to 
-                                // allow Rich Text in Section title in doing so it has broken rich text else where.
-                                // So i am commnenting this part of the code. This has not been througly investigated if this piece of 
-                                // code infact broke it. At this point this is the assumption. There is also a corresponding change of xsl that
-                                // will be commented.
-
-                                //XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
-                                //nodes.MoveNext();
-                                //if (nodes.Current.Matches("Span"))
-                                //{
-                                //    section.Title = nodes.Current.InnerXml;
-                                //    nodes.Current.InnerXml = string.Empty;
-                                //}
-                            }
-                        }
-
-                        // Build the Table Of Contents for the section
-                        BuildTOC(summary, section);
-
-                        if (section.Title.Trim().Length == 0)
-                        {
-                            section.Title = "Reference " + section.SectionID.ToString();
-                            section.Level = 5;
+                            section.Title = titleNav.InnerXml;
+                            //top level section titles come from the Percussion template for Desktop summaries
+                            //the tag can be deleted from the HTML
+                            if (section.IsTopLevel && targetedDevice != TargetedDevice.mobile)
+                                titleNav.DeleteSelf();
                         }
 
                         // Save the results of the transform into the Html property
-                        section.Html.LoadXml(sectionNav.OuterXml);
+                        //Taking care of the spaces around GlossaryTermRefLink
+                        string html = sectionNav.OuterXml;
+                        if (sectionNav.OuterXml.Contains("GlossaryTermRefs"))
+                        {
+                            string glossaryTermTag = "definition";
+                            BuildGlossaryTermRefLink(ref html, glossaryTermTag);
+                        }
+                        section.Html.LoadXml(html);
                     }
                     else
                     {
-                        throw new Exception("Rendering Error: Can not find section ID = " + section.SectionID);
+                        throw new Exception("Rendering Error: Cannot find section ID = " + section.SectionID);
                     }
                 }
-
-                // Format table enlarges...
-                /*
-                 * This is a HUGE hack.  Table sections are extracted in the Extract phase, but rather than rendering the
-                 * Table XML, we end up extracting the rendered HTML from the overall rendered summary and load that into the sections.
-                 * 
-                 * The placeholder DIV (which by rights belongs in the XSL) is substituted for the
-                 * rendered HTML immediately after the HTML is copied to the table section.
-                 */
-                foreach (SummarySection tableSection in summary.TableSectionList)
-                {
-                    // SectionNav finds the tables in the top-level HTML.
-                    XPathNavigator sectionNav = xNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
-                    if (sectionNav != null)
-                    {
-                        RewriteAndExtractTableXml(tableSection, sectionNav);
-                        //sectionNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
-
-                        ReplaceTableInSectionHtml(summary.SectionList, tableSection);
-                    }
-                }
-                // This is wrong.  We need to update the invdividual summary sections, not the top-level HTML.
-                summary.Html = xNav.OuterXml;
-
-                /*
-                 * 1. Loop through the collection of sections.
-                 * 2. Does the section HTML contain a table?
-                 * 3. Look up the corresponding table section.
-                 * 4. Replace the node with a placeholder.
-                 * 
-                 */
-
-                RenderMediaLinkCaptions(summary.MediaLinkSectionList);
             }
             catch (Exception e)
             {
@@ -615,93 +527,278 @@ namespace GateKeeper.ContentRendering
             }
         }
 
-        /* HACK: This code rewrites the table XML and copies it into the table section. */
-        private void RewriteAndExtractTableXml(SummarySection tableSection, XPathNavigator sectionNav)
+        // <summary>
+        /// Taking care of the spaces around GlossaryTermRefLink
+        /// </summary>
+        public void BuildGlossaryTermRefLink(ref string html, string tag)
         {
-            // Get the section title
-            XPathNavigator titleNav = sectionNav.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
-
-
-            // Set the section title
-            string title = string.Empty;
-            if (titleNav != null)
+            string startTag = "<a class=\"" + tag + "\"";
+            string endTag = "</a>";
+            int startIndex = html.IndexOf(startTag, 0);
+            string sectionHTML = html;
+            string collectHTML = string.Empty;
+            string partC = string.Empty;
+            while (startIndex >= 0)
             {
-                title = titleNav.InnerXml.Trim();
-                title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
+                string partA = sectionHTML.Substring(0, startIndex);
+                string left = sectionHTML.Substring(startIndex);
+                int endIndex = left.IndexOf(endTag) + endTag.Length;
+                string partB = left.Substring(0, endIndex);
+                partC = left.Substring(endIndex);
+
+                // Combine
+                // Do not add extra space after the GlossaryTermRef if following sign
+                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
+                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
+                    collectHTML += partA.Trim();
+                else
+                    collectHTML += " " + partA.Trim();
+
+                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
+                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
+                    collectHTML += partB;
+                else
+                    collectHTML += " " + partB;
+
+                sectionHTML = partC.Trim();
+                startIndex = sectionHTML.IndexOf(startTag, 0);
             }
-
-            // Format the table enlarge (put into a separate section during extraction)
-            string referenceSection;
-            ProcessTableForStandalone(sectionNav, out referenceSection);
-
-            // Save the unmodified results of the transform into the Html property
-            tableSection.Html.LoadXml(sectionNav.OuterXml);
-
-            // Now modify the HTML to create the version that will be used
-            // in the fullsize (standalone) table.
-            string html = sectionNav.InnerXml;
-
-            // Remove the two unneed tag from output xml
-            html = html.Replace("<a name=\"TableSection\"></a>", string.Empty);
-            html = html.Replace("<a name=\"Section_" + tableSection.SectionID + "\"></a>", string.Empty);
-
-            // Change back the name in table section
-            html = html.Replace("Class=\"SummarySection-Table-Small\"", string.Empty);
-            html = html.Replace("Class=\"SummaryRef-Small\"", "Class=\"SummaryRef\"");
-            html = html.Replace("Class=\"Summary-LOERef-Small\"", "Class=\"Summary-LOERef\"");
-            html = html.Replace("Class=\"Summary-ProtocolRef-Small\"", "Class=\"Summary-ProtocolRef\"");
-            html = html.Replace("Class=\"Summary-GlossaryTermRef-Small\"", "Class=\"Summary-GlossaryTermRef\"");
-            html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
-            html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
-            html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + referenceSection + "</a>";
-            tableSection.StandaloneHTML.LoadXml(html);
-
-            if (title.Trim().Length > 0)
-                tableSection.Title = title;
+            html = collectHTML + partC;
         }
 
-        private void ReplaceTableInSectionHtml(List<SummarySection> sectionList, SummarySection tableSection)
-        {
-            foreach (SummarySection section in sectionList)
-            {
-                if (section.IsTableSection)
-                    continue;
+        ///// <summary>
+        ///// Method to pre-render the summary document.
+        ///// </summary>
+        ///// <param name="document"></param>
+        //public override void Render(Document document, TargetedDevice targetedDevice)
+        //{
+        //    try
+        //    {
+        //        base.Render(document, targetedDevice);
 
-                XPathNavigator sectionNav = section.Html.CreateNavigator();
-                XPathNavigator tableNav = sectionNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
-                if (tableNav != null)
-                {
-                    tableNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
-                }
+        //        SummaryDocument summary = (SummaryDocument)document;
+        //        XPathNavigator xNav = summary.PostRenderXml.CreateNavigator();
+        //        _language = summary.Language;
+        //        int priority = GetMaxPriority(summary);
 
-            }
-        }
+        //        // Break apart the PostRenderXML document...
+        //        foreach (SummarySection section in summary.SectionList)
+        //        {
+        //            XPathNavigator sectionNav = null;
 
-        private void RenderMediaLinkCaptions(List<MediaLink> mediaLinkCollection)
-        {
-            // HACK:  What we're doing here is running an XSL transform for each MediaLink's
-            // caption using the stylesheet which is already in memory for Summary documents.
+        //            string expression = string.Format(".//span[@name='Section_{0}']|.//div[@id='Section_{0}']|.//a[@name='Section_{0}']", section.SectionID);
+        //            sectionNav = xNav.SelectSingleNode(expression);
 
-            foreach (MediaLink item in mediaLinkCollection)
-            {
-                StringBuilder sb = new StringBuilder();
-                StringWriter sw = new System.IO.StringWriter(sb);
+        //            //if (section.IsTopLevel)
+        //            //{
+        //            //    sectionNav = xNav.SelectSingleNode(".//span[@id='Section_" + section.SectionID + "']");
+        //            //    if( sectionNav == null )
+        //            //        sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
+        //            //}
+        //            //else
+        //            //    sectionNav = xNav.SelectSingleNode(".//a[@id='Section_" + section.SectionID + "']");
+        //            if (sectionNav != null)
+        //            {
+        //                if (section.IsTopLevel)
+        //                {
+        //                    // Format any tables in the section (Note: These are the 
+        //                    // tables that the table enlarge (handled above) were 
+        //                    // generated from)
+        //                    AddTableLinks(sectionNav, summary, section.SectionID, section.SectionType);
+
+        //                    // HACK: Need to extract level 5 sections from the HTML 
+        //                    ExtractLevel5Elements(sectionNav.Select(".//*[@__id]"),
+        //                        "__id", summary, section.SummarySectionID, ref priority);
+        //                }
+
+        //                // Assign section title
+        //                // Move to the next node to get the title information.
+        //                if (!sectionNav.HasChildren)
+        //                {
+        //                    sectionNav.MoveToNext();
+        //                    if (sectionNav.Matches("Span|h2|h3|h4|h5") && !section.IsTopLevel)
+        //                    {
+        //                        if (sectionNav.GetAttribute("Class", string.Empty).Contains("Summary-SummarySection-Title") ||
+        //                            sectionNav.GetAttribute("class", string.Empty).Contains("Summary-SummarySection-Title"))
+        //                            section.Title = sectionNav.InnerXml;
+        //                    }
+        //                    // Move back to the original position.
+        //                    sectionNav.MoveToPrevious();
+        //                }
+        //                else
+        //                {
+        //                    // HACK:  This is a hack in the absolute worst sense.  By the time a
+        //                    // top-level section gets here, the title isn't present in the rendered
+        //                    // HTML and can't be fished out of the XML to replace any markup in the existing title.
+        //                    // Prior to the WCM rollout, the bad XML was just dumped into the database
+        //                    // and later sent to the browser where it was simply ignored.  That doesn't work
+        //                    // with WCM, Percussion's use of Tidy detects the tag and refuses to save
+        //                    // the document.  So we're left with the hack of stripping out a non-HTML tag
+        //                    // and at least not having it look any worse than before.
+        //                    if (!string.IsNullOrEmpty(section.Title))
+        //                    {
+        //                        section.Title = section.Title.Replace("<GeneName>", string.Empty).Replace("</GeneName>", string.Empty);
+                                
+        //                        // COMMENTED CODE - because the code changes is apparently breaking rich text. The code change was made to 
+        //                        // allow Rich Text in Section title in doing so it has broken rich text else where.
+        //                        // So i am commnenting this part of the code. This has not been througly investigated if this piece of 
+        //                        // code infact broke it. At this point this is the assumption. There is also a corresponding change of xsl that
+        //                        // will be commented.
+
+        //                        //XPathNodeIterator nodes = sectionNav.Select("Span[@class='Summary-SummarySection-Title-Level1']");
+        //                        //nodes.MoveNext();
+        //                        //if (nodes.Current.Matches("Span"))
+        //                        //{
+        //                        //    section.Title = nodes.Current.InnerXml;
+        //                        //    nodes.Current.InnerXml = string.Empty;
+        //                        //}
+        //                    }
+        //                }
+
+        //                // Build the Table Of Contents for the section
+        //                BuildTOC(summary, section);
+
+        //                if (section.Title.Trim().Length == 0)
+        //                {
+        //                    section.Title = "Reference " + section.SectionID.ToString();
+        //                    section.Level = 5;
+        //                }
+
+        //                // Save the results of the transform into the Html property
+        //                section.Html.LoadXml(sectionNav.OuterXml);
+        //            }
+        //            else
+        //            {
+        //                throw new Exception("Rendering Error: Can not find section ID = " + section.SectionID);
+        //            }
+        //        }
+
+        //        // Format table enlarges...
+        //        /*
+        //         * This is a HUGE hack.  Table sections are extracted in the Extract phase, but rather than rendering the
+        //         * Table XML, we end up extracting the rendered HTML from the overall rendered summary and load that into the sections.
+        //         * 
+        //         * The placeholder DIV (which by rights belongs in the XSL) is substituted for the
+        //         * rendered HTML immediately after the HTML is copied to the table section.
+        //         */
+        //        foreach (SummarySection tableSection in summary.TableSectionList)
+        //        {
+        //            // SectionNav finds the tables in the top-level HTML.
+        //            XPathNavigator sectionNav = xNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
+        //            if (sectionNav != null)
+        //            {
+        //                RewriteAndExtractTableXml(tableSection, sectionNav);
+        //                //sectionNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
+
+        //                ReplaceTableInSectionHtml(summary.SectionList, tableSection);
+        //            }
+        //        }
+        //        // This is wrong.  We need to update the invdividual summary sections, not the top-level HTML.
+        //        summary.Html = xNav.OuterXml;
+
+        //        /*
+        //         * 1. Loop through the collection of sections.
+        //         * 2. Does the section HTML contain a table?
+        //         * 3. Look up the corresponding table section.
+        //         * 4. Replace the node with a placeholder.
+        //         * 
+        //         */
+
+        //        RenderMediaLinkCaptions(summary.MediaLinkSectionList);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Rendering Error: Render data from summary document failed. Document CDRID=" + document.DocumentID.ToString(), e);
+        //    }
+        //}
+
+        ///* HACK: This code rewrites the table XML and copies it into the table section. */
+        //private void RewriteAndExtractTableXml(SummarySection tableSection, XPathNavigator sectionNav)
+        //{
+        //    // Get the section title
+        //    XPathNavigator titleNav = sectionNav.SelectSingleNode(".//span[@class = 'Summary-Table-Caption']/b");
+
+
+        //    // Set the section title
+        //    string title = string.Empty;
+        //    if (titleNav != null)
+        //    {
+        //        title = titleNav.InnerXml.Trim();
+        //        title = title.Replace("Protocol-GeneName-Small", "Protocol-GeneName");
+        //    }
+
+        //    // Format the table enlarge (put into a separate section during extraction)
+        //    string referenceSection;
+        //    ProcessTableForStandalone(sectionNav, out referenceSection);
+
+        //    // Save the unmodified results of the transform into the Html property
+        //    tableSection.Html.LoadXml(sectionNav.OuterXml);
+
+        //    // Now modify the HTML to create the version that will be used
+        //    // in the fullsize (standalone) table.
+        //    string html = sectionNav.InnerXml;
+
+        //    // Remove the two unneed tag from output xml
+        //    html = html.Replace("<a name=\"TableSection\"></a>", string.Empty);
+        //    html = html.Replace("<a name=\"Section_" + tableSection.SectionID + "\"></a>", string.Empty);
+
+        //    // Change back the name in table section
+        //    html = html.Replace("Class=\"SummarySection-Table-Small\"", string.Empty);
+        //    html = html.Replace("Class=\"SummaryRef-Small\"", "Class=\"SummaryRef\"");
+        //    html = html.Replace("Class=\"Summary-LOERef-Small\"", "Class=\"Summary-LOERef\"");
+        //    html = html.Replace("Class=\"Summary-ProtocolRef-Small\"", "Class=\"Summary-ProtocolRef\"");
+        //    html = html.Replace("Class=\"Summary-GlossaryTermRef-Small\"", "Class=\"Summary-GlossaryTermRef\"");
+        //    html = html.Replace("Class=\"Protocol-ExternalRef-Small\"", "Class=\"Protocol-ExternalRef\"");
+        //    html = html.Replace("Class=\"Protocol-GeneName-Small\"", "Class=\"Protocol-GeneName\"");
+        //    html = "<a name=\"Section_" + tableSection.SectionID + "\">" + html.Trim() + referenceSection + "</a>";
+        //    tableSection.StandaloneHTML.LoadXml(html);
+
+        //    if (title.Trim().Length > 0)
+        //        tableSection.Title = title;
+        //}
+
+        //private void ReplaceTableInSectionHtml(List<SummarySection> sectionList, SummarySection tableSection)
+        //{
+        //    foreach (SummarySection section in sectionList)
+        //    {
+        //        if (section.IsTableSection)
+        //            continue;
+
+        //        XPathNavigator sectionNav = section.Html.CreateNavigator();
+        //        XPathNavigator tableNav = sectionNav.SelectSingleNode(".//a[@name='SectionXML_" + tableSection.SectionID + "']");
+        //        if (tableNav != null)
+        //        {
+        //            tableNav.ReplaceSelf(string.Format(tablePlaceholder, tableSection.RawSectionID, tableSection.Title));
+        //        }
+
+        //    }
+        //}
+
+        //private void RenderMediaLinkCaptions(List<MediaLink> mediaLinkCollection)
+        //{
+        //    // HACK:  What we're doing here is running an XSL transform for each MediaLink's
+        //    // caption using the stylesheet which is already in memory for Summary documents.
+
+        //    foreach (MediaLink item in mediaLinkCollection)
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        StringWriter sw = new System.IO.StringWriter(sb);
                 
-                // Create temporary XML document to transform with the loaded XSL.
-                XmlDocument doc = new XmlDocument();
-                doc.PreserveWhitespace = true;
+        //        // Create temporary XML document to transform with the loaded XSL.
+        //        XmlDocument doc = new XmlDocument();
+        //        doc.PreserveWhitespace = true;
 
-                doc.LoadXml(string.Format("<Para id=\"InternalUse\">{0}</Para>", item.Caption));
-                Render(doc.CreateNavigator(), null, sw);
+        //        doc.LoadXml(string.Format("<Para id=\"InternalUse\">{0}</Para>", item.Caption));
+        //        Render(doc.CreateNavigator(), null, sw);
 
-                // Reload temp doc with the output from the transform.
-                doc.LoadXml(sw.ToString());
+        //        // Reload temp doc with the output from the transform.
+        //        doc.LoadXml(sw.ToString());
 
-                // Replace item caption with the transformed version.
-                XmlNode caption = doc.SelectSingleNode("//P[@__id='InternalUse']");
-                item.Caption = caption.InnerXml;
-            }
-        }
+        //        // Replace item caption with the transformed version.
+        //        XmlNode caption = doc.SelectSingleNode("//P[@__id='InternalUse']");
+        //        item.Caption = caption.InnerXml;
+        //    }
+        //}
 
         #endregion Public Methods
     }

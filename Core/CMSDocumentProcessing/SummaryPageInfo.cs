@@ -37,14 +37,18 @@ namespace GKManagers.CMSDocumentProcessing
                     if (string.IsNullOrEmpty(sectionID))
                         url = string.Format("{0}/Page{1}", BasePath, PageNumber);
                     else
-                        url = string.Format("{0}/Page{1}#Section{2}", BasePath, PageNumber, sectionID);
+                        //removed the word section from the url
+                        //as sections are represented using their ids
+                        url = string.Format("{0}/Page{1}#{2}", BasePath, PageNumber, sectionID);
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(sectionID))
                         url = string.Format("{0}", BasePath);
                     else
-                        url = string.Format("{0}/#Section{1}", BasePath, sectionID);
+                        //removed the word section from the url
+                        //as sections are represented using their ids
+                        url = string.Format("{0}/#{1}", BasePath, sectionID);
                 }
 
                 return url;

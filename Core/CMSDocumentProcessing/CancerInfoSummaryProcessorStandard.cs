@@ -69,17 +69,17 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Find the list of content items referenced by table sections.
                 // After the table sections are created, these are used to create relationships.
-                List<List<PercussionGuid>> tableSectionReferencedItems =
-                    ResolveSectionSummaryReferences(document, document.TableSectionList, new StandardSummarySectionFinder(CMSController));
+                //List<List<PercussionGuid>> tableSectionReferencedItems =
+                //    ResolveSectionSummaryReferences(document, document.TableSectionList, new StandardSummarySectionFinder(CMSController));
 
                 // Create the sub-pages
-                List<long> tableIDs;
-                List<long> mediaLinkIDs;
-                CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
+                //List<long> tableIDs;
+                //List<long> mediaLinkIDs;
+                //CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
                 // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                PSAaRelationship[] tableExternalRelationships =
-                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+                //PSAaRelationship[] tableExternalRelationships =
+                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
 
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
@@ -161,8 +161,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
         protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper PermanentLinkData,
-            PercussionGuid[] oldPageIDs, PercussionGuid[] oldSubItems, PSAaRelationship[] incomingPageRelationships,
-            PercussionGuid[] mobilePageIDs, PercussionGuid[] mobileSubItemIDs, PSAaRelationship[] incomingMobilePageRelationships,
+            PercussionGuid[] oldPageIDs, /*PercussionGuid[] oldSubItems,*/ PSAaRelationship[] incomingPageRelationships,
+            PercussionGuid[] mobilePageIDs, /*PercussionGuid[] mobileSubItemIDs,*/ PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
         {
             // For undoing failed updates.
@@ -193,8 +193,8 @@ namespace GKManagers.CMSDocumentProcessing
             PSFolder tempFolder = null;
 
             // Raw content IDs for new content items.
-            List<long> tableIDs;
-            List<long> mediaLinkIDs;
+            //List<long> tableIDs;
+            //List<long> mediaLinkIDs;
             long[] newSummaryPageIDList;
             List<long> permanentLinkIDs;
 
@@ -202,7 +202,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 // Move the entire composite document to staging.
                 // This step is not required when creating items since creation takes place in staging.
-                PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, PermanentLinkData.GetOldGuids, oldPageIDs, oldSubItems);
+                PerformTransition(TransitionItemsToStaging, summaryRootID, summaryLinkID, PermanentLinkData.GetOldGuids, oldPageIDs/*, oldSubItems*/);
 
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
@@ -211,15 +211,15 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Find the list of content items referenced by table sections.
                 // After the table sections are created, these are used to create relationships.
-                List<List<PercussionGuid>> tableSectionReferencedItems =
-                    ResolveSectionSummaryReferences(summary, summary.TableSectionList, new StandardSummarySectionFinder(CMSController));
+                //List<List<PercussionGuid>> tableSectionReferencedItems =
+                //    ResolveSectionSummaryReferences(summary, summary.TableSectionList, new StandardSummarySectionFinder(CMSController));
 
                 // Create the new sub-page items in a temporary location.
-                CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
+                //CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
 
                 // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                PSAaRelationship[] tableExternalRelationships =
-                    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
+                //PSAaRelationship[] tableExternalRelationships =
+                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
 
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
@@ -294,7 +294,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
             // No links from other summaries to table sections and media links.
-            RemoveOldPages(oldPageIDs, oldSubItems);
+            RemoveOldPages(oldPageIDs/*, oldSubItems*/);
 
             // Permanent Links Updates and Deletion must go outside of the try / catch block. This is 
             // because these changes cannot be rolled back, so we must ensure that there will be no 
@@ -305,13 +305,13 @@ namespace GKManagers.CMSDocumentProcessing
             LogDetailedStep("End Permanent Link updates and deletion.");
           
             // Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs,*/ newSummaryPageIDList, permanentLinkIDs);
             CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
             //Add the PermanentLinks that are marked as 'Update' to the list of PermanentLinkIds that were created
             permanentLinkIDs.AddRange(Array.ConvertAll(PermanentLinkData.GetOldGuids, guid => (long)guid.ID));
-            componentIDs = CMSController.BuildGuidArray(tableIDs, mediaLinkIDs, newSummaryPageIDList, permanentLinkIDs);
+            componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs,*/ newSummaryPageIDList, permanentLinkIDs);
             
             // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
@@ -370,13 +370,13 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
-                PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
+                //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
                 PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, sitePath);
                 PercussionGuid[] permanentLinks = PermanentLinkData.DetectToDeletePermanentLinkRelationships();
 
                 // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
-                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, subItems, summaryLink);
+                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs, /*subItems,*/ summaryLink);
 
                 VerifyDocumentMayBeDeleted(fullIDList.ToArray(), permanentLinks);
 
@@ -387,15 +387,15 @@ namespace GKManagers.CMSDocumentProcessing
                 if (mobileRootItem != null)
                 {
                     PercussionGuid[] mobilePageIDs = CMSController.SearchForItemsInSlot(mobileRootItem, MobilePageSlotName);
-                    PercussionGuid[] mobileSubItems = LocateMediaLinksAndTableSections(mobilePageIDs); // Table sections and MediaLinks.
+                    //PercussionGuid[] mobileSubItems = LocateMediaLinksAndTableSections(mobilePageIDs); // Table sections and MediaLinks.
 
                     // Create a list of all content IDs making up the document.
                     // It is important for verification that rootItem always be first.
-                    PercussionGuid[] mobileFullIDList = CMSController.BuildGuidArray(mobileRootItem, mobilePageIDs, mobileSubItems, summaryLink);
+                    PercussionGuid[] mobileFullIDList = CMSController.BuildGuidArray(mobileRootItem, mobilePageIDs, /*mobileSubItems,*/ summaryLink);
 
                     VerifyDocumentMayBeDeleted(mobileFullIDList.ToArray(), new PercussionGuid[0]);
 
-                    mobileFullIDList = CMSController.BuildGuidArray(mobilePageIDs, mobileSubItems);
+                    mobileFullIDList = CMSController.BuildGuidArray(mobilePageIDs/*, mobileSubItems*/);
 
                     CMSController.DeleteItemList(mobileFullIDList);
                 }

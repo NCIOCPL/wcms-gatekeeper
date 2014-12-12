@@ -329,10 +329,11 @@ namespace GateKeeper.DataAccess.CDR
                 string title = string.Empty;
                 if (titleNode != null)
                 {
-                    title = titleNode.InnerXml.Replace("<Subscript>", "<sub>");
-                    title = title.Replace("</Subscript>", "</sub>");
-                    title = title.Replace("<Emphasis>", "<i>");
-                    title = title.Replace("</Emphasis>", "</i>");
+                    title = title = titleNode.InnerXml;
+                    //title = titleNode.InnerXml.Replace("<Subscript>", "<sub>");
+                    //title = title.Replace("</Subscript>", "</sub>");
+                    //title = title.Replace("<Emphasis>", "<i>");
+                    //title = title.Replace("</Emphasis>", "</i>");
                 }
                 summarySection.Title = title.Trim();
                 summarySection.SectionType = SummarySectionType.SummarySection;
@@ -350,104 +351,104 @@ namespace GateKeeper.DataAccess.CDR
 
 
 
-        /// <summary>
-        /// Method to extract tables and make separate "table enlarge" sections.
-        /// </summary>
-        /// <param name="sectionNav">Navigator pointing to the section that contains the table(s)</param>
-        /// <param name="summary">The summary document object</param>
-        /// <param name="parentSectionID">The section ID (Guid) of the parent section</param>
-        /// <param name="priority">Display order/priority</param>
-        /// <param name="tableID">Identifier for each table (used as part of the pretty URL for each table enlarge section)</param>
-        private void ExtractTableSections(XPathNavigator sectionNav, SummaryDocument summary, Guid parentSectionID, TargetedDevice device, DocumentXPathManager xPathManager, int sectionPriority, ref int tableID)
-        {
-            string path = xPathManager.GetXPath(SummaryXPath.SectTable, device);
-            try
-            {
-                // Extract tables and create separate sections for them. 
-                // These sections will be the "enlarged" version of the 
-                // table which gets it's own pretty URL and entry in the 
-                // SummarySection table.
-                XPathNodeIterator tableIter = sectionNav.Select(path);
-                int priority = 0;
+        ///// <summary>
+        ///// Method to extract tables and make separate "table enlarge" sections.
+        ///// </summary>
+        ///// <param name="sectionNav">Navigator pointing to the section that contains the table(s)</param>
+        ///// <param name="summary">The summary document object</param>
+        ///// <param name="parentSectionID">The section ID (Guid) of the parent section</param>
+        ///// <param name="priority">Display order/priority</param>
+        ///// <param name="tableID">Identifier for each table (used as part of the pretty URL for each table enlarge section)</param>
+        //private void ExtractTableSections(XPathNavigator sectionNav, SummaryDocument summary, Guid parentSectionID, TargetedDevice device, DocumentXPathManager xPathManager, int sectionPriority, ref int tableID)
+        //{
+        //    string path = xPathManager.GetXPath(SummaryXPath.SectTable, device);
+        //    try
+        //    {
+        //        // Extract tables and create separate sections for them. 
+        //        // These sections will be the "enlarged" version of the 
+        //        // table which gets it's own pretty URL and entry in the 
+        //        // SummarySection table.
+        //        XPathNodeIterator tableIter = sectionNav.Select(path);
+        //        int priority = 0;
 
-                while (tableIter.MoveNext())
-                {
-                    SummarySection tableSection = ExtractSection(tableIter.Current, xPathManager, ref priority);
+        //        while (tableIter.MoveNext())
+        //        {
+        //            SummarySection tableSection = ExtractSection(tableIter.Current, xPathManager, ref priority);
 
-                    tableSection.IsTableSection = true;
-                    tableSection.SectionType = SummarySectionType.Table;
-                    tableSection.ParentSummarySectionID = parentSectionID;
-                    tableSection.Level = 2; // Tables are always level 2
-                    tableSection.PrettyUrl = summary.BasePrettyURL + "/Table" + tableID;
-                    //TODO: This formular is from the old code, need to investigate how the table priority is used the decide
-                    // if we need to modify the formular
-                    tableSection.Priority = sectionPriority * 1000 + priority;
-                    summary.PrettyUrlMap.Add(tableSection.SectionID, tableSection.PrettyUrl);
+        //            tableSection.IsTableSection = true;
+        //            tableSection.SectionType = SummarySectionType.Table;
+        //            tableSection.ParentSummarySectionID = parentSectionID;
+        //            tableSection.Level = 2; // Tables are always level 2
+        //            tableSection.PrettyUrl = summary.BasePrettyURL + "/Table" + tableID;
+        //            //TODO: This formular is from the old code, need to investigate how the table priority is used the decide
+        //            // if we need to modify the formular
+        //            tableSection.Priority = sectionPriority * 1000 + priority;
+        //            summary.PrettyUrlMap.Add(tableSection.SectionID, tableSection.PrettyUrl);
 
-                    // Add to the summary section list...
-                    summary.TableSectionList.Add(tableSection);
-                    tableID++;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
-            }
-        }
+        //            // Add to the summary section list...
+        //            summary.TableSectionList.Add(tableSection);
+        //            tableID++;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
+        //    }
+        //}
 
-        private void ExtractMediaLink(XPathNavigator mediaLink, SummaryDocument summary)
-        {
-            if (mediaLink != null)
-            {
-                string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, "id");
-                string thumb = DocumentHelper.GetAttribute(mediaLink, "thumb");
-                bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
-                string imgRef = DocumentHelper.GetAttribute(mediaLink, "ref");
-                int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
+        //private void ExtractMediaLink(XPathNavigator mediaLink, SummaryDocument summary)
+        //{
+        //    if (mediaLink != null)
+        //    {
+        //        string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, "id");
+        //        string thumb = DocumentHelper.GetAttribute(mediaLink, "thumb");
+        //        bool isThumb = (thumb.ToUpper() == "YES") ? true : false;
+        //        string imgRef = DocumentHelper.GetAttribute(mediaLink, "ref");
+        //        int cdrId = Int32.Parse(Regex.Replace(imgRef, "^CDR(0*)", "", RegexOptions.Compiled));
 
-                string alt = DocumentHelper.GetAttribute(mediaLink, "alt");
-                bool isInline = false;
-                string inLine = DocumentHelper.GetAttribute(mediaLink, "inline");
-                if (inLine.ToUpper().Equals("YES"))
-                    isInline = true;
-                string width = DocumentHelper.GetAttribute(mediaLink, "MinWidth");
-                long minWidth = -1;
-                if ((width != null) && (width.Length > 0))
-                    minWidth = long.Parse(width);
-                string size = DocumentHelper.GetAttribute(mediaLink, "size");
-                if (size.Equals(String.Empty))
-                    size = "half";
+        //        string alt = DocumentHelper.GetAttribute(mediaLink, "alt");
+        //        bool isInline = false;
+        //        string inLine = DocumentHelper.GetAttribute(mediaLink, "inline");
+        //        if (inLine.ToUpper().Equals("YES"))
+        //            isInline = true;
+        //        string width = DocumentHelper.GetAttribute(mediaLink, "MinWidth");
+        //        long minWidth = -1;
+        //        if ((width != null) && (width.Length > 0))
+        //            minWidth = long.Parse(width);
+        //        string size = DocumentHelper.GetAttribute(mediaLink, "size");
+        //        if (size.Equals(String.Empty))
+        //            size = "half";
 
-                // Get the MimeType of the Media.
-                string type = DocumentHelper.GetAttribute(mediaLink, "type");
+        //        // Get the MimeType of the Media.
+        //        string type = DocumentHelper.GetAttribute(mediaLink, "type");
 
-                XmlDocument mediaXml = new XmlDocument();
-                mediaXml.PreserveWhitespace = true;
-                mediaXml.LoadXml(mediaLink.OuterXml);
+        //        XmlDocument mediaXml = new XmlDocument();
+        //        mediaXml.PreserveWhitespace = true;
+        //        mediaXml.LoadXml(mediaLink.OuterXml);
 
-                XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
-                Language capLang = Language.English;
-                string caption = string.Empty;
-                if (captionNode != null)
-                {
-                    capLang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetAttribute(mediaLink, "language"));
-                    caption = captionNode.InnerXml;
-                    // Check if the media language is the same as the summary language, if not, log an warning
-                    if (capLang != summary.Language)
-                    {
-                        summary.WarningWriter("Media Link Warning: The media link language does not match the language defined in summary! Summary ID=" + summary.DocumentID + " MediaLinkID=" + mediaLinkID + ".");
-                    }
-                }
-                // Find media link's parent node. Is the media link embeded in table?
-                bool showEnlargeLink = true;
-                XPathNavigator tableNode = mediaLink.SelectSingleNode("./ancestor::Table");
-                if (tableNode != null)
-                    showEnlargeLink = false;
+        //        XPathNavigator captionNode = mediaLink.SelectSingleNode("./Caption");
+        //        Language capLang = Language.English;
+        //        string caption = string.Empty;
+        //        if (captionNode != null)
+        //        {
+        //            capLang = DocumentHelper.DetermineLanguageString(DocumentHelper.GetAttribute(mediaLink, "language"));
+        //            caption = captionNode.InnerXml;
+        //            // Check if the media language is the same as the summary language, if not, log an warning
+        //            if (capLang != summary.Language)
+        //            {
+        //                summary.WarningWriter("Media Link Warning: The media link language does not match the language defined in summary! Summary ID=" + summary.DocumentID + " MediaLinkID=" + mediaLinkID + ".");
+        //            }
+        //        }
+        //        // Find media link's parent node. Is the media link embeded in table?
+        //        bool showEnlargeLink = true;
+        //        XPathNavigator tableNode = mediaLink.SelectSingleNode("./ancestor::Table");
+        //        if (tableNode != null)
+        //            showEnlargeLink = false;
 
-                MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, type, mediaXml);
-                summary.MediaLinkSectionList.Add(link);
-            }
-        }
+        //        MediaLink link = new MediaLink(imgRef, cdrId, alt, isInline, showEnlargeLink, minWidth, size, mediaLinkID, caption, summary.DocumentID, capLang, isThumb, type, mediaXml);
+        //        summary.MediaLinkSectionList.Add(link);
+        //    }
+        //}
 
         /// <summary>
         /// Extracts top-level summary sections from the source document.
@@ -493,7 +494,7 @@ namespace GateKeeper.DataAccess.CDR
                         topSectionPriority = topLevelSection.Priority;
 
                     // Extract tables from the top-level section (if there are any)
-                    ExtractTableSections(sectionIter.Current, summary, topLevelSection.SummarySectionID, device, xPathManager, topSectionPriority, ref tableID);
+                    //ExtractTableSections(sectionIter.Current, summary, topLevelSection.SummarySectionID, device, xPathManager, topSectionPriority, ref tableID);
 
                     // Handle sub-sections
                     path = xPathManager.GetXPath(SummaryXPath.SubSection, device);
@@ -533,20 +534,20 @@ namespace GateKeeper.DataAccess.CDR
                     }
 
                     // Handle media link reference id, apparently it is save as summary section level 5 in gatekeeper database
-                    string mediaLinkPath = xPathManager.GetXPath(SummaryXPath.MediaLink, device);
-                    XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
-                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(mediaLinkPath);
-                    while (mediaLinkIter.MoveNext())
-                    {
-                        XPathNavigator mediaLink = mediaLinkIter.Current;
+                    //string mediaLinkPath = xPathManager.GetXPath(SummaryXPath.MediaLink, device);
+                    //XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
+                    //XPathNodeIterator mediaLinkIter = topSectionNav.Select(mediaLinkPath);
+                    //while (mediaLinkIter.MoveNext())
+                    //{
+                    //    XPathNavigator mediaLink = mediaLinkIter.Current;
 
-                        /* The unmodified section ID is used here.  See the notes accompanying the
-                         * SummarySection.RawID and SummarySection.SectionID properties for details. */
-                        string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID));
-                        summary.AddLevel5Section(mediaLinkID, "Reference " + mediaLinkID, topLevelSection.SummarySectionID, SummarySectionType.Reference, 0);
+                    //    /* The unmodified section ID is used here.  See the notes accompanying the
+                    //     * SummarySection.RawID and SummarySection.SectionID properties for details. */
+                    //    string mediaLinkID = DocumentHelper.GetAttribute(mediaLink, xPathManager.GetXPath(CommonXPath.CDRID));
+                    //    summary.AddLevel5Section(mediaLinkID, "Reference " + mediaLinkID, topLevelSection.SummarySectionID, SummarySectionType.Reference, 0);
 
-                        ExtractMediaLink(mediaLink, summary);
-                    }
+                    //    ExtractMediaLink(mediaLink, summary);
+                    //}
                 }
             }
             catch (Exception e)
