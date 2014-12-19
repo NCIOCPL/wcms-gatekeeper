@@ -768,13 +768,13 @@
                                  select = "'ref'"/>
     <xsl:choose>
       <xsl:when                     test = "$language = 'en'">
-        <h3>References</h3>
+        <h6>References</h6>
       </xsl:when>
       <xsl:when                     test = "$language = 'es'">
-        <h3>Bibliograf&#237;a</h3>
+        <h6>Bibliograf&#237;a</h6>
       </xsl:when>
       <xsl:otherwise>
-        <h3>*** Undefined ***</h3>
+        <h6>*** Undefined ***</h6>
       </xsl:otherwise>
     </xsl:choose>
 
