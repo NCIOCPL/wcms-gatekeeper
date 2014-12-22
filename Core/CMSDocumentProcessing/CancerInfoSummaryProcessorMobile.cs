@@ -16,7 +16,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         protected override string SummaryPageSlot { get { return MobilePageSlotName; } }
         protected override string PageSnippetTemplateName { get { return MobileSummarySectionSnippetTemplate; } }
-        protected override string MediaLinkSnippetTemplate { get { return MobileMediaLinkSnippetTemplate; } }
+        
         #endregion
 
 
@@ -46,8 +46,8 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
         protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
-            PercussionGuid[] desktopPageIDs, /*PercussionGuid[] desktopSubItemIDs,*/ PSAaRelationship[] incomingDesktopPageRelationships,
-            PercussionGuid[] mobilePageIDs, /*PercussionGuid[] mobileSubItemIDs,*/ PSAaRelationship[] incomingMobilePageRelationships,
+            PercussionGuid[] desktopPageIDs, PSAaRelationship[] incomingDesktopPageRelationships,
+            PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
         {
             if (string.IsNullOrEmpty(sitePath))
@@ -63,7 +63,7 @@ namespace GKManagers.CMSDocumentProcessing
             else
             {
                 UpdateMobilePageStructure(summary, summaryLinkID, summaryRootID,
-                    mobilePageIDs, /*mobileSubItemIDs,*/ incomingMobilePageRelationships, sitePath);
+                    mobilePageIDs, incomingMobilePageRelationships, sitePath);
             }
         }
 
@@ -95,21 +95,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Create the folder where the content items are to be created and set the Navon to public.
                 CMSController.GuaranteeFolder(createPath, FolderManager.NavonAction.MakePublic);
-
-                // Find the list of content items referenced by table sections.
-                // After the table sections are created, these are used to create relationships.
-                //List<List<PercussionGuid>> tableSectionReferencedItems =
-                //    ResolveSectionSummaryReferences(document, document.TableSectionList, new MobileSummarySectionFinder(CMSController));
-
-                // Create the sub-pages
-                //List<long> tableIDs;
-                //List<long> mediaLinkIDs;
-                //CreateSubPages(document, createPath, rollbackList, out tableIDs, out mediaLinkIDs);
-
-                // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                //PSAaRelationship[] tableExternalRelationships =
-                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
-
+                                
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
@@ -156,7 +142,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         private void UpdateMobilePageStructure(SummaryDocument summary,
             PercussionGuid summaryLink, PercussionGuid summaryRoot,
-            PercussionGuid[] oldpageIDs, /*PercussionGuid[] oldSubItems,*/ PSAaRelationship[] incomingPageRelationships,
+            PercussionGuid[] oldpageIDs, PSAaRelationship[] incomingPageRelationships,
             string sitePath)
         {
             // For undoing failed updates.
@@ -190,8 +176,6 @@ namespace GKManagers.CMSDocumentProcessing
             PSFolder tempFolder = null;
 
             // Raw content IDs for new content items.
-            //List<long> tableIDs;
-            //List<long> mediaLinkIDs;
             long[] newSummaryPageIDList;
 
             try
@@ -203,19 +187,7 @@ namespace GKManagers.CMSDocumentProcessing
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
 
                 LogDetailedStep("Begin sub-page setup.");
-
-                // Find the list of content items referenced by table sections.
-                // After the table sections are created, these are used to create relationships.
-                //List<List<PercussionGuid>> tableSectionReferencedItems =
-                //    ResolveSectionSummaryReferences(summary, summary.TableSectionList, new MobileSummarySectionFinder(CMSController));
-
-                // Create the new sub-page items in a temporary location.
-                //CreateSubPages(summary, temporaryPath, rollbackList, out tableIDs, out mediaLinkIDs);
-
-                // Create relationships from this summary's tables to other Cancer Information Summary Objects.
-                //PSAaRelationship[] tableExternalRelationships =
-                //    CreateExternalSummaryRelationships(tableIDs.ToArray(), tableSectionReferencedItems);
-
+                               
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
                 List<List<PercussionGuid>> pageSectionReferencedItems =
@@ -271,11 +243,10 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Remove the old pages, table sections and medialink items.
             // Assumes that there are never any non-summary links to individual pages.
-            // No links from other summaries to table sections and media links.
-            RemoveOldPages(oldpageIDs/*, oldSubItems*/);
+            RemoveOldPages(oldpageIDs);
 
             //// Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs, */newSummaryPageIDList);
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(newSummaryPageIDList);
             CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
