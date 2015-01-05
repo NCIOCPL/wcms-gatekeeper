@@ -1371,7 +1371,7 @@
     <xsl:if                        test = "descendant::KeyPoint">
       <xsl:element                  name = "div">
         <xsl:attribute               name = "class">
-          <xsl:text>keyPoints</xsl:text>
+          <xsl:text>key-points</xsl:text>
         </xsl:attribute>
 
         <!--
@@ -1426,9 +1426,9 @@
   <xsl:template                   name = "createKeyPointBox">
     <xsl:for-each                select = "SummarySection">
       <xsl:element                  name = "li">
-        <xsl:apply-templates       select = "KeyPoint"
-                                     mode = "kpBox"/>
-
+        <!-- NVCG Update to remove key point anchor links and only select text -->
+        <xsl:value-of               select = "."/>
+        
         <!--
      Nested Keypoint list
      ==================== -->
@@ -1441,22 +1441,6 @@
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
-
-
-  <!--
-  Template to add the anchor tag to each key point.
-  ================================================================ -->
-  <xsl:template                  match = "KeyPoint"
-                                  mode = "kpBox">
-    <xsl:element                   name = "a">
-      <xsl:attribute                name = "href">
-        <xsl:text>#</xsl:text>
-        <xsl:value-of              select = "@id"/>
-      </xsl:attribute>
-      <xsl:value-of               select = "."/>
-    </xsl:element>
-  </xsl:template>
-
 
   <!--
   Template to create the TOC for a page
