@@ -1427,7 +1427,7 @@
     <xsl:for-each                select = "SummarySection">
       <xsl:element                  name = "li">
         <!-- NVCG Update to remove key point anchor links and only select text -->
-        <xsl:value-of               select = "."/>
+        <xsl:value-of               select = "KeyPoint"/>
         
         <!--
      Nested Keypoint list
