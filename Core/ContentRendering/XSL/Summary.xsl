@@ -1104,9 +1104,34 @@
           generation -->
         <xsl:attribute               name = "class">
           <xsl:text>image-center</xsl:text>
-          <xsl:text> expandable-container</xsl:text>
         </xsl:attribute>
 
+        <!-- Enlarge Link -->
+        <xsl:element name="a">
+          <xsl:attribute name="href">
+            <!-- Using 750px image for the enlarged version -->
+            <xsl:text>/images/cdr/live/CDR</xsl:text>
+            <xsl:value-of            select = "number(
+                                            substring-after(@ref, 'CDR'))"/>
+            <xsl:text>.jpg</xsl:text>            
+          </xsl:attribute>
+          <xsl:attribute name="target">
+            <xsl:text>_blank</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="class">
+            <xsl:text>article-image-enlarge</xsl:text>            
+          </xsl:attribute>
+          <xsl:choose>
+            <xsl:when                  test = "$language = 'es'">
+              <xsl:text>Ampliar</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>Enlarge</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+
+          
+        </xsl:element>
 
         <!--
      Display the Image
@@ -1121,11 +1146,6 @@
           <xsl:attribute              name = "title">
             <xsl:value-of            select = "@alt"/>
           </xsl:attribute>
-          <!--
-      <xsl:attribute              name = "border">
-       <xsl:value-of            select = "'1'"/>
-      </xsl:attribute>
-      -->
           <xsl:attribute              name = "src">
             <!--
        Next Line For Testing on DEV only !!! 
@@ -1143,12 +1163,6 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:attribute>
-          <!--
-      <xsl:attribute               name = "class">
-       <xsl:text>cdrMediaImage </xsl:text>
-       <xsl:value-of             select = "@size"/>
-      </xsl:attribute>
-      -->
         </xsl:element>
         <xsl:apply-templates/>
       </xsl:element>
@@ -1163,7 +1177,6 @@
         <xsl:attribute              name = "class">
           <xsl:text>caption-container</xsl:text>
         </xsl:attribute>
-
         <xsl:apply-templates/>
       </xsl:element>
     </xsl:element>
@@ -1384,7 +1397,7 @@
           </xsl:attribute>
           <xsl:choose>
             <xsl:when                  test = "$language = 'en'">
-              <xsl:text>Key Points for This Section</xsl:text>
+              <xsl:text>Key Points</xsl:text>
             </xsl:when>
             <xsl:when                  test = "$language = 'es'">
               <xsl:text>Puntos importantes de esta secci&#243;n</xsl:text>
