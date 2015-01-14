@@ -21,6 +21,7 @@ namespace GateKeeper.DocumentObjects.Summary
         private string _baseMobileURL = string.Empty;
         private string _title = string.Empty;
         private string _shortTitle = string.Empty;
+        private string _navLabel = string.Empty;
         private string _description = string.Empty;
         private List<SummaryRelation> _relationList = new List<SummaryRelation>();
         private string _audienceType = string.Empty;
@@ -145,6 +146,15 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _shortTitle; }
             internal set { _shortTitle = value; }
+        }
+
+        /// <summary>
+        /// Gets, sets summary navigation label.
+        /// </summary>
+        public string NavLabel
+        {
+            get { return _navLabel; }
+            internal set { _navLabel = value; }
         }
 
         /// <summary>

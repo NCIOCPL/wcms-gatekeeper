@@ -53,6 +53,12 @@ namespace GKManagers.CMSDocumentProcessing
 
         protected const string PatientAudience = "Patients";
         protected const string HealthProfAudience = "HealthProfessional";
+
+        const string NavonType = "rffNavon";
+        const string NavonCommunity = "CancerGov";
+        const string NavOnLandingPageSlot = "rffNavLandingPage";
+        const string NavOnSnippetTemplate = "cgvSnTitleLink";
+
         #endregion
          
         #region Runtime Constants
@@ -1500,11 +1506,15 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("long_title", summary.Title);
 
-            if (summary.Title.Length > ShortTitleLength)
-                fields.Add("short_title", summary.Title.Substring(0, ShortTitleLength));
-            else
-                fields.Add("short_title", summary.Title);
+            //if (summary.Title.Length > ShortTitleLength)
+            //    fields.Add("short_title", summary.Title.Substring(0, ShortTitleLength));
+            //else
+            //    fields.Add("short_title", summary.Title);
 
+            //OCEPROJECT - 1147
+            //Update and save the short title field as opposed to truncating the long title
+            fields.Add("short_title", summary.ShortTitle);
+            
             fields.Add("long_description", summary.Description);
             fields.Add("short_description", string.Empty);
             fields.Add("date_next_review", "1/1/2100");
@@ -1539,6 +1549,81 @@ namespace GKManagers.CMSDocumentProcessing
             fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
             return fields;
+        }
+        
+        protected FieldSet CreateFieldValueMapNavOn(SummaryDocument summary)
+        {
+            FieldSet fields = new FieldSet();
+
+            fields.Add("nav_title", summary.NavLabel);
+
+            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+
+            return fields;
+        }
+
+        protected void UpdateNavOn(SummaryDocument document, PercussionGuid summaryRootItemID, string path)
+        {
+            
+            List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();
+
+            PercussionGuid[] searchList =
+                    CMSController.SearchForContentItems(NavonType, path, null);
+
+            //create a new instance of the CMSController with the CancerGov community
+            CMSController CMSControllerForNavon = new CMSController(NavonCommunity);
+
+            if (searchList != null && searchList.Length > 0)
+            {
+                //Move to Editing
+                TransitionNavonToEditing(CMSControllerForNavon, searchList);
+                
+                ContentItemForUpdating contentItem = new ContentItemForUpdating(searchList[0].ID, CreateFieldValueMapNavOn(document));
+                contentItemList.Add(contentItem);
+                //update the Nav Label field on the nav on
+                CMSControllerForNavon.UpdateContentItemList(contentItemList);
+                    
+                //find the relationship between the summary and the navon
+                PSAaRelationship[] incomingRelationship = CMSControllerForNavon.FindIncomingActiveAssemblyRelationships(new PercussionGuid[] { summaryRootItemID }, NavOnLandingPageSlot, NavOnSnippetTemplate);
+                if (incomingRelationship != null && incomingRelationship.Length <= 0)
+                {
+                    //add the summary to the Nav Landing Page slot
+                    //add the relationship only if it does not exist
+                    CMSControllerForNavon.CreateActiveAssemblyRelationships(searchList[0].ID, new long[] { summaryRootItemID.ID }, NavOnLandingPageSlot, NavOnSnippetTemplate);
+                }    
+                                
+                //Move to Public
+                TransitionNavonToPublic(CMSControllerForNavon, searchList);
+                
+            }
+        }
+
+        //deletes the relationship of the summary with the old nav on 
+        protected void DeleteNavOnRelationship(PercussionGuid summaryRootItemID, string path)
+        { 
+             PercussionGuid[] searchList =
+                    CMSController.SearchForContentItems(NavonType, path, null);
+
+            //create a new instance of the CMSController with the CancerGov community
+            CMSController CMSControllerForNavon = new CMSController(NavonCommunity);
+
+            if (searchList != null && searchList.Length > 0)
+            {
+                //Move to Editing
+                TransitionNavonToEditing(CMSControllerForNavon, searchList);
+
+                //find the relationship between the summary and the navon
+                PSAaRelationship[] incomingRelationship = CMSControllerForNavon.FindIncomingActiveAssemblyRelationships(new PercussionGuid[] { summaryRootItemID }, NavOnLandingPageSlot, NavOnSnippetTemplate);
+                if (incomingRelationship != null && incomingRelationship.Length > 0)
+                {
+                    //delete the relationship before adding it
+                    CMSControllerForNavon.DeleteActiveAssemblyRelationships(incomingRelationship, false, new PercussionGuid[] { summaryRootItemID }, NavOnLandingPageSlot, NavOnSnippetTemplate);
+                }
+
+                //Move to Public
+                TransitionNavonToPublic(CMSControllerForNavon, searchList);
+            }
+        
         }
 
         protected List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
@@ -1639,11 +1724,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             return section.RawSectionID;
         }
-
-        protected string MediaLinkIDAccessor(MediaLink link)
-        {
-            return link.Id;
-        }
+               
         #endregion
 
         protected void LogDetailedStep(string message)

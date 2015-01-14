@@ -128,6 +128,9 @@ namespace GKManagers.CMSDocumentProcessing
 
                 LinkToAlternateLanguageVersion(document, summaryRoot);
 
+                //update the Nav Label field and add the summary to the landing page slot of the nav on
+                UpdateNavOn(document, summaryRoot, GetTargetFolder(document.BasePrettyURL));
+
                 return summaryRoot;
             }
             catch (Exception)
@@ -288,7 +291,8 @@ namespace GKManagers.CMSDocumentProcessing
             // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, summaryLinkID, componentIDs);
 
-            
+            //update the Nav Label field and add the summary to the landing page slot of the nav on
+            UpdateNavOn(summary, summaryRootID, GetTargetFolder(summary.BasePrettyURL));
         }
 
         /// <summary>
@@ -383,6 +387,9 @@ namespace GKManagers.CMSDocumentProcessing
 
             if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
             {
+                //Remove the summary from the landing page slot of the old NavOn
+                DeleteNavOnRelationship(summaryRootItemID, oldPath);
+
                 // Move the CancerInformationSummary and all its components. The link item is moved separately.
                 CMSController.GuaranteeFolder(newPath, FolderManager.NavonAction.MakePublic);
                 CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
