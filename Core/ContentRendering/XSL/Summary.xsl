@@ -1400,7 +1400,7 @@
               <xsl:text>Key Points</xsl:text>
             </xsl:when>
             <xsl:when                  test = "$language = 'es'">
-              <xsl:text>Puntos importantes de esta secci&#243;n</xsl:text>
+              <xsl:text>Puntos importantes</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>*** language not defined ***</xsl:text>
