@@ -172,8 +172,6 @@
                   <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
                     <xsl:value-of            select = "./@id"/>
-                    <xsl:text>_</xsl:text>
-                    <xsl:value-of            select = "count(preceding-sibling::SummarySection) + 1"/>
                   </xsl:attribute>
                   <xsl:attribute             name="class">
                     <xsl:text>pdq-sections</xsl:text>
@@ -234,32 +232,7 @@
         printed above the keypoints box or the TOC -->
     <xsl:apply-templates         select = "Title"/>
 
-    <!-- Create a container for the TOC for this section 
-        Note: We only want to add this diff if there exist subsections
-              and this should not be added if there are key points.
-   ===================================================================== -->
-    <xsl:if                        test = "(descendant::SummarySection 
-                                           and
-                                           $audience = 'healthprofessional')
-                                           or
-                                           ($audience = 'patient'
-                                            and
-                                            not(descendant::KeyPoint))">
-      <xsl:element                  name = "div">
-        <xsl:attribute               name = "id">
-          <xsl:text>_toc_section</xsl:text>
-          <!--<xsl:value-of              select = "./@id"/>
-          <xsl:text>_</xsl:text>
-          <xsl:value-of             select = "count(preceding-sibling::SummarySection) + 1"/>-->
-        </xsl:attribute>
-        <xsl:attribute               name = "class">
-          <xsl:text>pdq-on-this-page</xsl:text>
-        </xsl:attribute>
-        <xsl:text> </xsl:text>
-      </xsl:element>
-    </xsl:if>
-
-    <!--
+   <!--
    There are no TOC or KeyPoint boxes on mobile
    These only get created for the desktop.
    =================================================================== -->
@@ -1551,12 +1524,12 @@ Template for Creating a table (from CALS)
         <xsl:text> expandable-container</xsl:text>
       </xsl:attribute>
 
-      <xsl:if test="@PgWide=1">
-        <xsl:attribute name="width">100%</xsl:attribute>
+      <xsl:if                       test = "@PgWide=1">
+        <xsl:attribute              name = "width">100%</xsl:attribute>
       </xsl:if>
-      <xsl:if test="TGroup/@Align">
-        <xsl:attribute name="align">
-          <xsl:value-of select="TGroup/@Align"/>
+      <xsl:if                       test = "TGroup/@Align">
+        <xsl:attribute              name = "align">
+          <xsl:value-of           select = "TGroup/@Align"/>
         </xsl:attribute>
       </xsl:if>
       <!-- Should be coming from CSS 
@@ -1577,21 +1550,22 @@ Template for Creating a table (from CALS)
     </xsl:choose>
       -->
 
-      <xsl:variable name="colgroup">
+      <xsl:variable                name = "colgroup">
         <colgroup>
-          <xsl:call-template name="generate.colgroup">
-            <xsl:with-param name="cols" select="@Cols"/>
+          <xsl:call-template       name = "generate.colgroup">
+            <xsl:with-param        name = "cols"
+                                 select = "@Cols"/>
           </xsl:call-template>
         </colgroup>
       </xsl:variable>
 
-      <xsl:variable name="table.width">
+      <xsl:variable                name = "table.width">
         <xsl:choose>
-          <xsl:when test="$default.table.width = ''">
+          <xsl:when                test = "$default.table.width = ''">
             <xsl:text>100%</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$default.table.width"/>
+            <xsl:value-of        select = "$default.table.width"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
@@ -1607,7 +1581,7 @@ Template for Creating a table (from CALS)
                                     mode = "table"/>
 
 
-      <xsl:copy-of select="$colgroup"/>
+      <xsl:copy-of                select = "$colgroup"/>
 
       <xsl:apply-templates>
         <xsl:with-param            name = "topSection"
@@ -1632,8 +1606,8 @@ Template for Creating a table (from CALS)
       <xsl:if                       test = "@Align">
         <xsl:choose>
           <xsl:when                  test = "not(@Align = 'Center')">
-            <xsl:attribute              name = "align">
-              <xsl:value-of           select = "@Align"/>
+            <xsl:attribute            name = "align">
+              <xsl:value-of         select = "@Align"/>
             </xsl:attribute>
           </xsl:when>
         </xsl:choose>
@@ -1653,21 +1627,17 @@ Template for Creating a table (from CALS)
           <xsl:value-of           select = "@Valign"/>
         </xsl:attribute>
       </xsl:if>
-      
-      <!-- Only apply to footer-->
-      <xsl:if test="name(.) = 'TFoot'">
-        <xsl:attribute               name="class">
+      <xsl:if                       test = "name(.) = 'TFoot'">
+        <xsl:attribute               name = "class">
           <xsl:text>pdq-footer</xsl:text>
         </xsl:attribute>
       </xsl:if>
-      
+
       <xsl:apply-templates>
-        <xsl:with-param            name = "topSection"
-                                 select = "$topSection"/>
+        <xsl:with-param              name = "topSection"
+                                   select = "$topSection"/>
       </xsl:apply-templates>
-      
     </xsl:element>
-   
   </xsl:template>
 
 
@@ -1678,24 +1648,24 @@ Template for Creating a table (from CALS)
     <xsl:param                     name = "topSection"
                                  select = "'tbody'"/>
     <tbody>
-      <xsl:if test="@Align">
-        <xsl:attribute name="align">
-          <xsl:value-of select="@Align"/>
+      <xsl:if                       test = "@Align">
+        <xsl:attribute              name = "align">
+          <xsl:value-of           select = "@Align"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Char">
-        <xsl:attribute name="char">
-          <xsl:value-of select="@Char"/>
+      <xsl:if                       test = "@Char">
+        <xsl:attribute              name = "char">
+          <xsl:value-of           select = "@Char"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Charoff">
-        <xsl:attribute name="charoff">
-          <xsl:value-of select="@Charoff"/>
+      <xsl:if                       test = "@Charoff">
+        <xsl:attribute              name = "charoff">
+          <xsl:value-of           select = "@Charoff"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Valign">
-        <xsl:attribute name="valign">
-          <xsl:value-of select="@Valign"/>
+      <xsl:if                       test = "@Valign">
+        <xsl:attribute              name = "valign">
+          <xsl:value-of           select = "@Valign"/>
         </xsl:attribute>
       </xsl:if>
 
@@ -1707,36 +1677,37 @@ Template for Creating a table (from CALS)
   </xsl:template>
 
   <!--
-=========================================================================
-========================================================================= -->
-
+  =======================================================================
+  Creating Table Rows
+  ======================================================================= -->
   <xsl:template                    match = "Row">
-    <xsl:param                     name = "topSection"
-                                 select = "'trow'"/>
+    <xsl:param                      name = "topSection"
+                                  select = "'trow'"/>
     <tr>
-      <xsl:if test="@Align">
-        <xsl:attribute name="align">
-          <xsl:value-of select="@Align"/>
+      <xsl:if                       test = "@Align">
+        <xsl:attribute              name = "align">
+          <xsl:value-of           select = "@Align"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Char">
-        <xsl:attribute name="char">
-          <xsl:value-of select="@Char"/>
+      <xsl:if                       test = "@Char">
+        <xsl:attribute              name = "char">
+          <xsl:value-of           select = "@Char"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Charoff">
-        <xsl:attribute name="charoff">
-          <xsl:value-of select="@Charoff"/>
+      <xsl:if                       test = "@Charoff">
+        <xsl:attribute              name = "charoff">
+          <xsl:value-of           select = "@Charoff"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Valign">
-        <xsl:attribute name="valign">
-          <xsl:value-of select="@Valign"/>
+      <xsl:if                       test = "@Valign">
+        <xsl:attribute              name = "valign">
+          <xsl:value-of           select = "@Valign"/>
         </xsl:attribute>
       </xsl:if>
+
       <xsl:apply-templates>
-        <xsl:with-param              name = "topSection"
-                                   select = "$topSection"/>
+        <xsl:with-param             name = "topSection"
+                                  select = "$topSection"/>
       </xsl:apply-templates>
     </tr>
   </xsl:template>
@@ -1744,157 +1715,207 @@ Template for Creating a table (from CALS)
   <!--
 =========================================================================
 ========================================================================= -->
-
   <xsl:template                    match = "THead/Row/entry">
     <xsl:param                     name = "topSection"
                                  select = "'thcell'"/>
-    <xsl:call-template name="process.cell">
-      <xsl:with-param name = "topSection" select = "$topSection"/>
-      <xsl:with-param name="cellgi">th</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
 
+    <xsl:call-template              name = "process.cell">
+      <xsl:with-param               name = "topSection"
+                                  select = "$topSection"/>
+      <xsl:with-param               name = "cellgi">
+        <xsl:text>th</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+
+  </xsl:template>
 
   <!--
-=========================================================================
-========================================================================= -->
+  =======================================================================
+  ======================================================================= -->
   <xsl:template                    match = "TBody/Row/entry">
-    <xsl:param                     name = "topSection"
-                                 select = "'tbcell'"/>
-    <xsl:call-template name="process.cell">
-      <xsl:with-param name = "topSection" select = "$topSection"/>
-      <xsl:with-param name="cellgi">td</xsl:with-param>
+    <xsl:param                     name  = "topSection"
+                                  select = "'tbcell'"/>
+
+    <xsl:call-template              name = "process.cell">
+      <xsl:with-param              name = "topSection"
+                                 select = "$topSection"/>
+      <xsl:with-param               name = "cellgi">
+        <xsl:text>td</xsl:text>
+      </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
+
 
   <!--
 =========================================================================
 ========================================================================= -->
   <xsl:template                    match = "TFoot/Row/entry">
-    <xsl:param                     name = "topSection"
-                                 select = "'tfcell'"/>
-    <xsl:call-template name="process.cell">
-      <xsl:with-param name = "topSection" select = "$topSection"/>
-      <xsl:with-param name="cellgi">td</xsl:with-param>
+    <xsl:param                      name = "topSection"
+                                  select = "'tfcell'"/>
+    <xsl:call-template              name = "process.cell">
+      <xsl:with-param               name = "topSection"
+                                  select = "$topSection"/>
+      <xsl:with-param               name = "cellgi">
+        <xsl:text>td</xsl:text>
+      </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
   <!--
-=========================================================================
-========================================================================= -->
+  =======================================================================
+  This is processing the table cells.  Is passed from the 'entry'
+  template to identify if the processing is for body/header/footer
+  entries
+  ======================================================================= -->
   <xsl:template                     name = "process.cell">
-    <xsl:param                     name = "topSection"
-                                 select = "'cell'"/>
-    <xsl:param name="cellgi">td</xsl:param>
+    <xsl:param                       name = "topSection"
+                                   select = "'cell'"/>
+    <xsl:param                       name = "cellgi">td</xsl:param>
 
 
-    <xsl:variable name="empty.cell" select="count(node()) = 0"/>
+    <xsl:variable                   name = "empty.cell"
+                                  select = "count(node()) = 0"/>
 
-    <xsl:variable name="entry.colnum">
-      <xsl:call-template name="entry.colnum"/>
+    <xsl:variable                   name= "entry.colnum">
+      <xsl:call-template            name= "entry.colnum"/>
     </xsl:variable>
 
-    <xsl:if test="$entry.colnum != ''">
-      <xsl:variable name="prev.entry" select="preceding-sibling::*[1]"/>
-      <xsl:variable name="prev.ending.colnum">
+    <!--
+  X<xsl:value-of select = "$empty.cell"/>_
+   <xsl:value-of select = "$entry.colnum"/>X
+  -->
+
+    <!--
+  If there aren't enough cells for a row CALS assumes the missing
+  cells for the row need to be empty.
+  However, this code doesn't check if a previous row accounts for
+  the missing cells
+  =============================================================== -->
+    <!--
+  <xsl:if                         test = "$entry.colnum != ''">
+  XXX
+    <xsl:variable                 name = "prev.entry" 
+                                select = "preceding-sibling::*[1]"/>
+    <xsl:variable                 name = "prev.ending.colnum">
+      <xsl:choose>
+        <xsl:when                 test = "$prev.entry">
+          <xsl:call-template      name = "entry.ending.colnum">
+            <xsl:with-param       name = "entry" 
+                                select = "$prev.entry"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    -->
+    <!--
+    Removed the call to this template since it's creating empty table cells
+    on rows following a row with a rowspan
+    I'm not certain if the entire if-block could be dropped.
+    =======================================================================
+    <xsl:call-template            name = "add-empty-entries">
+      <xsl:with-param             name = "number">
         <xsl:choose>
-          <xsl:when test="$prev.entry">
-            <xsl:call-template name="entry.ending.colnum">
-              <xsl:with-param name="entry" select="$prev.entry"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>0</xsl:otherwise>
+          <xsl:when               test = "$prev.ending.colnum = ''">0</xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of       select = "$entry.colnum - $prev.ending.colnum - 1"/>
+          </xsl:otherwise>
         </xsl:choose>
-      </xsl:variable>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:if>
+    -->
 
-      <xsl:call-template name="add-empty-entries">
-        <xsl:with-param name="number">
-          <xsl:choose>
-            <xsl:when test="$prev.ending.colnum = ''">0</xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$entry.colnum - $prev.ending.colnum - 1"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
+    <xsl:element                    name = "{$cellgi}">
 
-    <xsl:element name="{$cellgi}">
-
-      <xsl:if test="@SpanName">
-        <xsl:variable name="namest"
-    select="ancestor::TGroup/SpanSpec[@SpanName=./@SpanName]/@NameSt"/>
-        <xsl:variable name="nameend"
-      select="ancestor::TGroup/SpanSpec[@SpanName=./@SpanName]/@NameEnd"/>
-        <xsl:variable name="colst"
-      select="ancestor::*[ColSpec/@ColName=$namest]/ColSpec[@ColName=$namest]/@ColNum"/>
-        <xsl:variable name="colend"
-      select="ancestor::*[ColSpec/@ColName=$nameend]/ColSpec[@ColName=$nameend]/@ColNum"/>
-        <xsl:attribute name="colspan">
-          <xsl:value-of
-    select="number($colend) - number($colst) + 1"/>
+      <xsl:if                         test = "@SpanName">
+        <xsl:variable                 name = "namest"
+                                    select = "ancestor::TGroup
+                                           /SpanSpec[@SpanName =./@SpanName]
+                                           /@NameSt"/>
+        <xsl:variable                 name = "nameend"
+                                      select = "ancestor::TGroup
+                                           /SpanSpec[@SpanName=./@SpanName]
+                                           /@NameEnd"/>
+        <xsl:variable                 name = "colst"
+                                      select = "ancestor::*[ColSpec/@ColName=$namest]
+                                           /ColSpec[@ColName=$namest]
+                                           /@ColNum"/>
+        <xsl:variable                 name = "colend"
+                                      select = "ancestor::*[ColSpec/@ColName=$nameend]
+                                           /ColSpec[@ColName=$nameend]
+                                           /@ColNum"/>
+        <xsl:attribute                name = "colspan">
+          <xsl:value-of             select = "number($colend) - number($colst) + 1"/>
         </xsl:attribute>
       </xsl:if>
 
-      <xsl:if test="@MoreRows">
-        <xsl:attribute name="rowspan">
-          <xsl:value-of select="@MoreRows+1"/>
+      <!-- Setting the rowspan for the current row -->
+      <xsl:if                       test = "@MoreRows">
+        <xsl:attribute              name = "rowspan">
+          <xsl:value-of           select = "@MoreRows+1"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@NameSt">
-        <xsl:attribute name="colspan">
-          <xsl:call-template name="calculate.colspan"/>
+
+      <!-- Setting the colspan -->
+      <xsl:if                       test = "@NameSt">
+        <xsl:attribute              name = "colspan">
+          <xsl:call-template        name = "calculate.colspan"/>
         </xsl:attribute>
       </xsl:if>
+
       <xsl:if                       test = "@Align">
         <xsl:choose>
           <xsl:when                  test = "not(@Align = 'Center')">
-            <xsl:attribute              name = "align">
-              <xsl:value-of           select = "@Align"/>
+            <xsl:attribute            name = "align">
+              <xsl:value-of         select = "@Align"/>
             </xsl:attribute>
           </xsl:when>
         </xsl:choose>
-        <xsl:attribute name="scope">
-          <xsl:value-of select="'col'"/>
+        <xsl:attribute              name = "scope">
+          <xsl:value-of           select = "'col'"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Char">
-        <xsl:attribute name="char">
-          <xsl:value-of select="@Char"/>
+      <xsl:if                       test = "@Char">
+        <xsl:attribute              name = "char">
+          <xsl:value-of           select = "@Char"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Charoff">
-        <xsl:attribute name="charoff">
-          <xsl:value-of select="@Charoff"/>
+      <xsl:if                       test = "@Charoff">
+        <xsl:attribute              name = "charoff">
+          <xsl:value-of           select = "@Charoff"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:if test="@Valign">
-        <xsl:attribute name="valign">
-          <xsl:value-of select="@Valign"/>
+      <xsl:if                       test = "@Valign">
+        <xsl:attribute              name = "valign">
+          <xsl:value-of           select = "@Valign"/>
         </xsl:attribute>
       </xsl:if>
 
-      <!--<xsl:if test="@RowSep='1'">
-        <xsl:attribute name="style">border-bottom:thin solid black</xsl:attribute>
-      </xsl:if>-->
+      <!--
+	<xsl:if test ="@RowSep='1'">
+		<xsl:attribute name="style">border-bottom:thin solid black</xsl:attribute>
+	</xsl:if>
+    -->
 
-      <xsl:if test="not(preceding-sibling::*)
+      <xsl:if                       test = "not(preceding-sibling::*)
                   and ancestor::Row/@id">
-        <a name="{ancestor::Row/@id}"/>
+        <a                          name = "{ancestor::Row/@id}"/>
       </xsl:if>
 
-      <xsl:if test="@id">
-        <a name="{@id}"/>
+      <xsl:if                       test = "@id">
+        <a                          name = "{@id}"/>
       </xsl:if>
 
       <!-- Process Cell Content (entry element) -->
       <xsl:choose>
-        <xsl:when test="$empty.cell">
+        <xsl:when                   test = "$empty.cell">
           <xsl:text>&#160;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates>
-            <xsl:with-param name = "topSection" select = "$topSection"/>
+            <xsl:with-param          name = "topSection"
+                                   select = "$topSection"/>
           </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
@@ -1904,198 +1925,231 @@ Template for Creating a table (from CALS)
   <!--
 =========================================================================
 ========================================================================= -->
-
-  <xsl:template name="add-empty-entries">
-    <xsl:param name="number" select="'0'"/>
+  <xsl:template                     name = "add-empty-entries">
+    <xsl:param                      name = "number"
+                                  select = "'0'"/>
+    <xsl:value-of                 select = "$number"/>
     <xsl:choose>
-      <xsl:when test="$number &lt;= 0"></xsl:when>
+      <xsl:when                     test = "$number &lt;= 0">
+      </xsl:when>
       <xsl:otherwise>
-        <td>&#160;</td>
-        <xsl:call-template name="add-empty-entries">
-          <xsl:with-param name="number" select="$number - 1"/>
+        <td>&#160;X</td>
+        <xsl:call-template          name = "add-empty-entries">
+          <xsl:with-param           name = "number"
+                                  select = "$number - 1"/>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
+
   <!--
 =========================================================================
 ========================================================================= -->
-  
-  <xsl:template name="entry.colnum">
-    <xsl:param name="entry" select="."/>
+  <xsl:template                     name = "entry.colnum">
+    <xsl:param                      name = "entry"
+                                  select = "."/>
 
     <xsl:choose>
-      <xsl:when test="$entry/@ColName">
-        <xsl:variable name="colname" select="$entry/@ColName"/>
-        <xsl:variable name="colspec"
-
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$colname]"/>
-        <xsl:call-template name="colspec.colnum">
-          <xsl:with-param name="colspec" select="$colspec"/>
+      <xsl:when                     test = "$entry/@ColName">
+        <xsl:variable               name = "colname"
+                                  select = "$entry/@ColName"/>
+        <xsl:variable               name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                              /ColSpec[@ColName=$colname]"/>
+        <xsl:call-template          name = "colspec.colnum">
+          <xsl:with-param           name = "colspec"
+                                  select = "$colspec"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="$entry/@NameSt">
-        <xsl:variable name="namest" select="$entry/@NameSt"/>
-        <xsl:variable name="colspec"
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$namest]"/>
-        <xsl:call-template name="colspec.colnum">
-          <xsl:with-param name="colspec" select="$colspec"/>
+      <xsl:when                     test = "$entry/@NameSt">
+        <xsl:variable               name = "namest"
+                                  select = "$entry/@NameSt"/>
+        <xsl:variable               name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                              /ColSpec[@ColName=$namest]"/>
+        <xsl:call-template          name = "colspec.colnum">
+          <xsl:with-param           name = "colspec"
+                                  select = "$colspec"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="count($entry/preceding-sibling::*) = 0">1</xsl:when>
+      <xsl:when                     test = "count($entry/preceding-sibling::*) = 0">1</xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="pcol">
-          <xsl:call-template name="entry.ending.colnum">
-            <xsl:with-param name="entry"
-  select="$entry/preceding-sibling::*[1]"/>
+        <xsl:variable               name = "pcol">
+          <xsl:call-template        name = "entry.ending.colnum">
+            <xsl:with-param         name = "entry"
+                                  select = "$entry/preceding-sibling::*[1]"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="$pcol + 1"/>
+        <xsl:value-of             select = "$pcol + 1"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
+
   <!--
 =========================================================================
 ========================================================================= -->
-
-  <xsl:template name="entry.ending.colnum">
-    <xsl:param name="entry" select="."/>
+  <xsl:template                     name = "entry.ending.colnum">
+    <xsl:param                      name = "entry"
+                                  select = "."/>
 
     <xsl:choose>
-      <xsl:when test="$entry/@ColName">
-        <xsl:variable name="colname" select="$entry/@ColName"/>
-        <xsl:variable name="colspec"
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$colname]"/>
-        <xsl:call-template name="colspec.colnum">
-          <xsl:with-param name="colspec" select="$colspec"/>
+      <xsl:when                     test = "$entry/@ColName">
+        <xsl:variable               name = "colname"
+                                  select = "$entry/@ColName"/>
+        <xsl:variable               name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                                /ColSpec[@ColName=$colname]"/>
+        <xsl:call-template          name = "colspec.colnum">
+          <xsl:with-param           name = "colspec"
+                                  select = "$colspec"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="$entry/@NameEnd">
-        <xsl:variable name="nameend" select="$entry/@NameEnd"/>
-        <xsl:variable name="colspec"
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$nameend]"/>
-        <xsl:call-template name="colspec.colnum">
-          <xsl:with-param name="colspec" select="$colspec"/>
+      <xsl:when                     test = "$entry/@NameEnd">
+        <xsl:variable               name = "nameend"
+                                  select = "$entry/@NameEnd"/>
+        <xsl:variable               name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                                /ColSpec[@ColName=$nameend]"/>
+        <xsl:call-template          name = "colspec.colnum">
+          <xsl:with-param           name = "colspec"
+                                  select = "$colspec"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="count($entry/preceding-sibling::*) = 0">1</xsl:when>
+      <xsl:when                     test = "count($entry/preceding-sibling::*) = 0">1</xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="pcol">
-          <xsl:call-template name="entry.ending.colnum">
-            <xsl:with-param name="entry"
-  select="$entry/preceding-sibling::*[1]"/>
+        <xsl:variable               name = "pcol">
+          <xsl:call-template        name = "entry.ending.colnum">
+            <xsl:with-param         name = "entry"
+                                  select = "$entry/preceding-sibling::*[1]"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="$pcol + 1"/>
+        <xsl:value-of             select = "$pcol + 1"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
+
   <!--
 =========================================================================
 ========================================================================= -->
-
-
-  <xsl:template name="colspec.colnum">
-    <xsl:param name="colspec" select="."/>
+  <xsl:template                     name = "colspec.colnum">
+    <xsl:param                      name = "colspec"
+                                  select = "."/>
     <xsl:choose>
-      <xsl:when test="$colspec/@ColNum">
-        <xsl:value-of select="$colspec/@ColNum"/>
+      <xsl:when                     test = "$colspec/@ColNum">
+        <xsl:value-of             select = "$colspec/@ColNum"/>
       </xsl:when>
-      <xsl:when test="$colspec/preceding-sibling::ColSpec">
-        <xsl:variable name="prec.colspec.colnum">
-          <xsl:call-template name="colspec.colnum">
-            <xsl:with-param name="colspec"
-                            select="$colspec/preceding-sibling::ColSpec[1]"/>
+      <xsl:when                     test = "$colspec/preceding-sibling::ColSpec">
+        <xsl:variable               name = "prec.colspec.colnum">
+          <xsl:call-template        name = "colspec.colnum">
+            <xsl:with-param         name = "colspec"
+                                  select = "$colspec
+                                           /preceding-sibling::ColSpec[1]"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="$prec.colspec.colnum + 1"/>
+        <xsl:value-of             select = "$prec.colspec.colnum + 1"/>
       </xsl:when>
       <xsl:otherwise>1</xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="generate.colgroup">
-    <xsl:param name="cols" select="1"/>
-    <xsl:param name="count" select="1"/>
+  <!--
+=========================================================================
+========================================================================= -->
+  <xsl:template                     name = "generate.colgroup">
+    <xsl:param                      name = "cols"
+                                  select = "1"/>
+    <xsl:param                      name = "count"
+                                  select = "1"/>
     <xsl:choose>
-      <xsl:when test="$count>$cols"></xsl:when>
+      <xsl:when                     test = "$count>$cols"></xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="generate.col">
-          <xsl:with-param name="countcol" select="$count"/>
+        <xsl:call-template          name = "generate.col">
+          <xsl:with-param           name = "countcol"
+                                  select = "$count"/>
         </xsl:call-template>
-        <xsl:call-template name="generate.colgroup">
-          <xsl:with-param name="cols" select="$cols"/>
-          <xsl:with-param name="count" select="$count+1"/>
+        <xsl:call-template          name = "generate.colgroup">
+          <xsl:with-param           name = "cols"
+                                  select = "$cols"/>
+          <xsl:with-param           name = "count"
+                                  select = "$count+1"/>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="generate.col">
-    <xsl:param name="countcol">1</xsl:param>
-    <xsl:param name="colspecs" select="./ColSpec"/>
-    <xsl:param name="count">1</xsl:param>
-    <xsl:param name="colnum">1</xsl:param>
+  <!--
+=========================================================================
+========================================================================= -->
+  <xsl:template                     name = "generate.col">
+    <xsl:param                      name = "countcol">1</xsl:param>
+    <xsl:param                      name = "colspecs"
+                                  select = "./ColSpec"/>
+    <xsl:param                      name = "count">1</xsl:param>
+    <xsl:param                      name = "colnum">1</xsl:param>
 
     <xsl:choose>
-      <xsl:when test="$count>count($colspecs)">
+      <xsl:when                     test = "$count>count($colspecs)">
         <col/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="colspec" select="$colspecs[$count=position()]"/>
-        <xsl:variable name="colspec.colnum">
+        <xsl:variable               name = "colspec"
+                                  select = "$colspecs[$count=position()]"/>
+        <xsl:variable               name = "colspec.colnum">
           <xsl:choose>
-            <xsl:when test="$colspec/@ColNum">
-              <xsl:value-of select="$colspec/@ColNum"/>
+            <xsl:when               test = "$colspec/@ColNum">
+              <xsl:value-of       select = "$colspec/@ColNum"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="$colnum"/>
+              <xsl:value-of       select = "$colnum"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
 
         <xsl:choose>
-          <xsl:when test="$colspec.colnum=$countcol">
+          <xsl:when                 test = "$colspec.colnum=$countcol">
             <col>
-              <xsl:if test="$colspec/@Align">
-                <xsl:attribute name="align">
-                  <xsl:value-of select="$colspec/@Align"/>
+              <xsl:if               test = "$colspec/@Align">
+                <xsl:attribute      name = "align">
+                  <xsl:value-of   select = "$colspec/@Align"/>
                 </xsl:attribute>
               </xsl:if>
-              <xsl:if test="$colspec/@Char">
-                <xsl:attribute name="char">
-                  <xsl:value-of select="$colspec/@Char"/>
+              <xsl:if               test = "$colspec/@Char">
+                <xsl:attribute      name = "char">
+                  <xsl:value-of   select = "$colspec/@Char"/>
                 </xsl:attribute>
               </xsl:if>
-              <xsl:if test="$colspec/@Charoff">
-                <xsl:attribute name="charoff">
-                  <xsl:value-of select="$colspec/@Charoff"/>
+              <xsl:if               test = "$colspec/@Charoff">
+                <xsl:attribute      name = "charoff">
+                  <xsl:value-of   select = "$colspec/@Charoff"/>
                 </xsl:attribute>
               </xsl:if>
               <!-- VE start -->
-              <xsl:if test="$colspec/@ColWidth">
-                <xsl:attribute name="width">
-                  <xsl:value-of select="$colspec/@ColWidth"/>
+              <xsl:if               test = "$colspec/@ColWidth">
+                <xsl:attribute      name = "width">
+                  <xsl:value-of   select = "$colspec/@ColWidth"/>
                 </xsl:attribute>
               </xsl:if>
               <!-- VE end  -->
             </col>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="generate.col">
-              <xsl:with-param name="countcol" select="$countcol"/>
-              <xsl:with-param name="colspecs" select="$colspecs"/>
-              <xsl:with-param name="count" select="$count+1"/>
-              <xsl:with-param name="colnum">
+            <xsl:call-template      name = "generate.col">
+              <xsl:with-param       name = "countcol"
+                                  select = "$countcol"/>
+              <xsl:with-param       name = "colspecs"
+                                  select = "$colspecs"/>
+              <xsl:with-param       name = "count"
+                                  select = "$count+1"/>
+              <xsl:with-param       name = "colnum">
                 <xsl:choose>
-                  <xsl:when test="$colspec/@ColNum">
-                    <xsl:value-of select="$colspec/@ColNum + 1"/>
+                  <xsl:when         test = "$colspec/@ColNum">
+                    <xsl:value-of select = "$colspec/@ColNum + 1"/>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:value-of select="$colnum + 1"/>
+                    <xsl:value-of select = "$colnum + 1"/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:with-param>
@@ -2107,25 +2161,33 @@ Template for Creating a table (from CALS)
 
   </xsl:template>
 
-  <xsl:template name="colspec.colwidth">
+  <!--
+=========================================================================
+========================================================================= -->
+  <xsl:template                     name = "colspec.colwidth">
     <!-- when this macro is called, the current context must be an entry -->
-    <xsl:param name="colname"></xsl:param>
+    <xsl:param                      name = "colname"></xsl:param>
     <!-- .. = Row, ../.. = THead|TBody, ../../.. = TGroup -->
-    <xsl:param name="colspecs" select="../../../../TGroup/ColSpec"/>
-    <xsl:param name="count">1</xsl:param>
+    <xsl:param                      name = "colspecs"
+                                  select = "../../../../TGroup/ColSpec"/>
+    <xsl:param                      name = "count">1</xsl:param>
     <xsl:choose>
-      <xsl:when test="$count>count($colspecs)"></xsl:when>
+      <xsl:when                     test = "$count>count($colspecs)"></xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="colspec" select="$colspecs[$count=position()]"/>
+        <xsl:variable               name = "colspec"
+                                  select = "$colspecs[$count=position()]"/>
         <xsl:choose>
-          <xsl:when test="$colspec/@ColName=$colname">
-            <xsl:value-of select="$colspec/@ColWidth"/>
+          <xsl:when                 test = "$colspec/@ColName=$colname">
+            <xsl:value-of         select = "$colspec/@ColWidth"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="colspec.colwidth">
-              <xsl:with-param name="colname" select="$colname"/>
-              <xsl:with-param name="colspecs" select="$colspecs"/>
-              <xsl:with-param name="count" select="$count+1"/>
+            <xsl:call-template      name = "colspec.colwidth">
+              <xsl:with-param       name = "colname"
+                                  select = "$colname"/>
+              <xsl:with-param       name = "colspecs"
+                                  select = "$colspecs"/>
+              <xsl:with-param       name = "count"
+                                  select = "$count+1"/>
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
@@ -2133,25 +2195,32 @@ Template for Creating a table (from CALS)
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="calculate.colspan">
-    <xsl:param name="entry" select="."/>
-    <xsl:variable name="namest" select="$entry/@NameSt"/>
-    <xsl:variable name="nameend" select="$entry/@NameEnd"/>
+  <!--
+=========================================================================
+========================================================================= -->
+  <xsl:template                     name = "calculate.colspan">
+    <xsl:param                       name = "entry"
+                                   select = "."/>
+    <xsl:variable                    name = "namest"
+                                   select = "$entry/@NameSt"/>
+    <xsl:variable                    name = "nameend"
+                                   select = "$entry/@NameEnd"/>
 
-    <xsl:variable name="scol">
-      <xsl:call-template name="colspec.colnum">
-        <xsl:with-param name="colspec"
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$namest]"/>
+    <xsl:variable                    name = "scol">
+      <xsl:call-template            name = "colspec.colnum">
+        <xsl:with-param             name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                                /ColSpec[@ColName=$namest]"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:variable name="ecol">
-      <xsl:call-template name="colspec.colnum">
-        <xsl:with-param name="colspec"
-
-  select="$entry/ancestor::TGroup/ColSpec[@ColName=$nameend]"/>
+    <xsl:variable                   name = "ecol">
+      <xsl:call-template            name = "colspec.colnum">
+        <xsl:with-param             name = "colspec"
+                                  select = "$entry/ancestor::TGroup
+                                                /ColSpec[@ColName=$nameend]"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:value-of select="$ecol - $scol + 1"/>
+    <xsl:value-of                  select = "$ecol - $scol + 1"/>
   </xsl:template>
 
 
