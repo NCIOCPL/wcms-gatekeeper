@@ -465,6 +465,9 @@
       <xsl:attribute                name = "type">
         <xsl:text>keypoint</xsl:text>
       </xsl:attribute>
+      <xsl:attribute                name="do-not-show">
+        <xsl:text>toc</xsl:text>
+      </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -741,10 +744,20 @@
                                  select = "'ref'"/>
     <xsl:choose>
       <xsl:when                     test = "$language = 'en'">
-        <h6>References</h6>
+        <xsl:element              name="h6">
+          <xsl:attribute name="do-not-show">
+            <xsl:text>toc</xsl:text>
+          </xsl:attribute>
+          <xsl:text>References</xsl:text>
+        </xsl:element>
       </xsl:when>
       <xsl:when                     test = "$language = 'es'">
-        <h6>Bibliograf&#237;a</h6>
+        <xsl:element                name="h6">
+          <xsl:attribute name="do-not-show">
+            <xsl:text>toc</xsl:text>
+          </xsl:attribute>
+          <xsl:text>Bibliograf&#237;a</xsl:text>
+        </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <h6>*** Undefined ***</h6>
@@ -1367,6 +1380,9 @@
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "@id"/>
             <xsl:text>_kpBoxHdr</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute              name="do-not-show">
+            <xsl:text>toc</xsl:text>
           </xsl:attribute>
           <xsl:choose>
             <xsl:when                  test = "$language = 'en'">
