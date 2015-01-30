@@ -102,50 +102,58 @@
   Template to remove display of ProtocolSummary
   ================================================================ -->
   <xsl:template                  match = "BriefSummary">
-    <xsl:element                   name = "h3">
-      <xsl:attribute                name = "id">
-        <xsl:text>TrialDescription</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Trial Description</xsl:text>
+    <xsl:element                 name="a">
+      <xsl:attribute             name="name">Summary</xsl:attribute>
+      <xsl:element                   name = "h3">
+        <xsl:attribute                name = "id">
+          <xsl:text>TrialDescription</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Trial Description</xsl:text>
+      </xsl:element>
+
+      <xsl:element                   name = "h4">
+        <xsl:attribute                name = "id">
+          <xsl:text>summary</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Summary</xsl:text>
+      </xsl:element>
+
+      <xsl:apply-templates/>
     </xsl:element>
-
-    <xsl:element                   name = "h4">
-      <xsl:attribute                name = "id">
-        <xsl:text>summary</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Summary</xsl:text>
-    </xsl:element>
-
-    <xsl:apply-templates/>
-
   </xsl:template>
 
   <!--
   Template to remove display of Description
   ================================================================ -->
   <xsl:template                  match = "DetailedDescription">
-    <xsl:element                   name = "h4">
-      <xsl:attribute                name = "id">
-        <xsl:text>furtherinfo</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Further Study Information</xsl:text>
-    </xsl:element>
+    <xsl:element name="a">
+      <xsl:attribute name="name">DetailedDescription</xsl:attribute>
+      <xsl:element                   name = "h4">
+        <xsl:attribute                name = "id">
+          <xsl:text>furtherinfo</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Further Study Information</xsl:text>
+      </xsl:element>
 
-    <xsl:apply-templates/>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <!--
   Template to remove display of Eligibility
   ================================================================ -->
   <xsl:template                  match = "CTEntryCriteria">
-    <xsl:element                   name = "h4">
-      <xsl:attribute                name = "id">
-        <xsl:text>eligibilitycriteria</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Eligibility Criteria</xsl:text>
-    </xsl:element>
+    <xsl:element name="a">
+      <xsl:attribute name="name">EntryCriteria</xsl:attribute>
+      <xsl:element                   name = "h4">
+        <xsl:attribute                name = "id">
+          <xsl:text>eligibilitycriteria</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Eligibility Criteria</xsl:text>
+      </xsl:element>
 
-    <xsl:apply-templates/>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
 
@@ -153,20 +161,23 @@
   Template to remove display of Eligibility
   ================================================================ -->
   <xsl:template                  match = "RequiredHeader">
-    <xsl:element                   name = "p">
-      <xsl:element                  name = "a">
-        <xsl:attribute               name = "href">
-          <xsl:apply-templates      select = "LinkText/@xref"/>
-        </xsl:attribute>
-        <xsl:apply-templates       select = "LinkText"/>
+    <xsl:element                 name="a">
+      <xsl:attribute             name="name">RequiredHeader</xsl:attribute>
+      <xsl:element                   name = "p">
+        <xsl:element                  name = "a">
+          <xsl:attribute               name = "href">
+            <xsl:apply-templates      select = "LinkText/@xref"/>
+          </xsl:attribute>
+          <xsl:apply-templates       select = "LinkText"/>
+        </xsl:element>
+        <br />
+        <xsl:text>NLM Identifier </xsl:text>
+        <xsl:apply-templates        select = "../IDInfo/NCTID"/>
+        <br />
+        <strong>
+          <xsl:apply-templates       select = "DownloadDate"/>
+        </strong>
       </xsl:element>
-      <br />
-      <xsl:text>NLM Identifier </xsl:text>
-      <xsl:apply-templates        select = "../IDInfo/NCTID"/>
-      <br />
-      <strong>
-        <xsl:apply-templates       select = "DownloadDate"/>
-      </strong>
     </xsl:element>
   </xsl:template>
 
@@ -175,36 +186,39 @@
   Template to remove display of Contacts
   ================================================================ -->
   <xsl:template                  match = "Sponsors">
-    <xsl:element                   name = "h4">
-      <xsl:attribute                name = "id">
-        <xsl:text>trialcontact</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Trial Contact Information</xsl:text>
-    </xsl:element>
+    <xsl:element                 name="a">
+      <xsl:attribute             name="name">LeadOrgs</xsl:attribute>
+      <xsl:element                   name = "h4">
+        <xsl:attribute                name = "id">
+          <xsl:text>trialcontact</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Trial Contact Information</xsl:text>
+      </xsl:element>
 
-    <xsl:element                   name = "h5">
-      <xsl:attribute                name = "id">
-        <xsl:text>ContactLead</xsl:text>
-      </xsl:attribute>
-      <xsl:text>Trial Lead Organization/Sponsors</xsl:text>
-    </xsl:element>
+      <xsl:element                   name = "h5">
+        <xsl:attribute                name = "id">
+          <xsl:text>ContactLead</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Trial Lead Organization/Sponsors</xsl:text>
+      </xsl:element>
 
-    <strong>
-      <xsl:apply-templates          select = "LeadSponsor"/>
-    </strong>
-    <!--
+      <strong>
+        <xsl:apply-templates          select = "LeadSponsor"/>
+      </strong>
+      <!--
     <xsl:text> and </xsl:text>
     -->
-    <br />
-    <br />
-    <xsl:for-each                 select = "Collaborator">
-      <xsl:apply-templates/>
-    </xsl:for-each>
+      <br />
+      <br />
+      <xsl:for-each                 select = "Collaborator">
+        <xsl:apply-templates/>
+      </xsl:for-each>
 
-    <br />
-    <br />
-    <xsl:apply-templates          select = "OverallOfficial"/>
-    <xsl:apply-templates          select = "OverallContact"/>
+      <br />
+      <br />
+      <xsl:apply-templates          select = "OverallOfficial"/>
+      <xsl:apply-templates          select = "OverallContact"/>
+    </xsl:element>
   </xsl:template>
 
   <!--
@@ -215,11 +229,10 @@
       <xsl:apply-templates        select = "GivenName"/>
       <xsl:text> </xsl:text>
       <xsl:apply-templates        select = "SurName"/>
-      <span style="background-color:yellow;">
-        <xsl:text> (</xsl:text>
-        <xsl:apply-templates        select = "Role"/>
-        <xsl:text>)</xsl:text>
-      </span>
+      <xsl:text> (</xsl:text>
+      <xsl:apply-templates        select = "Role"/>
+      <xsl:text>)</xsl:text>
+
     </xsl:element>
   </xsl:template>
 
@@ -412,7 +425,10 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "CTGovDisclaimer">
-    <xsl:apply-templates/>
+    <xsl:element name="a">
+      <xsl:attribute name="name">Disclaimer</xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <!--
@@ -426,7 +442,7 @@
         <!--
      Next Line For Testing on DEV only !!! 
      ===================================== -->
-        <xsl:text>http://www.cancer.gov</xsl:text>
+        <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:text>/Common/PopUps/popDefinition.aspx?id=</xsl:text>
         <xsl:value-of              select = "number(
                                            substring-after(@href, 'CDR'))"/>
@@ -450,7 +466,7 @@
         <!--
      Next Line For Testing on DEV only !!! 
      ===================================== -->
-        <xsl:text>http://www.cancer.gov</xsl:text>
+        <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:value-of              select = "@url"/>
       </xsl:attribute>
       <xsl:apply-templates/>
@@ -680,11 +696,14 @@
   Template to display the Protocol Basic Trial Info table
   ================================================================ -->
   <xsl:template                   name = "trialLocations">
-    <h3>Trial Sites</h3>
+    <xsl:element                  name="a">
+      <xsl:attribute              name="name">TrialSites</xsl:attribute>
+      <h3>Trial Sites</h3>
 
-    <div class="trial-sites">
-      <xsl:call-template        name = "countries"/>
-    </div>
+      <div class="trial-sites">
+        <xsl:call-template        name = "countries"/>
+      </div>
+    </xsl:element>
   </xsl:template>
 
 
