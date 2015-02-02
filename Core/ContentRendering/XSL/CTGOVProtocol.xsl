@@ -1007,80 +1007,71 @@
         </xsl:attribute>
         <xsl:text>Trial Lead Organizations/Sponsors</xsl:text>
       </xsl:element>
-        
-         <h6>
-          <xsl:value-of select="LeadSponsor"/>
-        </h6>
-      <xsl:for-each select="Collaborator">
-        <span Class="Protocol-LeadOrg-PersonName">
-          <xsl:value-of select="."/>
-        </span>
-        <br/>
-        <br/>
-      </xsl:for-each>
-      <xsl:apply-templates/>
+
+      <h6>
+        <xsl:value-of select="LeadSponsor"/>
+      </h6>
+
+      <ul>
+        <xsl:apply-templates select="Collaborator"/>
+      </ul>
+      
+      <xsl:apply-templates          select = "OverallOfficial"/>
+      <xsl:apply-templates          select = "OverallContact"/>
     </xsl:element>
+  </xsl:template>
+  
+  <xsl:template match="Collaborator">
+    <li>
+      <xsl:value-of select="."/>
+    </li>
   </xsl:template>
 
   <xsl:template match="OverallContact">
-    <table width="100%" cellspacing="0" cellpadding="0" border="0">
-      <tr>
-        <td valign="top" width="44%">
-          <span Class="Protocol-LeadOrg-PersonName">
-            <xsl:choose>
-              <xsl:when test="GivenName[node()] =true() ">
-                <xsl:choose>
-                  <xsl:when test="MiddleInitial[node()] =true() ">
-                    <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="concat(GivenName, ' ', SurName)"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="SurName"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </span>
-          <xsl:if test="ProfessionalSuffix[node()] =true() ">
-            <span Class="Protocol-LeadOrg-Suffix">
-              <xsl:value-of select="concat(', ',ProfessionalSuffix)"/>
-            </span>
-          </xsl:if>
-        </td>
-        <td valign="top" width="2%">
-          <img src="/images/spacer.gif" width="100%" height="1px" alt="" border="0"/>
-        </td>
-        <td valign="top" width="54%">
-          <span Class="Protocol-LeadOrg-Phone">
-            <xsl:if test="Phone[node()] = true()">
-              Ph:&#160;<xsl:value-of select="Phone"/>
-            </xsl:if>
-            <xsl:if test="PhoneExt[node()] = true()">
-              <xsl:value-of select="concat('  Ext.', PhoneExt)"/>
-            </xsl:if>
-          </span>
-        </td>
-      </tr>
-      <xsl:if test="Email[node()] = true()">
-        <tr>
-          <td Colspan="2">&#160;</td>
-          <td Valign="top" align="left">
-            <span Class="Protocol-LeadOrg-Email">
-              Email:
-              <xsl:element name="a">
-                <xsl:attribute name="href">
-                  mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/>
-                </xsl:attribute>
-                <xsl:value-of select="Email"/>
-              </xsl:element>
-            </span>
-          </td>
-        </tr>
+    <xsl:element                   name = "div">
+      <xsl:choose>
+        <xsl:when test="GivenName[node()] =true() ">
+          <xsl:choose>
+            <xsl:when test="MiddleInitial[node()] =true() ">
+              <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat(GivenName, ' ', SurName)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="SurName"/>
+        </xsl:otherwise>
+      </xsl:choose>
+
+      <xsl:if test="ProfessionalSuffix[node()] =true() ">
+
+        <xsl:value-of select="concat(', ',ProfessionalSuffix)"/>
+
       </xsl:if>
-    </table>
-    <br/>
+      <br />
+
+      <xsl:if test="Phone[node()] = true()">
+        Ph:&#160;<xsl:value-of select="Phone"/>
+      </xsl:if>
+      <xsl:if test="PhoneExt[node()] = true()">
+        <xsl:value-of select="concat('  Ext.', PhoneExt)"/>
+      </xsl:if>
+
+      <xsl:if test="Email[node()] = true()">
+        <br />
+        Email:
+        <xsl:element name="a">
+          <xsl:attribute name="href">
+            mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/>
+          </xsl:attribute>
+          <xsl:value-of select="Email"/>
+        </xsl:element>
+
+      </xsl:if>
+
+    </xsl:element>
   </xsl:template>
   <xsl:template match="OverallContactBackup">
     <table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -1143,46 +1134,34 @@
     <br/>
   </xsl:template>
   <xsl:template match="OverallOfficial">
-    <table width="100%" cellspacing="0" cellpadding="0" border="0">
-      <tr>
-        <td valign="top" width="44%">
-          <span Class="Protocol-LeadOrg-PersonName">
-            <xsl:choose>
-              <xsl:when test="GivenName[node()] =true() ">
-                <xsl:choose>
-                  <xsl:when test="MiddleInitial[node()] =true() ">
-                    <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="concat(GivenName, ' ', SurName)"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="SurName"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </span>
-          <xsl:if test="ProfessionalSuffix[node()] = true()">
-            <span Class="Protocol-LeadOrg-Suffix">
-              <xsl:value-of select="concat(', ',ProfessionalSuffix)"/>
-            </span>
-          </xsl:if>
-        </td>
-        <td valign="top" width="2%">
-          <img src="/images/spacer.gif" width="100%" height="1px" alt="" border="0"/>
-        </td>
-        <td valign="top" width="54%">
-          <xsl:if test="Role[node()] = true()">
-            <span Class="Protocol-LeadOrg-PersonRole">
-              <xsl:value-of select="Role"/>
-            </span>
-          </xsl:if>
-        </td>
-      </tr>
-    </table>
-    <br/>
+    <xsl:element                   name = "div">
+
+      <xsl:choose>
+        <xsl:when test="GivenName[node()] =true() ">
+          <xsl:choose>
+            <xsl:when test="MiddleInitial[node()] =true() ">
+              <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat(GivenName, ' ', SurName)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="SurName"/>
+        </xsl:otherwise>
+      </xsl:choose>
+
+      <xsl:if test="ProfessionalSuffix[node()] = true()">
+        <xsl:value-of select="concat(', ',ProfessionalSuffix)"/>
+      </xsl:if>
+
+      <xsl:if test="Role[node()] = true()">
+        <xsl:value-of select="concat(', ',Role)"/>
+      </xsl:if>
+    </xsl:element>
   </xsl:template>
+  
   <!-- ********************** End Leading Organizations ********************* -->
   <!--Beginning of RequiredHeader -->
   <xsl:template match="RequiredHeader">
@@ -1207,4 +1186,54 @@
     </xsl:element>
   </xsl:template>
   <!-- END of RequiredHeader -->
+
+  <!--Clean list Styles from the Prototype XSL for Protocols-->
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ItemizedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'il'"/>
+    <xsl:element                   name = "ul">
+      <xsl:if                    test = "@id">
+        <xsl:attribute                name = "id">
+          <xsl:value-of              select = "@id"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "OrderedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'ol'"/>
+    <xsl:element                   name = "ol">
+      <xsl:if                    test = "@id">
+        <xsl:attribute                name = "id">
+          <xsl:value-of              select = "@id"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListItem">
+    <xsl:param                     name = "topSection"
+                                 select = "'li'"/>
+    <li>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </li>
+  </xsl:template>
 </xsl:stylesheet>
