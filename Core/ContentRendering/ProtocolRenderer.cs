@@ -327,9 +327,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = summaryNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    summaryNav.InnerXml = "<a name=\"Objectives_" + strCDRID + "\"></a>" + html;
+                    summaryNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(new ProtocolSection(0, summaryNav.OuterXml, ProtocolSectionType.CTGovBriefSummary));
                 }
 
@@ -337,7 +337,6 @@ namespace GateKeeper.ContentRendering
                 XPathNavigator disclaimerNav = xNav.SelectSingleNode("//a[@name='Disclaimer']");
                 if (disclaimerNav != null)
                 {
-                    disclaimerNav.InnerXml = "<a name=\"Disclaimer_" + strCDRID + "\"></a>" + disclaimerNav.InnerXml;
                     string tempHtml = disclaimerNav.OuterXml;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0,
@@ -349,7 +348,6 @@ namespace GateKeeper.ContentRendering
                 XPathNavigator leadOrgsNav = xNav.SelectSingleNode("//a[@name='LeadOrgs']");
                 if (leadOrgsNav != null)
                 {
-                    leadOrgsNav.InnerXml = "<a name=\"LeadOrgs_" + strCDRID + "\"></a>" + leadOrgsNav.InnerXml;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, leadOrgsNav.OuterXml,   ProtocolSectionType.CTGovLeadOrgs));
                 }
@@ -367,9 +365,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = detailedDescNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    detailedDescNav.InnerXml = "<a name=\"Outline_" + strCDRID + "\"></a>" + html;
+                    detailedDescNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, detailedDescNav.OuterXml,ProtocolSectionType.CTGovDetailedDescription));
                 }
@@ -380,9 +378,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = entryCriteriaNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    entryCriteriaNav.InnerXml = "<a name=\"EntryCriteria_" + strCDRID + "\"></a>" + html;
+                    entryCriteriaNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, entryCriteriaNav.OuterXml, ProtocolSectionType.CTGovEntryCriteria));
                 }
