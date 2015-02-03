@@ -86,8 +86,66 @@
     <xsl:apply-templates select="Sponsors"/>
     <!-- Start of the order of Location -->
     <xsl:if test="Location[node()] = true()">
-      <xsl:element name="a">
-        <xsl:attribute name="name">TrialSites</xsl:attribute>
+      <a name="TrialSites">
+
+        <locationData>
+          <xsl:for-each select="Location">
+            <xsl:sort select="Facility/PostalAddress/CountryName" />
+            <xsl:sort select="Facility/PostalAddress/PoliticalSubUnitName" />
+            <xsl:sort select="Facility/PostalAddress/City" />
+            <xsl:sort select="Facility/FacilityName" />
+            <location>
+              <city><xsl:value-of select="Facility/PostalAddress/City"/></city>
+              <politicalSubUnitName><xsl:value-of select="Facility/PostalAddress/PoliticalSubUnitName"/></politicalSubUnitName>
+              <country><xsl:value-of select="Facility/PostalAddress/CountryName"/></country>
+              <facilityName><xsl:value-of select="Facility/FacilityName"/></facilityName>
+              <contactHTML>
+                <xsl:for-each select="CTGovContact | CTGovContactBackup | Investigator">
+                  <p>
+                    <!-- Contact person's name. -->
+                    <span>
+                      <!-- This will lead to extra whitespaces when there's a node missing, but this
+                      is an HTML snippet, so the extra spaces will collapse when the snippet
+                      displays in the browsr. -->
+                      <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
+                      <xsl:if test="ProfessionalSuffix">, <xsl:value-of select="ProfessionalSuffix"/></xsl:if>
+                    </span>
+
+                    <!-- Investigator's Role -->
+                    <xsl:if test="(name() = 'Investigator') and (Role[node()] = true())">
+                      <span>
+                        <br/>
+                        <xsl:value-of select="Role"/>
+                      </span>
+                    </xsl:if>
+                    
+                    <!-- Phone number. -->
+                    <xsl:if test="Phone[node()] = true()">
+                      <span>
+                        <br />Ph: <xsl:value-of select="Phone"/>
+                        <xsl:if test="PhoneExt[node()] = true()">Ext. <xsl:value-of select="PhoneExt"/>
+                      </xsl:if>
+                      </span>
+                    </xsl:if>
+
+                    <!-- Email address -->
+                    <xsl:if test="Email[node()] = true()">
+                      <span>
+                        <br />Email: 
+                        <a>
+                          <!-- Create a mailto: link with a default subject line containing the protocol ID, OrgStudID, and Title -->
+                          <xsl:attribute name="href">mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/></xsl:attribute>
+                          <xsl:value-of select="Email"/>
+                        </a>
+                      </span>
+                    </xsl:if>
+                  </p>
+                </xsl:for-each>
+              </contactHTML>
+            </location>
+          </xsl:for-each>
+        </locationData>
+        
         <h3>Trial Sites</h3>
         <xsl:variable name="ProtocolSites" select="//PostalAddress"/>
         <P>
@@ -690,7 +748,7 @@
             <!-- END of Non USA Study sites and contacts -->
           </table>
         </P>
-      </xsl:element>
+      </a>
     </xsl:if>
     <!-- End of the order of Location -->
     <xsl:apply-templates select="RequiredHeader"/>
@@ -1063,9 +1121,7 @@
         <br />
         Email:
         <xsl:element name="a">
-          <xsl:attribute name="href">
-            mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/>
-          </xsl:attribute>
+          <xsl:attribute name="href">mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/></xsl:attribute>
           <xsl:value-of select="Email"/>
         </xsl:element>
 
