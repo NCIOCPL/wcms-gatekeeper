@@ -1175,19 +1175,17 @@
           <xsl:value-of select="./LinkText"/>
         </xsl:element>
         <Br/>
-        <span Class="Protocol-NLMIdentifer">
-          NLM Identifer <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
-        </span>
+          NLM Identifier <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
         <Br/>
-        <span Class="Protocol-DownloadDate">
+        <strong>
           <xsl:value-of select="./DownloadDate"/>
-        </span>
+        </strong>
       </P>
     </xsl:element>
   </xsl:template>
   <!-- END of RequiredHeader -->
 
-  <!--Clean list Styles from the Prototype XSL for Protocols-->
+  <!--Clean list Styles from the Prototype XSL for CTGovProtocols-->
   <!--
   ================================================================ -->
   <xsl:template                  match = "ItemizedList">
