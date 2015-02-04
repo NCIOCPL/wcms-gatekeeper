@@ -424,143 +424,24 @@ namespace GateKeeper.ContentRendering
         {
             try
             {
-                if (studySitesNav != null)
+                XPathNodeIterator locationIter = studySitesNav.Select("//locationData/location");
+                foreach (XPathNavigator location in locationIter)
                 {
-                    XPathNavigator tableNav = studySitesNav.SelectSingleNode("P/table");
-                    XmlNode studySiteNode = ((IHasXmlNode)tableNav).GetNode();
-                    StringBuilder siteHtmlBuffer = new StringBuilder();
-                    string city = string.Empty;
-                    string newCity = string.Empty;
-                    string state = string.Empty;
-                    string newState = string.Empty;
-                    string country = string.Empty;
-                    string newCountry = string.Empty;
-                    string siteName = string.Empty;
-                    string newSiteName = string.Empty;
-                    string siteRef = string.Empty;
-                    string personRef = string.Empty;
-                    // Unique key to hold the person's contact info
-                    string contactKey = string.Empty;
-                    bool addSpace = true;
-                    bool bCity = false;
-                    bool bState = false;
-                    bool bCountry = false;
+                    XPathNavigator cityNode = location.SelectSingleNode("city");
+                    XPathNavigator stateNode = location.SelectSingleNode("politicalSubUnitName");
+                    XPathNavigator countryNode = location.SelectSingleNode("country");
+                    XPathNavigator facilityNode = location.SelectSingleNode("facilityName");
+                    XPathNavigator htmlNode = location.SelectSingleNode("contactHTML");
 
-                    foreach (XmlNode xnTableRow in studySiteNode.ChildNodes)
-                    {
-                        switch (xnTableRow.Attributes[0].Name.ToLower())
-                        {
-                            case "space":
-                                if (addSpace)
-                                {
-                                    siteHtmlBuffer.Append("<tr>");
-                                    siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                    siteHtmlBuffer.Append("</tr>");
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "country":
-                                addSpace = false;
-                                newCountry = xnTableRow.ChildNodes[0].InnerText;
-                                if ((newCountry.Trim().Length > 0) && (newCountry != country))
-                                {
-                                    country = newCountry;
-                                    bCountry = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "state":
-                                addSpace = false;
-                                newState = xnTableRow.ChildNodes[0].InnerText;
-                                if (newState.Trim() == string.Empty && xnTableRow.ChildNodes[1] != null)
-                                    newState = xnTableRow.ChildNodes[1].InnerText;
-                                if (newState != null && newState.Trim().Length > 0 && newState != state)
-                                {
-                                    state = newState;
-                                    bState = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "city":
-                                addSpace = false;
-                                newCity = xnTableRow.ChildNodes[1].InnerText;
-                                if ((newCity.Trim().Length > 0) && (newCity != city))
-                                {
-                                    city = newCity;
-                                    bCity = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "facility":
-                                addSpace = false;
-                                newSiteName = xnTableRow.ChildNodes[1].InnerText.Trim();
-                                if  (newSiteName != siteName|| bCity || bState || bCountry ) 
-                                {
-                                    if (xnTableRow.Attributes.Count > 0)
-                                    {
-                                        siteRef = xnTableRow.Attributes[1].Value;
-                                    }
-                                    else
-                                    {
-                                        siteRef = string.Empty;
-                                    }
-                                    siteName = newSiteName;
-                                    siteHtmlBuffer.Append("<tr>");
-                                    siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                    siteHtmlBuffer.Append("</tr>\n");
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "name":
-                                personRef = xnTableRow.Attributes[1].Value;
-                                siteHtmlBuffer.Append("<tr>");
-                                siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                siteHtmlBuffer.Append("</tr>\n");
-                                addSpace = true;
-                                break;
-                            case "email":
-                                siteHtmlBuffer.Append("<tr>");
-                                siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                siteHtmlBuffer.Append("</tr>\n");
-                                addSpace = true;
-                                break;
-                            case "contact":
-                                if (siteHtmlBuffer.Length > 0)
-                                {
-                                    contactKey = xnTableRow.Attributes[0].Value;
-                                    AddContactInfoHTML(siteHtmlBuffer.ToString(), siteRef, siteName, city, state, country, contactKey);
-                                    siteHtmlBuffer.Remove(0, siteHtmlBuffer.Length);
-                                    contactKey = string.Empty;
-                                }
-                                bCountry = false;
-                                bState = false;
-                                bCity = false;
-                                xnTableRow.RemoveAll();
-                                break;
-                            default:
-                                // Ignore unknown node 
-                                break;
-                        } // End switch
-                    } // End foreach
+                    string city = cityNode.Value;
+                    string state = stateNode.Value;
+                    string country = countryNode.Value;
+                    string facilityName = facilityNode.Value;
+                    string facilityRef = facilityNode.GetAttribute("siteRef", string.Empty);
+                    string html = htmlNode.Value;
+                    string contactKey = location.GetAttribute("contactKey", string.Empty);
+
+                    AddContactInfoHTML(html, facilityRef, facilityName, city, state, country, contactKey);
                 }
             }
             catch (Exception e)

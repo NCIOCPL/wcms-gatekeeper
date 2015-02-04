@@ -88,61 +88,78 @@
     <xsl:if test="Location[node()] = true()">
       <a name="TrialSites">
 
+        <!-- Create a list of locations, with a separate location record for each contact.
+            The defaultContactKey value is used when no contacts exist. -->
         <locationData>
           <xsl:for-each select="Location">
             <xsl:sort select="Facility/PostalAddress/CountryName" />
             <xsl:sort select="Facility/PostalAddress/PoliticalSubUnitName" />
             <xsl:sort select="Facility/PostalAddress/City" />
             <xsl:sort select="Facility/FacilityName" />
-            <location>
-              <city><xsl:value-of select="Facility/PostalAddress/City"/></city>
-              <politicalSubUnitName><xsl:value-of select="Facility/PostalAddress/PoliticalSubUnitName"/></politicalSubUnitName>
-              <country><xsl:value-of select="Facility/PostalAddress/CountryName"/></country>
-              <facilityName><xsl:value-of select="Facility/FacilityName"/></facilityName>
-              <contactHTML>
-                <xsl:for-each select="CTGovContact | CTGovContactBackup | Investigator">
-                  <p>
+
+            <!-- These don't vary between contacts at a single facility. -->
+            <xsl:variable name="city" select="Facility/PostalAddress/City" />
+            <xsl:variable name="politicalSubUnit" select="Facility/PostalAddress/PoliticalSubUnitName" />
+            <xsl:variable name="countryName" select="Facility/PostalAddress/CountryName" />
+            <xsl:variable name="siteRef" select="Facility/FacilityName/@ref" />
+            <xsl:variable name="facilityName" select="Facility/FacilityName" />
+
+            <!-- If there are contacts, create location records. But see below for the case
+                where there are no contacts. -->
+            <xsl:for-each select="CTGovContact | CTGovContactBackup | Investigator">
+              <location contactKey="{@site}">
+                <city><xsl:value-of select="$city"/></city>
+                <politicalSubUnitName><xsl:value-of select="$politicalSubUnit"/></politicalSubUnitName>
+                <country><xsl:value-of select="$countryName"/></country>
+                <facilityName siteRef="{$siteRef}"><xsl:value-of select="$facilityName"/></facilityName>
+                <contactHTML>
+                  <!-- Put the blob of HTML in a CDATA section to prevent surprises -->
+                  <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text>
                     <!-- Contact person's name. -->
-                    <span>
-                      <!-- This will lead to extra whitespaces when there's a node missing, but this
-                      is an HTML snippet, so the extra spaces will collapse when the snippet
+
+                      <!-- This concatenation will lead to extra whitespaces when there's a node missing,
+                      but this is an HTML snippet, so the extra spaces will collapse when the snippet
                       displays in the browsr. -->
                       <xsl:value-of select="concat(GivenName, ' ', MiddleInitial, ' ', SurName)"/>
                       <xsl:if test="ProfessionalSuffix">, <xsl:value-of select="ProfessionalSuffix"/></xsl:if>
-                    </span>
 
-                    <!-- Investigator's Role -->
-                    <xsl:if test="(name() = 'Investigator') and (Role[node()] = true())">
-                      <span>
+                      <!-- If this is an investigator, include the Role -->
+                      <xsl:if test="(name() = 'Investigator') and (Role[node()] = true())">
                         <br/>
                         <xsl:value-of select="Role"/>
-                      </span>
-                    </xsl:if>
-                    
-                    <!-- Phone number. -->
-                    <xsl:if test="Phone[node()] = true()">
-                      <span>
-                        <br />Ph: <xsl:value-of select="Phone"/>
-                        <xsl:if test="PhoneExt[node()] = true()">Ext. <xsl:value-of select="PhoneExt"/>
                       </xsl:if>
-                      </span>
-                    </xsl:if>
+                      
+                      <!-- Phone number, only applicable for CTGovContact or CTGovContactBackup -->
+                      <xsl:if test="Phone[node()] = true()">
+                        <br />Ph: <xsl:value-of select="Phone"/>
+                        <xsl:if test="PhoneExt[node()] = true()">Ext. <xsl:value-of select="PhoneExt"/></xsl:if>
+                      </xsl:if>
 
-                    <!-- Email address -->
-                    <xsl:if test="Email[node()] = true()">
-                      <span>
-                        <br />Email: 
-                        <a>
-                          <!-- Create a mailto: link with a default subject line containing the protocol ID, OrgStudID, and Title -->
-                          <xsl:attribute name="href">mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/></xsl:attribute>
-                          <xsl:value-of select="Email"/>
-                        </a>
-                      </span>
-                    </xsl:if>
-                  </p>
-                </xsl:for-each>
-              </contactHTML>
-            </location>
+                      <!-- Email address, only applicable for CTGovContact or CTGovContactBackup -->
+                      <xsl:if test="Email[node()] = true()">
+                          <br />Email: 
+                          <a>
+                            <!-- Create a mailto: link with a default subject line containing the protocol ID, OrgStudID, and Title -->
+                            <xsl:attribute name="href">mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/></xsl:attribute>
+                            <xsl:value-of select="Email"/>
+                          </a>
+                      </xsl:if>
+                  <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
+                </contactHTML>
+              </location>
+            </xsl:for-each>
+            
+            <!-- If there are no contacts, create a contactless location record. -->
+            <xsl:if test="(CTGovContact[node()] = false()) and (CTGovContactBackup[node()] = false()) and (Investigator[node()] = false())">
+              <location contactKey="{Facility/@site}">
+                <city><xsl:value-of select="$city"/></city>
+                <politicalSubUnitName><xsl:value-of select="$politicalSubUnit"/></politicalSubUnitName>
+                <country><xsl:value-of select="$countryName"/></country>
+                <facilityName siteRef="{$siteRef}"><xsl:value-of select="$facilityName"/></facilityName>
+                <contactHTML></contactHTML>
+              </location>
+            </xsl:if>
+            
           </xsl:for-each>
         </locationData>
         
