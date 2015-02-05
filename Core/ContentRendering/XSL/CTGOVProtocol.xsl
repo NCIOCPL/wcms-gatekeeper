@@ -1059,9 +1059,9 @@
   <xsl:template match="CTGovDisclaimer">
     <xsl:element name="a">
       <xsl:attribute name="name">Disclaimer</xsl:attribute>
-      
+      <p>
         <xsl:apply-templates/>
-      <br/>
+      </p>
     </xsl:element>
   </xsl:template>
   <!-- ****************************** End Summary  ******************************** -->
@@ -1080,12 +1080,16 @@
           <xsl:text>LeadOrgs_</xsl:text>
           <xsl:value-of select="$cdrId"/>
         </xsl:attribute>
+        <xsl:attribute name="do-not-show">
+          <xsl:text>toc</xsl:text>
+        </xsl:attribute>
         <xsl:text>Trial Lead Organizations/Sponsors</xsl:text>
       </xsl:element>
 
-      <h6>
+      <!-- hide from table of contents on the front end-->
+      <h4 do-not-show="toc">
         <xsl:value-of select="LeadSponsor"/>
-      </h6>
+      </h4>
 
       <ul>
         <xsl:apply-templates select="Collaborator"/>
