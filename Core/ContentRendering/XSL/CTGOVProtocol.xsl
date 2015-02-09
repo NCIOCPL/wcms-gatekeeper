@@ -137,8 +137,7 @@
 
                       <!-- Email address, only applicable for CTGovContact or CTGovContactBackup -->
                       <xsl:if test="Email[node()] = true()">
-                          <br />Email: 
-                          <a>
+                          <br />Email: <a>
                             <!-- Create a mailto: link with a default subject line containing the protocol ID, OrgStudID, and Title -->
                             <xsl:attribute name="href">mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/></xsl:attribute>
                             <xsl:value-of select="Email"/>
