@@ -114,7 +114,7 @@ namespace GateKeeper.ContentRendering
             langBuf = "<figure class=\"image-left-medium\">";
             
             enlargeHTML = "<a href=\"" + imEnlarge + "\">" +
-                    "target=\"_blank\" class=\"article-image-enlarge no-resize\">" +
+                    "<target=\"_blank\" class=\"article-image-enlarge no-resize\">" +
                     enlarge + "</a>";
 
             langBuf += enlargeHTML + imHTML;
