@@ -50,7 +50,7 @@ namespace GKManagers.CMSDocumentProcessing
         // URL Constants are for creating/updating the URL string that is assigned to each PermanentLink
         // And then translated into a usable URL for Percussion and the Web
         private const string URLConstantPage = "Page";
-        private const string URLConstantSection = "#Section";
+        private const string URLConstantSection = "#section/";
 
         #endregion
 
@@ -420,14 +420,23 @@ namespace GKManagers.CMSDocumentProcessing
                 // First find the page containing this Section ID
                 temporaryInfo = finder.FindPageContainingSection(newPageIDs, link.SectionID);
 
+                //For Devon Rex - Remove page numbers
+
                 // Current URL schema is "Page<#>#Section<_#>
                 // Constant are defined at the top of the function with other Permanent Link Constants
                 // If it is a top level section, it should only be Page<#>
-                newURL = URLConstantPage + temporaryInfo.PageNumber;
+                //newURL = URLConstantPage + temporaryInfo.PageNumber;
                 // If it is deeper than a top level section, it should be Page<#>#Section<#>
+
+                // If it is deeper than a top level section, it should be #<SectionID>
                 if (!topLevelSectionIDs.Contains(link.SectionID))
                 {
-                    newURL += URLConstantSection + link.SectionID;
+                    newURL = "#" + link.SectionID;
+                }
+                else
+                {
+                    //for top level sections the URL is #section/<SectionID>
+                    newURL = URLConstantSection + link.SectionID;
                 }
 
                 // Assign the new URL

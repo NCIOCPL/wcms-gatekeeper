@@ -31,25 +31,27 @@ namespace GKManagers.CMSDocumentProcessing
         {
                 string url;
 
+                //For Devon Rex - Remove page numbers
+
                 // Page numbers are natural numbers (1, 2, 3...), not zero-based.
-                if (PageNumber > 1 && !IsMobileReference)
-                {
-                    if (string.IsNullOrEmpty(sectionID))
-                        url = string.Format("{0}/Page{1}", BasePath, PageNumber);
-                    else
-                        //removed the word section from the url
-                        //as sections are represented using their ids
-                        url = string.Format("{0}/Page{1}#{2}", BasePath, PageNumber, sectionID);
-                }
-                else
-                {
+                //if (PageNumber > 1 && !IsMobileReference)
+                //{
+                //    if (string.IsNullOrEmpty(sectionID))
+                //        url = string.Format("{0}/Page{1}", BasePath, PageNumber);
+                //    else
+                //        //removed the word section from the url
+                //        //as sections are represented using their ids
+                //        url = string.Format("{0}/Page{1}#{2}", BasePath, PageNumber, sectionID);
+                //}
+                //else
+                //{
                     if (string.IsNullOrEmpty(sectionID))
                         url = string.Format("{0}", BasePath);
                     else
                         //removed the word section from the url
                         //as sections are represented using their ids
                         url = string.Format("{0}/#{1}", BasePath, sectionID);
-                }
+                //}
 
                 return url;
 

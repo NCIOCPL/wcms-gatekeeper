@@ -907,21 +907,21 @@ namespace GKManagers.CMSDocumentProcessing
         protected string BuildSummaryRefUrl(string baseUrl, int pageNumber, string sectionID)
         {
             string url;
-
+            //For Devon Rex - remove page numbers
             // Page numbers are natural numbers (1, 2, 3...), not zero-based.
-            if (pageNumber > 0)
-            {
-                if (string.IsNullOrEmpty(sectionID))
-                    url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
-                else
-                    //removed the word section from the url
-                    //as sections are represented using their ids
-                    url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
-            }
-            else
-            {
+            //if (pageNumber > 0)
+            //{
+            //    if (string.IsNullOrEmpty(sectionID))
+            //        url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
+            //    else
+            //        //removed the word section from the url
+            //        //as sections are represented using their ids
+            //        url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
+            //}
+            //else
+            //{
                 url = BuildSummaryRefUrl(baseUrl, sectionID);
-            }
+            //}
 
             return url;
         }
