@@ -12,9 +12,9 @@
 	<xsl:param name="RootUrl"/>
 	
 	<xsl:template match="/">
-		<div class='result'>
+		<GeneticsProfessional>
 			<xsl:apply-templates/>
-		</div>
+		</GeneticsProfessional>
 	</xsl:template>
 	
 	<xsl:template match="*">
@@ -27,88 +27,98 @@
 		<xsl:apply-templates select="NAME"/>
 		
 		<div class="description">
-		<div class="row">
-			<div class="medium-3 columns header">Practice Locations</div>
-			<div class="medium-9 columns">
-				<xsl:apply-templates select="PRACTICELOCATIONS"/>
-			</div>
-		</div>
-		
-		<!-- from dtd, optional element -->
-		<xsl:if test="TYPE">
 			<div class="row">
-				<div class="medium-3 columns header">Profession</div>
+				<div class="medium-3 columns header">Practice Locations</div>
 				<div class="medium-9 columns">
-					<xsl:apply-templates select="TYPE"/>
+					<xsl:apply-templates select="PRACTICELOCATIONS"/>
 				</div>
 			</div>
-		</xsl:if>
-		
-		<!-- from dtd, optional element -->
-		<xsl:if test="SPECIALTY">
-			<table class="table-default">
-			<caption>Medical/Genetics Specialties</caption>
-				<thead>
-					<tr>
-						<th>Specialty</th>
-						<th>Board Certified?</th>
-					</tr>
-				</thead>
-				<tbody>
-					<xsl:apply-templates select="SPECIALTY"/>
-				</tbody>
-			</table>
-		</xsl:if>
-		
-		<!-- from dtd, optional element -->
-		<xsl:if test="TEAMSERVICES">
+			
+			<!-- from dtd, optional element -->
+			<xsl:if test="TYPE">
+				<div class="row">
+					<div class="medium-3 columns header">Profession</div>
+					<div class="medium-9 columns">
+						<xsl:apply-templates select="TYPE"/>
+					</div>
+				</div>
+			</xsl:if>
+			
+			<!-- from dtd, optional element -->
+			<xsl:if test="SPECIALTY">
+				<div class="row">
+					<div class="medium-12 columns">
+						<table class="table-default">
+						<caption>Medical/Genetics Specialties</caption>
+							<thead>
+								<tr>
+									<th>Specialty</th>
+									<th>Board Certified?</th>
+								</tr>
+							</thead>
+							<tbody>
+								<xsl:apply-templates select="SPECIALTY"/>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</xsl:if>
+			
+			<!-- from dtd, optional element -->
+			<xsl:if test="TEAMSERVICES">
+				<div class="row">
+					<div class="medium-3 columns header">Member of a Team That Provides These Services</div>
+					<div class="medium-9 columns">
+						<ul>
+							<xsl:apply-templates select="TEAMSERVICES"/>
+						</ul>
+					</div>
+				</div>
+			</xsl:if>
+			
 			<div class="row">
-				<div class="medium-3 columns header">Member of a Team That Provides These Services</div>
-				<div class="medium-9 columns">
-					<ul>
-						<xsl:apply-templates select="TEAMSERVICES"/>
-					</ul>
+				<div class="medium-12 columns">
+					<table class="table-default">
+						<caption>Areas of Specialization</caption>
+						<thead>
+							<tr>
+								<th>Family Cancer Syndrome</th>
+								<th>Type of Cancer</th>
+							</tr>
+						</thead>
+						<tbody>
+							<xsl:apply-templates select="GENETICSERVICES/FAMILYCANCERSYNDROME"/>
+						</tbody>
+					</table>
+				</div>
+			</div>		
+			
+			<!-- from dtd, optional element -->
+			<xsl:if test="MEMBERSHIP">
+				<div class="row">
+					<div class="medium-3 columns header">Professional Organizations</div>
+					<div class="medium-9 columns">
+						<xsl:apply-templates select="MEMBERSHIP"/>		
+					</div>
+				</div>					
+			</xsl:if>
+		
+			<!-- from dtd, optional element -->
+			<xsl:if test="NOTES">
+				<div class="row">
+					<div class="medium-3 columns header">Additional Information</div>
+					<div class="medium-9 columns">
+						<xsl:value-of select="NOTES"/>
+					</div>
+				</div>
+			</xsl:if>
+			
+			<!-- new search button -->
+			<div class="row">
+				<div class="medium-12 columns">
+					<a class="action button" href="/search/search_geneticsservices.aspx">New Search</a>
 				</div>
 			</div>
-		</xsl:if>
-		
-		<table class="table-default">
-			<caption>Areas of Specialization</caption>
-			<thead>
-				<tr>
-					<th>Family Cancer Syndrome</th>
-					<th>Type of Cancer</th>
-				</tr>
-			</thead>
-			<tbody>
-				<xsl:apply-templates select="GENETICSERVICES/FAMILYCANCERSYNDROME"/>
-			</tbody>
-		</table>				
-		
-		<!-- from dtd, optional element -->
-		<xsl:if test="MEMBERSHIP">
-			<div class="row">
-				<div class="medium-3 columns header">Professional Organizations</div>
-				<div class="medium-9 columns">
-					<xsl:apply-templates select="MEMBERSHIP"/>		
-				</div>
-			</div>					
-		</xsl:if>
-	
-		<!-- from dtd, optional element -->
-		<xsl:if test="NOTES">
-			<div class="row">
-				<div class="medium-3 columns header">Additional Information</div>
-				<div class="medium-9 columns">
-					<xsl:value-of select="NOTES"/>
-				</div>
-			</div>
-		</xsl:if>
-		
-		<!-- new search button -->
-		<p>
-			<a class="action button" href="/search/search_geneticsservices.aspx">New Search</a>
-		</p>
 		</div>
 	</xsl:template>
 	
