@@ -79,16 +79,58 @@ namespace GateKeeper.ContentRendering
                 bThumb = true;
 
             string imName = string.Empty;
+            string imEnlarge = string.Empty;
+            string enlargeHTML = string.Empty;
+            string enlarge = string.Empty;
+            string captionHTML = string.Empty;
+            string caption = string.Empty;
+            string imHTML = string.Empty;
             string imLoc = "[__imagelocation]";
+
             // For as-is image, the image name is CDR#.jpg
             if (mediaLink.Size.Equals("as-is"))
+            {
                 imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + ".jpg";
+            }
             // For other size image, the image name is CDR#-width.jpg
             else
                 imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-" + width + ".jpg";
 
+            // Image name for enlarged image
+            imEnlarge = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-750.jpg";
+
+            // Set HTML for image itself
+            imHTML = "<img src=\"" + imName + "\" alt=\"" + mediaLink.Alt + "\">";
+
+            // Set language for Enlarge text
+            if (mediaLink.Language == Language.English)
+                enlarge = "Enlarge";
+            else
+                enlarge = "Ampliar";
+
             //Write HTML
             string langBuf = string.Empty;
+
+            langBuf = "<figure class=\"image-left-medium\">";
+            
+            enlargeHTML = "<a href=\"" + imEnlarge + "\">" +
+                    "target=\"_blank\" class=\"article-image-enlarge no-resize\">" +
+                    enlarge + "</a>";
+
+            langBuf += enlargeHTML + imHTML;
+
+            // If there is a caption, display caption
+            if (mediaLink.Caption.Length > 0)
+            {
+                caption = mediaLink.Caption;
+                captionHTML = "<figcaption><div class=\"caption-container no-resize\"><p>" +
+                    caption + "</p></div></figcaption>";
+                langBuf += captionHTML;
+            }
+
+            langBuf += "</figure>";
+
+            /*
             string idTag = string.Empty;
             if (mediaLink.Id != "")
             {
@@ -181,7 +223,7 @@ namespace GateKeeper.ContentRendering
                     langBuf += "</table></p>";
 
                 }
-            }
+            }*/
 
             return langBuf.ToString();
         }
