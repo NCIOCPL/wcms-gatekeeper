@@ -112,17 +112,17 @@ namespace GateKeeper.ContentRendering
                                 dictionaryFmt = dictionaryFmtNext;  // Sleight of hand for formatting.
                             }
                             else
-                                relatedPageLinks += string.Format("<li><h4><a href=\"{0}\">{1}</a></h4></li>", ri.Url, ri.Name);
+                                relatedPageLinks += string.Format("<li><a href=\"{0}\">{1}</a></li>", ri.Url, ri.Name);
                         }
 
                         // Do the actual rendering part.  Again, not enough to really justify a StringBuilder.
                         if (def.RelatedInformationList.Count > 0)
                         {
-                            relatedInformationHtml = "<div id=\"RelatedInfo\"><h3>" + langMoreinfo + "</h3>";
+                            relatedInformationHtml = "<div class=\"related-resources\"><h6><strong>" + langMoreinfo + "</h6>";
 
                             // General list of related items.
                             if (!string.IsNullOrEmpty(relatedPageLinks))
-                                relatedInformationHtml += String.Format("<ul>{0}</ul>", relatedPageLinks);
+                                relatedInformationHtml += String.Format("<ul class=\"no-bullets\">{0}</ul>", relatedPageLinks);
                             // Related glossary terms.
                             if (!string.IsNullOrEmpty(relatedDictionaryLinks))
                                 relatedInformationHtml += String.Format("<p><span class=\"related-definition-label\">{1}</span> {0}.</p>", relatedDictionaryLinks, langDefinitionLabel);

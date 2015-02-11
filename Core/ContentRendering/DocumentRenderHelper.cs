@@ -67,6 +67,7 @@ namespace GateKeeper.ContentRendering
         /// <returns></returns>
         static public string ProcessImageMediaLink(MediaLink mediaLink, bool bGlossary, bool bInTable)
         {
+            /*
             // Captions will not be displayed in the dictionary page, but will be displayed in the pop-up
 
             //If the size is not specified, the default for glossary is 179 and for summary is 274
@@ -77,16 +78,18 @@ namespace GateKeeper.ContentRendering
                 bThumb = true;
             else if (mediaLink.MinWidth > width && !mediaLink.Size.Equals("as-is"))
                 bThumb = true;
+            */
 
             string imName = string.Empty;
             string imEnlarge = string.Empty;
-            string enlargeHTML = string.Empty;
+            string enlargeHtml = string.Empty;
             string enlarge = string.Empty;
-            string captionHTML = string.Empty;
+            string captionHtml = string.Empty;
             string caption = string.Empty;
-            string imHTML = string.Empty;
+            string imHtml = string.Empty;
             string imLoc = "[__imagelocation]";
 
+            /*
             // For as-is image, the image name is CDR#.jpg
             if (mediaLink.Size.Equals("as-is"))
             {
@@ -96,11 +99,16 @@ namespace GateKeeper.ContentRendering
             else
                 imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-" + width + ".jpg";
 
+            */
+            
+            // Image name for normal image
+            imName = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-571.jpg";
+ 
             // Image name for enlarged image
             imEnlarge = imLoc + "CDR" + mediaLink.ReferencedCdrID + "-750.jpg";
 
             // Set HTML for image itself
-            imHTML = "<img src=\"" + imName + "\" alt=\"" + mediaLink.Alt + "\">";
+            imHtml = "<img src=\"" + imName + "\" alt=\"" + mediaLink.Alt + "\">";
 
             // Set language for Enlarge text
             if (mediaLink.Language == Language.English)
@@ -113,19 +121,19 @@ namespace GateKeeper.ContentRendering
 
             langBuf = "<figure class=\"image-left-medium\">";
             
-            enlargeHTML = "<a href=\"" + imEnlarge + "\" " +
+            enlargeHtml = "<a href=\"" + imEnlarge + "\" " +
                     "target=\"_blank\" class=\"article-image-enlarge no-resize\">" +
                     enlarge + "</a>";
 
-            langBuf += enlargeHTML + imHTML;
+            langBuf += enlargeHtml + imHtml;
 
             // If there is a caption, display caption
             if (mediaLink.Caption.Length > 0)
             {
                 caption = mediaLink.Caption;
-                captionHTML = "<figcaption><div class=\"caption-container no-resize\"><p>" +
+                captionHtml = "<figcaption><div class=\"caption-container no-resize\"><p>" +
                     caption + "</p></div></figcaption>";
-                langBuf += captionHTML;
+                langBuf += captionHtml;
             }
 
             langBuf += "</figure>";
