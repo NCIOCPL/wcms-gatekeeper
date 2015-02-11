@@ -362,7 +362,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Enclose the html within a top level element, to make the xml
             // valid before loading into the XmlDocument object.
-            html.LoadXml( "<mk>" + drugInfo.Html + "</mk>" );
+            //html.LoadXml( "<mk>" + drugInfo.Html + "</mk>" );
+            html.LoadXml(drugInfo.Html);
             XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
             bool bProcesed = false;
@@ -407,7 +408,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Update the drugInfo document html only if it was changed.
             if (bProcesed)
             {
-                drugInfo.Html = html.InnerXml.Substring("<mk>".Length, html.InnerXml.Length - "</mk>".Length);
+                drugInfo.Html = html.InnerXml;//.Substring("<mk>".Length, html.InnerXml.Length - "</mk>".Length);
             }
         }
         

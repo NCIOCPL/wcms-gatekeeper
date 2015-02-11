@@ -1,218 +1,683 @@
-<?xml version='1.0'?>	
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-							  xmlns:msxsl="urn:schemas-microsoft-com:xslt"
-							  xmlns:scripts="urn:local-scripts">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method = "xml"/>
+  <xsl:param    name = "section"/>
 
-	<xsl:include href="Common/CommonElements.xsl"/>
-	<xsl:include href="Common/CommonScripts.xsl"/>
-	<xsl:include href="Common/CustomTemplates.xsl"/>
-	<xsl:include href="Common/TableRender.xslt"/>
-	
-	<xsl:output method="xml"/>
+  <xsl:template match="/DrugInformationSummary">
+    <html>
+      <head>
+        <title>
+          <xsl:text>WCMS DIS/DCS: </xsl:text>
+          <xsl:value-of             select = "DrugInfoTitle"/>
+        </title>
+        <link href="http://www.cancer.gov/PublishedContent/Styles/nvcg.css"
+              type="text/css" rel="StyleSheet" />
+      </head>
+      <body>
+        <div class="contentzone">
+          
+          <xsl:apply-templates    select = "DrugInfoTitle"/>
+          <xsl:apply-templates    select = "DrugInfoMetaData/
+                                       PronunciationInfo"/>
+          <xsl:apply-templates    select = "DrugInfoMetaData"/>
+          <xsl:apply-templates    select = "*[not(child::DrugInfoDescription)]
+                                       [not(self::DrugInfoTitle)]
+                                       [not(self::DateFirstPublished)]
+                                       [not(self::DateLastModified)]"/>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
 
-	<xsl:template match="/">
-		<DrugInformationSummary>
-			<xsl:apply-templates/>
-		</DrugInformationSummary>
-	</xsl:template>
-	
-	<xsl:template match="*">
-		<!-- suppress defaults -->	
-	</xsl:template>
-	
-	<!-- ****************************** DrugInfoSummary ***************************** -->
-	<xsl:template match="DrugInformationSummary">
-    <xsl:apply-templates select="DrugInfoMetaData/PronunciationInfo"/>
-		<xsl:apply-templates select="DrugInfoTitle"/>
-		<xsl:apply-templates select="DrugInfoMetaData/DrugInfoDescription"/>
-		<xsl:apply-templates select="DrugInfoMetaData"/>
-		<xsl:apply-templates select="Section"/>
-		<xsl:apply-templates select="DrugInfoDisclaimer"/>
-	</xsl:template>
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "DrugInfoMetaData">
+    <xsl:apply-templates    select = "DrugInfoDescription"/>
 
-  <xsl:template match="DrugInfoMetaData/PronunciationInfo">
+    <!-- Table only displayed for DIS, not for DCS -->
+    <xsl:if                       test = "not(/DrugInformationSummary/
+                                               DrugInfoMetaData/
+                                               DrugInfoType/
+                                               @Combination = 'Yes')">
+      <div class="two-columns brand-fda">
+        <div class="column1">US Brand Name(s)</div>
+        <div class="column2">
+          <xsl:for-each            select = "USBrandNames">
+            <xsl:value-of           select = "."/>
+            <xsl:if                   test = "not(position() = last())">
+              <br />
+            </xsl:if>
+          </xsl:for-each>
+        </div>
+      </div>
+      <div class="two-columns brand-fda">
+        <div class="column1">FDA Approved</div>
+        <div class="column2">
+          <xsl:value-of         select = "FDAApproved"/>
+        </div>
+      </div>
+
+      <!--
+     <table class="brand-fda">
+      <colgroup>
+       <col name="col1"/>
+       <col name="col2"/>
+      </colgroup>
+      <tbody>
+        <xsl:apply-templates    select = "USBrandNames"/>
+        <xsl:apply-templates    select = "FDAApproved"/>
+      </tbody>
+     </table>
+     -->
+    </xsl:if>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "USBrandNames">
+    <tr>
+      <th scope="row">US Brand Name(s)</th>
+      <td>
+        <xsl:for-each                  select = "USBrandName">
+          <xsl:value-of              select = "."/>
+          <xsl:if                      test = "not(position() = last())">
+            <br />
+          </xsl:if>
+        </xsl:for-each>
+      </td>
+    </tr>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "FDAApproved">
+    <tr>
+      <th scope="row">FDA Approved</th>
+      <td>
+        <xsl:value-of              select = "."/>
+      </td>
+    </tr>
+  </xsl:template>
+
+  <!--
+  Template to remove display of SectionMetaData
+  ================================================================ -->
+  <xsl:template                  match = "DrugInfoDescription">
     <p>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "DrugInfoTitle">
+    <!--<h1>
+      <xsl:apply-templates/>
+    </h1>-->
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template match="PronunciationInfo">
+    <div>
       <!-- Filter the MediaLinks to match only audio files and only English pronunciations -->
       <xsl:apply-templates select="MediaLink[@type='audio/mpeg' and @language='en']" mode="audio" />
       <xsl:if test="count(MediaLink) &gt; 0 and count(TermPronunciation) &gt; 0">&#160;</xsl:if>
       <xsl:apply-templates select="TermPronunciation" />
-    </p>
+    </div>
+  </xsl:template>
+  <!--<xsl:template                  match = "PronunciationInfo">
+    <div>
+      <xsl:element                 name = "a">
+        <xsl:attribute              name = "href">
+          --><!--
+       Next Line For Testing on DEV only !!! 
+       ===================================== --><!--
+          <xsl:text>http://www.cancer.gov</xsl:text>
+          <xsl:text>/PublishedContent/Media/CDR/Media/</xsl:text>
+          <xsl:value-of            select = "number(
+                                           substring-after(
+                                            MediaLink[@language = 'en']/@ref,
+                                            'CDR'))"/>
+          <xsl:choose>
+            <xsl:when                test = "MediaLink[@language = 'en']/@type
+                                           = 'audio/mpeg'">
+              <xsl:text>.mp3</xsl:text>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:attribute>
+        --><!--
+      Next Line For Testing on DEV only - hard coded Server name !!! 
+      ===================================== --><!--
+        <img width="16" height="16" border="0" alt="listen"
+            src="http://www.cancer.gov/images/audio-icon.gif"></img>
+      </xsl:element>
+
+      <xsl:if                     test = "TermPronunciation">
+        <xsl:text>&#160;&#160;(</xsl:text>
+        <xsl:value-of            select = "TermPronunciation"/>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+    </div>
+  </xsl:template>-->
+
+
+  <!--
+  Template for Top SummarySections
+  ================================================================ -->
+  <xsl:template                  match = "SummarySection">
+    <xsl:param                     name = "topSection"
+                                 select = "'sub'"/>
+    <xsl:apply-templates>
+      <xsl:with-param          name = "topSection"
+                             select = "$topSection"/>
+    </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="DrugInfoMetaData/DrugInfoDescription">
-		<p><xsl:apply-templates /></p>
-	</xsl:template>	
-		
-	<xsl:template match="DrugInfoMetaData">
-		<table cellspacing="0" cellpadding="0" border="0">
-			<xsl:if test="USBrandNames[node()] = true()">
-				<xsl:for-each select="USBrandNames/USBrandName">
-					<tr>
-					
-					<xsl:choose>
-						<xsl:when test="position()=1">
-							<td valign="top" width="35%"><b>US Brand Name(s):</b></td>
-						</xsl:when>
-						<xsl:otherwise>
-							<td valign="top" width="35%"></td>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0" /></td>
-					
-					<td valign="top" width="65%">
-            <xsl:apply-templates />
-					</td>
-					
-					</tr>
-					<tr>
-						<td valign="top" colspan="3"><img src="/images/spacer.gif" alt="" width="10" height="6" border="0" /></td>
-					</tr>
-				</xsl:for-each>
-			</xsl:if>
-			
-			<xsl:if test="Synonyms[node()] = true()">
+  <!--
+  Display the Keypoints as Titles within the text
+  ================================================================ -->
+  <xsl:template                  match = "KeyPoint">
+    <xsl:element                   name = "h3">
+      <xsl:attribute                name = "id">
+        <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
 
-				<xsl:for-each select="Synonyms/Synonym">
-					<tr>
-					
-					<xsl:choose>
-						<xsl:when test="position()=1">
-							<td valign="top" width="35%"><b>Other Name(s):</b></td>
-						</xsl:when>
-						<xsl:otherwise>
-							<td valign="top" width="35%"></td>
-						</xsl:otherwise>
-					</xsl:choose>
 
-					<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0" /></td>
-					
-					<td valign="top" width="65%">
-            <xsl:apply-templates />
-					</td>
+  <!--
+  Create the section titles
+  ================================================================ -->
+  <xsl:template                  match = "Title">
+    <xsl:param                     name = "topSection"
+                                 select = "'title'"/>
+    <h3>
+      <xsl:apply-templates/>
+    </h3>
+  </xsl:template>
 
-            <tr>
-              <td valign="top" colspan="3"><img src="/images/spacer.gif" alt="" width="10" height="6" border="0" /></td>
-            </tr>
-          </tr>
-				</xsl:for-each>
-			</xsl:if>
-			
-			<tr><td valign="top" colspan="3"><img src="/images/spacer.gif" alt="" width="10" height="6" border="0" /></td></tr>
-			
-			<xsl:if test="string-length(FDAApproved) &gt; 0">
-				<tr>
-				<td valign="top" width="35%"><b>FDA Approved:</b> </td>
-				<td valign="top" width="10"><img src="/images/spacer.gif" alt="" width="10" height="1" border="0"></img></td>
-				<td valign="top" width="65%"><xsl:value-of select="FDAApproved"/></td>
-				</tr>
-			</xsl:if>
-		</table>
-	</xsl:template>	
-			
-    <xsl:template match="Section">
-		<xsl:apply-templates/>
-	</xsl:template>
-	
-	<xsl:template match="Title">
-		<xsl:if test="count(ancestor::Section) = 1">
-			<Span class="DrugInfoSummary-SummarySection-Title-Level1"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="count(ancestor::Section) = 2">
-			<Span class="DrugInfoSummary-SummarySection-Title-Level2"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="count(ancestor::Section) = 3">
-			<Span class="DrugInfoSummary-SummarySection-Title-Level3"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="count(ancestor::Section) &gt; 3 ">
-			<Span class="DrugInfoSummary-SummarySection-Title-Level4"><xsl:apply-templates/></Span>
-		</xsl:if>
-		<xsl:if test="following-sibling::node()">
-			<xsl:for-each select="following-sibling::node()">
-				<xsl:choose>
-					<xsl:when test="name() ='Section' and position()=1"><br /><br /></xsl:when>
-					<xsl:when test="name() ='Section' and position()=2"><br /><br /></xsl:when>
-					<xsl:when test="name() ='Table' and position()=1"><br /><br /></xsl:when>
-					<xsl:when test="name() ='Table' and position()=2"><br /><br /></xsl:when>
-				</xsl:choose>
-			</xsl:for-each>
-		</xsl:if>
-	</xsl:template>
-	
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "Para">
+    <xsl:param                     name = "topSection"
+                                 select = "'para'"/>
+    <xsl:element                   name = "p">
+      <xsl:attribute                name = "id">
+        <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:attribute                name = "tabindex">
+        <xsl:text>0</xsl:text>
+      </xsl:attribute>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
 
-	<xsl:template match="ProtocolRef">
-		<xsl:element name="A">
-			<xsl:attribute name="Class">Summary-ProtocolRef</xsl:attribute>
-			<xsl:attribute name="href">/search/viewclinicaltrials.aspx?version=patient&amp;cdrid=<xsl:value-of select="number(substring-after(@href,'CDR'))"/>
-			</xsl:attribute>
-			<xsl:value-of select="."/>
-		</xsl:element>
-		<xsl:if test="following-sibling::node()">
-			<xsl:for-each select="following-sibling::node()">
-				<xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
-	</xsl:template>
-					
-	<xsl:template match="LOERef">
-		<a>
-			<xsl:attribute name="Class">Summary-LOERef</xsl:attribute>
-			<xsl:attribute name="href">/Common/PopUps/popDefinition.aspx?id=<xsl:value-of select="number(substring-after(@href,'CDR'))"/>&amp;version=HealthProfessional&amp;language=English</xsl:attribute>
-			<xsl:attribute name="onclick">javascript:popWindow('defbyid','<xsl:value-of select="@href"/>&amp;version=HealthProfessional&amp;language=English'); return(false);</xsl:attribute>	
-			<xsl:value-of select="."/>
-		</a>
-		<xsl:if test="following-sibling::node()">
-			<xsl:for-each select="following-sibling::node()">
-				<xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
-	</xsl:template>				
-					
-	<xsl:template match="GlossaryTermRef">
-		<a>
-		<xsl:attribute name="Class">Summary-GlossaryTermRef</xsl:attribute>
-		<xsl:attribute name="href">/Common/PopUps/popDefinition.aspx?id=<xsl:value-of select="number(substring-after(@href,'CDR'))"/>&amp;version=Patient&amp;language=English</xsl:attribute>
-		<xsl:attribute name="onclick">javascript:popWindow('defbyid','<xsl:value-of select="@href"/>&amp;version=Patient&amp;language=English');  return(false);</xsl:attribute>
-		<xsl:value-of select="."/>
-		</a>
-		<xsl:if test="following-sibling::node()">
-			<xsl:for-each select="following-sibling::node()">
-				<xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="DrugInfoDisclaimer">	
-		<xsl:element name="a">
-			<xsl:attribute name="name">Disclaimer</xsl:attribute>
-		</xsl:element>
-		<div class="note">
-			<xsl:apply-templates/>
-		</div>
-		<br/>
-		<xsl:element name="a">
-			<xsl:attribute name="name">EndOfDisclaimer</xsl:attribute>
-		</xsl:element>
-	</xsl:template>
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ItemizedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'il'"/>
+    <xsl:element                   name = "ul">
+      <xsl:attribute                name = "id">
+        <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
 
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "OrderedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'ol'"/>
+    <xsl:element                   name = "ol">
+      <xsl:attribute                name = "id">
+        <xsl:value-of              select = "@id"/>
+      </xsl:attribute>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListItem">
+    <xsl:param                     name = "topSection"
+                                 select = "'li'"/>
+    <li>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </li>
+  </xsl:template>
+
+  <!--
+  Template to display the citations in the Reference Section
+  ================================================================ -->
+  <xsl:template                  match = "ReferenceSection">
+    <xsl:param                     name = "topSection"
+                                 select = "'ref'"/>
+    <h3>References</h3>
+
+    <ol>
+      <xsl:for-each              select = "Citation">
+        <li>
+
+          <xsl:element               name = "a">
+            <xsl:attribute            name = "name">
+              <xsl:value-of          select = "$topSection"/>
+              <xsl:text>.</xsl:text>
+              <xsl:value-of          select = "@idx"/>
+            </xsl:attribute>
+            <!-- Little Problem -->
+            <xsl:text> </xsl:text>
+          </xsl:element>
+
+          <xsl:value-of            select = "."/>
+          <xsl:if                    test = "@PMID">
+            <xsl:element              name = "a">
+              <xsl:attribute           name = "href">
+                <xsl:text>http://www.ncbi.nlm.nih.gov/entrez/query.fcgi</xsl:text>
+                <xsl:text>?cmd=Retrieve&amp;db=PubMed&amp;list_uids=</xsl:text>
+                <xsl:value-of          select = "@PMID"/>
+                <xsl:text>&amp;dopt=Abstract</xsl:text>
+              </xsl:attribute>
+              <xsl:text>[PUBMED Abstract]</xsl:text>
+            </xsl:element>
+          </xsl:if>
+        </li>
+      </xsl:for-each>
+    </ol>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "Reference">
+    <xsl:param                     name = "topSection"
+                                 select = "'cit'"/>
+    <xsl:text>[</xsl:text>
+    <xsl:element                  name = "a">
+      <xsl:attribute               name = "href">
+        <xsl:text>#</xsl:text>
+        <xsl:value-of             select = "$topSection"/>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of             select = "@refidx"/>
+      </xsl:attribute>
+      <xsl:value-of             select = "@refidx"/>
+    </xsl:element>
+    <xsl:text>]</xsl:text>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "Strong">
+    <strong>
+      <xsl:apply-templates/>
+    </strong>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "GlossaryTermRef">
+    <xsl:element                   name = "a">
+      <xsl:attribute                name = "class">
+        <xsl:text>definition</xsl:text>
+      </xsl:attribute>
+      <xsl:attribute                name = "href">
+        <!--
+     Next Line For Testing on DEV only !!! 
+     ===================================== -->
+        <xsl:text>http://www.cancer.gov</xsl:text>
+        <xsl:text>/Common/PopUps/popDefinition.aspx?id=</xsl:text>
+        <xsl:value-of              select = "number(
+                                           substring-after(@href, 'CDR'))"/>
+        <xsl:text>&amp;version=Patient&amp;language=English</xsl:text>
+      </xsl:attribute>
+      <xsl:attribute                name = "onclick">
+        <xsl:text>javascript:popWindow('defbyid','</xsl:text>
+        <xsl:value-of              select = "@href"/>
+        <xsl:text>&amp;version=Patient&amp;language=English'); </xsl:text>
+        <xsl:text>return(false);</xsl:text>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "SummaryRef">
+    <xsl:element                   name = "a">
+      <xsl:attribute                name = "href">
+        <!--
+     Next Line For Testing on DEV only !!! 
+     ===================================== -->
+        <xsl:text>http://www.cancer.gov</xsl:text>
+        <xsl:value-of              select = "@url"/>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ExternalRef">
+    <xsl:element                   name = "a">
+      <xsl:attribute                name = "href">
+        <!--
+     Next Line For Testing on DEV only !!! 
+     ===================================== -->
+        <xsl:value-of              select = "@xref"/>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
   <xsl:template match="MediaLink" mode="audio">
     <div inlinetype="rxvariant" templatename="pdqSnMediaAudioPlayer" objectid="{@ref}">
       Placeholder slot
     </div>
   </xsl:template>
+  <!--<xsl:template                  match = "MediaLink">
+    <xsl:element                   name = "figure">
+      <xsl:attribute                name = "class">
+        <xsl:text>image-center</xsl:text>
+      </xsl:attribute>
 
-  <xsl:template match="TermPronunciation">
-    (<xsl:apply-templates/>)
+      --><!--
+   Display the 'Enlarge' button
+   ============================= --><!--
+      <xsl:element                   name = "a">
+        <xsl:attribute                name = "class">
+          <xsl:text>article-image-enlarge</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute                name = "target">
+          <xsl:text>_blank</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute                name = "href">
+          --><!--
+     Next Line For Testing on DEV only !!! 
+     ===================================== --><!--
+          <xsl:text>http://www.cancer.gov</xsl:text>
+          <xsl:text>/images/cdr/live/CDR</xsl:text>
+          <xsl:value-of              select = "number(
+                                           substring-after(@ref, 'CDR'))"/>
+          <xsl:text>.jpg</xsl:text>
+        </xsl:attribute>
+        <xsl:text>Enlarge</xsl:text>
+      </xsl:element>
+
+      --><!--
+    Display the Image
+    ============================= --><!--
+      <xsl:element                  name = "img">
+        <xsl:attribute               name = "__id">
+          <xsl:value-of             select = "@id"/>
+        </xsl:attribute>
+        <xsl:attribute               name = "alt">
+          <xsl:value-of             select = "@alt"/>
+        </xsl:attribute>
+        <xsl:attribute               name = "src">
+          --><!--
+     Next Line For Testing on DEV only !!! 
+     ===================================== --><!--
+          <xsl:text>http://www.cancer.gov</xsl:text>
+          <xsl:text>/images/cdr/live/CDR</xsl:text>
+          <xsl:value-of              select = "number(
+                                           substring-after(@ref, 'CDR'))"/>
+          <xsl:text>.jpg</xsl:text>
+        </xsl:attribute>
+      </xsl:element>
+
+
+      <xsl:element                 name = "figcaption">
+        <xsl:element                 name = "div">
+          <xsl:attribute              name = "class">
+            <xsl:text>caption-container</xsl:text>
+          </xsl:attribute>
+
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:element>
+    </xsl:element>
+  </xsl:template>-->
+
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "DrugInfoDisclaimer">
+    <xsl:element                   name = "aside">
+      <xsl:attribute                name = "class">
+        <xsl:text>dis-disclaimer</xsl:text>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
 
-  <!-- *********************** End Content Section **************************** -->
+  <!-- *************** TABLES ********************************** -->
+  <!--
+  Template for Tables
+  ================================================================ -->
+  <xsl:template                  match = "Table">
+    <!-- Provide the 'Enlarge' link -->
+    <xsl:if                       test = "not(/DrugInformationSummary/
+                                               DrugInfoMetaData/
+                                               DrugInfoType/
+                                               @Combination = 'Yes')">
+      <xsl:element                   name = "p">
+        <xsl:attribute                name = "class">
+          <xsl:text>table-enlarge</xsl:text>
+        </xsl:attribute>
 
+        <xsl:element                  name = "a">
+          <xsl:attribute                name = "href">
+            <xsl:text>/DADA</xsl:text>
+          </xsl:attribute>
+          <xsl:text>Enlarge</xsl:text>
+        </xsl:element>
+      </xsl:element>
+    </xsl:if>
 
-  <xsl:template match="Table">
-   <xsl:call-template name="TableRender">
-        </xsl:call-template>
+    <!-- Display the Table -->
+    <xsl:element                   name = "table">
+      <xsl:choose>
+        <xsl:when                    test = "/DrugInformationSummary/
+                                               DrugInfoMetaData/
+                                               DrugInfoType/
+                                               @Combination = 'Yes'">
+          <xsl:attribute                name = "class">
+            <xsl:text>drug-combination</xsl:text>
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute                name = "class">
+            <xsl:text>table-default</xsl:text>
+          </xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+
+      <xsl:apply-templates        select = "Title"
+                                    mode = "table"/>
+      <xsl:apply-templates        select = "TGroup"/>
+    </xsl:element>
   </xsl:template>
-  
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "Title"
+                                  mode = "table">
+    <xsl:element                   name = "caption">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Template for colgroup
+  ================================================================ -->
+  <xsl:template                  match = "TGroup">
+    <xsl:element                   name = "colgroup">
+      <xsl:for-each               select = "ColSpec">
+        <xsl:element                 name = "col">
+          <xsl:attribute              name = "width">
+            <xsl:value-of            select = "@ColWidth"/>
+          </xsl:attribute>
+        </xsl:element>
+      </xsl:for-each>
+    </xsl:element>
+    <xsl:apply-templates        select = "THead"/>
+    <xsl:apply-templates        select = "TFoot"/>
+    <xsl:apply-templates        select = "TBody"/>
+  </xsl:template>
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "THead">
+    <xsl:element                   name = "thead">
+      <xsl:apply-templates        select = "Row">
+        <xsl:with-param              name = "header"
+                                   select = "'Y'"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "TBody">
+    <xsl:element                   name = "tbody">
+      <xsl:apply-templates        select = "Row"/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "TFoot">
+    <xsl:element                   name = "tfoot">
+      <xsl:apply-templates        select = "Row"/>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "Row">
+    <xsl:param                     name = "header"
+                                 select = "'N'"/>
+    <xsl:element                   name = "tr">
+      <xsl:apply-templates        select = "entry">
+        <xsl:with-param              name = "header"
+                                   select = "$header"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Template for Table Caption/Title
+  ================================================================ -->
+  <xsl:template                  match = "entry">
+    <xsl:param                     name = "header"
+                                 select = "'N'"/>
+    <xsl:choose>
+      <xsl:when                     test = "$header = 'Y'">
+        <xsl:element                 name = "th">
+          <xsl:attribute              name = "scope">
+            <xsl:text>col</xsl:text>
+          </xsl:attribute>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element                 name = "td">
+          <xsl:if                     test = "position() = 1">
+            <xsl:attribute             name = "class">
+              <xsl:text>drug-combo-letter</xsl:text>
+            </xsl:attribute>
+          </xsl:if>
+
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
+
+  <!--
+========================================================================
+    NAMED TEMPLATES
+======================================================================== -->
+  <!--
+  Template to remove display of SectionMetaData
+  ================================================================ -->
+  <xsl:template                   name = "keypointsbox">
+    <xsl:if test = "descendant::KeyPoint">
+      <div class="keyPoints">
+        <h4>Key Points for This Section</h4>
+        <ul>
+          <xsl:for-each               select = "descendant::KeyPoint">
+            <li>
+              <xsl:element                name = "a">
+                <xsl:attribute             name = "href">
+                  <xsl:text>#</xsl:text>
+                  <xsl:value-of           select = "@id"/>
+                </xsl:attribute>
+                <xsl:value-of            select = "."/>
+              </xsl:element>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </div>
+    </xsl:if>
+  </xsl:template>
+
+  <!--
+  Template to remove display of SectionMetaData
+  ================================================================ -->
+  <xsl:template                   name = "toc">
+    <!-- xsl:for-each              select = "descendant::Title" -->
+    <xsl:apply-templates select = "SummarySection" mode = "toc"/>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "SummarySection[Title]" mode = "toc">
+    <ul>
+      <xsl:apply-templates select = "Title" mode = "toc"/>
+      <xsl:apply-templates select = "SummarySection" mode = "toc"/>
+    </ul>
+  </xsl:template>
+
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "Title" mode = "toc">
+    <li>
+      <xsl:element                name = "a">
+        <xsl:attribute             name = "href">
+          <xsl:text>#</xsl:text>
+          <xsl:value-of          select = "../@id"/>
+        </xsl:attribute>
+        <xsl:value-of            select = "."/>
+      </xsl:element>
+
+    </li>
+  </xsl:template>
+
+
+
 </xsl:stylesheet>
-  
