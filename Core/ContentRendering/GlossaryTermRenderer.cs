@@ -118,7 +118,7 @@ namespace GateKeeper.ContentRendering
                         // Do the actual rendering part.  Again, not enough to really justify a StringBuilder.
                         if (def.RelatedInformationList.Count > 0)
                         {
-                            relatedInformationHtml = "<div class=\"related-resources\"><h6><strong>" + langMoreinfo + "</h6>";
+                            relatedInformationHtml = "<div class=\"related-resources\"><h6>" + langMoreinfo + "</h6>";
 
                             // General list of related items.
                             if (!string.IsNullOrEmpty(relatedPageLinks))
