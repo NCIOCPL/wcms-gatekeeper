@@ -141,6 +141,7 @@ namespace GKManagers.CMSDocumentProcessing
             get { return mediaRenderedContentList; }
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Overrides DeleteContentItem to delete the entire content tree, not just the folder
         /// containing a single pdqCancerInfoSummary object.
@@ -152,16 +153,17 @@ namespace GKManagers.CMSDocumentProcessing
             // No further work is required.
             if (itemGuid != null)
             {
-                PercussionGuid summaryLink = LocateExistingSummaryLink(itemGuid);
+               // PercussionGuid summaryLink = LocateExistingSummaryLink(itemGuid);
 
                 // Get access to the PSFolderItem object for removing the folder and its content.
-                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { summaryLink.ID });
+                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { itemGuid.ID });
 
                 // Get path from the first item of the the PSFolderItem of the rootItem folder collection.
                 string folderPath = CMSController.GetPathInSite(rootItem[0]);
+                string parentPath = GetParentFolder(folderPath);
 
                 // Purge all the contents inside in the folder and remove  the folder.
-                CMSController.DeleteFolder(folderPath, true);
+                CMSController.DeleteFolder(parentPath, true);
             }
 
         }

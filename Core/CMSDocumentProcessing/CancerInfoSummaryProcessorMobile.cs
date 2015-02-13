@@ -45,7 +45,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summary">The summary to update.</param>
         /// <param name="summaryRootID">ID of the summary's root object.</param>
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
-        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
+        protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, /*PercussionGuid summaryLinkID,*/ PermanentLinkHelper permanentLinkData,
             PercussionGuid[] desktopPageIDs, PSAaRelationship[] incomingDesktopPageRelationships,
             PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
@@ -58,18 +58,18 @@ namespace GKManagers.CMSDocumentProcessing
             if (mobilePageIDs.Length == 0)
             {
                 // Create Mobile for the first time.
-                CreateMobilePageStructure(summary, summaryRootID, summaryLinkID, sitePath);
+                CreateMobilePageStructure(summary, summaryRootID, /*summaryLinkID,*/ sitePath);
             }
             else
             {
-                UpdateMobilePageStructure(summary, summaryLinkID, summaryRootID,
+                UpdateMobilePageStructure(summary, /*summaryLinkID,*/ summaryRootID,
                     mobilePageIDs, incomingMobilePageRelationships, sitePath);
             }
         }
 
         private void CreateMobilePageStructure(SummaryDocument document, 
             PercussionGuid summaryRoot, 
-            PercussionGuid summaryLink, 
+            /*PercussionGuid summaryLink,*/ 
             string sitePath)
         {
             // For undoing failed attempts.
@@ -86,7 +86,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 // Move existing document components to staging.
                 // Pages and sub-pages don't yet exist.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], null/*, null*/);
+                PerformTransition(TransitionItemsToStaging, summaryRoot, /*summaryLink,*/ new PercussionGuid[0], null/*, null*/);
 
                 CMSController.SiteRootPath = sitePath;
 
@@ -141,7 +141,7 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         private void UpdateMobilePageStructure(SummaryDocument summary,
-            PercussionGuid summaryLink, PercussionGuid summaryRoot,
+            /*PercussionGuid summaryLink,*/ PercussionGuid summaryRoot,
             PercussionGuid[] oldpageIDs, PSAaRelationship[] incomingPageRelationships,
             string sitePath)
         {
@@ -181,7 +181,7 @@ namespace GKManagers.CMSDocumentProcessing
             try
             {
                 // Move the entire composite document to staging.
-                PerformTransition(TransitionItemsToStaging, summaryRoot, summaryLink, new PercussionGuid[0], oldpageIDs/*, oldSubItems*/);
+                PerformTransition(TransitionItemsToStaging, summaryRoot/*, summaryLink*/, new PercussionGuid[0], oldpageIDs/*, oldSubItems*/);
 
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
@@ -212,7 +212,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 LogDetailedStep("Begin Relationship updates.");
 
-                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRoot, summaryLink, oldpageIDs, newPageIDs, incomingPageRelationships, new MobileSummarySectionFinder(CMSController));
+                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRoot/*, summaryLink*/, oldpageIDs, newPageIDs, incomingPageRelationships, new MobileSummarySectionFinder(CMSController));
 
                 // Add new cancer information summary pages into the page slot.
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, newSummaryPageIDList, SummaryPageSlot, MobileSummarySectionSnippetTemplate);
@@ -224,8 +224,9 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRoot.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
-                ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
-                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem, summaryLinkItem });
+                //OCEPROJECT-1765 - Remove summary link dependency
+                //ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
+                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem/*, summaryLinkItem*/ });
                 List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
             }
             catch (Exception)
@@ -251,7 +252,7 @@ namespace GKManagers.CMSDocumentProcessing
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
             // Handle a potential change of URL.
-            UpdateDocumentURL(summary.BaseMobileURL, summaryRoot, summaryLink, componentIDs);
+            UpdateDocumentURL(summary.BaseMobileURL, summaryRoot/*, summaryLink*/, componentIDs);
 
             // Restore original site path.
             CMSController.SiteRootPath = originalSitePath;
