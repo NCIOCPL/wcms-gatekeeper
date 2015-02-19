@@ -53,7 +53,7 @@ namespace GateKeeper.ContentRendering
         static string ProcessAudioMediaLink(MediaLink mediaLink)
         {
             string audioMediaName = mediaLink.ReferencedCdrID + mediaLink.Extension;
-            string audioMediaHtml = "<a href=\"[_audioMediaLocation]/{0}\" id=\"audioLink{1}\" class=\"CDR_audiofile\" shape=\"rect\"><img src=\"/images/audio-icon.gif\" alt=\"listen\" border=\"0\" height=\"16\" width=\"16\" /></a>";
+            string audioMediaHtml = "<a href=\"[_audioMediaLocation]/{0}\" id=\"audioLink{1}\" class=\"CDR_audiofile\"><span class=\"hidden\">listen</span></a>";
             audioMediaHtml = string.Format(audioMediaHtml, audioMediaName, mediaLink.ReferencedCdrID.ToString());
             return audioMediaHtml;
         }
