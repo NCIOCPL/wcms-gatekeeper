@@ -422,31 +422,36 @@ namespace GateKeeper.ContentRendering
         /// </remarks>
         private void ParseStudySites(XPathNavigator studySitesNav)
         {
-            try
+            if (studySitesNav != null)
             {
-                XPathNodeIterator locationIter = studySitesNav.Select("//locationData/location");
-                foreach (XPathNavigator location in locationIter)
+                try
                 {
-                    XPathNavigator cityNode = location.SelectSingleNode("city");
-                    XPathNavigator stateNode = location.SelectSingleNode("politicalSubUnitName");
-                    XPathNavigator countryNode = location.SelectSingleNode("country");
-                    XPathNavigator facilityNode = location.SelectSingleNode("facilityName");
-                    XPathNavigator htmlNode = location.SelectSingleNode("contactHTML");
+                    XPathNodeIterator locationIter = studySitesNav.Select("//locationData/location");
+                    foreach (XPathNavigator location in locationIter)
+                    {
+                        // These nodes are always created by the XSL, but the value may be empty.
+                        XPathNavigator cityNode = location.SelectSingleNode("city");
+                        XPathNavigator stateNode = location.SelectSingleNode("politicalSubUnitName");
+                        XPathNavigator countryNode = location.SelectSingleNode("country");
+                        XPathNavigator facilityNode = location.SelectSingleNode("facilityName");
+                        XPathNavigator htmlNode = location.SelectSingleNode("contactHTML");
 
-                    string city = cityNode.Value;
-                    string state = stateNode.Value;
-                    string country = countryNode.Value;
-                    string facilityName = facilityNode.Value;
-                    string facilityRef = facilityNode.GetAttribute("siteRef", string.Empty);
-                    string html = htmlNode.Value;
-                    string contactKey = location.GetAttribute("contactKey", string.Empty);
+                        // Because the node will always exist, there's no need to check for nulls.
+                        string city = cityNode.Value;
+                        string state = stateNode.Value;
+                        string country = countryNode.Value;
+                        string facilityName = facilityNode.Value;
+                        string facilityRef = facilityNode.GetAttribute("siteRef", string.Empty);
+                        string html = htmlNode.Value;
+                        string contactKey = location.GetAttribute("contactKey", string.Empty);
 
-                    AddContactInfoHTML(html, facilityRef, facilityName, city, state, country, contactKey);
+                        AddContactInfoHTML(html, facilityRef, facilityName, city, state, country, contactKey);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Rendering protocol contact info HTML failed. Document CDRID=" + _protocolDocument.DocumentID.ToString(), e);
+                catch (Exception e)
+                {
+                    throw new Exception("Rendering Error: Rendering protocol contact info HTML failed. Document CDRID=" + _protocolDocument.DocumentID.ToString(), e);
+                }
             }
         }
 
