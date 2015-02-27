@@ -359,10 +359,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             XmlDocument html = new XmlDocument();
             html.PreserveWhitespace = true;
-
-            // Enclose the html within a top level element, to make the xml
-            // valid before loading into the XmlDocument object.
-            //html.LoadXml( "<mk>" + drugInfo.Html + "</mk>" );
+                       
             html.LoadXml(drugInfo.Html);
             XmlNodeList nodeList = html.SelectNodes("//div[@inlinetype='rxvariant']");
 
@@ -376,7 +373,7 @@ namespace GKManagers.CMSDocumentProcessing
                 XmlAttribute attrib;
 
                 int CdrID = Int32.Parse(CDRHelper.ExtractCDRID(reference.Value));
-                PercussionGuid mediaItemGuid = GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID);
+                PercussionGuid mediaItemGuid = base.GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID);
                 
                 // The media linked may not always exists 
                 if (mediaItemGuid == null)
@@ -384,7 +381,7 @@ namespace GKManagers.CMSDocumentProcessing
                     WarningWriter("Media Link Warning: The media linked does not exists in CMS for druginfo summary document:" + drugInfo.DocumentID + " MediaLinkID =" + CdrID.ToString() + ".");
                     continue;
                 }
-                long dependent = GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID).ID;
+                long dependent = base.GetCdrDocumentID(percussionConfig.ContentType.PDQMedia.Value, CdrID).ID;
                 reference.Value = dependent.ToString();
 
                 attrib = html.CreateAttribute("sys_dependentid");
@@ -408,7 +405,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Update the drugInfo document html only if it was changed.
             if (bProcesed)
             {
-                drugInfo.Html = html.InnerXml;//.Substring("<mk>".Length, html.InnerXml.Length - "</mk>".Length);
+                drugInfo.Html = html.InnerXml;
             }
         }
         

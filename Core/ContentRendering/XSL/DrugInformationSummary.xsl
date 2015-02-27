@@ -337,7 +337,7 @@
         <!--
      Next Line For Testing on DEV only !!! 
      ===================================== -->
-        <xsl:text>http://www.cancer.gov</xsl:text>
+        <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:text>/Common/PopUps/popDefinition.aspx?id=</xsl:text>
         <xsl:value-of              select = "number(
                                            substring-after(@href, 'CDR'))"/>
@@ -361,7 +361,7 @@
         <!--
      Next Line For Testing on DEV only !!! 
      ===================================== -->
-        <xsl:text>http://www.cancer.gov</xsl:text>
+        <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:value-of              select = "@url"/>
       </xsl:attribute>
       <xsl:apply-templates/>
