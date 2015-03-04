@@ -262,6 +262,18 @@
   </xsl:template>
 
   <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListTitle">
+    <xsl:element                   name = "p">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-list-title</xsl:text>
+      </xsl:attribute>
+
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+  
+  <!--
   Template to display the citations in the Reference Section
   ================================================================ -->
   <xsl:template                  match = "ReferenceSection">
