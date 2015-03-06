@@ -1267,6 +1267,7 @@
   <xsl:template                  match = "ItemizedList">
     <xsl:param                     name = "topSection"
                                  select = "'il'"/>
+    
     <xsl:element                   name = "ul">
       <xsl:if                    test = "@id">
         <xsl:attribute                name = "id">
@@ -1285,6 +1286,7 @@
   <xsl:template                  match = "OrderedList">
     <xsl:param                     name = "topSection"
                                  select = "'ol'"/>
+    
     <xsl:element                   name = "ol">
       <xsl:if                    test = "@id">
         <xsl:attribute                name = "id">
@@ -1310,4 +1312,17 @@
       </xsl:apply-templates>
     </li>
   </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListTitle">
+    <xsl:element                   name = "p">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-list-title</xsl:text>
+      </xsl:attribute>
+
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+  
 </xsl:stylesheet>
