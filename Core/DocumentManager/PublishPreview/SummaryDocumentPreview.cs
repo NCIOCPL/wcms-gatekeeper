@@ -63,10 +63,10 @@ namespace GKPreviews
                         date = String.Format("{0:MMMM dd, yyyy}", CovertToSpanishFormat(summary.LastModifiedDate));
                     }
 
-                    contentHtml += "<div class=\"document-dates\"><ul>";
+                    contentHtml += "<div id=\"cgvDate\"><div class=\"document-dates horizontal\"><div class=\"document-dates horizontal\"><ul class=\"clearfix\">";
                     if (summary.LastModifiedDate != DateTime.MinValue && summary.LastModifiedDate != null)
                         contentHtml += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
-                    contentHtml += "</ul></div>";
+                    contentHtml += "</ul></div></div></div>";
 
                     headerContent = createHeaderZoneContent(summary);
 
@@ -88,22 +88,23 @@ namespace GKPreviews
         #region Private Members
         private string createHeaderZoneContent(SummaryDocument document)
         {
-            // Create the content header html content
-            string html = string.Format("<div id=\"cgvcontentheader\"><div class=\"document-title-block\" style=\"background-color:#d4d9d9\" >" +
-        "<img src=\"/PublishedContent/Images/SharedItems/ContentHeaders/{0}\" alt=\"\" style=\"border-width:0px;\" />" +
-        "<h1>{1}</h1></div></div>", "title_cancertopics.jpg", document.Title);
+            string html = "";
+        //    // Create the content header html content
+        //    string html = string.Format("<div id=\"cgvcontentheader\"><div class=\"document-title-block\" style=\"background-color:#d4d9d9\" >" +
+        //"<img src=\"/PublishedContent/Images/SharedItems/ContentHeaders/{0}\" alt=\"\" style=\"border-width:0px;\" />" +
+        //"<h1>{1}</h1></div></div>", "title_cancertopics.jpg", document.Title);
 
-            // Create the cgvLanguageDate html content
-            string audience = "Health Professional";
-            if (document.Language == Language.Spanish)
-                audience = "Profesionales de salud";
+        //    // Create the cgvLanguageDate html content
+        //    string audience = "Health Professional";
+        //    if (document.Language == Language.Spanish)
+        //        audience = "Profesionales de salud";
 
-            if (document.AudienceType == "Patients")
-            {
-                audience = "Patient";
-                if (document.Language == Language.Spanish)
-                    audience = "Pacientes";
-            }
+        //    if (document.AudienceType == "Patients")
+        //    {
+        //        audience = "Patient";
+        //        if (document.Language == Language.Spanish)
+        //            audience = "Pacientes";
+        //    }
 
             //string updatedText = "Last Modified";
             //string date = String.Format("{0:MM/dd/yyyy}", document.LastModifiedDate);
@@ -115,15 +116,15 @@ namespace GKPreviews
             //}
 
 
-            html += string.Format("<div id=\"cgvLanguageDate\"><div class=\"language-dates\"><div class=\"version-language\">" +
-                 "<ul><li class=\"one active\">{0}</li></ul></div>", audience);
+            //html += string.Format("<div id=\"cgvLanguageDate\"><div class=\"language-dates\"><div class=\"version-language\">" +
+            //     "<ul><li class=\"one active\">{0}</li></ul></div>", audience);
 
-            //html += "<div class=\"document-dates\"><ul>";
-            //if (document.LastModifiedDate != DateTime.MinValue && document.LastModifiedDate != null)
-            //    html += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
-            //html += "</ul></div></div></div>";
+            ////html += "<div class=\"document-dates\"><ul>";
+            ////if (document.LastModifiedDate != DateTime.MinValue && document.LastModifiedDate != null)
+            ////    html += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
+            ////html += "</ul></div></div></div>";
 
-            html += "</div></div>";
+            //html += "</div></div>";
 
             return html;
         }
