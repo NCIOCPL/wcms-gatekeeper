@@ -241,6 +241,7 @@
       <xsl:attribute                name = "id">
         <xsl:value-of              select = "@id"/>
       </xsl:attribute>
+      <xsl:apply-templates       select = "@Style"/>
       <xsl:apply-templates>
         <xsl:with-param          name = "topSection"
                                select = "$topSection"/>
@@ -248,6 +249,55 @@
     </xsl:element>
   </xsl:template>
 
+  <!--
+  Ordered lists will be displayed as is
+  Unordered lists will be displayed without style and without 
+  compact mode.  No 'dash', no 'bullet'.  
+  Style="simple" will be converted into class="no-bullets" (indentation?)
+  and eventually converted to some sort of address block when available
+  ================================================================ -->
+  <xsl:template                  match = "@Style">
+    <xsl:choose>
+      <xsl:when                      test = ". = 'bullet'"/>
+      <!-- Arabic (i.e. class="decimal") is the default.  
+         Don't need to include this in the HTML output -->
+      <xsl:when                      test = ". = 'Arabic'"/>
+      <xsl:otherwise>
+        <xsl:attribute                 name = "class">
+          <xsl:choose>
+            <xsl:when                    test = ". = 'LAlpha'">
+              <xsl:text>lower-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'LRoman'">
+              <xsl:text>lower-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'UAlpha'">
+              <xsl:text>upper-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'URoman'">
+              <xsl:text>upper-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'circle'">
+              <xsl:text>list-circle</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'square'">
+              <xsl:text>list-square</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'dash'">
+              <xsl:text>list-dash</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'simple'">
+              <xsl:text>pdq-address-block</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>style_undefined</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <!--
   ================================================================ -->
   <xsl:template                  match = "ListItem">
