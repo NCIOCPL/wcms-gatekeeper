@@ -189,7 +189,7 @@
           <h2>Outcomes</h2>
           
           <xsl:if test="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Primary' ] = true()">
-            <Span Class="Protocol-Outcomes-Primary">Primary Outcome(s)</Span>
+            <strong>Primary Outcome(s)</strong>
             <p>
               <xsl:for-each select="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Primary' ]">
                 <xsl:apply-templates/>
@@ -199,14 +199,15 @@
           </xsl:if>
 
           <xsl:if test="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Secondary' ]= true()">
-            <Span Class="Protocol-Outcomes-Primary">Secondary Outcome(s)</Span>
+            <strong>Secondary Outcome(s)</strong>
             <p>
               <xsl:for-each select="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Secondary' ]">
                 <xsl:apply-templates/>
                 <br/>
               </xsl:for-each>
             </p>
-          </xsl:if>
+          
+        </xsl:if>
 
         </xsl:element>
       </xsl:if>
@@ -375,7 +376,7 @@
 
       <xsl:if test="../ProtocolSpecialCategory!=''">
         <P>
-          <h2>
+          <h2 do-not-show="toc">
             Special Category:
 
             <xsl:for-each select="../ProtocolSpecialCategory">
@@ -646,8 +647,8 @@
       <xsl:attribute name="name">LeadOrgs:<xsl:value-of select="../@id"/>
       </xsl:attribute>
       <a name="LeadOrgs_{../@id}"/>
-     
-        <h3>Trial Lead Organizations</h3>
+
+      <h3 do-not-show="toc">Trial Lead Organizations</h3>
       
       <xsl:apply-templates select="ProtocolLeadOrg"/>
     </xsl:element>
@@ -1802,14 +1803,9 @@
   <!-- **************************** RegistryInfo Section ******************************* -->
   <xsl:template match="RegistryInfo">
     <a name = "RegistryInfo:{../@id}">
-      <xsl:element name="a">
-        <xsl:attribute name="name">
-          RegistryInfo_<xsl:value-of select="../@id"/>
-        </xsl:attribute>
-      </xsl:element>
-
-      <p>
-      </p>
+      
+      <a name="RegistryInfo_{../@id}"/>
+      
       <div class="pdq-shaded-area">
         <h2>Registry Information</h2>
 
@@ -1952,11 +1948,61 @@
           <xsl:value-of              select = "@id"/>
         </xsl:attribute>
       </xsl:if>
+      <xsl:apply-templates       select = "@Style"/>
       <xsl:apply-templates>
         <xsl:with-param          name = "topSection"
                                select = "$topSection"/>
       </xsl:apply-templates>
     </xsl:element>
+  </xsl:template>
+
+  <!--
+  Ordered lists will be displayed as is
+  Unordered lists will be displayed without style and without 
+  compact mode.  No 'dash', no 'bullet'.  
+  Style="simple" will be converted into class="no-bullets" (indentation?)
+  and eventually converted to some sort of address block when available
+  ================================================================ -->
+  <xsl:template                  match = "@Style">
+    <xsl:choose>
+      <xsl:when                      test = ". = 'bullet'"/>
+      <!-- Arabic (i.e. class="decimal") is the default.  
+         Don't need to include this in the HTML output -->
+      <xsl:when                      test = ". = 'Arabic'"/>
+      <xsl:otherwise>
+        <xsl:attribute                 name = "class">
+          <xsl:choose>
+            <xsl:when                    test = ". = 'LAlpha'">
+              <xsl:text>lower-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'LRoman'">
+              <xsl:text>lower-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'UAlpha'">
+              <xsl:text>upper-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'URoman'">
+              <xsl:text>upper-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'circle'">
+              <xsl:text>list-circle</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'square'">
+              <xsl:text>list-square</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'dash'">
+              <xsl:text>list-dash</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'simple'">
+              <xsl:text>pdq-address-block</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>style_undefined</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!--
