@@ -4,26 +4,22 @@
 
   <xsl:template match="/DrugInformationSummary">
     <html>
-      <head>
-        <title>
-          <xsl:text>WCMS DIS/DCS: </xsl:text>
-          <xsl:value-of             select = "DrugInfoTitle"/>
-        </title>
-        <link href="http://www.cancer.gov/PublishedContent/Styles/nvcg.css"
-              type="text/css" rel="StyleSheet" />
-      </head>
       <body>
-        <div class="contentzone">
-          
-          <xsl:apply-templates    select = "DrugInfoTitle"/>
-          <xsl:apply-templates    select = "DrugInfoMetaData/
+        <DrugInformationSummary>
+          <div class="contentzone">
+
+            <xsl:apply-templates    select = "DrugInfoTitle"/>
+            <xsl:apply-templates    select = "DrugInfoMetaData/
                                        PronunciationInfo"/>
-          <xsl:apply-templates    select = "DrugInfoMetaData"/>
-          <xsl:apply-templates    select = "*[not(child::DrugInfoDescription)]
-                                       [not(self::DrugInfoTitle)]
-                                       [not(self::DateFirstPublished)]
-                                       [not(self::DateLastModified)]"/>
-        </div>
+            <xsl:apply-templates    select = "DrugInfoMetaData"/>
+            <div class="accordion">
+              <xsl:apply-templates    select = "*[not(child::DrugInfoDescription)]
+                                         [not(self::DrugInfoTitle)]
+                                         [not(self::DateFirstPublished)]
+                                         [not(self::DateLastModified)]"/>
+            </div>
+          </div>
+          </DrugInformationSummary>
       </body>
     </html>
   </xsl:template>
@@ -38,6 +34,7 @@
                                                DrugInfoMetaData/
                                                DrugInfoType/
                                                @Combination = 'Yes')">
+      
       <div class="two-columns brand-fda">
         <div class="column1">US Brand Name(s)</div>
         <div class="column2">
@@ -55,7 +52,7 @@
           <xsl:value-of         select = "FDAApproved"/>
         </div>
       </div>
-
+      
       <!--
      <table class="brand-fda">
       <colgroup>
@@ -192,9 +189,9 @@
   <xsl:template                  match = "Title">
     <xsl:param                     name = "topSection"
                                  select = "'title'"/>
-    <h3>
+    <h2>
       <xsl:apply-templates/>
-    </h3>
+    </h2>
   </xsl:template>
 
   <!--
@@ -329,7 +326,7 @@
   <xsl:template                  match = "ReferenceSection">
     <xsl:param                     name = "topSection"
                                  select = "'ref'"/>
-    <h3>References</h3>
+    <h6>References</h6>
 
     <ol>
       <xsl:for-each              select = "Citation">
