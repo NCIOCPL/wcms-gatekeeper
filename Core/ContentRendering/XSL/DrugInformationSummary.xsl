@@ -3,8 +3,7 @@
   <xsl:param    name = "section"/>
 
   <xsl:template match="/DrugInformationSummary">
-    <html>
-      <body>
+   
         <DrugInformationSummary>
           <div class="contentzone">
 
@@ -20,8 +19,7 @@
             </div>
           </div>
           </DrugInformationSummary>
-      </body>
-    </html>
+     
   </xsl:template>
 
   <!--

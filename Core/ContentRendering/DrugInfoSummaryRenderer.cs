@@ -46,7 +46,7 @@ namespace GateKeeper.ContentRendering
                 index = html.IndexOf('>', index) + 1;
 
                 html = html.Substring(index);
-                html = html.Replace("</DrugInformationSummary></body></html>", string.Empty);
+                html = html.Replace("</DrugInformationSummary>", string.Empty);
                 document.Html = html;
             }
             catch (Exception e)
