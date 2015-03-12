@@ -166,7 +166,8 @@
           
 
           <xsl:for-each select="ExpectedEnrollment">
-            <xsl:apply-templates/>
+            <p><xsl:apply-templates/>
+            </p>
           </xsl:for-each>
 
           <xsl:for-each select="ProtocolAbstract/Professional/ProjectedAccrual">
@@ -375,7 +376,7 @@
       </table>
 
       <xsl:if test="../ProtocolSpecialCategory!=''">
-        <P>
+       
           <h2 do-not-show="toc">
             Special Category:
 
@@ -389,7 +390,7 @@
               </xsl:if>
             </xsl:for-each>
           </h2>
-        </P>
+       
       </xsl:if>
     </xsl:if>
   </xsl:template>
@@ -411,9 +412,9 @@
       <xsl:attribute name="name">Objectives:<xsl:value-of select="../../../@id"/>
       </xsl:attribute>
       <a name="Objectives_{../../../@id}"/>
-      <p>
+     
         <h2>Objectives</h2>
-      </p>
+     
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -1806,7 +1807,7 @@
       
       <a name="RegistryInfo_{../@id}"/>
       
-      <div class="pdq-shaded-area">
+     
         <h2>Registry Information</h2>
 
         <table class="table-default">
@@ -1906,8 +1907,8 @@
           </xsl:if>
 
         </table>
-      </div>
-      <p></p>
+     
+     
     </a>
   </xsl:template>
 

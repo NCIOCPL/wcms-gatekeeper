@@ -448,7 +448,7 @@
 				<xsl:element name="a">
 					<xsl:attribute name="name">SpecialCategory:<xsl:value-of select="../@id"/></xsl:attribute>
 					<a name="SpecialCategory_{../@id}"/>
-					<P>
+					
             <h2 do-not-show="toc">
 							Special Category:
 
@@ -462,7 +462,7 @@
 								</xsl:if>
 							</xsl:for-each>
 						</h2>
-					</P>
+					
 				</xsl:element>
 			</xsl:if>
 		</xsl:if>
@@ -1673,8 +1673,8 @@
 		<xsl:element name="a">
 			<xsl:attribute name="name">RegistryInfo_<xsl:value-of select="../@id"/></xsl:attribute>
 		</xsl:element>
-		<p/>
-		<div class="pdq-shaded-area">
+		
+		
       <h2>
         Registry Information
       </h2>
@@ -1767,7 +1767,7 @@
 					</tr>
 				</xsl:if>
 			</table>
-		</div>
+	
 		<p/>
 	</xsl:template>
 	<!-- **************************** End RegistryInfo Section ******************************* -->
