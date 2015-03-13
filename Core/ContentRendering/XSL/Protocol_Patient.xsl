@@ -449,7 +449,7 @@
 					<xsl:attribute name="name">SpecialCategory:<xsl:value-of select="../@id"/></xsl:attribute>
 					<a name="SpecialCategory_{../@id}"/>
 					
-            <h2 do-not-show="toc">
+            <h3 do-not-show="toc">
 							Special Category:
 
 							<xsl:for-each select="../ProtocolSpecialCategory">
@@ -461,7 +461,7 @@
 									<xsl:value-of select="."/>
 								</xsl:if>
 							</xsl:for-each>
-						</h2>
+						</h3>
 					
 				</xsl:element>
 			</xsl:if>

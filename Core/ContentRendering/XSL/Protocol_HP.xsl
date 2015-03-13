@@ -377,7 +377,7 @@
 
       <xsl:if test="../ProtocolSpecialCategory!=''">
        
-          <h2 do-not-show="toc">
+          <h3 do-not-show="toc">
             Special Category:
 
             <xsl:for-each select="../ProtocolSpecialCategory">
@@ -389,7 +389,7 @@
                 <xsl:value-of select="."/>
               </xsl:if>
             </xsl:for-each>
-          </h2>
+          </h3>
        
       </xsl:if>
     </xsl:if>
