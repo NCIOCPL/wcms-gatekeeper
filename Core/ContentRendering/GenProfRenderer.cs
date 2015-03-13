@@ -30,7 +30,8 @@ namespace GateKeeper.ContentRendering
 
             // Strip off the GeneticsProfessional tag.
             string html = document.Html;
-            int index = html.IndexOf("<span");
+            int index = html.IndexOf("<GeneticsProfessional");
+            index = html.IndexOf('>', index) + 1;
             html = html.Substring(index);
             html = html.Replace("</GeneticsProfessional>", string.Empty);
             document.Html = html;
