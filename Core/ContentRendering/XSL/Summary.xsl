@@ -970,6 +970,11 @@
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
+    <xsl:if test="following-sibling::node()">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
 
 
@@ -1015,6 +1020,11 @@
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
+    <xsl:if test="following-sibling::node()">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
 
   <!--
@@ -1036,6 +1046,11 @@
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
+    <xsl:if test="following-sibling::node()">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
 
 
