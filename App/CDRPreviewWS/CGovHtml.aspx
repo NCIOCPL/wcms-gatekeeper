@@ -5,6 +5,8 @@
 <head id="header">
     <title>CDR Preview</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="content-language" content="<%= currentLanguage %>" />
+   
     <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet" />
     
     <script src="<% =currentHost %>/CDRPreviewWS/common/popevents.js" type="text/javascript"></script>    
@@ -22,10 +24,10 @@
     <script src="<%=serverUrl%>/PublishedContent/js/Enlarge.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/PDQCIS.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/routie.js" type="text/javascript"></script>
-
     
 </head>
 <body>
+    
     <form id="form1" runat="server">
     <!-- CGov Container -->
     <div id="page">
@@ -41,7 +43,7 @@
             
             <!-- Main Content Area -->
              <div class="row">
-                <div id="nvcgSlSectionNav" class="medium-3 columns local-navigation">Left Nav Goes Here</div>
+                <div id="nvcgSlSectionNav" class="medium-3 columns local-navigation"><div class="section-nav"><div class="level-0"><div><a>Left Nav Goes Here</a></div></div></div></div>
                 <div class="medium-9 columns contentzone" id="main" tabindex="0" role="main">
                     <article>
                         <div id="cgvBody">

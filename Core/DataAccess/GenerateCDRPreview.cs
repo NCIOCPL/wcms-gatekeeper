@@ -97,28 +97,23 @@ namespace GateKeeper.DataAccess
             string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
 
             StringBuilder sb = new StringBuilder();
-            headerHtml = createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
+            headerHtml = "";// createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
-            html = "<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>";
+            html = "";
             int count = 0;
+            
             foreach (Language lang in glossary.GlossaryTermTranslationMap.Keys)
             {
                 GlossaryTermTranslation trans = glossary.GlossaryTermTranslationMap[lang];
 
-                // Get Definition HTML
-
-
-                // Body.
+                
                 foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
                 {
-                    if (count > 0)
-                    {
-                        sb.Append("<img width=\"700\" height=\"1\" border=\"0\" src=\"/images/gray_spacer.gif\"/><br/>");
-                        sb.Append("<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>");
-                    }
+                    sb.Append("<div class=\"results clearfix\"><dl class=\"dictionary-list\">");
 
+                   
                     // Retrieve rendered markup for audio.
-                    String pronunciation = trans.GetAudioMarkup();
+                    String pronunciation = "<dd class=\"pronunciation\">" + trans.GetAudioMarkup();
                     if (!String.IsNullOrEmpty(pronunciation))
                     {
                         pronunciation = pronunciation.Replace("[_audioMediaLocation]", mediaPath);
@@ -129,20 +124,11 @@ namespace GateKeeper.DataAccess
                     // Pronuncation key
                     if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
                     {
-                        pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span>";
+                        pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span></dd>";
                     }
 
-                    sb.AppendFormat("<span class=\"header-A\">{0}</span>&nbsp;{1}<br/>", trans.TermName, pronunciation);
-                    sb.Append("<img width=\"10\" height=\"5\" border=\"0\" src=\"/images/spacer.gif\"/><br/>");
-
-
-                    /************************************************/
-                    sb.Append("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
-                    sb.Append("<tbody>");
-                    sb.Append("<tr><td valign=\"top\" width=\"3\"/><td valign=\"top\">");
-
-                    /***********************************************/
-
+                    sb.AppendFormat("<dt><dfn>{0}</dfn></dt>{1}", trans.TermName, pronunciation);
+                    
                     // Definition
                     string defHtml = gtDef.Html.Trim();
                     using (GlossaryTermQuery gQuery = new GlossaryTermQuery())
@@ -152,7 +138,7 @@ namespace GateKeeper.DataAccess
                             gQuery.BuildSummaryRefLink(ref defHtml, 1);
                         }
                     }
-                    sb.Append(defHtml);
+                    sb.Append("<dd class=\"definition\">" + defHtml + "<br/>");
 
                     // Use the GK rendered HTML for Related Links.
                     if (gtDef.RelatedInformationHTML != String.Empty)
@@ -163,7 +149,7 @@ namespace GateKeeper.DataAccess
                     }
 
                     // Retrieve rendered markup for images.
-                    sb.Append("<p>");
+                    
                     String imageHtml = trans.GetImageMarkup(gtDef.AudienceTypeList[0]);
                     if (!String.IsNullOrEmpty(imageHtml))
                     {
@@ -171,19 +157,17 @@ namespace GateKeeper.DataAccess
                     }
                     sb.Append(imageHtml);
 
-
-                    sb.Append("</p></td></tr></tbody>");
-                    sb.Append("</table>");
-
-                    sb.Append("<img width=\"10\" height=\"25\" border=\"0\" src=\"/images/spacer.gif\"/>");
-                    sb.Append("<br/>");
+                    sb.Append("</dd>");
                     
+                    sb.Append("</dl></div>");
 
                 }
+                
 
                 count++;
             }
-
+            
+                   
             html += sb.ToString();
         }
 
@@ -192,38 +176,18 @@ namespace GateKeeper.DataAccess
         {
             StringBuilder sb = new StringBuilder();
 
-            headerHtml = createHeaderZoneContent("Cancer Genetics Professionals", geneticsProfessional, PreviewTypes.GeneticsProfessional);
-
-            sb.Append("<img width=\"10\" height=\"19\" src=\"/images/spacer.gif\" border=\"0\" /><br/>");
-
+            headerHtml = "";
+                        
             // Header
-            sb.Append(@"<table cellpadding=""1"" width=""100%"" cellspacing=""0"" border=""0"" class=""gray-border"">
-						<tr>
-							<td>
-								<table cellpadding=""7"" cellspacing=""0"" border=""0"" width=""100%"" bgcolor=""#ffffff"">
-									<tr>
-										<td>
-											<span class=""grey-text"">This directory lists professionals who provide services related to cancer genetics (cancer risk assessment, genetic counseling, genetic susceptibility testing, and others). These professionals have applied to be listed in this directory. For information on inclusion criteria and applying to the directory, see the <a href=""http://www.cancer.gov/forms/joinGeneticsDirectory"">application form</a>.</span>
-										</td>
-									</tr>				
-								</table>
-							</td>
-						</tr>				
-					</table>		
-					<p>");
+            sb.Append(@"<p>This directory lists professionals who provide services related to cancer genetics (cancer risk assessment, genetic counseling, genetic susceptibility testing, and others). These professionals have applied to be listed in this directory. For information on inclusion criteria and applying to the directory, see the <a href=""http://www.cancer.gov/forms/joinGeneticsDirectory"">application form</a>.</p>");						
 
             // Genetics professional.
-            sb.Append("<table border=\"0\" cellpadding=\"1\" cellspacing=\"0\" class=\"gray-border\" width=\"100%\"><tr><td>");
-            sb.Append("<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" bgcolor=\"#ffffff\" width=\"100%\"><tr><td>");
-            sb.Append(geneticsProfessional.Html);
-            sb.Append("</td></tr></table>");
-            sb.Append("</td></tr></table>");
+            sb.Append("<div class=\"result\">");
+              sb.Append(geneticsProfessional.Html);
+ 
+            sb.Append("</div>");
 
-            // Back to the top link.
-            sb.Append("<p>");
-            sb.Append("<a href=\"#top\" class=\"backtotop-link\"><img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>");
-            sb.Append("<p>");
-
+          
             html = sb.ToString();
         }
 
