@@ -20,6 +20,10 @@ namespace GKManagers.CMSDocumentProcessing
         #region Constants
 
         const string NavonType = "rffNavon";
+        const string WorkflowTransitionForNavonRevise = "Quick Edit";//8, //TriggerName = Quick Edit = Move to state 'Editing'
+        const string WorkflowTransitionForNavonPreview = "Preview";//4, //TriggerName = Preview = Move to state 'Staging (P)'
+        const string WorkflowTransitionForNavonReview = "Resubmit for Review";// 17, //TriggerName = Resubmit for Review = Move to state 'Review (P)'
+        const string WorkflowTransitionForNavonApprove = "Reapprove";//12 //TriggerName = Reapprove = Move to state 'Public'
 
         protected string LanguageEnglish { get { return "en-us"; } }
         protected string LanguageSpanish { get { return "es-us"; } }
@@ -481,6 +485,25 @@ namespace GKManagers.CMSDocumentProcessing
             }
 
             return (object)state;
+        }
+
+        protected void TransitionNavonToEditing(CMSController CMSControllerForNavOn, PercussionGuid[] idList)
+        {
+            //Move to Editing
+            CMSControllerForNavOn.PerformWorkflowTransition(idList, WorkflowTransitionForNavonRevise);
+        }
+
+        protected void TransitionNavonToPublic(CMSController CMSControllerForNavOn, PercussionGuid[] idList)
+        {
+            //Move to Staging(P)
+            CMSControllerForNavOn.PerformWorkflowTransition(idList, WorkflowTransitionForNavonPreview);
+
+            //Move to Review(P)
+            CMSControllerForNavOn.PerformWorkflowTransition(idList, WorkflowTransitionForNavonReview);
+
+            //Move to Public
+            CMSControllerForNavOn.PerformWorkflowTransition(idList, WorkflowTransitionForNavonApprove);
+
         }
 
         /// <summary>

@@ -987,22 +987,29 @@ namespace NCI.WCM.CMSManager.CMS
             return relationships;
         }
 
-        public void DeleteActiveAssemblyRelationships(PSAaRelationship[] relationships, bool alreadyInEditingState)
+        public void DeleteActiveAssemblyRelationships(PSAaRelationship[] relationships, bool alreadyInEditingState, PercussionGuid[] idList, string slotName, string templateName)
         {
             PSItemStatus[] parentCheckoutStatus = new PSItemStatus[] { };
-            //long[] relationshipIDs = Array.ConvertAll(relationships, relationship => (long)PercussionGuid.GetID(relationship.id));
-            long[] relationshipIDs = Array.ConvertAll(relationships, relationship => (long)((ulong)relationship.id | 0xffffff0000000000));
-
+            
             if (!alreadyInEditingState)
             {
-                //long[] parentItems = Array.ConvertAll(relationships, relationship => (long)PercussionGuid.GetID(relationship.ownerId));
+                //edit the relationship and checkout the parent
                 long[] parentItems = (from relationship in relationships
                                       select (long)PercussionGuid.GetID(relationship.ownerId)).Distinct().ToArray();
                 parentCheckoutStatus = PSWSUtils.PrepareForEdit(_contentService, parentItems);
             }
 
-            PSWSUtils.DeleteActiveAssemblyRelationships(_contentService, relationshipIDs);
+            //do another find of the same relationship 
+            //so that the checked out item will be returned and hence will be the the 
+            //edit revision 
+            PSAaRelationship[] incomingRelationship = FindIncomingActiveAssemblyRelationships(idList, slotName, templateName);
 
+            if (incomingRelationship != null && incomingRelationship.Length > 0)
+            {
+                long[] relationshipIDs = Array.ConvertAll(incomingRelationship, relationship => (long)((ulong)relationship.id | 0xffffff0000000000));
+                PSWSUtils.DeleteActiveAssemblyRelationships(_contentService, relationshipIDs);
+            }
+            
             if (!alreadyInEditingState)
             {
                 PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);

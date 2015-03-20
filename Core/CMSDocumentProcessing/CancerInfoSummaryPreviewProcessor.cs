@@ -142,6 +142,19 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         /// <summary>
+        /// Updates the Navon which resides in the same folder as the summary root node.
+        /// </summary>
+        /// <param name="document">SummaryDocument object containing information about the
+        /// summary being processed.</param>
+        /// <param name="summaryRootItemID">Guid of document's Percussion content item.</param>
+        /// <param name="path">The folder path containing the navon to be updated.</param>
+        protected override void UpdateNavOn(SummaryDocument document, PercussionGuid summaryRootItemID, string path)
+        {
+            // For publish preview, we deliberately do nothing.
+            // There is no need to set a nav label on preview.
+        }
+
+        /// <summary>
         /// Overrides DeleteContentItem to delete the entire content tree, not just the folder
         /// containing a single pdqCancerInfoSummary object.
         /// </summary>

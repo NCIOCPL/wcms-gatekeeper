@@ -12,7 +12,9 @@
 
 	<xsl:template match="/">
 		<DrugInformationSummary>
-			<xsl:apply-templates/>
+      <div class="rxbodyfield">
+        <xsl:apply-templates/>
+      </div>
 		</DrugInformationSummary>
 	</xsl:template>
 	

@@ -81,7 +81,7 @@
 <!ELEMENT TitleAbbrev (%TitleData;)*>
 
 <!ELEMENT AltTitle (%TitleData;)*>
-<!ATTLIST AltTitle TitleType (Short | Display) #IMPLIED>
+<!ATTLIST AltTitle TitleType (Short | Display | Navlabel) #IMPLIED>
 
 <!ELEMENT Para (%ParaElements;)*>
 <!ATTLIST Para id CDATA #IMPLIED
@@ -440,7 +440,7 @@
 
 <!ELEMENT Summary (SummaryMetaData,
                    SummaryTitle,
-                   AltTitle,
+                   AltTitle+,
                    SummarySection+,
                    TranslationOf?,
                    PatientVersionOf?,
