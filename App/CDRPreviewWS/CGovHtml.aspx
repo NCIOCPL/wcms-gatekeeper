@@ -7,15 +7,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="content-language" content="<%= currentLanguage %>" />
    
+   <!--[if lt IE 9]>
+<script src="<%=serverUrl%>/PublishedContent/js/respond.js"></script>
+<![endif]-->
     <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet" />
     
+    <!-- IE8 Polyfills -->
+<!--[if lt IE 9]>
+<script src="<%=serverUrl%>/PublishedContent/js/ie8-polyfills.js"></script>
+<![endif]-->
+
     <script src="<% =currentHost %>/CDRPreviewWS/common/popevents.js" type="text/javascript"></script>    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/modernizr.custom.2.7.1.js" type="text/javascript"></script>
-    <script src="<%=serverUrl%>/PublishedContent/js/NCIGeneralJS.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript"></script>
-    <script src="<% =currentHost %>/CDRPreviewWS/common/wcmsAudio.js" type="text/javascript"></script>
+  
     <script src="<%=serverUrl%>/PublishedContent/js/jquery-scrolltofixed.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/jquery-accessibleMegaMenu.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/jQuery.headroom.js" type="text/javascript"></script>
@@ -24,6 +31,9 @@
     <script src="<%=serverUrl%>/PublishedContent/js/Enlarge.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/PDQCIS.js" type="text/javascript"></script>
     <script src="<%=serverUrl%>/PublishedContent/js/routie.js" type="text/javascript"></script>
+    <script src="<%=serverUrl%>/PublishedContent/js/nci-util.js" type="text/javascript"></script>
+    <script src="<%=serverUrl%>/PublishedContent/js/jquery.jplayer.min.js" type="text/javascript"></script>
+
     
 </head>
 <body>
