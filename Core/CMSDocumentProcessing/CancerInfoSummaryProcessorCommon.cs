@@ -1577,7 +1577,14 @@ namespace GKManagers.CMSDocumentProcessing
             return fields;
         }
 
-        protected void UpdateNavOn(SummaryDocument document, PercussionGuid summaryRootItemID, string path)
+        /// <summary>
+        /// Updates the Navon which resides in the same folder as the summary root node.
+        /// </summary>
+        /// <param name="document">SummaryDocument object containing information about the
+        /// summary being processed.</param>
+        /// <param name="summaryRootItemID">Guid of document's Percussion content item.</param>
+        /// <param name="path">The folder path containing the navon to be updated.</param>
+        protected virtual void UpdateNavOn(SummaryDocument document, PercussionGuid summaryRootItemID, string path)
         {
             
             List<ContentItemForUpdating> contentItemList = new List<ContentItemForUpdating>();

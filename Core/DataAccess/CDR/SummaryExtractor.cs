@@ -76,33 +76,29 @@ namespace GateKeeper.DataAccess.CDR
                 //Nav Label is used for the breadcrumbs 
                 path = xPathManager.GetXPath(SummaryXPath.AlterTitle);
                 XPathNodeIterator alterTitleIter = xNav.Select(path);
-                string alterTitleType = "";
-                summary.NavLabel = "";
-                bool isShortTitleSet = false; 
+                string alterTitleType = String.Empty;
+                summary.ShortTitle = String.Empty;
+                summary.NavLabel = String.Empty;
+
                 while (alterTitleIter.MoveNext())
                 {
+                    // Find the title type. If not specified, assume short.
                     if (alterTitleIter.Current.HasAttributes)
-                    {
-                      alterTitleType = alterTitleIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.TitleType), string.Empty).Trim();
-                    }
-
-                    // Get Summary short title
-                    if (!string.IsNullOrEmpty(alterTitleType) && alterTitleType.ToUpper() == "SHORT")
-                    {
-                        summary.ShortTitle = alterTitleIter.Current.Value;
-                        isShortTitleSet = true;
-                    }
+                        alterTitleType = alterTitleIter.Current.GetAttribute(xPathManager.GetXPath(SummaryXPath.TitleType), string.Empty).Trim();
                     else
-                    {
-                        if (!isShortTitleSet)
-                            throw new Exception("Extraction Error: Summary short name is not defined in XPath " + xPathManager.GetXPath(SummaryXPath.AlterTitle) + "/@" + xPathManager.GetXPath(SummaryXPath.TitleType) + ". Document CDRID= " + _documentID.ToString());
-                    }
+                        alterTitleType = "SHORT";
 
-                    //Get the Summary Nav Label
-                    //set the Navigation Label for the summary only when passed in from the CDR
-                    if (!string.IsNullOrEmpty(alterTitleType) && alterTitleType.ToUpper() == "NAVLABEL")
+                    switch (alterTitleType.ToUpper())
                     {
-                        summary.NavLabel = alterTitleIter.Current.Value;
+                        case "SHORT":
+                            summary.ShortTitle = alterTitleIter.Current.Value;
+                            break;
+                        case "NAVLABEL":
+                            summary.NavLabel = alterTitleIter.Current.Value;
+                            break;
+                        default:
+                            // Ignore everything else.
+                            break;
                     }
                 }
                 
