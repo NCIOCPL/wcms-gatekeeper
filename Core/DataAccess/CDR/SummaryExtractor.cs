@@ -76,9 +76,11 @@ namespace GateKeeper.DataAccess.CDR
                 //Nav Label is used for the breadcrumbs 
                 path = xPathManager.GetXPath(SummaryXPath.AlterTitle);
                 XPathNodeIterator alterTitleIter = xNav.Select(path);
-                string alterTitleType = "";
-                summary.NavLabel = "";
+                string alterTitleType = String.Empty;
+                summary.ShortTitle = String.Empty;
                 bool isShortTitleSet = false; 
+                summary.NavLabel = String.Empty;
+
                 while (alterTitleIter.MoveNext())
                 {
                     if (alterTitleIter.Current.HasAttributes)

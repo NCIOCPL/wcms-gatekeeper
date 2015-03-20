@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Configuration;
 using System.Xml;
 using System.Xml.XPath;
@@ -41,7 +42,7 @@ namespace GateKeeper.ContentRendering
                 // Strip off the opening and closing DrugInformationSummary tags.
                 // Tricky bit -- the opening tag will include a namespace, so we have
                 // to find the end of the tag separately from the beginning.
-                string html = document.Html;
+                string html = CleanUpSelfClosingTags(document.Html);
                 int index = html.IndexOf("<DrugInformationSummary");
                 index = html.IndexOf('>', index) + 1;
 
@@ -53,6 +54,23 @@ namespace GateKeeper.ContentRendering
             {
                 throw new Exception("Rendering Error: Render data from drug information summary document failed. Document CDRID=" + document.DocumentID.ToString(), e);
             }
+        }
+
+        /// <summary>
+        /// Hack method to clean up the self-closing tags left from the rendering process.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        [Obsolete("The CleanUpSelfClosingTags method *must* go away when this code is merged to Devon Rex.")]
+        private String CleanUpSelfClosingTags(String html)
+        {
+            // This is a horrible idea. Never, ever, ever use a Regex to parse XML or HTML.
+            // The only reason this works is because we know for certain that the A tags we're
+            // concerned with follow that EXACT pattern.
+            Regex pattern = new Regex("<a (name=\".*\") />", RegexOptions.Compiled);
+            html = pattern.Replace(html, "<a $1></a>");
+
+            return html;
         }
     }
 }
