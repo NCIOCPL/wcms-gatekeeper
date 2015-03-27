@@ -25,74 +25,45 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "DrugInfoMetaData">
-    <xsl:apply-templates    select = "DrugInfoDescription"/>
 
+    <xsl:apply-templates         select = "DrugInfoDescription"/>
     <!-- Table only displayed for DIS, not for DCS -->
-    <xsl:if                       test = "not(/DrugInformationSummary/
+    <xsl:if                        test = "not(/DrugInformationSummary/
                                                DrugInfoMetaData/
                                                DrugInfoType/
                                                @Combination = 'Yes')">
-      
-      <div class="two-columns brand-fda">
-        <div class="column1">US Brand Name(s)</div>
-        <div class="column2">
-          <xsl:for-each            select = "USBrandNames">
-            <xsl:value-of           select = "."/>
-            <xsl:if                   test = "not(position() = last())">
-              <br />
-            </xsl:if>
-          </xsl:for-each>
-        </div>
-      </div>
-      <div class="two-columns brand-fda">
-        <div class="column1">FDA Approved</div>
-        <div class="column2">
-          <xsl:value-of         select = "FDAApproved"/>
-        </div>
-      </div>
-      
-      <!--
-     <table class="brand-fda">
-      <colgroup>
-       <col name="col1"/>
-       <col name="col2"/>
-      </colgroup>
-      <tbody>
-        <xsl:apply-templates    select = "USBrandNames"/>
-        <xsl:apply-templates    select = "FDAApproved"/>
-      </tbody>
-     </table>
-     -->
+      <xsl:apply-templates       select = "USBrandNames"/>
+      <xsl:apply-templates       select = "FDAApproved"/>
     </xsl:if>
   </xsl:template>
 
   <!--
   ================================================================ -->
   <xsl:template                  match = "USBrandNames">
-    <tr>
-      <th scope="row">US Brand Name(s)</th>
-      <td>
-        <xsl:for-each                  select = "USBrandName">
-          <xsl:value-of              select = "."/>
-          <xsl:if                      test = "not(position() = last())">
+    <div class="two-columns brand-fda">
+      <div class="column1">US Brand Name(s)</div>
+      <div class="column2">
+        <xsl:for-each             select = "USBrandName">
+          <xsl:value-of            select = "."/>
+          <xsl:if                    test = "not(position() = last())">
             <br />
           </xsl:if>
         </xsl:for-each>
-      </td>
-    </tr>
+      </div>
+    </div>
   </xsl:template>
 
   <!--
   ================================================================ -->
   <xsl:template                  match = "FDAApproved">
-    <tr>
-      <th scope="row">FDA Approved</th>
-      <td>
-        <xsl:value-of              select = "."/>
-      </td>
-    </tr>
+    <div class="two-columns brand-fda">
+      <div class="column1">FDA Approved</div>
+      <div class="column2">
+        <xsl:value-of             select = "."/>
+      </div>
+    </div>
   </xsl:template>
-
+  
   <!--
   Template to remove display of SectionMetaData
   ================================================================ -->
