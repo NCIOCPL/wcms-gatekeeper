@@ -6,11 +6,14 @@
     <title>CDR Preview</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="content-language" content="<%= currentLanguage %>" />
+    <meta name="english-linking-policy" content="<%=serverUrl%>/global/web/policies/exit" />
+    <meta name="espanol-linking-policy" content="<%=serverUrl%>/espanol/global/politicas/salda" />
+    <meta name="publishpreview" content="undefined" />
    
-   <!--[if lt IE 9]>
+    <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
 <script src="<%=serverUrl%>/PublishedContent/js/respond.js"></script>
 <![endif]-->
-    <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet" />
     
     <!-- IE8 Polyfills -->
 <!--[if lt IE 9]>
