@@ -19,7 +19,7 @@ namespace GateKeeper.ContentRendering
     /// </summary>
     public class SummaryRenderer : DocumentRenderer
     {
-      
+
         #region Constructors
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GateKeeper.ContentRendering
 
                 SummaryDocument summary = (SummaryDocument)document;
                 XPathNavigator xNav = summary.PostRenderXml.CreateNavigator();
-              
+
                 foreach (SummarySection section in summary.SectionList)
                 {
                     XPathNavigator sectionNav = null;
@@ -79,7 +79,14 @@ namespace GateKeeper.ContentRendering
                         }
 
                         // Save the results of the transform into the Html property
-                        section.Html.LoadXml(sectionNav.OuterXml);
+                        //Taking care of the spaces around GlossaryTermRefLink
+                        string html = sectionNav.OuterXml;
+                        if (sectionNav.OuterXml.Contains("GlossaryTermRefs"))
+                        {
+                            string glossaryTermTag = "definition";
+                            BuildGlossaryTermRefLink(ref html, glossaryTermTag);
+                        }
+                        section.Html.LoadXml(html);
                     }
                     else
                     {
@@ -92,7 +99,47 @@ namespace GateKeeper.ContentRendering
                 throw new Exception("Rendering Error: Render data from summary document failed. Document CDRID=" + document.DocumentID.ToString(), e);
             }
         }
-                
+
+        /// <summary>
+        /// Taking care of the spaces around GlossaryTermRefLink
+        /// </summary>
+        public void BuildGlossaryTermRefLink(ref string html, string tag)
+        {
+            string startTag = "<a class=\"" + tag + "\"";
+            string endTag = "</a>";
+            int startIndex = html.IndexOf(startTag, 0);
+            string sectionHTML = html;
+            string collectHTML = string.Empty;
+            string partC = string.Empty;
+            while (startIndex >= 0)
+            {
+                string partA = sectionHTML.Substring(0, startIndex);
+                string left = sectionHTML.Substring(startIndex);
+                int endIndex = left.IndexOf(endTag) + endTag.Length;
+                string partB = left.Substring(0, endIndex);
+                partC = left.Substring(endIndex);
+
+                // Combine
+                // Do not add extra space after the GlossaryTermRef if following sign
+                // is after the SummaryRef )}].,:;? " with )}].,:;? or space after it, ' with )]}.,:;? or space after it.
+                if (Regex.IsMatch(partA.Trim(), "^[).,:;!?}]|^]|^\"[).,:;!?}\\s]|^\'[).,:;!?}\\s]|^\"]|^\']") || collectHTML.Length == 0)
+                    collectHTML += partA.Trim();
+                else
+                    collectHTML += " " + partA.Trim();
+
+                // Do not add extra space before the GlossaryTermRef if following sign is lead before the link: ({[ or open ' "
+                if (Regex.IsMatch(collectHTML, "[({[\\-/]$|[({[\\-\\s]\'$|[({[\\-\\s]\"$"))
+                    collectHTML += partB;
+                else
+                    collectHTML += " " + partB;
+
+                sectionHTML = partC.Trim();
+                startIndex = sectionHTML.IndexOf(startTag, 0);
+            }
+            html = collectHTML + partC;
+        }
+
+
         #endregion Public Methods
     }
 }
