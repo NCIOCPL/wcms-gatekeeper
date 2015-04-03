@@ -59,7 +59,7 @@ namespace GateKeeper.ContentRendering
                 {
                     XPathNavigator sectionNav = null;
                     //top level section have <section id="_section_1" and subsections <section id="_1"
-                    string expression = string.Format(".//section[contains(@id,'_section_{0}')]|.//section[@id='_{0}']", section.SectionID);
+                    string expression = string.Format(".//section[@id='_section_{0}']|.//section[@id='_{0}']", section.SectionID);
                     sectionNav = xNav.SelectSingleNode(expression);
 
                     if (sectionNav != null)

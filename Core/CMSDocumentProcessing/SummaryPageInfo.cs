@@ -50,7 +50,8 @@ namespace GKManagers.CMSDocumentProcessing
                     else
                         //removed the word section from the url
                         //as sections are represented using their ids
-                        url = string.Format("{0}/#{1}", BasePath, sectionID);
+                        //JIRA Ticket 2763- Per Volker - updated so routie would jump to the correct location
+                        url = string.Format("{0}/#link/{1}", BasePath, sectionID);
                 //}
 
                 return url;

@@ -817,7 +817,8 @@
 
     <xsl:element                  name = "a">
       <xsl:attribute               name = "href">
-        <xsl:text>#</xsl:text>
+        <!--Updated to fix JIRA ticket 2760-->
+        <xsl:text>#cit/</xsl:text>
         <xsl:value-of             select = "$topSection"/>
         <xsl:text>.</xsl:text>
         <xsl:value-of             select = "@refidx"/>
@@ -1442,20 +1443,24 @@
   ================================================================ -->
   <xsl:template                   name = "createKeyPointBox">
     <xsl:for-each                select = "SummarySection">
-      <xsl:element                  name = "li">
-        <!-- NVCG Update to remove key point anchor links and only select text -->
-        <xsl:value-of               select = "KeyPoint"/>
-        
-        <!--
-     Nested Keypoint list
-     ==================== -->
-        <xsl:if                      test = "SummarySection/KeyPoint">
-          <xsl:element                name = "ul">
-            <xsl:call-template         name = "createKeyPointBox"/>
-          </xsl:element>
-        </xsl:if>
+      <!-- JIRA TICKET 2757 - Make sure the Keypoint element exists before adding <li>-->
+      <!-- NOTE: This does NOT address: keypoints in sub summary sections where the parent section does not have keypoints-->
+      <xsl:if                    test="KeyPoint">
+        <xsl:element                  name = "li">
+          <!-- NVCG Update to remove key point anchor links and only select text -->
+          <xsl:value-of               select = "KeyPoint"/>
+          
+          <!--
+       Nested Keypoint list
+       ==================== -->
+          <xsl:if                      test = "SummarySection/KeyPoint">
+            <xsl:element                name = "ul">
+              <xsl:call-template         name = "createKeyPointBox"/>
+            </xsl:element>
+          </xsl:if>
 
-      </xsl:element>
+        </xsl:element>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
