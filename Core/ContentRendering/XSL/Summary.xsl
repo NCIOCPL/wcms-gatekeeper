@@ -1173,7 +1173,8 @@
 
   <!--
   ================================================================ -->
-  <xsl:template                  match = "Caption">
+  <!--JIRA Ticket 2832 - make sure figcaption tag is not rendered when no caption exists-->
+  <xsl:template                  match = "Caption[not(.='')]">
     <xsl:element                 name = "figcaption">
       <xsl:element                 name = "div">
         <xsl:attribute              name = "class">

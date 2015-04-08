@@ -7,7 +7,7 @@ namespace GKManagers.CMSManager.Configuration
 {
     public class TransactionChunkSizeElement : ConfigurationElement
     {
-        [ConfigurationProperty("value", IsRequired = false, DefaultValue = 25)]
+        [ConfigurationProperty("value", IsRequired = false, DefaultValue = 23)]
         public int Value
         {
             get { return (int)this["value"]; }
