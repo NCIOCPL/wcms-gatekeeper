@@ -12,13 +12,7 @@
           <DocumentDataAccess xsi:type="SummaryStandardDataAccessWrapper" SitePath="//Sites/CancerGov" />
         </ProcessingTarget>
 
-        <ProcessingTarget TargetedDevice="mobile">
-          <DocumentExtractor xsi:type="SummaryExtractor" />
-          <DocumentRenderer xsi:type="SummaryRenderer" />
-          <DocumentDataAccess xsi:type="SummaryMobileDataAccessWrapper" SitePath="//Sites/MobileCancerGov" />
-        </ProcessingTarget>
-
-      </ProcessingTargets>
+		</ProcessingTargets>
     </Processor>
 
   </Processors>
