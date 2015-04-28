@@ -1090,7 +1090,7 @@
         <xsl:value-of select="LeadSponsor"/>
       </h4>
 
-      <ul>
+      <ul class="collaborators">
         <xsl:apply-templates select="Collaborator"/>
       </ul>
       
