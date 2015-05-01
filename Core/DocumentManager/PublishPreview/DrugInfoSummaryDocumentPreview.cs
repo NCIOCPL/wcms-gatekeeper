@@ -67,6 +67,22 @@ namespace GKPreviews
                     // Generate the CMS HTML rendering of the content item
                     contentHtml = processor.ProcessCMSPreview(drugInfoSummary, contentItemGuid);
 
+                    // Create the cgvLanguageDate html content
+                    contentHtml += "<div id=\"cgvDate\"><div class=\"contentid-3853 slot-item only-SI\">" +
+                        "<div class=\"document-dates horizontal\"><ul class=\"clearfix\">";
+
+                    //NVCG - move dates to the bottom of the document
+                    if (drugInfoSummary.FirstPublishedDate != DateTime.MinValue)
+                    {
+                        contentHtml += "<li><strong>Posted: </strong>" + String.Format("{0:MM/dd/yyyy}", drugInfoSummary.FirstPublishedDate) + "</li>";
+                    }
+                    if (drugInfoSummary.LastModifiedDate != DateTime.MinValue)
+                    {
+                        contentHtml += "<li><strong>Updated: </strong>" + String.Format("{0:MM/dd/yyyy}", drugInfoSummary.LastModifiedDate) + "</li>";
+                    }
+
+                    contentHtml += "</ul></div></div></div>";
+
                     headerContent = createHeaderZoneContent(drugInfoSummary);
                 }
                 catch (Exception ex)
@@ -166,27 +182,11 @@ namespace GKPreviews
         private string createHeaderZoneContent(DrugInfoSummaryDocument document)
         {
             // Create the content header html content
-            string html = string.Format("<div id=\"cgvcontentheader\"><div class=\"document-title-block\" style=\"background-color:#d4d9d9\" >" +
-        "<img src=\"/PublishedContent/Images/SharedItems/ContentHeaders/{0}\" alt=\"\" style=\"border-width:0px;\" />" +
-        "<h1>{1}</h1></div></div>", "title_druginfopills.jpg", "Cancer Drug Information");
-
-
-            // Create the cgvLanguageDate html content
-            html += "<div class=\"language-dates\"><div class=\"document-dates\">" +
-                "<div class=\"slot-item only-SI\"><ul style=\"float:right;\">";
-
-            if (document.FirstPublishedDate != DateTime.MinValue)
-            {
-                html += "<li><strong>Posted: </strong>" + String.Format("{0:MM/dd/yyyy}", document.FirstPublishedDate) + "</li>";
-            }
-            if (document.LastModifiedDate != DateTime.MinValue)
-            {
-                //if (drug.ReceivedDate != DateTime.MinValue && drug.ReceivedDate != null)
-                html += "<li><strong>Updated: </strong>" + String.Format("{0:MM/dd/yyyy}", document.LastModifiedDate) + "</li>";
-            }
-
-            html += "</ul></div></div></div>";
-
+            string html = "";
+        //    string html = string.Format("<div id=\"cgvcontentheader\"><div class=\"document-title-block\" style=\"background-color:#d4d9d9\" >" +
+        //"<img src=\"/PublishedContent/Images/SharedItems/ContentHeaders/{0}\" alt=\"\" style=\"border-width:0px;\" />" +
+        //"<h1>{1}</h1></div></div>", "title_druginfopills.jpg", "Cancer Drug Information");
+                      
             return html;
         }
 

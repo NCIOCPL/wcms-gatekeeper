@@ -12,6 +12,8 @@ using System.Xml;
 using GKManagers.BusinessObjects;
 using GKManagers;
 using GKManagers.CMSManager.Configuration;
+using System.Globalization;
+using System.Collections.Generic;
 
 namespace CDRPreviewWS
 {
@@ -21,6 +23,8 @@ namespace CDRPreviewWS
         protected string contentHeader = string.Empty;
         protected string serverUrl = string.Empty;
         protected string currentHost = string.Empty;
+        //set English as the default language
+        protected string currentLanguage = "en";
     
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -41,6 +45,8 @@ namespace CDRPreviewWS
 
                 CDRPreview previewSvc = new CDRPreview();
                 this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);
+                 
+                currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             }
             else
             {
@@ -48,5 +54,6 @@ namespace CDRPreviewWS
                 contentHeader = "HEADER HTML";
             }
         }
+             
     }
 }

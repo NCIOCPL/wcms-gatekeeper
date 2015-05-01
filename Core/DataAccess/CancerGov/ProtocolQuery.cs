@@ -636,11 +636,7 @@ namespace GateKeeper.DataAccess.CancerGov
                     htmlText = htmlText.Replace("<b />", "<b></b>"); 
                     ReplaceEndTag(ref htmlText, "a");
                     ReplaceEndTag(ref htmlText, "P");
-                    //htmlText = htmlText.Replace(" />", "></a>");
-                }
-                if (section.ProtocolSectionType == ProtocolSectionType.CTGovEntryCriteria)
-                {
-                    htmlText = htmlText + "<a name=\"EndEntryCriteria\">";
+                    
                 }
                 if (section.ProtocolSectionType == ProtocolSectionType.PublishedResults ||
                     section.ProtocolSectionType == ProtocolSectionType.RelatedPublications)

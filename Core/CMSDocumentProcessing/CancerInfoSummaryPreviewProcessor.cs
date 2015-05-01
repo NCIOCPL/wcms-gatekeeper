@@ -57,41 +57,7 @@ namespace GKManagers.CMSDocumentProcessing
                                         percussionConfig.PreviewSettings.PublishPreviewContextId.Value,
                                         percussionConfig.SiteId.Value,
                                         percussionConfig.PreviewSettings.ItemFilter.Value);
-
-                //string previewMediaPath = percussionConfig.PreviewSettings.PreviewImageContentLocation.Value;
-
-                ////before using the previewMediaPath make sure the directory (PreviewMediaHtml) for the images exists
-                ////if not, create the directory to avoid errors
-                //if (!Directory.Exists(previewMediaPath))
-                //    Directory.CreateDirectory(previewMediaPath);
-                                                                                   
-                ////For medialinks generate the required media output to the file system.
-                //foreach (MediaLink mediaLink in ((SummaryDocument)documentObject).MediaLinkSectionList)
-                //{
-                //    PercussionGuid mediaItemID = MediaLinkIDMap[mediaLink.Id];
-
-                //    string mediaHtml = CMSController.Render(mediaItemID,
-                //                            percussionConfig.PreviewSettings.PDQImageTemplateName.Value,
-                //                            percussionConfig.PreviewSettings.PublishPreviewContextId.Value,
-                //                            percussionConfig.SiteId.Value,
-                //                            percussionConfig.PreviewSettings.ItemFilter.Value);
-
-                //    mediaHtml = mediaHtml.Replace("/images/spacer.gif", ConfigurationManager.AppSettings["ServerURL"] + "/images/spacer.gif");
-                //    mediaHtml = mediaHtml.Replace("/stylesheets", ConfigurationManager.AppSettings["ServerURL"] + "/stylesheets");
-
-                //    // For Image media the image url references should be pointing to CDR server
-                //    string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
-                //    mediaHtml = mediaHtml.Replace("/images/cdr/live/", imagePath);
-
-                //    string mediaContentFileName = mediaItemID.ID.ToString() + ".html";
-
-                //    mediaRenderedContentList.Add(mediaItemID.ID.ToString(), mediaHtml);
-
-                //    using (StreamWriter outfile = new StreamWriter(previewMediaPath + @"\" + mediaContentFileName))
-                //    {
-                //        outfile.Write(mediaHtml);
-                //    }
-                //}
+                                
             }
             else
             {
@@ -135,12 +101,13 @@ namespace GKManagers.CMSDocumentProcessing
         {
             return null;
         }
-
+                
         public Dictionary<string, string> MediaRenderedContentList
         {
             get { return mediaRenderedContentList; }
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Updates the Navon which resides in the same folder as the summary root node.
         /// </summary>
@@ -165,16 +132,17 @@ namespace GKManagers.CMSDocumentProcessing
             // No further work is required.
             if (itemGuid != null)
             {
-                PercussionGuid summaryLink = LocateExistingSummaryLink(itemGuid);
+               // PercussionGuid summaryLink = LocateExistingSummaryLink(itemGuid);
 
                 // Get access to the PSFolderItem object for removing the folder and its content.
-                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { summaryLink.ID });
+                PSItem[] rootItem = CMSController.LoadContentItems(new long[] { itemGuid.ID });
 
                 // Get path from the first item of the the PSFolderItem of the rootItem folder collection.
                 string folderPath = CMSController.GetPathInSite(rootItem[0]);
+                string parentPath = GetParentFolder(folderPath);
 
                 // Purge all the contents inside in the folder and remove  the folder.
-                CMSController.DeleteFolder(folderPath, true);
+                CMSController.DeleteFolder(parentPath, true);
             }
 
         }

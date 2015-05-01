@@ -36,15 +36,16 @@ namespace GKManagers.CMSDocumentProcessing
         //in percussion
         const int ShortTitleLength = 100;
 
-        protected const string SummaryLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
+        //OCEPROJECT-1765 - Remove summary link dependency
+        //protected const string SummaryLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
 
-        protected const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
-        protected const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
+        //protected const string PatientVersionLinkSlot = "pdqCancerInformationSummaryPatient";
+        //protected const string HealthProfVersionLinkSlot = "pdqCancerInformationSummaryHealthProf";
         protected const string SummaryRefSlot = "pdqCancerInformationSummaryRef";
 
 
-        protected const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
-        protected const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
+        //protected const string AudienceLinkSnippetTemplate = "pdqSnCancerInformationSummaryItemLink";
+        //protected const string AudienceTabSnippetTemplate = "pdqSnCancerInformationSummaryItemAudienceTab";
 
         protected const string SummarySectionSnippetTemplate = "pdqSnCancerInformationSummaryPage";
         protected const string MobileSummarySectionSnippetTemplate = "pdqMSnCancerInformationSummaryPage";
@@ -157,7 +158,8 @@ namespace GKManagers.CMSDocumentProcessing
                 CMSController.SiteRootPath = sitePath;
 
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+            //OCEPROJECT-1765 - Remove summary link dependency
+            //PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
 
             // If Permanent Links exist, we need to worry about performing transitions
             // this will return null for mobile and then potentially populated with values on the desktop
@@ -166,7 +168,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             
-            PerformTransition(TransitionItemsToPreview, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs);
+            PerformTransition(TransitionItemsToPreview, summaryRootID, /*summaryLinkID,*/ permanentLinkIDs, pageIDs);
         }
 
         /// <summary>
@@ -185,7 +187,8 @@ namespace GKManagers.CMSDocumentProcessing
                 CMSController.SiteRootPath = sitePath;
 
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+            //OCEPROJECT-1765 - Remove summary link dependency
+            //PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
 
             // If Permanent Links exist, we need to worry about performing transitions
             // this will return null for mobile and then potentially populated with values on the desktop
@@ -194,7 +197,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             
-            PerformTransition(TransitionItemsToLive, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs);
+            PerformTransition(TransitionItemsToLive, summaryRootID, /*summaryLinkID,*/ permanentLinkIDs, pageIDs);
         }
 
         /// <summary>
@@ -215,7 +218,8 @@ namespace GKManagers.CMSDocumentProcessing
                 CMSController.SiteRootPath = sitePath;
 
             PercussionGuid summaryRootID = GetCdrDocumentID(CancerInfoSummaryContentType, documentID);
-            PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+            //OCEPROJECT-1765 - Remove summary link dependency
+           // PercussionGuid summaryLinkID = LocateExistingSummaryLink(summaryRootID);
 
             // If Permanent Links exist, we need to worry about performing transitions
             // this will return null for mobile and then potentially populated with values on the desktop
@@ -224,13 +228,13 @@ namespace GKManagers.CMSDocumentProcessing
 
             PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(summaryRootID, SummaryPageSlot);
             
-            PerformTransition(TransitionItemsToLiveFast, summaryRootID, summaryLinkID, permanentLinkIDs, pageIDs);
+            PerformTransition(TransitionItemsToLiveFast, summaryRootID, /*summaryLinkID,*/ permanentLinkIDs, pageIDs);
                         
         }
 
         protected void PerformTransition(ItemTransitionDelegate transitionMethod,
             PercussionGuid summaryRootID,
-            PercussionGuid summaryLinkID,
+            /*PercussionGuid summaryLinkID,*/
             PercussionGuid[] permanentLinkIDs,
             PercussionGuid[] pageIDs)
         {
@@ -238,7 +242,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Root item and Link must move independently of each other and everything else.
             if (summaryRootID != null) transitionMethod(new PercussionGuid[] { summaryRootID });
-            if (summaryLinkID != null) transitionMethod(new PercussionGuid[] { summaryLinkID });
+            //OCEPROJECT-1765 - Remove summary link dependency
+            //if (summaryLinkID != null) transitionMethod(new PercussionGuid[] { summaryLinkID });
             if (permanentLinkIDs != null)
             {
                 PerformSeparateTransitions(transitionMethod, permanentLinkIDs);
@@ -299,24 +304,25 @@ namespace GKManagers.CMSDocumentProcessing
             LogDetailedStep("Begin gathering content items.");
 
             // Retrieve IDs for the summary's components.
-            PercussionGuid summaryLinkID;
-            try
-            {
-                summaryLinkID = LocateExistingSummaryLink(summaryRootID);
-                string slotName = "";
-                slotName = summary.AudienceType == PatientAudience ? slotName = PatientVersionLinkSlot : slotName = HealthProfVersionLinkSlot;
-                PercussionGuid[] foundIDs = CMSController.SearchForContentItemsByDependent(summaryRootID, slotName, SummaryLinkSnippetTemplate);
-                if (foundIDs != null && foundIDs.Length > 0)
-                {
-                    //there should be just one SummaryLinkItem that will be returned
-                    summaryLinkID = foundIDs[0];
-                }
-            }
-            catch (FolderAssociationException ex)
-            {
-                throw new FolderAssociationException(string.Format("Content item {0} has no path, CDRID = {1}.",
-                    summaryRootID, summary.DocumentID), ex);
-            }
+            //OCEPROJECT-1765 - Remove summary link dependency
+            //PercussionGuid summaryLinkID;
+            //try
+            //{
+            //    summaryLinkID = LocateExistingSummaryLink(summaryRootID);
+            //    string slotName = "";
+            //    slotName = summary.AudienceType == PatientAudience ? slotName = PatientVersionLinkSlot : slotName = HealthProfVersionLinkSlot;
+            //    PercussionGuid[] foundIDs = CMSController.SearchForContentItemsByDependent(summaryRootID, slotName, SummaryLinkSnippetTemplate);
+            //    if (foundIDs != null && foundIDs.Length > 0)
+            //    {
+            //        //there should be just one SummaryLinkItem that will be returned
+            //        summaryLinkID = foundIDs[0];
+            //    }
+            //}
+            //catch (FolderAssociationException ex)
+            //{
+            //    throw new FolderAssociationException(string.Format("Content item {0} has no path, CDRID = {1}.",
+            //        summaryRootID, summary.DocumentID), ex);
+            //}
 
             // Lookup desktop pages
             PercussionGuid[] desktopPageIDs = CMSController.SearchForItemsInSlot(summaryRootID, StandardPageSlotName);
@@ -329,8 +335,8 @@ namespace GKManagers.CMSDocumentProcessing
             LogDetailedStep("Begin gathering incoming relationships.");
 
             // Determine which pages in this summary are dependent items in other summaries.
-            PSAaRelationship[] desktopPageRelationships = FindIncomingPageRelationships(summaryRootID, summaryLinkID, desktopPageIDs);
-            PSAaRelationship[] mobilePageRelationships = FindIncomingPageRelationships(summaryRootID, summaryLinkID, mobilePageIDs);
+            PSAaRelationship[] desktopPageRelationships = FindIncomingPageRelationships(summaryRootID, /*summaryLinkID,*/ desktopPageIDs);
+            PSAaRelationship[] mobilePageRelationships = FindIncomingPageRelationships(summaryRootID, /*summaryLinkID,*/ mobilePageIDs);
 
             LogDetailedStep("End gathering incoming relationships.");
 
@@ -354,9 +360,9 @@ namespace GKManagers.CMSDocumentProcessing
             LogDetailedStep("End Permanent Link evaluation.");
 
             // Is the summary in a state suitable for updating?
-            VerifyDocumentMayBeUpdated(summary, summaryRootID, summaryLinkID, PermanentLinkData, incomingPermanentLinkRelationships, allPageRelationships.ToArray());
+            VerifyDocumentMayBeUpdated(summary, summaryRootID/*, summaryLinkID*/, PermanentLinkData, incomingPermanentLinkRelationships, allPageRelationships.ToArray());
 
-            PerformUpdate(summary, summaryRootID, summaryLinkID, PermanentLinkData,
+            PerformUpdate(summary, summaryRootID/*, summaryLinkID*/, PermanentLinkData,
                 desktopPageIDs, desktopPageRelationships,
                 mobilePageIDs, mobilePageRelationships,
                 sitePath);
@@ -369,7 +375,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryRootID"></param>
         /// <param name="sitePath"></param>
         protected abstract void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID,
-            PercussionGuid summaryLinkID, PermanentLinkHelper permanentLinkData,
+            /*PercussionGuid summaryLinkID,*/ PermanentLinkHelper permanentLinkData,
             PercussionGuid[] desktopPageIDs, PSAaRelationship[] incomingDesktopPageRelationships,
             PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath);
@@ -387,7 +393,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="summaryLink">PercussionGuid of the composite document's root CancerInfoSummaryLink content item.</param>
         /// <param name="incomingPageRelationships">Array of Percussion Relationship structures for items linking
         /// to the individual summary pages.</param>
-        protected void VerifyDocumentMayBeUpdated(SummaryDocument summary, PercussionGuid summaryRoot, PercussionGuid summaryLink, PermanentLinkHelper PermanentLinkData, PSAaRelationship[] incomingPermanentLinkRelationships, PSAaRelationship[] incomingPageRelationships)
+        protected void VerifyDocumentMayBeUpdated(SummaryDocument summary, PercussionGuid summaryRoot, /*PercussionGuid summaryLink,*/ PermanentLinkHelper PermanentLinkData, PSAaRelationship[] incomingPermanentLinkRelationships, PSAaRelationship[] incomingPageRelationships)
         {
             List<string> errorList = new List<string>();
 
@@ -527,7 +533,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// to the summary which is being updated.</param>
         protected void UpdateIncomingSummaryReferences(int targetCDRID,
             PercussionGuid summaryRootID,
-            PercussionGuid summaryLinkID,
+            /*PercussionGuid summaryLinkID,*/
             PercussionGuid[] oldPageIDs,
             PercussionGuid[] newPageIDs,
             PSAaRelationship[] incomingRelationships,
@@ -660,6 +666,7 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Determines the set of active assembly relationships which come from other
         /// content items.
@@ -672,7 +679,7 @@ namespace GKManagers.CMSDocumentProcessing
         {
             // The first item in the collection is always root.
             PercussionGuid rootItem = internalIdentifers[0];
-            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
+            //PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
 
             /// Find all the incoming relationships.  (Need to include inline links!)
             PSAaRelationship[] incomingRelationship =
@@ -685,14 +692,14 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
                 return internalIdentifers.Contains(ownerID) // owner is part of the document.
-                    || alternateAudiences.Contains(ownerID);// owner is alternate audience version.
+                    /*|| alternateAudiences.Contains(ownerID)*/;// owner is alternate audience version.
             });
 
             // Any remaining relationships are external
             return candidateRelationships.ToArray();
         }
 
-        protected PSAaRelationship[] FindIncomingPageRelationships(PercussionGuid summaryRootID, PercussionGuid summaryLinkID,
+        protected PSAaRelationship[] FindIncomingPageRelationships(PercussionGuid summaryRootID/*, PercussionGuid summaryLinkID*/,
             PercussionGuid[] oldPageIDs)
         {
             PercussionGuid[] currentIDs = CMSController.BuildGuidArray(summaryRootID, oldPageIDs);
@@ -709,9 +716,9 @@ namespace GKManagers.CMSDocumentProcessing
                 PercussionGuid ownerID = new PercussionGuid(relationship.ownerId);
                 PercussionGuid dependent = new PercussionGuid(relationship.dependentId);
                 return ownerID == summaryRootID     // Filter out links from root and summary link
-                    || ownerID == summaryLinkID
-                    || dependent == summaryRootID  // Filter out relationships which own the root or link.
-                    || dependent == summaryLinkID;
+                    // || ownerID == summaryLinkID
+                    || dependent == summaryRootID; // Filter out relationships which own the root or link.
+                    //|| dependent == summaryLinkID;
             });
 
             // Anything left at this point is a relationship to a CancerInfoSummaryPage object.
@@ -747,11 +754,12 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         protected virtual void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
-            PercussionGuid summaryLinkItemID, PercussionGuid[] summaryComponentIDList)
+            /*PercussionGuid summaryLinkItemID,*/ PercussionGuid[] summaryComponentIDList)
         {
             string newPath = GetTargetFolder(targetURL);
-            PSItem[] keyItems = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootItemID, summaryLinkItemID });
+            PSItem[] keyItems = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootItemID/*, summaryLinkItemID*/ });
             string oldPath = CMSController.GetPathInSite(keyItems[0]);  // Root item.
 
             if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
@@ -907,21 +915,21 @@ namespace GKManagers.CMSDocumentProcessing
         protected string BuildSummaryRefUrl(string baseUrl, int pageNumber, string sectionID)
         {
             string url;
-
+            //For Devon Rex - remove page numbers
             // Page numbers are natural numbers (1, 2, 3...), not zero-based.
-            if (pageNumber > 0)
-            {
-                if (string.IsNullOrEmpty(sectionID))
-                    url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
-                else
-                    //removed the word section from the url
-                    //as sections are represented using their ids
-                    url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
-            }
-            else
-            {
+            //if (pageNumber > 0)
+            //{
+            //    if (string.IsNullOrEmpty(sectionID))
+            //        url = string.Format("{0}/Page{1}", baseUrl, pageNumber);
+            //    else
+            //        //removed the word section from the url
+            //        //as sections are represented using their ids
+            //        url = string.Format("{0}/Page{1}#{2}", baseUrl, pageNumber, sectionID);
+            //}
+            //else
+            //{
                 url = BuildSummaryRefUrl(baseUrl, sectionID);
-            }
+            //}
 
             return url;
         }
@@ -942,7 +950,8 @@ namespace GKManagers.CMSDocumentProcessing
             else
                 //removed the word section from the url
                 //as sections are represented using their ids
-                url = string.Format("{0}/#{1}", baseUrl, sectionID);
+                //JIRA Ticket 2763 - Per Volker -  Updated so routie would jump to the correct location
+                url = string.Format("{0}/#link/{1}", baseUrl, sectionID);
 
             return url;
         }
@@ -1001,70 +1010,73 @@ namespace GKManagers.CMSDocumentProcessing
             return relationshipList.ToArray();
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Creates a relationship between the specified Cancer Information Summary document 
         /// and its alternate audience version, if one exists.
         /// </summary>
         /// <param name="documentID">Identifier for the content item to connect with its alternate version.</param>
         /// <param name="audienceType">Audience type value for the current content item.</param>
-        protected void LinkRootItemToAlternateAudienceVersion(PercussionGuid documentID, string audienceType)
-        {
-            // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
-            PercussionGuid summaryLinkID = FindSummaryLink(documentID);
+        //protected void LinkRootItemToAlternateAudienceVersion(PercussionGuid documentID, string audienceType)
+        //{
+        //    // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
+        //    PercussionGuid summaryLinkID = FindSummaryLink(documentID);
 
-            // Set up slot names and "other audience" search critera.
-            string theirSlotName;   // Slot to search for alternate version.
-            string mySlotName;      // Slot to store this item in.
-            string otherAudience;
-            if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
-            {
-                mySlotName = PatientVersionLinkSlot;
-                theirSlotName = HealthProfVersionLinkSlot;
-                otherAudience = HealthProfAudience;
-            }
-            else
-            {
-                mySlotName = HealthProfVersionLinkSlot;
-                theirSlotName = PatientVersionLinkSlot;
-                otherAudience = PatientAudience;
-            }
+        //    // Set up slot names and "other audience" search critera.
+        //    string theirSlotName;   // Slot to search for alternate version.
+        //    string mySlotName;      // Slot to store this item in.
+        //    string otherAudience;
+        //    if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
+        //    {
+        //        mySlotName = PatientVersionLinkSlot;
+        //        theirSlotName = HealthProfVersionLinkSlot;
+        //        otherAudience = HealthProfAudience;
+        //    }
+        //    else
+        //    {
+        //        mySlotName = HealthProfVersionLinkSlot;
+        //        theirSlotName = PatientVersionLinkSlot;
+        //        otherAudience = PatientAudience;
+        //    }
 
-            // 3. Search the link item for child items in the other audience type's slot.
-            PercussionGuid otherAudienceVersion = FindAudienceVersion(summaryLinkID, otherAudience);
+        //    // 3. Search the link item for child items in the other audience type's slot.
+        //    PercussionGuid otherAudienceVersion = FindAudienceVersion(summaryLinkID, otherAudience);
 
-            // 4. If the slot in the summary link contains a content item, it must be of the opposite audience type.
-            if (otherAudienceVersion != null)
-            {
-                // Link from this item to the alternate version.
-                CMSController.CreateActiveAssemblyRelationships(documentID.ID, new long[] { otherAudienceVersion.ID }, theirSlotName, AudienceTabSnippetTemplate);
+        //    // 4. If the slot in the summary link contains a content item, it must be of the opposite audience type.
+        //    if (otherAudienceVersion != null)
+        //    {
+        //        // Link from this item to the alternate version.
+        //        CMSController.CreateActiveAssemblyRelationships(documentID.ID, new long[] { otherAudienceVersion.ID }, theirSlotName, AudienceTabSnippetTemplate);
 
-                // Link from the alternate version back to this one.
-                // TODO: Delete any existing relationships in that slot.
-                CMSController.CreateActiveAssemblyRelationships(otherAudienceVersion.ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
-            }
-        }
+        //        // Link from the alternate version back to this one.
+        //        // TODO: Delete any existing relationships in that slot.
+        //        CMSController.CreateActiveAssemblyRelationships(otherAudienceVersion.ID, new long[] { documentID.ID }, mySlotName, AudienceTabSnippetTemplate);
+        //    }
+        //}
 
         protected void LinkTableSectionsToAlternateAudienceVersion()
         {
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Finds the SummaryLink content item for a CancerInfoSummary root item.
         /// </summary>
         /// <param name="summaryRootID">Content ID of the CancerInfoSummary root item.</param>
         /// <returns>The PercussionGuid of the parent SummaryLink node.</returns>
-        protected PercussionGuid FindSummaryLink(PercussionGuid summaryRootID)
-        {
-            // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
-            PSItem[] parentItems = CMSController.LoadLinkingContentItems(summaryRootID.ID);
-            PSItem summaryLink =
-                Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
-            if (summaryLink == null)
-                throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", summaryRootID.ToString()));
+        //protected PercussionGuid FindSummaryLink(PercussionGuid summaryRootID)
+        //{
+        //    // 1. What is the parent of this item? (Type is Cancer Information Summary Link)
+        //    PSItem[] parentItems = CMSController.LoadLinkingContentItems(summaryRootID.ID);
+        //    PSItem summaryLink =
+        //        Array.Find(parentItems, item => item.contentType == CancerInfoSummaryLinkContentType);
+        //    if (summaryLink == null)
+        //        throw new CMSOperationalException(string.Format("Cannot locate CancerInfoSummaryLink for content item {0}", summaryRootID.ToString()));
 
-            return new PercussionGuid(summaryLink.id);
-        }
+        //    return new PercussionGuid(summaryLink.id);
+        //}
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Locates a specific audience version of a summary.
         /// </summary>
@@ -1072,29 +1084,29 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="audienceType">Audience type to load.</param>
         /// <returns>The ID of the root Summary content item for the specified audience.
         /// Null if no qualifying Summary version is found.</returns>
-        protected PercussionGuid FindAudienceVersion(PercussionGuid summaryLink, string audienceType)
-        {
-            PercussionGuid summaryRoot = null;
+        //protected PercussionGuid FindAudienceVersion(PercussionGuid summaryLink, string audienceType)
+        //{
+        //    PercussionGuid summaryRoot = null;
 
-            string containingSlot;
+        //    string containingSlot;
 
-            // Determine which slot to use.
-            if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
-                containingSlot = PatientVersionLinkSlot;
-            else if (audienceType.Equals(HealthProfAudience, StringComparison.InvariantCultureIgnoreCase))
-                containingSlot = HealthProfVersionLinkSlot;
-            else
-                throw new ArgumentException(string.Format("Argument audienceType must be {0} or {1}.", PatientAudience, HealthProfAudience));
+        //    // Determine which slot to use.
+        //    if (audienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
+        //        containingSlot = PatientVersionLinkSlot;
+        //    else if (audienceType.Equals(HealthProfAudience, StringComparison.InvariantCultureIgnoreCase))
+        //        containingSlot = HealthProfVersionLinkSlot;
+        //    else
+        //        throw new ArgumentException(string.Format("Argument audienceType must be {0} or {1}.", PatientAudience, HealthProfAudience));
 
-            // Look for a summary item in the slot.
-            PercussionGuid[] searchResults = CMSController.SearchForItemsInSlot(summaryLink, containingSlot);
-            if (searchResults.Length > 0)
-            {
-                summaryRoot = searchResults[0];
-            }
+        //    // Look for a summary item in the slot.
+        //    PercussionGuid[] searchResults = CMSController.SearchForItemsInSlot(summaryLink, containingSlot);
+        //    if (searchResults.Length > 0)
+        //    {
+        //        summaryRoot = searchResults[0];
+        //    }
 
-            return summaryRoot;
-        }
+        //    return summaryRoot;
+        //}
 
         /// <summary>
         /// Verifies that the English version of a document exists before attempting
@@ -1186,7 +1198,8 @@ namespace GKManagers.CMSDocumentProcessing
             // No further work is required.
             if (rootItem != null)
             {
-                PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
+                //OCEPROJECT-1765 - Remove summary link dependency
+                //PercussionGuid summaryLink = LocateExistingSummaryLink(rootItem);
                 PercussionGuid[] pageIDs = CMSController.SearchForItemsInSlot(rootItem, SummaryPageSlot);
                 //PercussionGuid[] subItems = LocateMediaLinksAndTableSections(pageIDs); // Table sections and MediaLinks.
                 PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, sitePath);
@@ -1194,7 +1207,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Create a list of all content IDs making up the document.
                 // It is important for verification that rootItem always be first.
-                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs/*, subItems*/, summaryLink);
+                PercussionGuid[] fullIDList = CMSController.BuildGuidArray(rootItem, pageIDs/*, subItems, summaryLink*/);
 
                 VerifyDocumentMayBeDeleted(fullIDList.ToArray(), permanentLinks);
 
@@ -1241,9 +1254,10 @@ namespace GKManagers.CMSDocumentProcessing
                     externalOwners.Add(owner);
             });
 
+            //OCEPROJECT-1765 - Remove summary link dependency
             // Find the ID of any alternate audience versions and eliminate from the list.
-            PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
-            externalOwners.RemoveAll(owner => alternateAudiences.Contains(owner));
+            //PercussionGuid[] alternateAudiences = LocateAlternateAudienceVersions(rootItem);
+            //externalOwners.RemoveAll(owner => alternateAudiences.Contains(owner));
 
             /// If there are any external relationship owners, don't allow the delete.
             if (externalOwners.Count > 0)
@@ -1265,53 +1279,54 @@ namespace GKManagers.CMSDocumentProcessing
             }
         }
 
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Locates a Cancer Information Summary document's corresponding summary link item.
         /// </summary>
         /// <param name="rootItemID">The CMS ID of a CancerInformationSummary object.</param>
         /// <returns>The CMS ID of the matching CancerInformationSummaryLink object</returns>
-        protected PercussionGuid LocateExistingSummaryLink(PercussionGuid rootItemID)
-        {
-            // TODO: Rewrite this to find all incoming Active Assembly relationships
-            // which use the Patient or HealtProfessional slots with the link template.
+        //protected PercussionGuid LocateExistingSummaryLink(PercussionGuid rootItemID)
+        //{
+        //    // TODO: Rewrite this to find all incoming Active Assembly relationships
+        //    // which use the Patient or HealtProfessional slots with the link template.
 
-            PercussionGuid summaryLinkID = null;
+        //    PercussionGuid summaryLinkID = null;
 
-            PSItem[] rootItem = CMSController.LoadContentItems(new long[] { rootItemID.ID });
-            VerifyItemHasPath(rootItem[0]);
+        //    PSItem[] rootItem = CMSController.LoadContentItems(new long[] { rootItemID.ID });
+        //    VerifyItemHasPath(rootItem[0]);
 
-            string itemPath = CMSController.GetPathInSite(rootItem[0]);
+        //    string itemPath = CMSController.GetPathInSite(rootItem[0]);
 
-            // If the item path is null, then the content item has no path in *this* site.
-            // Therefore, there is no summary link to search for.
-            if (!string.IsNullOrEmpty(itemPath))
-            {
-                string linkPath = GetParentFolder(itemPath);
-                PercussionGuid[] searchList =
-                    CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, linkPath, null);
+        //    // If the item path is null, then the content item has no path in *this* site.
+        //    // Therefore, there is no summary link to search for.
+        //    if (!string.IsNullOrEmpty(itemPath))
+        //    {
+        //        string linkPath = GetParentFolder(itemPath);
+        //        PercussionGuid[] searchList =
+        //            CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, linkPath, null);
 
-                // There may not be a summary link (e.g. mobile site). Let the caller decide how to handle that.
-                if (searchList.Length > 0)
-                {
-                    // There should only be one item found. Verify that it's the one we want.
-                    // Is the root ID in the patient slot?
-                    PercussionGuid[] foundIDs = CMSController.SearchForItemsInSlot(searchList[0], PatientVersionLinkSlot);
-                    if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0].Equals(rootItemID))
-                    {
-                        summaryLinkID = searchList[0];
-                    }
-                    else
-                    {
-                        // Is the root ID in the health professional slot?
-                        foundIDs = CMSController.SearchForItemsInSlot(searchList[0], HealthProfVersionLinkSlot);
-                        if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0].ID == rootItemID.ID)
-                            summaryLinkID = searchList[0];
-                    }
-                }
-            }
+        //        // There may not be a summary link (e.g. mobile site). Let the caller decide how to handle that.
+        //        if (searchList.Length > 0)
+        //        {
+        //            // There should only be one item found. Verify that it's the one we want.
+        //            // Is the root ID in the patient slot?
+        //            PercussionGuid[] foundIDs = CMSController.SearchForItemsInSlot(searchList[0], PatientVersionLinkSlot);
+        //            if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0].Equals(rootItemID))
+        //            {
+        //                summaryLinkID = searchList[0];
+        //            }
+        //            else
+        //            {
+        //                // Is the root ID in the health professional slot?
+        //                foundIDs = CMSController.SearchForItemsInSlot(searchList[0], HealthProfVersionLinkSlot);
+        //                if (foundIDs != null && foundIDs.Length > 0 && foundIDs[0].ID == rootItemID.ID)
+        //                    summaryLinkID = searchList[0];
+        //            }
+        //        }
+        //    }
 
-            return summaryLinkID;
-        }
+        //    return summaryLinkID;
+        //}
 
         /// <summary>
         /// Locates all PermanentLink content items within the root's folder.
@@ -1326,7 +1341,8 @@ namespace GKManagers.CMSDocumentProcessing
             PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, summaryPath);
             return PermanentLinkData.GetOldGuids;
         }
-                
+
+        //OCEPROJECT-1765 - Remove summary link dependency
         /// <summary>
         /// Searches for all content items which refer to the root item as their alternate
         /// audience version. In theory, this should be a 1:1 relationship, but a full
@@ -1336,26 +1352,26 @@ namespace GKManagers.CMSDocumentProcessing
         /// checked for alternate audiences.</param>
         /// <returns>A non-null, possibly empty array of item IDs which identify rootItemID
         /// as their alternate audience version.</returns>
-        protected PercussionGuid[] LocateAlternateAudienceVersions(PercussionGuid rootItemID)
-        {
-            List<PercussionGuid> foundOwners = new List<PercussionGuid>();
+        //protected PercussionGuid[] LocateAlternateAudienceVersions(PercussionGuid rootItemID)
+        //{
+        //    List<PercussionGuid> foundOwners = new List<PercussionGuid>();
 
-            PercussionGuid[] rootIDArray = new PercussionGuid[] { rootItemID };
-            string[] slots = { PatientVersionLinkSlot, HealthProfVersionLinkSlot };
+        //    PercussionGuid[] rootIDArray = new PercussionGuid[] { rootItemID };
+        //    string[] slots = { PatientVersionLinkSlot, HealthProfVersionLinkSlot };
 
-            PSAaRelationship[] relationships;
-            Array.ForEach(slots, slotname =>
-            {
-                // Find all relationships using the alternate audience slots in conjunction
-                // with the template for audience tabs.
-                relationships =
-                    CMSController.FindIncomingActiveAssemblyRelationships(rootIDArray,
-                    slotname, AudienceTabSnippetTemplate);
-                Array.ForEach(relationships, rel => foundOwners.Add(new PercussionGuid(rel.ownerId)));
-            });
+        //    PSAaRelationship[] relationships;
+        //    Array.ForEach(slots, slotname =>
+        //    {
+        //        // Find all relationships using the alternate audience slots in conjunction
+        //        // with the template for audience tabs.
+        //        relationships =
+        //            CMSController.FindIncomingActiveAssemblyRelationships(rootIDArray,
+        //            slotname, AudienceTabSnippetTemplate);
+        //        Array.ForEach(relationships, rel => foundOwners.Add(new PercussionGuid(rel.ownerId)));
+        //    });
 
-            return foundOwners.ToArray();
-        }
+        //    return foundOwners.ToArray();
+        //}
 
         #endregion
 
@@ -1633,34 +1649,36 @@ namespace GKManagers.CMSDocumentProcessing
         
         }
 
-        protected List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
-        {
-            // Content items may be re-created during an update, therefore we must pass the create path from the caller.
+        //OCEPROJECT-1765 - Remove summary link dependency
+        //protected List<ContentItemForCreating> CreatePDQCancerInfoSummaryLink(SummaryDocument document, string creationPath)
+        //{
+        //    // Content items may be re-created during an update, therefore we must pass the create path from the caller.
 
-            List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
+        //    List<ContentItemForCreating> contentItemList = new List<ContentItemForCreating>();
 
-            ContentItemForCreating contentItem =
-                new ContentItemForCreating(CancerInfoSummaryLinkContentType, CreateFieldValueMapPDQCancerInfoSummaryLink(document), creationPath);
-            contentItemList.Add(contentItem);
+        //    ContentItemForCreating contentItem =
+        //        new ContentItemForCreating(CancerInfoSummaryLinkContentType, CreateFieldValueMapPDQCancerInfoSummaryLink(document), creationPath);
+        //    contentItemList.Add(contentItem);
 
-            return contentItemList;
-        }
+        //    return contentItemList;
+        //}
 
-        protected FieldSet CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument summary)
-        {
-            FieldSet fields = new FieldSet();
+        //OCEPROJECT-1765 - Remove summary link dependency
+        //protected FieldSet CreateFieldValueMapPDQCancerInfoSummaryLink(SummaryDocument summary)
+        //{
+        //    FieldSet fields = new FieldSet();
 
-            fields.Add("sys_title", summary.ShortTitle);
-            fields.Add("long_title", summary.Title);
-            fields.Add("short_title", summary.ShortTitle);
-            fields.Add("long_description", summary.Description);
+        //    fields.Add("sys_title", summary.ShortTitle);
+        //    fields.Add("long_title", summary.Title);
+        //    fields.Add("short_title", summary.ShortTitle);
+        //    fields.Add("long_description", summary.Description);
 
-            // HACK: This relies on Percussion not setting anything else in the login session.
-            fields.Add("sys_lang", GetLanguageCode(summary.Language));
+        //    // HACK: This relies on Percussion not setting anything else in the login session.
+        //    fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
-            return fields;
+        //    return fields;
 
-        }
+        //}
                 
         /// <summary>
         /// Receives a Cancer Information Summary's pretty URL and converts it into

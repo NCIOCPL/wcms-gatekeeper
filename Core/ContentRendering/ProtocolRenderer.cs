@@ -327,9 +327,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = summaryNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    summaryNav.InnerXml = "<a name=\"Objectives_" + strCDRID + "\"></a>" + html;
+                    summaryNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(new ProtocolSection(0, summaryNav.OuterXml, ProtocolSectionType.CTGovBriefSummary));
                 }
 
@@ -337,7 +337,6 @@ namespace GateKeeper.ContentRendering
                 XPathNavigator disclaimerNav = xNav.SelectSingleNode("//a[@name='Disclaimer']");
                 if (disclaimerNav != null)
                 {
-                    disclaimerNav.InnerXml = "<a name=\"Disclaimer_" + strCDRID + "\"></a>" + disclaimerNav.InnerXml;
                     string tempHtml = disclaimerNav.OuterXml;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0,
@@ -349,7 +348,6 @@ namespace GateKeeper.ContentRendering
                 XPathNavigator leadOrgsNav = xNav.SelectSingleNode("//a[@name='LeadOrgs']");
                 if (leadOrgsNav != null)
                 {
-                    leadOrgsNav.InnerXml = "<a name=\"LeadOrgs_" + strCDRID + "\"></a>" + leadOrgsNav.InnerXml;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, leadOrgsNav.OuterXml,   ProtocolSectionType.CTGovLeadOrgs));
                 }
@@ -367,9 +365,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = detailedDescNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    detailedDescNav.InnerXml = "<a name=\"Outline_" + strCDRID + "\"></a>" + html;
+                    detailedDescNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, detailedDescNav.OuterXml,ProtocolSectionType.CTGovDetailedDescription));
                 }
@@ -380,9 +378,9 @@ namespace GateKeeper.ContentRendering
                 {
                     //TODO: REMOVE - This replacement is done for string comparison purpose
                     string html = entryCriteriaNav.InnerXml;
-                    html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
+                    html = html.Replace("<a name=\"Section\" />", "");
 
-                    entryCriteriaNav.InnerXml = "<a name=\"EntryCriteria_" + strCDRID + "\"></a>" + html;
+                    entryCriteriaNav.InnerXml = html;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0, entryCriteriaNav.OuterXml, ProtocolSectionType.CTGovEntryCriteria));
                 }
@@ -424,150 +422,36 @@ namespace GateKeeper.ContentRendering
         /// </remarks>
         private void ParseStudySites(XPathNavigator studySitesNav)
         {
-            try
+            if (studySitesNav != null)
             {
-                if (studySitesNav != null)
+                try
                 {
-                    XPathNavigator tableNav = studySitesNav.SelectSingleNode("P/table");
-                    XmlNode studySiteNode = ((IHasXmlNode)tableNav).GetNode();
-                    StringBuilder siteHtmlBuffer = new StringBuilder();
-                    string city = string.Empty;
-                    string newCity = string.Empty;
-                    string state = string.Empty;
-                    string newState = string.Empty;
-                    string country = string.Empty;
-                    string newCountry = string.Empty;
-                    string siteName = string.Empty;
-                    string newSiteName = string.Empty;
-                    string siteRef = string.Empty;
-                    string personRef = string.Empty;
-                    // Unique key to hold the person's contact info
-                    string contactKey = string.Empty;
-                    bool addSpace = true;
-                    bool bCity = false;
-                    bool bState = false;
-                    bool bCountry = false;
-
-                    foreach (XmlNode xnTableRow in studySiteNode.ChildNodes)
+                    XPathNodeIterator locationIter = studySitesNav.Select("//locationData/location");
+                    foreach (XPathNavigator location in locationIter)
                     {
-                        switch (xnTableRow.Attributes[0].Name.ToLower())
-                        {
-                            case "space":
-                                if (addSpace)
-                                {
-                                    siteHtmlBuffer.Append("<tr>");
-                                    siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                    siteHtmlBuffer.Append("</tr>");
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "country":
-                                addSpace = false;
-                                newCountry = xnTableRow.ChildNodes[0].InnerText;
-                                if ((newCountry.Trim().Length > 0) && (newCountry != country))
-                                {
-                                    country = newCountry;
-                                    bCountry = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "state":
-                                addSpace = false;
-                                newState = xnTableRow.ChildNodes[0].InnerText;
-                                if (newState.Trim() == string.Empty && xnTableRow.ChildNodes[1] != null)
-                                    newState = xnTableRow.ChildNodes[1].InnerText;
-                                if (newState != null && newState.Trim().Length > 0 && newState != state)
-                                {
-                                    state = newState;
-                                    bState = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "city":
-                                addSpace = false;
-                                newCity = xnTableRow.ChildNodes[1].InnerText;
-                                if ((newCity.Trim().Length > 0) && (newCity != city))
-                                {
-                                    city = newCity;
-                                    bCity = true;
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "facility":
-                                addSpace = false;
-                                newSiteName = xnTableRow.ChildNodes[1].InnerText.Trim();
-                                if  (newSiteName != siteName|| bCity || bState || bCountry ) 
-                                {
-                                    if (xnTableRow.Attributes.Count > 0)
-                                    {
-                                        siteRef = xnTableRow.Attributes[1].Value;
-                                    }
-                                    else
-                                    {
-                                        siteRef = string.Empty;
-                                    }
-                                    siteName = newSiteName;
-                                    siteHtmlBuffer.Append("<tr>");
-                                    siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                    siteHtmlBuffer.Append("</tr>\n");
-                                    addSpace = true;
-                                }
-                                else
-                                {
-                                    xnTableRow.RemoveAll();
-                                }
-                                break;
-                            case "name":
-                                personRef = xnTableRow.Attributes[1].Value;
-                                siteHtmlBuffer.Append("<tr>");
-                                siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                siteHtmlBuffer.Append("</tr>\n");
-                                addSpace = true;
-                                break;
-                            case "email":
-                                siteHtmlBuffer.Append("<tr>");
-                                siteHtmlBuffer.Append(xnTableRow.InnerXml);
-                                siteHtmlBuffer.Append("</tr>\n");
-                                addSpace = true;
-                                break;
-                            case "contact":
-                                if (siteHtmlBuffer.Length > 0)
-                                {
-                                    contactKey = xnTableRow.Attributes[0].Value;
-                                    AddContactInfoHTML(siteHtmlBuffer.ToString(), siteRef, siteName, city, state, country, contactKey);
-                                    siteHtmlBuffer.Remove(0, siteHtmlBuffer.Length);
-                                    contactKey = string.Empty;
-                                }
-                                bCountry = false;
-                                bState = false;
-                                bCity = false;
-                                xnTableRow.RemoveAll();
-                                break;
-                            default:
-                                // Ignore unknown node 
-                                break;
-                        } // End switch
-                    } // End foreach
+                        // These nodes are always created by the XSL, but the value may be empty.
+                        XPathNavigator cityNode = location.SelectSingleNode("city");
+                        XPathNavigator stateNode = location.SelectSingleNode("politicalSubUnitName");
+                        XPathNavigator countryNode = location.SelectSingleNode("country");
+                        XPathNavigator facilityNode = location.SelectSingleNode("facilityName");
+                        XPathNavigator htmlNode = location.SelectSingleNode("contactHTML");
+
+                        // Because the node will always exist, there's no need to check for nulls.
+                        string city = cityNode.Value;
+                        string state = stateNode.Value;
+                        string country = countryNode.Value;
+                        string facilityName = facilityNode.Value;
+                        string facilityRef = facilityNode.GetAttribute("siteRef", string.Empty);
+                        string html = htmlNode.Value;
+                        string contactKey = location.GetAttribute("contactKey", string.Empty);
+
+                        AddContactInfoHTML(html, facilityRef, facilityName, city, state, country, contactKey);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Rendering Error: Rendering protocol contact info HTML failed. Document CDRID=" + _protocolDocument.DocumentID.ToString(), e);
+                catch (Exception e)
+                {
+                    throw new Exception("Rendering Error: Rendering protocol contact info HTML failed. Document CDRID=" + _protocolDocument.DocumentID.ToString(), e);
+                }
             }
         }
 

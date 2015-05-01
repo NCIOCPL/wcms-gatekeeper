@@ -162,12 +162,12 @@
           <xsl:attribute name="name">ExpectedEnrollment:<xsl:value-of select="@id"/>
           </xsl:attribute>
           <a name="ExpectedEnrollment_{@id}"/>
-          <p>
-            <Span Class="Protocol-Section-Heading">Expected Enrollment</Span>
-          </p>
+          <h2>Expected Enrollment</h2>
+          
 
           <xsl:for-each select="ExpectedEnrollment">
-            <xsl:apply-templates/>
+            <p><xsl:apply-templates/>
+            </p>
           </xsl:for-each>
 
           <xsl:for-each select="ProtocolAbstract/Professional/ProjectedAccrual">
@@ -187,12 +187,10 @@
           <xsl:attribute name="name">Outcomes:<xsl:value-of select="@id"/>
           </xsl:attribute>
           <a name="Outcomes_{@id}"/>
-          <p>
-            <Span Class="Protocol-Section-Heading">Outcomes</Span>
-          </p>
-
+          <h2>Outcomes</h2>
+          
           <xsl:if test="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Primary' ] = true()">
-            <Span Class="Protocol-Outcomes-Primary">Primary Outcome(s)</Span>
+            <strong>Primary Outcome(s)</strong>
             <p>
               <xsl:for-each select="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Primary' ]">
                 <xsl:apply-templates/>
@@ -202,14 +200,15 @@
           </xsl:if>
 
           <xsl:if test="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Secondary' ]= true()">
-            <Span Class="Protocol-Outcomes-Primary">Secondary Outcome(s)</Span>
+            <strong>Secondary Outcome(s)</strong>
             <p>
               <xsl:for-each select="ProtocolAbstract/Professional/Outcome[ @OutcomeType = 'Secondary' ]">
                 <xsl:apply-templates/>
                 <br/>
               </xsl:for-each>
             </p>
-          </xsl:if>
+          
+        </xsl:if>
 
         </xsl:element>
       </xsl:if>
@@ -224,7 +223,7 @@
           <xsl:attribute name="name">PublishedResults:<xsl:value-of select="@id"/>
           </xsl:attribute>
           <a name="PublishedResults_{@id}"/>
-          <Span Class="Protocol-Section-Heading">Published Results</Span>
+          <h2>Published Results</h2>
           <xsl:apply-templates select="PublishedResults"/>
         </xsl:element>
       </xsl:if>
@@ -236,7 +235,7 @@
               RelatedPublications_<xsl:value-of select="@id"/>
             </xsl:attribute>
           </xsl:element>
-          <Span Class="Protocol-Section-Heading">Related Publications</Span>
+          <h2>Related Publications</h2>
           <xsl:apply-templates select="RelatedPublications"/>
         </a>
       </xsl:if>
@@ -262,7 +261,7 @@
           <xsl:attribute name="name">AlternateTitle_<xsl:value-of select="../@id"/>
           </xsl:attribute>
         </xsl:element>
-        <Span Class="Protocol-Section-Heading">Alternate Title</Span>
+        <h2>Alternate Title</h2>
         </p>
         <p>
           <xsl:apply-templates/>
@@ -274,9 +273,9 @@
         </xsl:attribute>
       </xsl:element>
 
-      <P>
-        <Span Class="Protocol-Section-Heading">Basic Trial Information</Span>
-      </P>
+    
+        <h2>Basic Trial Information</h2>
+    
 
       <table class="Protocol-info-box" border="0" cellspacing="0" cellpadding="5" width="100%">
         <tbody>
@@ -377,8 +376,8 @@
       </table>
 
       <xsl:if test="../ProtocolSpecialCategory!=''">
-        <P>
-          <Span Class="Protocol-Section-Heading">
+       
+          <h3 do-not-show="toc">
             Special Category:
 
             <xsl:for-each select="../ProtocolSpecialCategory">
@@ -390,8 +389,8 @@
                 <xsl:value-of select="."/>
               </xsl:if>
             </xsl:for-each>
-          </Span>
-        </P>
+          </h3>
+       
       </xsl:if>
     </xsl:if>
   </xsl:template>
@@ -413,9 +412,9 @@
       <xsl:attribute name="name">Objectives:<xsl:value-of select="../../../@id"/>
       </xsl:attribute>
       <a name="Objectives_{../../../@id}"/>
-      <p>
-        <Span Class="Protocol-Section-Heading">Objectives</Span>
-      </p>
+     
+        <h2>Objectives</h2>
+     
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -425,9 +424,9 @@
       <xsl:attribute name="name">EntryCriteria:<xsl:value-of select="../../../@id"/>
       </xsl:attribute>
       <a name="EntryCriteria_{../../../@id}"/>
-      <p>
-        <Span Class="Protocol-Section-Heading">Entry Criteria</Span>
-      </p>
+      
+        <h2>Entry Criteria</h2>
+      
       <xsl:apply-templates select="DiseaseCharacteristics"/>
       <xsl:apply-templates select="PriorConcurrentTherapy"/>
       <xsl:apply-templates select="PatientCharacteristics"/>
@@ -440,9 +439,9 @@
       <xsl:attribute name="name">Outline:<xsl:value-of select="../../../@id"/>
       </xsl:attribute>
       <a name="Outline_{../../../@id}"/>
-      <p>
-        <Span Class="Protocol-Section-Heading">Outline</Span>
-      </p>
+      
+        <h2>Outline</h2>
+      
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -459,7 +458,7 @@
 
   <xsl:template match="DiseaseCharacteristics">
     <P>
-      <Span Class="Protocol-EntryCriteria-DiseaseCharacteristics">Disease Characteristics:</Span>
+      <strong>Disease Characteristics:</strong>
     </P>
     <P>
       <xsl:apply-templates/>
@@ -468,7 +467,7 @@
 
   <xsl:template match="PatientCharacteristics">
     <P>
-      <Span Class="Protocol-EntryCriteria-PatientCharacteristics">Patient Characteristics:</Span>
+      <strong>Patient Characteristics:</strong>
     </P>
     <P>
       <xsl:apply-templates/>
@@ -477,7 +476,7 @@
 
   <xsl:template match="PriorConcurrentTherapy">
     <P>
-      <Span Class="Protocol-EntryCriteria-PriorConcurrentTherapy">Prior/Concurrent Therapy:</Span>
+      <strong>Prior/Concurrent Therapy:</strong>
     </P>
     <P>
       <xsl:apply-templates/>
@@ -486,7 +485,7 @@
 
   <xsl:template match="GeneralEligibilityCriteria">
     <P>
-      <Span Class="Protocol-EntryCriteria-GeneralEligibilityCriteria">General Eligibility Criteria:</Span>
+      <strong>General Eligibility Criteria:</strong>
     </P>
     <P>
       <xsl:apply-templates/>
@@ -642,81 +641,63 @@
         TrialContact_<xsl:value-of select="../@id"/>
       </xsl:attribute>
     </xsl:element>
-    <P>
-      <Span Class="Protocol-Section-Heading">Trial Contact Information</Span>
-    </P>
+   
+      <h2>Trial Contact Information</h2>
+    
     <xsl:element name="a">
       <xsl:attribute name="name">LeadOrgs:<xsl:value-of select="../@id"/>
       </xsl:attribute>
       <a name="LeadOrgs_{../@id}"/>
-      <p>
-        <Span Class="Protocol-Section-SubHeading">Trial Lead Organizations</Span>
-      </p>
+
+      <h3 do-not-show="toc">Trial Lead Organizations</h3>
+      
       <xsl:apply-templates select="ProtocolLeadOrg"/>
     </xsl:element>
     <xsl:apply-templates select="ProtocolSites"/>
   </xsl:template>
 
   <xsl:template match="ProtocolLeadOrg">
-    <P>
-      <Span Class="Protocol-LeadOrg-OrgName">
+    <!-- hide from table of contents on the front end-->
+    <h4 do-not-show="toc">
         <xsl:value-of select="./LeadOrgName"/>
-      </Span>
-    </P>
-    <P>
-      <table width="100%" cellspacing="0" cellpadding="0" border="0">
-        <tr>
-          <td valign="top" width="44%">
-            <img src="/images/spacer.gif" width="100%" height="1" alt="" border="0"/>
-          </td>
-          <td valign="top" width="2%">
-            <img src="/images/spacer.gif" width="100%" height="1" alt="" border="0"/>
-          </td>
-          <td valign="top" width="54%">
-            <img src="/images/spacer.gif" width="100%" height="1" alt="" border="0"/>
-          </td>
-        </tr>
+      
+    </h4>
+  
+        
         <xsl:for-each select="./LeadOrgPersonnel/ProtPerson">
-          <tr>
-            <td valign="top">
+          <div>
+            
               <xsl:choose>
                 <xsl:when test="./PersonNameInformation/SurName !=''">
-                  <Span Class="Protocol-LeadOrg-PersonName">
+                  
                     <xsl:value-of select="concat(./PersonNameInformation/GivenName, ' ', ./PersonNameInformation/SurName)"/>
-                  </Span>
+                  
                   <xsl:if test="./PersonNameInformation/ProfessionalSuffix!=''">
-                    <Span Class="Protocol-LeadOrg-Suffix">
+                    
                       <xsl:value-of select="concat(', ', ./PersonNameInformation/ProfessionalSuffix)"/>
-                    </Span>
+                   
                   </xsl:if>
                   <xsl:if test="./PersonRole	!=''">
-                    <Span Class="Protocol-LeadOrg-PersonRole">
+                    
                       <xsl:value-of select="concat(', ', ./PersonRole)"/>
-                    </Span>
+                   
                   </xsl:if>
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:if test="./PersonRole	!=''">
-                    <Span Class="Protocol-LeadOrg-PersonRole">
+                   
                       <xsl:value-of select="./PersonRole"/>
-                    </Span>
+                    
                   </xsl:if>
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:if test="@status !=''">
-                <Span Class="Protocol-LeadOrg-Status">
+                
                   (<xsl:value-of select="@status"/>)
-                </Span>
+               
               </xsl:if>
-            </td>
-            <td>
-              <img src="/images/spacer.gif" width="10" height="1" alt="" border="0"/>
-            </td>
-            <td valign="top">
-              <table cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td>
-                    <Span Class="Protocol-LeadOrg-Phone">
+            <br/>
+                    
                       <xsl:if test="./Contact/ContactDetail/Phone!='' or ./Contact/ContactDetail/TollFreePhone !=''">Ph: </xsl:if>
                       <xsl:if  test="./Contact/ContactDetail/Phone!=''">
                         <xsl:value-of select="./Contact/ContactDetail/Phone"/>
@@ -725,14 +706,12 @@
                         <xsl:if test="./Contact/ContactDetail/Phone!=''">;&#160;</xsl:if>
                         <xsl:value-of select="./Contact/ContactDetail/TollFreePhone"/>
                       </xsl:if>
-                    </Span>
-                  </td>
-                </tr>
+                    
+            <br/>
 
                 <xsl:if test="./Contact/ContactDetail/Email!=''">
-                  <tr>
-                    <td>
-                      <Span Class="Protocol-LeadOrg-Email">
+                  
+                      
                         Email:
                         <xsl:element name="a">
                           <xsl:attribute name="href">
@@ -740,24 +719,15 @@
                           </xsl:attribute>
                           <xsl:value-of select="./Contact/ContactDetail/Email"/>
                         </xsl:element>
-                      </Span>
-                    </td>
-                  </tr>
+                     
+                   
                 </xsl:if>
-              </table>
-            </td>
-          </tr>
-
-
-          <tr>
-            <td valign="top"  colspan="4">
-              <img src="/images/spacer.gif" width="1" height="5" alt="" border="0"/>
-            </td>
-          </tr>
+              
+          </div>
+         
 
         </xsl:for-each>
-      </table>
-    </P>
+     
   </xsl:template>
 
   <!-- ********************** End Participating Organizations ********************* -->
@@ -809,11 +779,117 @@
     <!-- TODO: Verify that this is ok -->
     <xsl:element name="a">
       <xsl:attribute name="name">SitesAndContacts</xsl:attribute>
-      <P>
-        <Span Class="Protocol-Section-SubHeading">Trial Sites</Span>
-      </P>
 
       <xsl:variable name="ProtocolSites" select=".//PostalAddress"/>
+      <!-- Create a list of locations, with a separate location record for each contact.
+            The defaultContactKey value is used when no contacts exist. -->
+      <locationData>
+        <xsl:for-each select="$ProtocolSites">
+          <xsl:sort select="CountryName"/>
+          <xsl:sort select="PoliticalSubUnitName"/>
+          <xsl:sort select="City"/>
+          <xsl:sort select="../../../../SiteName"/>
+
+          <!-- These don't vary between contacts at a single facility. -->
+          <xsl:variable name="city" select="City" />
+          <xsl:variable name="politicalSubUnit" select="PoliticalSubUnitName" />
+          <xsl:variable name="countryName" select="CountryName" />
+          <xsl:variable name="siteRef" select="../../../../@ref" />
+          <xsl:variable name="facilityName" select="../../../../SiteName"/>
+
+          <!-- If there are contacts, create location records. But see below for the case
+                where there are no contacts. -->
+          <xsl:for-each select="../../Contact">
+            <location contactKey="{../../../@site}">
+              <city>
+                <xsl:value-of select="$city"/>
+              </city>
+              <politicalSubUnitName>
+                <xsl:value-of select="$politicalSubUnit"/>
+              </politicalSubUnitName>
+              <country>
+                <xsl:value-of select="$countryName"/>
+              </country>
+              <facilityName siteRef="{$siteRef}">
+                <xsl:value-of select="$facilityName"/>
+              </facilityName>
+              <contactHTML>
+                <!-- Put the blob of HTML in a CDATA section to prevent surprises -->
+                <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text>
+                <!-- Contact person's name. -->
+
+                <!-- This concatenation will lead to extra whitespaces when there's a node missing,
+                      but this is an HTML snippet, so the extra spaces will collapse when the snippet
+                      displays in the browsr. -->
+                <xsl:value-of select="concat(../../../PersonNameInformation/GivenName, ' ', ../../../PersonNameInformation/MiddleInitial, ' ', ../../../PersonNameInformation/SurName)"/>
+                <xsl:if test="../../../PersonNameInformation/ProfessionalSuffix">
+                  , <xsl:value-of select="../../../PersonNameInformation/ProfessionalSuffix"/>
+                </xsl:if>
+
+                <!-- Include the Role -->
+                <xsl:if test="(../../../PersonRole[node()] = true())">
+                  <br/>
+                  <xsl:value-of select="../../../PersonRole"/>
+                </xsl:if>
+
+                <!-- Phone number, only applicable for CTGovContact or CTGovContactBackup -->
+                <xsl:if test="../Phone[node()] = true() or ../TollFreePhone[node()] = true()">
+                  <br />Ph: <xsl:choose>
+                              <xsl:when test="../Phone[node()] = true()">
+                                <xsl:value-of select="../Phone"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <xsl:if test="../TollFreePhone[node()] = true()">
+                                    <xsl:value-of select="../TollFreePhone"/>
+                                </xsl:if>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                  <xsl:if test="PhoneExt[node()] = true()">
+                    Ext. <xsl:value-of select="PhoneExt"/>
+                  </xsl:if>
+                </xsl:if>
+
+                <!-- Email address, only applicable for CTGovContact or CTGovContactBackup -->
+                <xsl:if test="Email[node()] = true()">
+                  <br />Email: <a>
+                    <!-- Create a mailto: link with a default subject line containing the protocol ID, OrgStudID, and Title -->
+                    <xsl:attribute name="href">
+                      mailto:<xsl:value-of select="Email"/>?Subject=<xsl:value-of select="concat(/CTGovProtocol/IDInfo/NCTID,',',/CTGovProtocol/IDInfo/OrgStudyID,':- ',normalize-space(translate(translate(/CTGovProtocol/BriefTitle,'&#xA;',' '),'&#xD;',' ')))"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="Email"/>
+                  </a>
+                </xsl:if>
+                <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
+              </contactHTML>
+            </location>
+          </xsl:for-each>
+
+          <!-- If there are no contacts, create a contactless location record. -->
+          <xsl:if test="(../../Contact[node()] = false())">
+            <location contactKey="{../../../@site}">
+              <city>
+                <xsl:value-of select="$city"/>
+              </city>
+              <politicalSubUnitName>
+                <xsl:value-of select="$politicalSubUnit"/>
+              </politicalSubUnitName>
+              <country>
+                <xsl:value-of select="$countryName"/>
+              </country>
+              <facilityName siteRef="{$siteRef}">
+                <xsl:value-of select="$facilityName"/>
+              </facilityName>
+              <contactHTML></contactHTML>
+            </location>
+          </xsl:if>
+
+        </xsl:for-each>
+      </locationData>
+
+
+      <h3>Trial Sites</h3>
+      
+      <!--<xsl:variable name="ProtocolSites" select=".//PostalAddress"/>-->
       <P>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr space="1">
@@ -1693,9 +1769,9 @@
         <xsl:attribute name="name">ProtocolRelatedLinks_<xsl:value-of select="../@id"/>
         </xsl:attribute>
       </xsl:element>
-      <p>
-        <Span Class="Protocol-Section-Heading">Related Information</Span>
-      </p>
+      
+        <h2>Related Information</h2>
+    
       <p>
         <xsl:apply-templates/>
       </p>
@@ -1728,33 +1804,21 @@
   <!-- **************************** RegistryInfo Section ******************************* -->
   <xsl:template match="RegistryInfo">
     <a name = "RegistryInfo:{../@id}">
-      <xsl:element name="a">
-        <xsl:attribute name="name">
-          RegistryInfo_<xsl:value-of select="../@id"/>
-        </xsl:attribute>
-      </xsl:element>
+      
+      <a name="RegistryInfo_{../@id}"/>
+      
+     
+        <h2>Registry Information</h2>
 
-      <p>
-      </p>
-      <div class="pdq-shaded-area">
-        <table border="0" cellpadding="0" cellspacing="0" width="95%">
-          <tr>
-            <td colspan="3" class="Protocol-Section-Heading" valign="top">Registry Information</td>
-          </tr>
-
+        <table class="table-default">
+          
           <xsl:if test="ProtocolTitle[node()] = true()">
             <xsl:if test="ProtocolTitle/@Type = 'Official' ">
               <tr>
-                <td colspan="3" valign="top">
-                  <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-                </td>
-              </tr>
-              <tr>
-                <td valign="top" width="35%">
+                <td>
                   <strong>Official Title</strong>
                 </td>
-                <td valign="top" width="1%">&#160;</td>
-                <td valign="top" width="64%">
+                <td>
                   <xsl:value-of select="ProtocolTitle"/>
                 </td>
               </tr>
@@ -1763,16 +1827,10 @@
 
           <xsl:if test="../ProtocolAdminInfo/StartDate[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>Trial Start Date</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <xsl:value-of select="../ProtocolAdminInfo/StartDate"/>
                 <xsl:if test="../ProtocolAdminInfo/StartDate/@DateType = 'Projected' "> (estimated)</xsl:if>
               </td>
@@ -1780,16 +1838,10 @@
           </xsl:if>
           <xsl:if test="../ProtocolAdminInfo/CompletionDate[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>Trial Completion Date</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <xsl:value-of select="../ProtocolAdminInfo/CompletionDate"/>
                 <xsl:if test="../ProtocolAdminInfo/CompletionDate/@DateType = 'Projected' "> (estimated)</xsl:if>
               </td>
@@ -1797,18 +1849,12 @@
           </xsl:if>
           <xsl:if test="ClinicalTrialsGovID[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>Registered in ClinicalTrials.gov</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <a>
-                  <xsl:attribute name="Class">Protocol-RelatedWebsites</xsl:attribute>
+                  
                   <xsl:attribute name="href">
                     <xsl:if test="starts-with(ClinicalTrialsGovID/@xref, 'http') = false()">Http://</xsl:if>
                     <xsl:value-of select="ClinicalTrialsGovID/@xref"/>
@@ -1821,16 +1867,10 @@
 
           <xsl:if test="DateSubmittedtoPDQ[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>Date Submitted to PDQ</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <xsl:value-of select="DateSubmittedtoPDQ"/>
               </td>
             </tr>
@@ -1838,16 +1878,10 @@
 
           <xsl:if test="../DateLastVerified[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>Information Last Verified</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <xsl:value-of select="../DateLastVerified"/>
               </td>
             </tr>
@@ -1855,16 +1889,10 @@
 
           <xsl:if test="../FundingInfo/NIHGrantContract/GrantContractNo[node()] = true()">
             <tr>
-              <td colspan="3" valign="top">
-                <img src="/images/spacer.gif" alt="" border="0" height="15" width="1"/>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
+              <td>
                 <strong>NCI Grant/Contract Number</strong>
               </td>
-              <td valign="top">&#160;</td>
-              <td valign="top">
+              <td>
                 <xsl:for-each select="../FundingInfo/NIHGrantContract/GrantContractNo">
                   <xsl:if test="position()=1">
                     <xsl:value-of select="."/>
@@ -1879,8 +1907,8 @@
           </xsl:if>
 
         </table>
-      </div>
-      <p></p>
+     
+     
     </a>
   </xsl:template>
 
@@ -1889,6 +1917,119 @@
 
   <!-- **************************** End RegistryInfo Section ******************************* -->
 
+  <!--Clean list Styles from the Prototype XSL for Protocols-->
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ItemizedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'il'"/>
+    
+    <xsl:element                   name = "ul">
+      <xsl:if                    test = "@id">
+        <xsl:attribute                name = "id">
+          <xsl:value-of              select = "@id"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
 
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "OrderedList">
+    <xsl:param                     name = "topSection"
+                                 select = "'ol'"/>
+    
+    <xsl:element                   name = "ol">
+      <xsl:if                    test = "@id">
+        <xsl:attribute                name = "id">
+          <xsl:value-of              select = "@id"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates       select = "@Style"/>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
+
+  <!--
+  Ordered lists will be displayed as is
+  Unordered lists will be displayed without style and without 
+  compact mode.  No 'dash', no 'bullet'.  
+  Style="simple" will be converted into class="no-bullets" (indentation?)
+  and eventually converted to some sort of address block when available
+  ================================================================ -->
+  <xsl:template                  match = "@Style">
+    <xsl:choose>
+      <xsl:when                      test = ". = 'bullet'"/>
+      <!-- Arabic (i.e. class="decimal") is the default.  
+         Don't need to include this in the HTML output -->
+      <xsl:when                      test = ". = 'Arabic'"/>
+      <xsl:otherwise>
+        <xsl:attribute                 name = "class">
+          <xsl:choose>
+            <xsl:when                    test = ". = 'LAlpha'">
+              <xsl:text>lower-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'LRoman'">
+              <xsl:text>lower-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'UAlpha'">
+              <xsl:text>upper-alpha</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'URoman'">
+              <xsl:text>upper-roman</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'circle'">
+              <xsl:text>list-circle</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'square'">
+              <xsl:text>list-square</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'dash'">
+              <xsl:text>list-dash</xsl:text>
+            </xsl:when>
+            <xsl:when                    test = ". = 'simple'">
+              <xsl:text>pdq-address-block</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>style_undefined</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListItem">
+    <xsl:param                     name = "topSection"
+                                 select = "'li'"/>
+    <li>
+      <xsl:apply-templates>
+        <xsl:with-param          name = "topSection"
+                               select = "$topSection"/>
+      </xsl:apply-templates>
+    </li>
+  </xsl:template>
+
+  <!--
+  ================================================================ -->
+  <xsl:template                  match = "ListTitle">
+    <xsl:element                   name = "p">
+      <xsl:attribute                name = "class">
+        <xsl:text>pdq-list-title</xsl:text>
+      </xsl:attribute>
+
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+  
 </xsl:stylesheet>
 

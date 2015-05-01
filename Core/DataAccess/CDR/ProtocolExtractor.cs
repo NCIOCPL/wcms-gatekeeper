@@ -612,20 +612,20 @@ namespace GateKeeper.DataAccess.CDR
         internal void ExtractTermSection(XmlDocument xdProtocol, List<ProtocolSection> sectionList, string CDRID, ProtocolSectionType protType)
         {
             try{
-                string strHPTerms = "<a name=\"Terms:" + CDRID + "\"><a name=\"Terms_" + CDRID + "\"></a>\n<p><Span class=\"Protocol-Section-Heading\">TERMS</Span><br></br>\n";
+                string strHPTerms = "<a name=\"Terms:" + CDRID + "\">\n<h4>TERMS</h4>\n";
 			    string strName, strValue;
 			    StringBuilder sbFragment = new StringBuilder();;
 			    bool bHasValues = false;
 
-			    sbFragment.Append("<Span class=\"Protocol-Term-SubHeading\">Eligible Diagnoses/Conditions Studied</Span>\n");
-			    sbFragment.Append("<p><table cellpadding=\"3\" cellspacing=\"0\" border=\"1\" width=\"100%\">\n");
+			    sbFragment.Append("<h5>Eligible Diagnoses/Conditions Studied</h5>\n");
+			    sbFragment.Append("<table class=\"table-default\">\n");
 
 			    if (xdProtocol.GetElementsByTagName("Diagnosis").Count > 0)
                 {
                     //CTRedesign - remove nowrap attribute and add with to 40% and 60%
                    // sbFragment.Append("<tr><td nowrap=\"true\"><Span class=\"Protocol-Term-Table-Heading\">Diagnosis</Span></td><td nowrap=\"true\"><Span class=\"Protocol-Term-Table-Heading\">Parent Diagnosis</Span></td></tr>\n");
 				   
-				    sbFragment.Append("<tr><td width=\"40%\"><Span class=\"Protocol-Term-Table-Heading\">Diagnosis</Span></td><td width=\"60%\"><Span class=\"Protocol-Term-Table-Heading\">Parent Diagnosis</Span></td></tr>\n");
+				    sbFragment.Append("<tr><th>Diagnosis</th><th>Parent Diagnosis</th></tr>\n");
 				    foreach (XmlNode xnTmp in xdProtocol.GetElementsByTagName("Diagnosis")) 
 				    {
 					    bHasValues = true;
@@ -652,15 +652,15 @@ namespace GateKeeper.DataAccess.CDR
                         //CTRedesign -- remove nowrap
 					    //sbFragment.Append("<td valign=\"top\" nowrap=\"true\">" + strName + "</td>\n");
                         //sbFragment.Append("<td valign=\"top\" width=\"100%\">" + strValue + "</td>\n");
-                        sbFragment.Append("<td valign=\"top\" >" + strName + "</td>\n");
-                        sbFragment.Append("<td valign=\"top\" >" + strValue + "</td>\n");
+                        sbFragment.Append("<td>" + strName + "</td>\n");
+                        sbFragment.Append("<td>" + strValue + "</td>\n");
 					    sbFragment.Append("</tr>\n");
 				    }
 			    }
 
 			    if (xdProtocol.GetElementsByTagName("StudyCondition").Count > 0) 
 			    {
-				    sbFragment.Append("<tr><td><Span class=\"Protocol-Term-Table-Heading\">Condition</Span></td><td><Span class=\"Protocol-Term-Table-Heading\">Parent Condition</Span></td></tr>\n");
+				    sbFragment.Append("<tr><th>Condition</th><th>Parent Condition</th></tr>\n");
 				    foreach (XmlNode xnTmp in xdProtocol.GetElementsByTagName("StudyCondition")) 
 				    {
 					    bHasValues = true;
@@ -682,22 +682,22 @@ namespace GateKeeper.DataAccess.CDR
 						    strName = "n/a";
                         if (strValue.Trim().Length == 0) 
 						    strValue = "n/a";
-					    sbFragment.Append("<td valign=\"top\" >" + strName + "</td>\n");
-					    sbFragment.Append("<td valign=\"top\" >" + strValue + "</td>\n");
+					    sbFragment.Append("<td>" + strName + "</td>\n");
+					    sbFragment.Append("<td>" + strValue + "</td>\n");
 					    sbFragment.Append("</tr>\n");
 				    }
 			    }
 
-			    sbFragment.Append("</table></p>\n");
+			    sbFragment.Append("</table>\n");
 			    if (bHasValues) 
 			    {
 				    strHPTerms += sbFragment.ToString();
 			    }
 
 			    sbFragment = new StringBuilder();
-			    sbFragment.Append("<Span class=\"Protocol-Term-SubHeading\">Interventions</Span>\n");
-			    sbFragment.Append("<p><table cellpadding=\"2\" border=\"1\" cellspacing=\"0\" width=\"100%\">\n");
-                sbFragment.Append("<tr><td  width=\"40%\"><Span class=\"Protocol-Term-Table-Heading\">Intervention Type</Span></td><td  width=\"60%\"><Span class=\"Protocol-Term-Table-Heading\">Intervention Name</Span></td></tr>\n");
+			    sbFragment.Append("<h5>Interventions</h5>\n");
+			    sbFragment.Append("<table class=\"table-default\">\n");
+                sbFragment.Append("<tr><th>Intervention Type</th><th>Intervention Name</th></tr>\n");
 			    bHasValues = false;
 			    foreach (XmlNode xnTmp in xdProtocol.GetElementsByTagName("Intervention")) 
 			    {
@@ -724,13 +724,13 @@ namespace GateKeeper.DataAccess.CDR
 				    sbFragment.Append("<td>" + strValue + "</td>\n");
 				    sbFragment.Append("</tr>\n");
 			    }
-			    sbFragment.Append("</table></p>\n");
+			    sbFragment.Append("</table>\n");
 			    if (bHasValues) 
 			    {
 				    strHPTerms += sbFragment.ToString();
 			    }
 
-			    strHPTerms += "</p>\n</a>";
+			    strHPTerms += "\n</a>";
 
                 sectionList.Add(new ProtocolSection(0, strHPTerms, protType));
             }
