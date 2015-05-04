@@ -14,7 +14,6 @@ namespace GateKeeper.DocumentObjects.Protocol
         #region Fields
 
         private int _protocolContactInfoID = 0;
-        private int _organizationID = 0;
         private int _personID = 0;
         private string _organizationName = string.Empty;
         private string _personGivenName = string.Empty;
@@ -64,8 +63,10 @@ namespace GateKeeper.DocumentObjects.Protocol
         /// </summary>
         public int OrganizationID
         {
-            get { return _organizationID; }
-            set { _organizationID = value; }
+            get
+            {
+                return _organizationName.GetHashCode();
+            }
         }
         
         /// <summary>

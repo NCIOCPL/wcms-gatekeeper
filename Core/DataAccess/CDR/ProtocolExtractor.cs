@@ -133,7 +133,6 @@ namespace GateKeeper.DataAccess.CDR
                ci.Xml.LoadXml(protPersonNav.OuterXml);
 
                 // Set organization information parsed from the ProtocolLeadOrg node parsed above:
-                ci.OrganizationID = organizationID;
                 ci.OrganizationName = organizationName;
                 ci.OrganizationRole = organizationRole;
                 ci.IsLeadOrg = isLeadOrg;
@@ -489,29 +488,6 @@ namespace GateKeeper.DataAccess.CDR
         }
 
         /// <summary>
-        /// Extract protocol sponsors.
-        /// </summary>
-        /// <param name="xNav"></param>
-        /// <param name="protocol"></param>
-        /// <param name="basePath"></param>
-        internal void ExtractSponsors(XPathNavigator xNav, ProtocolDocument protocol, string basePath)
-        {
-            try{
-                XPathNodeIterator nodeIter = xNav.Select(basePath);
-
-                while (nodeIter.MoveNext())
-                {
-                    protocol.SponsorList.Add(nodeIter.Current.Value);
-                    protocol.SponsorText += ((protocol.SponsorText.Length > 0) ? "," : string.Empty) + nodeIter.Current.Value;
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Extraction Error: Extracting " + basePath + " failed.  Document CDRID=" + _documentID.ToString(), e);
-            }
-        }
-
-        /// <summary>
         /// Extract all the possible types of cancer for a protocol.
         /// </summary>
         /// <param name="xNav"></param>
@@ -567,7 +543,7 @@ namespace GateKeeper.DataAccess.CDR
             try
             {
                 protocol.Status = DocumentHelper.GetXmlDocumentValue(xNav, basePath);
-                protocol.IsActive = (protocol.Status.ToUpper() == "ACTIVE" || protocol.Status.ToUpper() == "APPROVED-NOT YET ACTIVE") ? 1 : 0;
+                protocol.IsActive = 1;
             }
             catch (Exception e)
             {
@@ -788,9 +764,6 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Extract age eligibility
                 ExtractEligibility(xNav, protocol, XPathManager.GetXPath(ProtocolXPath.Eligibility));
-
-                // Extract protocol sponsors
-                ExtractSponsors(xNav, protocol, XPathManager.GetXPath(ProtocolXPath.Sponsor));
 
                 // Extract alternate IDs
                 ExtractAlternateIDs(xNav, protocol.AlternateIDList, XPathManager.GetXPath(ProtocolXPath.AlternateID));

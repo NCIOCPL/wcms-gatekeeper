@@ -768,7 +768,6 @@
     </xsl:if>
     <!-- End of the order of Location -->
     <xsl:apply-templates select="RequiredHeader"/>
-    <xsl:apply-templates select="CTGovDisclaimer"/>
     
     <!--P>
 			<xsl:copy-of select="$ReturnToTopBar"/>
@@ -836,27 +835,6 @@
                   Age
                 </td>
                 <td width="4" valign="middle">
-                  <img src="/images/spacer.gif" width="4px" height="1px" alt="" border="0"/>
-                </td>
-              </xsl:if>
-              <xsl:if test="/CTGovProtocol/Sponsors/PDQSponsorship[node()] = true()">
-                <td valign="top" class="Protocol-BasicStudy-TD-Grayborder">
-                  <img src="/images/spacer.gif" width="1px" height="1px" alt="" border="0"/>
-                </td>
-                <td width="4" valign="middle">
-                  <img src="/images/spacer.gif" width="4px" height="1px" alt="" border="0"/>
-                </td>
-                <td class="black-text" width="85px" valign="middle" align="left">
-                  <xsl:choose>
-                    <xsl:when test="count(/CTGovProtocol/Sponsors/PDQSponsorship) =1">
-                      Sponsor
-                    </xsl:when>
-                    <xsl:otherwise>
-                      Sponsors
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </td>
-                <td valign="middle">
                   <img src="/images/spacer.gif" width="4px" height="1px" alt="" border="0"/>
                 </td>
               </xsl:if>
@@ -941,29 +919,6 @@
                   <img src="/images/spacer.gif" width="1px" height="10px" alt="" border="0"/>
                   <br/>
                   <xsl:value-of select="/CTGovProtocol/Eligibility/AgeText"/>
-                  <br/>
-                  <img src="/images/spacer.gif" width="1px" height="10px" alt="" border="0"/>
-                  <br/>
-                </td>
-                <td valign="top">&#160;</td>
-              </xsl:if>
-              <xsl:if test="/CTGovProtocol/Sponsors/PDQSponsorship[node()] = true() ">
-                <td valign="top" class="Protocol-BasicStudy-TD-Grayborder">
-                  <img src="/images/spacer.gif" width="1px" height="1px" alt="" border="0"/>
-                </td>
-                <td valign="middle">&#160;</td>
-                <td valign="top">
-                  <img src="/images/spacer.gif" width="1px" height="10px" alt="" border="0"/>
-                  <br/>
-                  <xsl:for-each select="/CTGovProtocol/Sponsors/PDQSponsorship">
-                    <xsl:if test="position()=1">
-                      <xsl:value-of select="."/>
-                    </xsl:if>
-                    <xsl:if test="position() !=1">
-                      <xsl:value-of select="', '"/>
-                      <xsl:value-of select="."/>
-                    </xsl:if>
-                  </xsl:for-each>
                   <br/>
                   <img src="/images/spacer.gif" width="1px" height="10px" alt="" border="0"/>
                   <br/>
@@ -1055,14 +1010,7 @@
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="CTGovDisclaimer">
-    <xsl:element name="a">
-      <xsl:attribute name="name">Disclaimer</xsl:attribute>
-      <p>
-        <xsl:apply-templates/>
-      </p>
-    </xsl:element>
-  </xsl:template>
+
   <!-- ****************************** End Summary  ******************************** -->
   <!-- ********************** Leading Organizations ************************* -->
   <xsl:template match="Sponsors">
@@ -1243,20 +1191,15 @@
   <xsl:template match="RequiredHeader">
     <xsl:element name="a">
       <xsl:attribute name="name">RequiredHeader</xsl:attribute>
-      <P>
-        <xsl:element name="a">
-          <xsl:attribute name="href">
-            <xsl:value-of select="./LinkText/@xref"/>
-          </xsl:attribute>
-          <xsl:value-of select="./LinkText"/>
-        </xsl:element>
-        <Br/>
-          NLM Identifier <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
-        <Br/>
-        <strong>
-          <xsl:value-of select="./DownloadDate"/>
-        </strong>
-      </P>
+      <p>
+        <a href="{./LinkText/@xref}">
+          <xsl:value-of select="./LinkText" />
+        </a>
+        <br/>
+        <span Class="Protocol-NLMIdentifer">
+          NLM Identifer <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
+        </span>
+      </p>
     </xsl:element>
   </xsl:template>
   <!-- END of RequiredHeader -->

@@ -333,17 +333,6 @@ namespace GateKeeper.ContentRendering
                     this._protocolDocument.ProtocolSectionList.Add(new ProtocolSection(0, summaryNav.OuterXml, ProtocolSectionType.CTGovBriefSummary));
                 }
 
-                // Disclaimer
-                XPathNavigator disclaimerNav = xNav.SelectSingleNode("//a[@name='Disclaimer']");
-                if (disclaimerNav != null)
-                {
-                    string tempHtml = disclaimerNav.OuterXml;
-                    this._protocolDocument.ProtocolSectionList.Add(
-                        new ProtocolSection(0,
-                        tempHtml.Replace("http://www.nlm.nih.gov/contacts/custserv-email.html", "<a href=\"http://www.nlm.nih.gov/contacts/custserv-email.html\">http://www.nlm.nih.gov/contacts/custserv-email.html</a>"),
-                        ProtocolSectionType.CTGovDisclaimer));
-                }
-
                 // LeadOrgs
                 XPathNavigator leadOrgsNav = xNav.SelectSingleNode("//a[@name='LeadOrgs']");
                 if (leadOrgsNav != null)
