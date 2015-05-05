@@ -1030,7 +1030,7 @@
         <xsl:attribute name="do-not-show">
           <xsl:text>toc</xsl:text>
         </xsl:attribute>
-        <xsl:text>Trial Lead Organizations/Sponsors</xsl:text>
+        <xsl:text>Trial Lead Organizations / Sponsors / Collaborators</xsl:text>
       </xsl:element>
 
       <!-- hide from table of contents on the front end-->
