@@ -150,7 +150,7 @@ namespace GateKeeper.ContentRendering
                     //  To get around this problem: size the new bitmap to the new bitmaps dimensions.
                     // Draw the old bitmaps contents to the new bitmap. Paint the entire region of the old bitmap to the 
                     // new bitmap. Use the rectangle type to select area of the source image
-                    Bitmap bmpNew = new Bitmap(newSize.Width, newSize.Width);
+                    Bitmap bmpNew = new Bitmap(newSize.Width, newSize.Height);
                     graph = Graphics.FromImage(bmpNew);
                     graph.FillRectangle(brush, rect);
                     graph.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
