@@ -1299,22 +1299,42 @@ namespace NCI.WCM.CMSManager.CMS
             int loopCount = (itemCount / maxChunkSize);
             int remainder = itemCount % maxChunkSize;
 
-            int subsetSize;
+            int subsetSize = 0;
             int first;
 
             for (int i = 0; i <= loopCount; i++)
             {
-                // Check items out in groups no larger than maxChunkSize.
-                subsetSize = (i < loopCount) ? maxChunkSize : remainder;
                 first = i * maxChunkSize;
-
-                try
+                //OCEPROJECT 3079 - updated this logic so that 
+                //checkout does not fail when remainder is 0
+                // Check items out in groups no larger than maxChunkSize.
+                if (i < loopCount)
+                {
+                    subsetSize = maxChunkSize;
+                }
+                else
+                {
+                    if (remainder > 0)
+                    {
+                        subsetSize = remainder;
+                    }
+                    else
+                    {
+                        subsetSize = itemCount - first;
+                    }
+                    
+                }
+                                
+               try
                 {
                     // As items are checked out, add them to statusList for eventual return.
-                    long[] listSubset = new long[subsetSize];
-                    Array.ConstrainedCopy(idList, first, listSubset, 0, subsetSize);
-                    PSItemStatus[] result = PSWSUtils.PrepareForEdit(_contentService, listSubset);
-                    statusList.AddRange(result);
+                    if (subsetSize > 0)
+                    {
+                        long[] listSubset = new long[subsetSize];
+                        Array.ConstrainedCopy(idList, first, listSubset, 0, subsetSize);
+                        PSItemStatus[] result = PSWSUtils.PrepareForEdit(_contentService, listSubset);
+                        statusList.AddRange(result);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1356,21 +1376,41 @@ namespace NCI.WCM.CMSManager.CMS
             int loopCount = (itemCount / maxChunkSize);
             int remainder = itemCount % maxChunkSize;
 
-            int subsetSize;
+            int subsetSize = 0;
             int first;
 
             for (int i = 0; i <= loopCount; i++)
             {
                 // Release items in groups no larger than maxChunkSize.
-                subsetSize = (i < loopCount) ? maxChunkSize : remainder;
                 first = i * maxChunkSize;
+                //OCEPROJECT 3079 - updated this logic so that 
+                //release from edit does not fail when remainder is 0
+                
+                if (i < loopCount)
+                {
+                    subsetSize = maxChunkSize;
+                }
+                else
+                {
+                    if (remainder > 0)
+                    {
+                        subsetSize = remainder;
+                    }
+                    else
+                    {
+                        subsetSize = itemCount - first;
+                    }
+                }
 
                 try
                 {
-                    // As items are checked out, add them to statusList for eventual return.
-                    PSItemStatus[] listSubset = new PSItemStatus[subsetSize];
-                    Array.ConstrainedCopy(statusList, first, listSubset, 0, subsetSize);
-                    PSWSUtils.ReleaseFromEdit(_contentService, listSubset);
+                    if (subsetSize > 0)
+                    {
+                        // As items are checked out, add them to statusList for eventual return.
+                        PSItemStatus[] listSubset = new PSItemStatus[subsetSize];
+                        Array.ConstrainedCopy(statusList, first, listSubset, 0, subsetSize);
+                        PSWSUtils.ReleaseFromEdit(_contentService, listSubset);
+                    }
                 }
                 catch (Exception)
                 {
