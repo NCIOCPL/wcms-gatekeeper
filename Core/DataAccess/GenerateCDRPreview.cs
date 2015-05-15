@@ -72,7 +72,7 @@ namespace GateKeeper.DataAccess
         /// <returns>html in parameter reference</returns>
         public static void CTGovProtocolPreview(ref string html, ref string headerHtml , ProtocolDocument protocol)
         {
-            headerHtml = createHeaderZoneContent("Clinical Trials (PDQ&#174;)", protocol, PreviewTypes.CTGovProtocol);
+            headerHtml = "";
 
             XPathNavigator xNav = protocol.Xml.CreateNavigator();
             string strCDRID = CDRHelper.RebuildCDRID(protocol.ProtocolID.ToString());
@@ -81,7 +81,7 @@ namespace GateKeeper.DataAccess
             // Following modification is to resolve the link around title in FireFox browser.
             FormatProtocolHTML(ref protocolContent, strCDRID);
             html += protocolContent;
-            html += "<a href=\"#top\" class=\"backtotop-link\"><img src=\"/images/backtotop_red.gif\" alt=\"Back to Top\" border=\"0\"/>Back to Top</a><br/><br/>";
+            
         }
 
 
@@ -477,7 +477,7 @@ namespace GateKeeper.DataAccess
                 {
                     string html = summaryNav.InnerXml;
                     html = html.Replace("<a name=\"Section\" />", "<a name=\"Section\"></a>");
-                    string trial = "<p><a name=\"TrialDescription_" + strCDRID + "\"></a><span class=\"Protocol-Section-Heading\">Trial Description</span></p>";
+                    string trial = "<h2 id=\"TrialDescription_" + strCDRID + "\">Trial Description</h2>";
                     summaryNav.InnerXml = trial + "<a name=\"Summary_" + strCDRID + "\"></a>" + html;
                     summaryNav.OuterXml = "<Summary>" + proQuery.FormatSectionHTML(
                         new ProtocolSection(0, summaryNav.OuterXml, ProtocolSectionType.CTGovBriefSummary)) + "</Summary>";
@@ -567,24 +567,10 @@ namespace GateKeeper.DataAccess
         /// <return></return>        
         private static void FormatProtocolHTML(ref string protocolContent, string strCDRID)
         {
-            protocolContent = protocolContent.Replace("<a name=\"AlternateTitle_" + strCDRID + "\" />", "<a name=\"AlternateTitle_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"TrialIdInfo_" + strCDRID + "\" />", "<a name=\"TrialIdInfo_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"SpecialCategory_" + strCDRID + "\" />", "<a name=\"SpecialCategory_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"TrialDescription_" + strCDRID + "\" />", "<a name=\"TrialDescription_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"TrialContact_" + strCDRID + "\" />", "<a name=\"TrialContact_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"Purpose_" + strCDRID + "\" />", "<a name=\"Purpose_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"Eligibility_" + strCDRID + "\" />", "<a name=\"Eligibility_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"TreatmentIntervention_" + strCDRID + "\" />", "<a name=\"TreatmentIntervention_" + strCDRID + "\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"ListSection\" />", "<a name=\"ListSection\"></a>");
-            protocolContent = protocolContent.Replace("<a name=\"StudyIdInfo\" />", "<a name=\"StudyIdInfo\"></a>");
             protocolContent = protocolContent.Replace("<a name=\"StudySites\"/>", string.Empty);
             protocolContent = protocolContent.Replace("<TrialSites>", string.Empty);
             protocolContent = protocolContent.Replace("</TrialSites>", string.Empty);
-            protocolContent = protocolContent.Replace("Protocol-BasicStudy-Grayborder", "gray-border");
-            protocolContent = protocolContent.Replace("Protocol-BasicStudy-TD-Grayborder", "gray-border");
-            protocolContent = protocolContent.Replace("Protocol-BasicStudy-PrimaryID", "protocol-primaryprotocolid");
-            protocolContent = protocolContent.Replace("Protocol-BasicStudy-AlternateID", "protocol-alternateprotocolids");
-            protocolContent = protocolContent.Replace("Protocol-BasicStudy-Heading", "black-text");
+            
             protocolContent = protocolContent.Replace("<tr />", string.Empty);
             protocolContent = protocolContent.Replace("<tr></tr>", string.Empty);
             protocolContent = protocolContent.Replace("<p/ >", string.Empty);
@@ -592,12 +578,7 @@ namespace GateKeeper.DataAccess
             protocolContent = protocolContent.Replace("Pharmaceutical/Industry", "Pharmaceutical / Industry");
             protocolContent = protocolContent.Replace("<a name=\"END_ListSection\" />", string.Empty);
 
-            // This is to fix the extra spaces between to span tags
-            protocolContent = Regex.Replace(protocolContent, "</span>[\\s\\t\\f]*<span", "</span><span", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            protocolContent = Regex.Replace(protocolContent, "<br/ >[\\s\\t\\f]*<span", "<p><span", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            protocolContent = Regex.Replace(protocolContent, "</span>[\\s\\t\\f]*</a>", "</span></a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            protocolContent = Regex.Replace(protocolContent, "</tr>[\\s\\t\\f]*<tr", "</tr><tr", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
+            
             // Remove the unused tag that has the pattern <a name="Section_alpha_number />, this cause text after it become link in firefox.
             protocolContent = Regex.Replace(protocolContent, "<a name=\"Section_*[A-Za-z]*[_]*[0-9]*\" />", "", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
