@@ -74,7 +74,7 @@ namespace GateKeeper.ContentRendering
             System.IO.StringWriter sw = new System.IO.StringWriter(sb);
 
             this.Render(document.Xml.CreateNavigator(), renderParameters, sw);
-            
+               
             document.Html = sb.ToString();
 #if DEBUG
             string path = "C:\\temp\\Output\\";
@@ -88,6 +88,8 @@ namespace GateKeeper.ContentRendering
                 }
             }
 #endif
+            //OCEPROJECT 3101 - make sure space is preserved when there are two elements next to each other
+            document.PostRenderXml.PreserveWhitespace = true;
             document.PostRenderXml.LoadXml(sb.ToString());
         }
 
