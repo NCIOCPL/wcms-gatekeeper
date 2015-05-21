@@ -497,7 +497,7 @@
         <th>Type</th>
 
         <th>Age</th>
-        <th>Protocol IDs</th>
+        <th>Trial IDs</th>
       </tr>
 
       <tr>
