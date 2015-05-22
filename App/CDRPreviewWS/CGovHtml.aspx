@@ -387,7 +387,7 @@ Once the PDQCIS has been refactored to address both summaries and protocols with
 
 </script>
 </head>
-<body>
+<body class="pdqcancerinfosummary">
     
     <form id="form1" runat="server">
     <!-- CGov Container -->
