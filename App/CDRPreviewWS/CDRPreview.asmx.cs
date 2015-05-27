@@ -354,7 +354,7 @@ namespace CDRPreviewWS
         /// </summary>
         /// <param name="type">document type</param>
         /// <returns>document TemplateType</returns>
-        private PreviewTypes GetDocumentType(string type)
+        public PreviewTypes GetDocumentType(string type)
         {
             // Rather than maintain a list of if-else checks, we'll let the framework
             // do the heavy lifting of converting the string to an enum value.

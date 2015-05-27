@@ -14,6 +14,10 @@ using GKManagers;
 using GKManagers.CMSManager.Configuration;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Xml.XPath;
+using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.Common.XPathKeys;
+using GateKeeper.DocumentObjects;
 
 namespace CDRPreviewWS
 {
@@ -45,8 +49,24 @@ namespace CDRPreviewWS
 
                 CDRPreview previewSvc = new CDRPreview();
                 this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);
-                 
-                currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+                 currentLanguage = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+
+                if (previewSvc.GetDocumentType(documentType) == GateKeeper.DocumentObjects.PreviewTypes.Summary)
+                {
+                    XPathNavigator xNav = xmlDoc.CreateNavigator();
+                    xNav.MoveToFirstChild();
+                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+                    Language summaryLanguage;
+                    string path = xPathManager.GetXPath(SummaryXPath.Lang);
+                    summaryLanguage = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, path));
+
+                    if (summaryLanguage == Language.Spanish)
+                        currentLanguage = "es";
+
+                }
+
+
             }
             else
             {

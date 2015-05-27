@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CGovHtml.aspx.cs" Inherits="CDRPreviewWS.CGovHtml" %>
 
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="<%= currentLanguage %>">
 <head id="header">
     <title>CDR Preview</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
