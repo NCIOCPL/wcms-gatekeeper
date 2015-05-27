@@ -29,6 +29,8 @@ using GKManagers;
 using GKPreviews;
 using GKManagers.CMSManager.Configuration;
 using CDRPreviewWS.Common;
+using System.Xml.XPath;
+using GateKeeper.Common.XPathKeys;
 
 namespace CDRPreviewWS
 {
@@ -46,7 +48,8 @@ namespace CDRPreviewWS
         private DocumentXPathManager xPathManager = new DocumentXPathManager();
         private string errorMsg = string.Empty;
         #endregion
-
+        //OCEPROJECT - 3197 - language gets updated for Spanish Summaries
+        public string currentLanguage = "en";
         #region Public methods
         public CDRPreview()
         {
@@ -136,6 +139,15 @@ namespace CDRPreviewWS
                 switch (documentType)
                 {
                     case PreviewTypes.Summary:
+                        //OCEPROJECT - 3197 - language gets updated for Spanish Summaries
+                        XPathNavigator xNav = document.CreateNavigator();
+                        xNav.MoveToFirstChild();
+                        Language summaryLanguage;
+                        string path = xPathManager.GetXPath(SummaryXPath.Lang);
+                        summaryLanguage = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, path));
+                        if (summaryLanguage == Language.Spanish)
+                            currentLanguage = "es";
+
                         html = RenderSummaryHTML(document, ref headerHtml);
                         break;
                     case PreviewTypes.Protocol_HP:
@@ -481,6 +493,9 @@ namespace CDRPreviewWS
                         response = reader.ReadToEnd();
                         response = response.Replace("CONTENT HTML", contentHtml);
                         response = response.Replace("HEADER HTML", headerHtml);
+                        //OCEPROJECT - 3197 - pass the current language back to the page
+                        //the language gets updated for Spanish Summaries
+                        response = response.Replace("CURRENT LANGUAGE", currentLanguage);
                     }
                 }
             }

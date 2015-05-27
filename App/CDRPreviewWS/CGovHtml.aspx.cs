@@ -34,6 +34,7 @@ namespace CDRPreviewWS
         {
             serverUrl = ConfigurationManager.AppSettings["ServerURL"];
             currentHost = Request.Url.GetLeftPart(UriPartial.Authority);
+                       
             if (!string.IsNullOrEmpty(this.Request.Params["requestID"]) &&
                 !string.IsNullOrEmpty(this.Request.Params["cdrID"]) &&
                 !string.IsNullOrEmpty(this.Request.Params["documentType"]))
@@ -48,30 +49,16 @@ namespace CDRPreviewWS
                 xmlDoc.LoadXml(requestData.DocumentDataString);
 
                 CDRPreview previewSvc = new CDRPreview();
-                currentLanguage = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-
-                if (previewSvc.GetDocumentType(documentType) == GateKeeper.DocumentObjects.PreviewTypes.Summary)
-                {
-                    XPathNavigator xNav = xmlDoc.CreateNavigator();
-                    xNav.MoveToFirstChild();
-                    DocumentXPathManager xPathManager = new DocumentXPathManager();
-                    Language summaryLanguage;
-                    string path = xPathManager.GetXPath(SummaryXPath.Lang);
-                    summaryLanguage = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, path));
-
-                    if (summaryLanguage == Language.Spanish)
-                        currentLanguage = "es";
-
-                }
-
-                this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);                
-
+                this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);
+                //OCEPROJECT - 3197 for spanish summaries the language will be updated
+                currentLanguage = previewSvc.currentLanguage;
 
             }
             else
             {
                 result = "CONTENT HTML";
                 contentHeader = "HEADER HTML";
+                currentLanguage = "CURRENT LANGUAGE";
             }
         }
              
