@@ -48,9 +48,7 @@ namespace CDRPreviewWS
                 xmlDoc.LoadXml(requestData.DocumentDataString);
 
                 CDRPreview previewSvc = new CDRPreview();
-                this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);
-
-                 currentLanguage = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+                currentLanguage = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
                 if (previewSvc.GetDocumentType(documentType) == GateKeeper.DocumentObjects.PreviewTypes.Summary)
                 {
@@ -65,6 +63,8 @@ namespace CDRPreviewWS
                         currentLanguage = "es";
 
                 }
+
+                this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);                
 
 
             }
