@@ -333,6 +333,18 @@ namespace GateKeeper.ContentRendering
                     this._protocolDocument.ProtocolSectionList.Add(new ProtocolSection(0, summaryNav.OuterXml, ProtocolSectionType.CTGovBriefSummary));
                 }
 
+                // Disclaimer
+                XPathNavigator disclaimerNav = xNav.SelectSingleNode("//a[@name='Disclaimer']");
+                if (disclaimerNav != null)
+                {
+                    disclaimerNav.InnerXml = "<a name=\"Disclaimer_" + strCDRID + "\"></a>" + disclaimerNav.InnerXml;
+                    string tempHtml = disclaimerNav.OuterXml;
+                    this._protocolDocument.ProtocolSectionList.Add(
+                        new ProtocolSection(0,
+                        tempHtml,
+                        ProtocolSectionType.CTGovDisclaimer));
+                }
+
                 // LeadOrgs
                 XPathNavigator leadOrgsNav = xNav.SelectSingleNode("//a[@name='LeadOrgs']");
                 if (leadOrgsNav != null)

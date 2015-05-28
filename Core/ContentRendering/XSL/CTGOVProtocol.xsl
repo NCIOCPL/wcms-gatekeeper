@@ -160,6 +160,7 @@
     <!-- End of the order of Location -->
     <xsl:call-template        name = "trialLocations"/>
     <xsl:apply-templates select="RequiredHeader"/>
+    <xsl:call-template name="CTGovDisclaimer" />
 
   </xsl:template>
 
@@ -625,6 +626,15 @@
       </xsl:element>
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+  <xsl:template name="CTGovDisclaimer">
+    <a name="Disclaimer">
+      <div class="note">
+        <p>
+          <strong>Note:</strong> Information about participating sites on pharmaceutical industry trials may be incomplete.
+          Please visit the ClinicalTrials.gov record via the link provided for more information about participating sites.</p>
+      </div>
+    </a>
   </xsl:template>
 
   <!-- ****************************** End Summary  ******************************** -->
