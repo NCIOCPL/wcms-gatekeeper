@@ -632,7 +632,7 @@
       <div class="note">
         <p>
           <strong>Note:</strong> Information about participating sites on pharmaceutical industry trials may be incomplete.
-          Please visit the ClinicalTrials.gov record via the link provided for more information about participating sites.</p>
+          Please visit the ClinicalTrials.gov record via the link above for more information about participating sites.</p>
       </div>
     </a>
   </xsl:template>
