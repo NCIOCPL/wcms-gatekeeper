@@ -1035,15 +1035,9 @@
   <xsl:template                  match = "ProtocolRef">
     <xsl:element                   name = "a">
       <xsl:attribute                name = "href">
-        <!--
-     Next Line For Testing on DEV only !!! 
-     ===================================== -->
-        <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
-        <xsl:text>/clinicaltrials/search/view?version=</xsl:text>
-        <xsl:value-of              select = "$audience"/>
-        <xsl:text>&amp;cdrid=</xsl:text>
-        <xsl:value-of              select = "number(
-                                           substring-after(@href, 'CDR'))"/>
+       
+        <xsl:text>/clinicaltrials/</xsl:text>
+        <xsl:value-of              select = "@nct_id"/>
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>

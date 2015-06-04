@@ -289,7 +289,8 @@
 <!ATTLIST KeyPoint id CDATA #IMPLIED>
 
 <!ELEMENT ProtocolRef (#PCDATA)>
-<!ATTLIST ProtocolRef href CDATA #REQUIRED>
+<!ATTLIST ProtocolRef href CDATA #REQUIRED
+                      nct_id CDATA #REQUIRED>
 
 <!ELEMENT ProtocolLink (#PCDATA)>
 <!ATTLIST ProtocolLink ref CDATA #REQUIRED>
