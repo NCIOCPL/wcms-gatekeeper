@@ -14,6 +14,10 @@ using GKManagers;
 using GKManagers.CMSManager.Configuration;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Xml.XPath;
+using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.Common.XPathKeys;
+using GateKeeper.DocumentObjects;
 
 namespace CDRPreviewWS
 {
@@ -30,6 +34,7 @@ namespace CDRPreviewWS
         {
             serverUrl = ConfigurationManager.AppSettings["ServerURL"];
             currentHost = Request.Url.GetLeftPart(UriPartial.Authority);
+                       
             if (!string.IsNullOrEmpty(this.Request.Params["requestID"]) &&
                 !string.IsNullOrEmpty(this.Request.Params["cdrID"]) &&
                 !string.IsNullOrEmpty(this.Request.Params["documentType"]))
@@ -45,13 +50,15 @@ namespace CDRPreviewWS
 
                 CDRPreview previewSvc = new CDRPreview();
                 this.result = previewSvc.ReturnHTML((XmlNode)xmlDoc, documentType, ref contentHeader);
-                 
-                currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                //OCEPROJECT - 3197 for spanish summaries the language will be updated
+                currentLanguage = previewSvc.currentLanguage;
+
             }
             else
             {
                 result = "CONTENT HTML";
                 contentHeader = "HEADER HTML";
+                currentLanguage = "CURRENT LANGUAGE";
             }
         }
              

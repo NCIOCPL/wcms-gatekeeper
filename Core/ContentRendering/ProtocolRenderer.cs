@@ -337,10 +337,11 @@ namespace GateKeeper.ContentRendering
                 XPathNavigator disclaimerNav = xNav.SelectSingleNode("//a[@name='Disclaimer']");
                 if (disclaimerNav != null)
                 {
+                    disclaimerNav.InnerXml = "<a name=\"Disclaimer_" + strCDRID + "\"></a>" + disclaimerNav.InnerXml;
                     string tempHtml = disclaimerNav.OuterXml;
                     this._protocolDocument.ProtocolSectionList.Add(
                         new ProtocolSection(0,
-                        tempHtml.Replace("http://www.nlm.nih.gov/contacts/custserv-email.html", "<a href=\"http://www.nlm.nih.gov/contacts/custserv-email.html\">http://www.nlm.nih.gov/contacts/custserv-email.html</a>"),
+                        tempHtml,
                         ProtocolSectionType.CTGovDisclaimer));
                 }
 

@@ -21,8 +21,6 @@ namespace GateKeeper.DocumentObjects.Protocol
         private int _highAge = 0;
         private string _ageRange = string.Empty;
         private int _isActive = 0;
-        private List<string> _sponsorList = new List<string>();
-        private string _sponsorText = string.Empty;
         private List<TypeOfCancer> _typeOfCancerList = new List<TypeOfCancer>();
         private List<string> _studyCategoryList = new List<string>();
         private List<ProtocolModality> _modalityList = new List<ProtocolModality>();
@@ -122,24 +120,6 @@ namespace GateKeeper.DocumentObjects.Protocol
         {
             get { return _isActive; }
             internal set { _isActive = value; }
-        }
-
-        /// <summary>
-        /// Gets, sets collection of protocol sponsors.
-        /// </summary>
-        public List<string> SponsorList
-        {
-            get { return _sponsorList; }
-            internal set { _sponsorList = value; }
-        }
-
-        /// <summary>
-        /// Gets, sets formatted string of SponsorList contents.
-        /// </summary>
-        public string SponsorText
-        {
-            get { return _sponsorText; }
-            internal set { _sponsorText = value; }
         }
 
         /// <summary>
@@ -350,12 +330,6 @@ namespace GateKeeper.DocumentObjects.Protocol
             foreach (int phase in ProtocolPhaseList)
             {
                 sb.Append(string.Format("{0}\n", phase.ToString()));
-            }
-
-            sb.Append("SponsorList = \n");
-            foreach (string sponsor in SponsorList)
-            {
-                sb.Append(string.Format("{0}\n", sponsor));
             }
 
             sb.Append("SpecialCategoryList = \n");

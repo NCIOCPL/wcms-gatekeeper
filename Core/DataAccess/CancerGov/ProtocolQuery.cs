@@ -130,9 +130,6 @@ namespace GateKeeper.DataAccess.CancerGov
                 // SP: Save protocol alternate id
                 SaveProtocolAlternateID(db, transaction, protocolDoc, userID);
                 
-                // SP: Save protocol sponsor
-                SaveProtocolSponsors(db, transaction, protocolDoc, userID);
-
                 // SP: Save protocol study category 
                 SaveProtocolStudyCategory(db, transaction, protocolDoc, userID);
 
@@ -697,37 +694,6 @@ namespace GateKeeper.DataAccess.CancerGov
         }
 
         /// <summary>
-        /// Call store procedure to save protocol data into ProtocolSponsors table
-        /// </summary>
-        /// <param name="db"></param>
-        /// <param name="transaction"></param>
-        /// <param name="protocolDoc"></param>
-        /// <param name="userID"></param>
-        /// <returns></returns>
-        private void SaveProtocolSponsors(Database db, DbTransaction transaction, ProtocolDocument protocolDoc, string userID)
-        {
-            try
-            {
-                foreach (string sponsor in protocolDoc.SponsorList)
-                {
-                    string spSaveSponsor = SPProtocol.SP_SAVE_PROTOCOL_SPONSORS;
-                    using (DbCommand sponsorCommand = db.GetStoredProcCommand(spSaveSponsor))
-                    {
-                        sponsorCommand.CommandType = CommandType.StoredProcedure;
-                        db.AddInParameter(sponsorCommand, "@ProtocolID", DbType.Int32, protocolDoc.ProtocolID);
-                        db.AddInParameter(sponsorCommand, "@SponsorName", DbType.String, sponsor.Trim());
-                        db.AddInParameter(sponsorCommand, "@updateUserid", DbType.String, userID);
-                        db.ExecuteNonQuery(sponsorCommand, transaction);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Database Error: Saving protocol sponsors failed. Document CDRID=" + protocolDoc.DocumentID.ToString(), e);
-            }
-        }
-
-        /// <summary>
         /// Call store procedure to save protocol data into ProtocolStudyCategory table
         /// </summary>
         /// <param name="db"></param>
@@ -939,7 +905,11 @@ namespace GateKeeper.DataAccess.CancerGov
             {
                 List<int> IDList = new List<int>();
                 List<int> HTMLIDList = new List<int>();
-                int organizationID = 0;
+                
+                // Using a nullable int like this is hacky, but since we're using the organizationID as a flag value,
+                // we need a way to make it clear that organizationID hasn't been set before. Because the ID is a
+                // hash, any int value is possibly a valid ID.
+                int? organizationID = null;
                 string state = string.Empty;
                 string city = string.Empty;
                 string country = string.Empty;
@@ -958,14 +928,11 @@ namespace GateKeeper.DataAccess.CancerGov
                             leadOrgCommand.CommandType = CommandType.StoredProcedure;
                             db.AddOutParameter(leadOrgCommand, "@ProtocolContactInfoID", DbType.Int32, site.ProtocolContactInfoID);
                             db.AddInParameter(leadOrgCommand, "@ProtocolID", DbType.Int32, protocolDoc.ProtocolID);
-                            if (site.OrganizationID == 0)
-                                db.AddInParameter(leadOrgCommand, "@OrganizationID", DbType.Int32, null);
-                            else
-                                db.AddInParameter(leadOrgCommand, "@OrganizationID", DbType.Int32, site.OrganizationID);
-                            if (site.PersonID > 0)
-                                db.AddInParameter(leadOrgCommand, "@PersonID", DbType.Int32, site.PersonID);
-                            else
-                                db.AddInParameter(leadOrgCommand, "@PersonID", DbType.Int32, null);
+
+                            db.AddInParameter(leadOrgCommand, "@OrganizationID", DbType.Int32, site.OrganizationID);
+
+                            db.AddInParameter(leadOrgCommand, "@PersonID", DbType.Int32, site.PersonID);
+
                             string orgName = site.OrganizationName;
                             if (orgName != string.Empty)
                                 orgName = orgName.Trim();
@@ -1004,14 +971,8 @@ namespace GateKeeper.DataAccess.CancerGov
                             siteCommand.CommandType = CommandType.StoredProcedure;
                             db.AddOutParameter(siteCommand, "@ProtocolContactInfoID", DbType.Int32, site.ProtocolContactInfoID);
                             db.AddInParameter(siteCommand, "@ProtocolID", DbType.Int32, protocolDoc.ProtocolID);
-                            if (site.OrganizationID == 0)
-                                db.AddInParameter(siteCommand, "@OrganizationID", DbType.Int32, null);
-                            else
-                                db.AddInParameter(siteCommand, "@OrganizationID", DbType.Int32, site.OrganizationID);
-                            if (site.PersonID > 0)
-                                db.AddInParameter(siteCommand, "@PersonID", DbType.Int32, site.PersonID);
-                            else
-                                db.AddInParameter(siteCommand, "@PersonID", DbType.Int32, null);
+                            db.AddInParameter(siteCommand, "@OrganizationID", DbType.Int32, site.OrganizationID);
+                            db.AddInParameter(siteCommand, "@PersonID", DbType.Int32, site.PersonID);
                             string orgName = site.OrganizationName.Trim();
                             if (orgName.Length > 0)
                                db.AddInParameter(siteCommand, "@OrganizationName", DbType.String, orgName);
@@ -1106,7 +1067,9 @@ namespace GateKeeper.DataAccess.CancerGov
 
                     // Save the previous collection under one orgainzation into database map table
                     // There are case the org name are the same and org id is not availabel but all orgs reside in different places
-                    if ((organizationID > 0 && organizationID != site.OrganizationID) ||  
+                    // NOTE: It's hacky, but organizationID is a nullable type so we have a value which clearly
+                    // means "This has not been set before."
+                    if ((organizationID != null && organizationID != site.OrganizationID) ||  
                         city != site.City || state != site.State || country != site.Country || count == 0)
                     {
                         foreach (int ID in IDList)

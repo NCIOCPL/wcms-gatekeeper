@@ -166,7 +166,6 @@ namespace GateKeeper.DataAccess.CDR
            
             try{
                 // Set organization information parsed from the ProtocolLeadOrg node parsed above:
-                ci.OrganizationID = facility.OrganizationID;
                 ci.OrganizationName = facility.OrganizationName;
                 ci.OrganizationRole = facility.OrganizationRole;
                 ci.City = facility.City;
@@ -175,19 +174,6 @@ namespace GateKeeper.DataAccess.CDR
                 ci.Country = facility.Country;
                 ci.PostalCodeZip = facility.PostalCodeZip;
                 
-                int tempID = 0;
-                string tempIDString = DocumentHelper.GetAttribute(contactNav, XPathManager.GetXPath(ProtocolXPath.SitePersonRef));
-                if (tempIDString.Length > 0)
-                {
-                    if (Int32.TryParse(CDRHelper.ExtractCDRID(tempIDString), out tempID))
-                    {
-                        ci.PersonID = tempID;
-                    }
-                    else
-                    {
-                        throw new Exception("Extraction Error: CTGovProtocol site contact attribute " + XPathManager.GetXPath(ProtocolXPath.SitePersonRef) + " should be a valid CDR ID. CurrentValue=" + tempIDString + ". Document CDRID=" + _documentID.ToString());
-                    }
-                }
 
                 ci.PersonGivenName = DocumentHelper.GetXmlDocumentValue(contactNav, path);
                 path = XPathManager.GetXPath(ProtocolXPath.CTSurName);
@@ -200,6 +186,10 @@ namespace GateKeeper.DataAccess.CDR
                 ci.PhoneNumber = DocumentHelper.GetXmlDocumentValue(contactNav, path);
                 path = XPathManager.GetXPath(ProtocolXPath.CTPhoneExt);
                 ci.PhoneExtension = DocumentHelper.GetXmlDocumentValue(contactNav, path);
+
+                ci.PersonID = CalculatePersonID(ci);
+                NormalizePersonName(ci);
+                
                 // Unique id to keep track of each contact info record
                 ci.ContactInfoKey = contactKey++;
                 // also create it in the attribute for passing the value into render transformation
@@ -214,6 +204,45 @@ namespace GateKeeper.DataAccess.CDR
             return ci;
         }
 
+        /// <summary>
+        /// Force all names to appear completely in the PersonSurName instead of some being entirely in
+        /// PersonSurName and others split between PersonGivenName and PersonSurName.
+        /// </summary>
+        /// <param name="person"></param>
+        private void NormalizePersonName(ProtocolContactInfo person)
+        {
+            if (!string.IsNullOrEmpty(person.PersonGivenName))
+            {
+                person.PersonSurName = String.Format("{0} {1}", person.PersonGivenName, person.PersonSurName);
+                person.PersonGivenName = String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Calculate a checksum to use in place of a PersonID.
+        /// </summary>
+        /// <param name="person">Contact information to use when calculating the person ID. </param>
+        /// <returns>A signed 32-bit int containing the calculated hash.</returns>
+        private delegate String valueOrEmpty(String val);
+        private int CalculatePersonID(ProtocolContactInfo person)
+        {
+            valueOrEmpty GetValue = val => String.IsNullOrEmpty(val) ? "" : val;
+            String bigString;
+            if (person.Country.Equals("U.S.A."))
+                    bigString = string.Format("{0}|{1}|{2}|{3}",
+                            GetValue(person.PersonGivenName),
+                            GetValue(person.PersonSurName),
+                            GetValue(person.City),
+                            GetValue(person.State));
+                else
+                    bigString = string.Format("{0}|{1}|{2}|{3}",
+                            GetValue(person.PersonGivenName),
+                            GetValue(person.PersonSurName),
+                            GetValue(person.City),
+                            GetValue(person.Country));
+
+                return bigString.GetHashCode();
+        }
 
         /// <summary>
         /// Parse CTGov Protocol Lead Sponsor contact information.
@@ -234,30 +263,15 @@ namespace GateKeeper.DataAccess.CDR
         ///      <Email>FAKEEMAIL@FAKEEMAIL.FAKEEMAIL</Email>
         ///    </OverallContact>
         /// </example>
-        private ProtocolContactInfo ExtractLeadContact(XPathNavigator contactNav, int organizationID, string organizationName, string organizationRole, ProtocolExtractor protExtractor)
+        private ProtocolContactInfo ExtractLeadContact(XPathNavigator contactNav, string organizationName, string organizationRole, ProtocolExtractor protExtractor)
         {
             ProtocolContactInfo ci = new ProtocolContactInfo();
             string path = XPathManager.GetXPath(ProtocolXPath.CTGivenName);
             try {
                  // Set organization information parsed from the ProtocolLeadOrg node parsed above:
-                ci.OrganizationID = organizationID;
                 ci.OrganizationName = organizationName;
                 ci.OrganizationRole = organizationRole;
                 ci.IsLeadOrg = true;
-
-                int tempID = 0;
-                string tempIDString = DocumentHelper.GetAttribute(contactNav, XPathManager.GetXPath(ProtocolXPath.LeadOrgRef));
-                if (tempIDString.Length > 0)
-                {
-                    if (Int32.TryParse(CDRHelper.ExtractCDRID(tempIDString), out tempID))
-                    {
-                        ci.PersonID = tempID;
-                    }
-                    else
-                    {
-                        throw new Exception("Extraction Error: CTGovProtocol lead contact attribute " + XPathManager.GetXPath(ProtocolXPath.LeadOrgRef) + " should be a valid CDR ID. CurrentValue=" + tempIDString + ". Document CDRID=" + _documentID.ToString());
-                    }
-                }
 
                 ci.PersonGivenName = DocumentHelper.GetXmlDocumentValue(contactNav, path);
                 path = XPathManager.GetXPath(ProtocolXPath.CTSurName);
@@ -270,6 +284,9 @@ namespace GateKeeper.DataAccess.CDR
                 ci.PhoneNumber = DocumentHelper.GetXmlDocumentValue(contactNav, path);
                 path = XPathManager.GetXPath(ProtocolXPath.CTPhoneExt);
                 ci.PhoneExtension = DocumentHelper.GetXmlDocumentValue(contactNav, path);
+
+                ci.PersonID = CalculatePersonID(ci);
+                NormalizePersonName(ci);
             }
             catch (Exception e)
             {
@@ -317,8 +334,6 @@ namespace GateKeeper.DataAccess.CDR
                 XPathNavigator sponsorsNav = xNav.SelectSingleNode(basePath);
                 if (sponsorsNav != null)
                 {
-                    int organizationID = 0;
-                    string tempOrganizationID = string.Empty;
                     string organizationName = string.Empty;
                     bool hasContact = false;
 
@@ -327,19 +342,15 @@ namespace GateKeeper.DataAccess.CDR
                     if (leadSponsorNav != null)
                     {
                         organizationName = leadSponsorNav.Value.Trim();
-                        tempOrganizationID = CDRHelper.ExtractCDRID(DocumentHelper.GetAttribute(leadSponsorNav, XPathManager.GetXPath(ProtocolXPath.LeadOrgRef)));
-                        if (!Int32.TryParse(CDRHelper.ExtractCDRID(tempOrganizationID), out organizationID) && tempOrganizationID.Length > 0)
-                        {
-                            throw new Exception("Extraction Error: CTGovProtocol lead sponsor attribute " + XPathManager.GetXPath(ProtocolXPath.LeadOrgRef) + " should be a CDRID. CurrentValue=" + tempOrganizationID + ". Document CDRID=" + _documentID.ToString());
-                        }
                     }
+
 
                      // Parse ProtPerson records...
                     path = XPathManager.GetXPath(ProtocolXPath.CTOverallContact);
                     XPathNodeIterator overallContactIter = sponsorsNav.Select(path);
                     while (overallContactIter.MoveNext())
                     {
-                        contactInfoList.Add(ExtractLeadContact(overallContactIter.Current, organizationID, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
+                        contactInfoList.Add(ExtractLeadContact(overallContactIter.Current, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
                         hasContact = true;
                     }
 
@@ -348,7 +359,7 @@ namespace GateKeeper.DataAccess.CDR
                     XPathNodeIterator overallContactBackupIter = sponsorsNav.Select(path);
                     while (overallContactBackupIter.MoveNext())
                     {
-                        contactInfoList.Add(ExtractLeadContact(overallContactBackupIter.Current, organizationID, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
+                        contactInfoList.Add(ExtractLeadContact(overallContactBackupIter.Current, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
                         hasContact = true;
                     }
 
@@ -357,7 +368,7 @@ namespace GateKeeper.DataAccess.CDR
                     XPathNodeIterator overallOfficialIter = sponsorsNav.Select(path);
                     while (overallOfficialIter.MoveNext())
                     {
-                        contactInfoList.Add(ExtractLeadContact(overallOfficialIter.Current, organizationID, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
+                        contactInfoList.Add(ExtractLeadContact(overallOfficialIter.Current, organizationName, ((int)OrganizationRoleType.Primary).ToString(), protExtractor));
                         hasContact = true;
                     }
 
@@ -366,7 +377,6 @@ namespace GateKeeper.DataAccess.CDR
                     if (!hasContact && organizationName.Trim() != string.Empty)
                     {
                         ProtocolContactInfo leadCi = new ProtocolContactInfo();
-                        leadCi.OrganizationID = organizationID;
                         leadCi.OrganizationName = organizationName;
                         leadCi.OrganizationRole = ((int)OrganizationRoleType.Primary).ToString();
                         leadCi.IsLeadOrg = true;
@@ -395,19 +405,6 @@ namespace GateKeeper.DataAccess.CDR
                 {
                     facilityCi.OrganizationName = DocumentHelper.GetXmlDocumentValue(facilityNav, path);
                     facilityCi.OrganizationRole = "3";
-                    int organizationID = 0;
-                    string tempOrganizationID = DocumentHelper.GetAttribute(facilityNav, path, XPathManager.GetXPath(ProtocolXPath.SiteRef));
-                    if (tempOrganizationID.Length > 0)
-                    {
-                        if (Int32.TryParse(CDRHelper.ExtractCDRID(tempOrganizationID), out organizationID))
-                        {
-                            facilityCi.OrganizationID = organizationID;
-                        }
-                        else
-                        {
-                            throw new Exception("Extraction Error: CTGov protocol " + path  + "/@" + XPathManager.GetXPath(ProtocolXPath.SiteRef) + " should be a valid CDRID. CurrentValue=" + tempOrganizationID + ". Document CDRID=" + _documentID.ToString());
-                        }
-                    }
 
 
                     path = XPathManager.GetXPath(ProtocolXPath.CTState);
@@ -421,7 +418,7 @@ namespace GateKeeper.DataAccess.CDR
                         }
                         else
                         {
-                            throw new Exception("Extraction Error: CTGov protocol " + path + "/@" + XPathManager.GetXPath(ProtocolXPath.StateRef) + " should be a CDRID. CurrentValue=" + tempOrganizationID + ". Document CDRID=" + _documentID.ToString());
+                            throw new Exception("Extraction Error: CTGov protocol " + path + "/@" + XPathManager.GetXPath(ProtocolXPath.StateRef) + " should be a CDRID. CurrentValue=" + tempStateID + ". Document CDRID=" + _documentID.ToString());
                         }
                     }
 
@@ -432,6 +429,7 @@ namespace GateKeeper.DataAccess.CDR
                     facilityCi.Country = DocumentHelper.GetXmlDocumentValue(facilityNav, path);
                     path = XPathManager.GetXPath(ProtocolXPath.CTZip);
                     facilityCi.PostalCodeZip = DocumentHelper.GetXmlDocumentValue(facilityNav, path);
+
                     // This is to handle the case that there is no contact under a facility, then the facility will become the point of contact
                     // to save into the ProtocolTrialSite and ProtocolContactInfoHTML table
                     facilityCi.ContactInfoKey = contactKey++;
@@ -590,9 +588,6 @@ namespace GateKeeper.DataAccess.CDR
                 ExtractProtocolPrettyUrlIDs(xNav, ctgovProtocol);
 
                 // Use common Protocol helper functions to parse common metadata
-
-                // Extract sponsors 
-                 protExtractor.ExtractSponsors(xNav, ctgovProtocol,  XPathManager.GetXPath(ProtocolXPath.CTPDQSponsor));
 
                 // Extract 
                 protExtractor.ExtractEligibility(xNav, ctgovProtocol, XPathManager.GetXPath(ProtocolXPath.Eligibility));

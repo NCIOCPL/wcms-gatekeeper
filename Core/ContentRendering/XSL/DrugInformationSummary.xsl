@@ -88,7 +88,12 @@
       <!-- Filter the MediaLinks to match only audio files and only English pronunciations -->
       <xsl:apply-templates select="MediaLink[@type='audio/mpeg' and @language='en']" mode="audio" />
       <xsl:if test="count(MediaLink) &gt; 0 and count(TermPronunciation) &gt; 0">&#160;</xsl:if>
-      <xsl:apply-templates select="TermPronunciation" />
+      <!--<xsl:apply-templates select="TermPronunciation" />-->
+      <xsl:if                     test = "TermPronunciation">
+        <xsl:text>(</xsl:text>
+        <xsl:value-of            select = "TermPronunciation"/>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
     </div>
   </xsl:template>
   <!--<xsl:template                  match = "PronunciationInfo">

@@ -1265,6 +1265,8 @@ namespace GKManagers.DataAccess
             DataSet ds = null;
             try
             {
+                cmd.CommandTimeout = ApplicationSettings.VeryLongProcessCommandTimeout;
+
                 db.AddInParameter(cmd, "@DataSetID", DbType.Int32, DocType);
                 db.AddInParameter(cmd, "@CdrID", DbType.Int32, CdrID);
                 ds = QueryWrapper.ExecuteDataSet(db, cmd);
