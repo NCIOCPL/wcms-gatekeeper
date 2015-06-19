@@ -232,7 +232,7 @@
         printed above the keypoints box or the TOC -->
     <xsl:apply-templates         select = "Title"/>
 
-   <!--
+    <!--
    There are no TOC or KeyPoint boxes on mobile
    These only get created for the desktop.
    =================================================================== -->
@@ -249,7 +249,7 @@
     </xsl:apply-templates>
 
   </xsl:template>
-  
+
   <!--
   Template to use jQuery to create Enlarge buttons for Tables and 
   Images
@@ -266,7 +266,7 @@
       </xsl:text>
     </script>
   </xsl:template>
-  
+
   <!--
   This JavaScript calls the TOC function to attach the TOC to the DIV
   element with ID="_toc_section_N" N=1,2,3,...
@@ -1035,7 +1035,7 @@
   <xsl:template                  match = "ProtocolRef">
     <xsl:element                   name = "a">
       <xsl:attribute                name = "href">
-       
+
         <xsl:text>/clinicaltrials/</xsl:text>
         <xsl:value-of              select = "@nct_id"/>
       </xsl:attribute>
@@ -1051,10 +1051,26 @@
 
   <!--
   ================================================================ -->
+  <!--OCEPROJECT 3126 - Remove percussion dependency for summary refs and build URL in the xsl-->
   <xsl:template match="SummaryRef">
-    <a inlinetype="SummaryRef" objectid="{@href}">
-      <xsl:copy-of select="text()"/>
-    </a>
+    <xsl:element name="a">
+      <xsl:attribute name="href">
+        <xsl:choose>
+          <xsl:when test="contains(@href, '#')">
+            <xsl:value-of              select = "@url"/>/#link/<xsl:value-of select="substring-after(@href,'#')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of              select = "@url"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:value-of select="."/>
+    </xsl:element>
+    <xsl:if test="following-sibling::node()">
+      <xsl:for-each select="following-sibling::node()">
+        <xsl:if test="name() !='' and position()=1">&#160;</xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
   <!--
   ================================================================ -->
@@ -1109,13 +1125,13 @@
             <xsl:text>/images/cdr/live/CDR</xsl:text>
             <xsl:value-of            select = "number(
                                             substring-after(@ref, 'CDR'))"/>
-            <xsl:text>.jpg</xsl:text>            
+            <xsl:text>.jpg</xsl:text>
           </xsl:attribute>
           <xsl:attribute name="target">
             <xsl:text>_blank</xsl:text>
           </xsl:attribute>
           <xsl:attribute name="class">
-            <xsl:text>article-image-enlarge</xsl:text>            
+            <xsl:text>article-image-enlarge</xsl:text>
           </xsl:attribute>
           <xsl:choose>
             <xsl:when                  test = "$language = 'es'">
@@ -1126,7 +1142,7 @@
             </xsl:otherwise>
           </xsl:choose>
 
-          
+
         </xsl:element>
 
         <!--
@@ -1444,7 +1460,7 @@
         <xsl:element                  name = "li">
           <!-- NVCG Update to remove key point anchor links and only select text -->
           <xsl:value-of               select = "KeyPoint"/>
-          
+
           <!--
        Nested Keypoint list
        ==================== -->

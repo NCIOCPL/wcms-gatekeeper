@@ -20,7 +20,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         protected override string SummaryPageSlot { get { return StandardPageSlotName; } }
         protected override string PageSnippetTemplateName { get { return SummarySectionSnippetTemplate; } }
-        
+
         #endregion
 
 
@@ -47,7 +47,7 @@ namespace GKManagers.CMSDocumentProcessing
             try
             {
                 PercussionGuid summaryRoot;
-                long[] summaryPageIDList;
+
                 string createPath = GetTargetFolder(document.BasePrettyURL);
                 string rootItemPrettyUrlName = GetSummaryPrettyUrlName(document.BasePrettyURL);
 
@@ -65,70 +65,14 @@ namespace GKManagers.CMSDocumentProcessing
                 // Create the Cancer Info Summary item.
                 List<ContentItemForCreating> rootList = CreatePDQCancerInfoSummary(document, createPath);
                 summaryRoot = new PercussionGuid(CMSController.CreateContentItemList(rootList)[0]);
-                rollbackList.Add(summaryRoot);              
-
-                // When creating new summaries, resolve the summmary references after the summary pages are created.
-                // Find the list of content items referenced by the summary sections.
-                // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> pageSectionReferencedSumamries = ResolveSectionSummaryReferences(document, document.TopLevelSectionList, new StandardSummarySectionFinder(CMSController));
-                //ResolveSummaryReferences(document);
-
-
-                //Create Cancer Info Summary Page items
-                List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document, createPath);
-                List<long> pageRawIDList = CMSController.CreateContentItemList(summaryPageList);
-                summaryPageIDList = pageRawIDList.ToArray();
-                rollbackList.AddRange(CMSController.BuildGuidArray(pageRawIDList));
-
-                // Add summary pages into the page slot.
-                PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
-
-                // Create relationships to other Cancer Information Summary Objects.
-                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, pageSectionReferencedSumamries);
-
-                //OCEPROJECT-1765 - Remove summary link dependency
-                //  Search for a CISLink in the parent folder.
-                //string parentPath = GetParentFolder(document.BasePrettyURL);
-                
-                //PercussionGuid[] searchList =
-                //    CMSController.SearchForContentItems(CancerInfoSummaryLinkContentType, parentPath, null);
-
-                // TODO: Turn AudienceType into an enum during Extract.
-                //string slotName;
-                //if (document.AudienceType.Equals(PatientAudience, StringComparison.InvariantCultureIgnoreCase))
-                //    slotName = PatientVersionLinkSlot;
-                //else
-                //    slotName = HealthProfVersionLinkSlot;
-
-                //PercussionGuid summaryLink;
-                //if (searchList.Length == 0)
-                //{
-                //    // If a summary link doesn't exist, create a new one.
-                //    string linkItemPath = GetParentFolder(document.BasePrettyURL);
-                //    List<ContentItemForCreating> summaryLinkList = CreatePDQCancerInfoSummaryLink(document, linkItemPath);
-                //    List<long> linkRawIDList = CMSController.CreateContentItemList(summaryLinkList);
-                //    summaryLink = new PercussionGuid(linkRawIDList[0]);
-                //    rollbackList.Add(summaryLink);
-                //    CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
-                //}
-                //else
-                //{
-                //    // If the summary link does exist, add this summary to the appropriate slot.
-                //    summaryLink = searchList[0];
-                //    CMSController.CreateActiveAssemblyRelationships(summaryLink.ID, new long[] { summaryRoot.ID }, slotName, AudienceLinkSnippetTemplate);
-                //}
-
+                rollbackList.Add(summaryRoot);
+                               
                 // Create All New Permanent Links (for a New Summary)
                 PermanentLinkHelper PermanentLinkData = new PermanentLinkHelper(CMSController, document.PermanentLinkList, createPath);
-                PercussionGuid[] newPageIDs = Array.ConvertAll(summaryPageIDList, newPageID => new PercussionGuid(newPageID));
-                PermanentLinkData.SetURLs(newPageIDs, document.TopLevelSectionList);
+                PermanentLinkData.SetURLs(/*newPageIDs,*/ document.TopLevelSectionList);
                 List<long> permanentLinkIDs = PermanentLinkData.CreatePermanentLinks(createPath);
                 rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
-
-                //OCEPROJECT-1765 - Remove summary link dependency
-                // Find the Patient or Health Professional version and create a relationship.
-                //LinkRootItemToAlternateAudienceVersion(summaryRoot, document.AudienceType);
-
+                                
                 LinkToAlternateLanguageVersion(document, summaryRoot);
 
                 //update the Nav Label field and add the summary to the landing page slot of the nav on
@@ -154,7 +98,7 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
         protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID/*, PercussionGuid summaryLinkID*/, PermanentLinkHelper PermanentLinkData,
             PercussionGuid[] oldPageIDs, PSAaRelationship[] incomingPageRelationships,
-            PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
+            //PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
         {
             // For undoing failed updates.
@@ -185,9 +129,6 @@ namespace GKManagers.CMSDocumentProcessing
             PSFolder tempFolder = null;
 
             // Raw content IDs for new content items.
-            //List<long> tableIDs;
-            //List<long> mediaLinkIDs;
-            long[] newSummaryPageIDList;
             List<long> permanentLinkIDs;
 
             try
@@ -199,50 +140,13 @@ namespace GKManagers.CMSDocumentProcessing
                 // Create the new folder, but don't publish the navon.  This is deliberate.
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
 
-                LogDetailedStep("Begin sub-page setup.");
-
-                // Find the list of content items referenced by the summary sections.
-                // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> pageSectionReferencedItems =
-                    ResolveSectionSummaryReferences(summary, summary.TopLevelSectionList, new StandardSummarySectionFinder(CMSController));
-
-                LogDetailedStep("End sub-page setup.");
-
-
-                // Create new Cancer Info Summary Page items
-
-                LogDetailedStep("Begin page creation.");
-
-                List<long> idList;
-                List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(summary, temporaryPath);
-                idList = CMSController.CreateContentItemList(summaryPageList);
-                newSummaryPageIDList = idList.ToArray();
-                PercussionGuid[] newPageIDs = Array.ConvertAll(newSummaryPageIDList, pageID => new PercussionGuid(pageID));
-                rollbackList.AddRange(newPageIDs);
-
-                LogDetailedStep("End page creation.");
-
-                
-                LogDetailedStep("Begin Relationship updates.");
-                                
-                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRootID, /*summaryLinkID,*/ oldPageIDs, newPageIDs, incomingPageRelationships, new StandardSummarySectionFinder(CMSController));
-
-                // Add new cancer information summary pages into the page slot.
-                PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRootID.ID, newSummaryPageIDList, SummaryPageSlot, SummarySectionSnippetTemplate);
-
-                // Create relationships from this summary's pages to other Cancer Information Summary Objects.
-                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, pageSectionReferencedItems);
-
-                LogDetailedStep("End Relationship updates.");
-
-
                 // Update URLs for new and updating Permanent Links
                 // This step must go down here because the new page ids must be used to find the right
                 // sections, otherwise the URLs will update with old section/page locations. And, this
                 // step must go before the Permanent Links are created or updated so that the correct 
                 // values are used.
                 LogDetailedStep("Begin Permanent Link URL updates.");
-                PermanentLinkData.SetURLs(newPageIDs, summary.TopLevelSectionList);
+                PermanentLinkData.SetURLs(summary.TopLevelSectionList);
                 LogDetailedStep("End Permanent Link URL updates.");
 
                 // Create the new Permanent Links in Percussion
@@ -252,13 +156,14 @@ namespace GKManagers.CMSDocumentProcessing
                 rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
                 LogDetailedStep("End Permanent Link creation.");
 
-               
+
 
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
-                //OCEPROJECT-1765 - Remove summary link dependency
-                //ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLinkID.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
-                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem/*, summaryLinkItem*/ });
+                //update items in the child table i.e. the summary sections
+                summaryItem = UpdateSummaryChildTables(summary, summaryItem);
+                                
+                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem });
                 List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
             }
             catch (Exception)
@@ -271,9 +176,10 @@ namespace GKManagers.CMSDocumentProcessing
                 throw;
             }
 
-            // Remove the old pages, table sections and medialink items.
+            // Remove the old pages.
             // Assumes that there are never any non-summary links to individual pages.
-            RemoveOldPages(oldPageIDs);
+            if (oldPageIDs != null && oldPageIDs.Length > 0)
+                RemoveOldPages(oldPageIDs);
 
             // Permanent Links Updates and Deletion must go outside of the try / catch block. This is 
             // because these changes cannot be rolled back, so we must ensure that there will be no 
@@ -282,16 +188,17 @@ namespace GKManagers.CMSDocumentProcessing
             PermanentLinkData.UpdatePermanentLinks();
             PermanentLinkData.DeletePermanentLinks();
             LogDetailedStep("End Permanent Link updates and deletion.");
-          
+
             // Move the new items into the main folder.
-            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(/*tableIDs, mediaLinkIDs,*/ newSummaryPageIDList, permanentLinkIDs);
-            CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
+            PercussionGuid[] componentIDs = CMSController.BuildGuidArray(permanentLinkIDs);
+            if (componentIDs.Length > 0)
+                CMSController.MoveContentItemFolder(temporaryPath, existingItemPath, componentIDs);
             CMSController.DeleteFolders(new PSFolder[] { tempFolder });
 
             //Add the PermanentLinks that are marked as 'Update' to the list of PermanentLinkIds that were created
             permanentLinkIDs.AddRange(Array.ConvertAll(PermanentLinkData.GetOldGuids, guid => (long)guid.ID));
-            componentIDs = CMSController.BuildGuidArray(newSummaryPageIDList, permanentLinkIDs);
-            
+            componentIDs = CMSController.BuildGuidArray(permanentLinkIDs);
+
             // Handle a potential change of URL.
             UpdateDocumentURL(summary.BasePrettyURL, summaryRootID,/* summaryLinkID,*/ componentIDs);
 
@@ -366,14 +273,14 @@ namespace GKManagers.CMSDocumentProcessing
                 if (mobileRootItem != null)
                 {
                     PercussionGuid[] mobilePageIDs = CMSController.SearchForItemsInSlot(mobileRootItem, MobilePageSlotName);
-                    
+
                     // Create a list of all content IDs making up the document.
                     // It is important for verification that rootItem always be first.
                     PercussionGuid[] mobileFullIDList = CMSController.BuildGuidArray(mobileRootItem, mobilePageIDs/*, mobileSubItems, summaryLink*/);
 
                     VerifyDocumentMayBeDeleted(mobileFullIDList.ToArray(), new PercussionGuid[0]);
 
-                    mobileFullIDList = CMSController.BuildGuidArray(mobilePageIDs/*, mobileSubItems*/);
+                    mobileFullIDList = CMSController.BuildGuidArray(mobilePageIDs);
 
                     CMSController.DeleteItemList(mobileFullIDList);
                 }
@@ -381,33 +288,7 @@ namespace GKManagers.CMSDocumentProcessing
                 CMSController.DeleteItemList(fullIDList);
             }
         }
-
-        //OCEPROJECT-1765 - Remove summary link dependency
-        protected override void UpdateDocumentURL(string targetURL, PercussionGuid summaryRootItemID,
-            /*PercussionGuid summaryLinkItemID,*/ PercussionGuid[] summaryComponentIDList)
-        {
-            string newPath = GetTargetFolder(targetURL);
-            PSItem[] keyItems = CMSController.LoadContentItems(new PercussionGuid[] { summaryRootItemID/*, summaryLinkItemID*/ });
-            string oldPath = CMSController.GetPathInSite(keyItems[0]);  // Root item.
-
-            if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
-            {
-                //Remove the summary from the landing page slot of the old NavOn
-                DeleteNavOnRelationship(summaryRootItemID, oldPath);
-
-                // Move the CancerInformationSummary and all its components. The link item is moved separately.
-                CMSController.GuaranteeFolder(newPath, FolderManager.NavonAction.MakePublic);
-                CMSController.MoveContentItemFolder(oldPath, newPath, CMSController.BuildGuidArray(summaryRootItemID, summaryComponentIDList));
-
-                //OCEPROJECT-1765 - Remove summary link dependency
-                // Link item only applicable to desktop summaries.
-                //oldPath = CMSController.GetPathInSite(keyItems[1]); 
-                //newPath = GetParentFolder(targetURL);
-                //if (!newPath.Equals(oldPath, StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    CMSController.MoveContentItemFolder(oldPath, newPath, new PercussionGuid[] { summaryLinkItemID });
-                //}
-            }
-        }
+                
+        
     }
 }

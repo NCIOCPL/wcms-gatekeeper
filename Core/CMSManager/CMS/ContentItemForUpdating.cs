@@ -15,7 +15,18 @@ namespace NCI.WCM.CMSManager.CMS
             Fields = fields;
         }
 
-        public long ID {get;private set;}
+        public long ID { get; private set; }
         public FieldSet Fields { get; private set; }
+
+        List<ChildFieldSet> _childFieldList;
+        public List<ChildFieldSet> ChildFieldList
+        {
+            get
+            {
+                if (_childFieldList == null)
+                    _childFieldList = new List<ChildFieldSet>();
+                return _childFieldList;
+            }
+        }
     }
 }

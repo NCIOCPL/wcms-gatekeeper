@@ -16,7 +16,7 @@ namespace GKManagers.CMSDocumentProcessing
 
         protected override string SummaryPageSlot { get { return MobilePageSlotName; } }
         protected override string PageSnippetTemplateName { get { return MobileSummarySectionSnippetTemplate; } }
-        
+
         #endregion
 
 
@@ -47,29 +47,17 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="sitePath">BasePath for the site where the content structure is to be stored.</param>
         protected override void PerformUpdate(SummaryDocument summary, PercussionGuid summaryRootID, /*PercussionGuid summaryLinkID,*/ PermanentLinkHelper permanentLinkData,
             PercussionGuid[] desktopPageIDs, PSAaRelationship[] incomingDesktopPageRelationships,
-            PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
+            //PercussionGuid[] mobilePageIDs, PSAaRelationship[] incomingMobilePageRelationships,
             string sitePath)
         {
             if (string.IsNullOrEmpty(sitePath))
                 throw new ArgumentNullException("sitePath");
 
-            // SummaryPageSlot points to the mobile page slot.  If there are no mobile pages, we're creating the
-            // mobile edition for the first time.
-            if (mobilePageIDs.Length == 0)
-            {
-                // Create Mobile for the first time.
-                CreateMobilePageStructure(summary, summaryRootID, /*summaryLinkID,*/ sitePath);
-            }
-            else
-            {
-                UpdateMobilePageStructure(summary, /*summaryLinkID,*/ summaryRootID,
-                    mobilePageIDs, incomingMobilePageRelationships, sitePath);
-            }
+           
         }
 
-        private void CreateMobilePageStructure(SummaryDocument document, 
-            PercussionGuid summaryRoot, 
-            /*PercussionGuid summaryLink,*/ 
+        private void CreateMobilePageStructure(SummaryDocument document,
+            PercussionGuid summaryRoot,
             string sitePath)
         {
             // For undoing failed attempts.
@@ -95,7 +83,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Create the folder where the content items are to be created and set the Navon to public.
                 CMSController.GuaranteeFolder(createPath, FolderManager.NavonAction.MakePublic);
-                                
+
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
@@ -118,8 +106,7 @@ namespace GKManagers.CMSDocumentProcessing
                 // and the desktop version is always created before the mobile one.
                 // LinkToAlternateLanguageVersion(document, summaryRoot);
 
-                // Mobile doesn't update the SummaryLink content item.
-
+               
                 // Update (but don't replace) the CancerInformationSummary object.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRoot.ID, CreateFieldValueMapPDQCancerInfoSummary(document));
                 List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem });
@@ -141,7 +128,7 @@ namespace GKManagers.CMSDocumentProcessing
         }
 
         private void UpdateMobilePageStructure(SummaryDocument summary,
-            /*PercussionGuid summaryLink,*/ PercussionGuid summaryRoot,
+            PercussionGuid summaryRoot,
             PercussionGuid[] oldpageIDs, PSAaRelationship[] incomingPageRelationships,
             string sitePath)
         {
@@ -187,7 +174,7 @@ namespace GKManagers.CMSDocumentProcessing
                 tempFolder = CMSController.GuaranteeFolder(temporaryPath, FolderManager.NavonAction.None);
 
                 LogDetailedStep("Begin sub-page setup.");
-                               
+
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
                 List<List<PercussionGuid>> pageSectionReferencedItems =
@@ -222,11 +209,9 @@ namespace GKManagers.CMSDocumentProcessing
 
                 LogDetailedStep("End Relationship updates.");
 
-                // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
+                // Update (but don't replace) the CancerInformationSummaryobject.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRoot.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
-                //OCEPROJECT-1765 - Remove summary link dependency
-                //ContentItemForUpdating summaryLinkItem = new ContentItemForUpdating(summaryLink.ID, CreateFieldValueMapPDQCancerInfoSummaryLink(summary));
-                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem/*, summaryLinkItem*/ });
+                List<ContentItemForUpdating> itemsToUpdate = new List<ContentItemForUpdating>(new ContentItemForUpdating[] { summaryItem });
                 List<long> updatedItemIDs = CMSController.UpdateContentItemList(itemsToUpdate);
             }
             catch (Exception)
@@ -319,7 +304,7 @@ namespace GKManagers.CMSDocumentProcessing
 
             docContentId = base.GetCdrDocumentID(contentType, config.BaseFolders.MobileSiteBase, null, cdrID);
 
-            if(docContentId == null)
+            if (docContentId == null)
                 docContentId = base.GetCdrDocumentID(contentType, config.BaseFolders.DesktopSiteBase, null, cdrID);
 
             return docContentId;

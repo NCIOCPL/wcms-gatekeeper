@@ -116,7 +116,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 throw new NullReferenceException("CMSController is not defined.");
             }
-            
+
             // Setup is required to reconcile the (possible) incoming Permanent Links with all of the
             // (possible) existing Permanent Links
             // A Deep Copy of the incoming Permanent Links is passed to prevent any modification
@@ -146,7 +146,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 throw new NullReferenceException("CMSController is not defined.");
             }
-  
+
 
             // Locate is only needed for this type as it just really is detecting old guids in the folder
             LocateExistingPermanentLinks(summaryPath);
@@ -268,7 +268,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 throw new NullReferenceException("Summary Path was empty and therefore cannot find any children.");
             }
-            
+
             // Update the Existing Guids values so that it may be called other places
             _existingGuids = oldPermanentLinkGuids.ToArray();
 
@@ -355,13 +355,13 @@ namespace GKManagers.CMSDocumentProcessing
                     PermanentLink temp = existingEvaluationList.Find(item => item.ID.Equals(link.ID));
                     link.Guid = temp.Guid;
                     toUpdatePermanentLinks.Add(link);
-                    
+
                     // Since this link has been processed and marked for updating, let's remove it from
                     // consideration in the Existing link set evaluation
                     existingEvaluationList.Remove(link);
                 }
             }
-            
+
             // Examine the remaining list of existing Permanent Links
             // Since items marked for Update have already been removed, everything remaining should be
             // marked for deletion
@@ -385,10 +385,10 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="newPageIDs">The newest page IDs used to find where sections are located.</param>
         /// <remarks>Must be public as it is called outside of this PermanentLinkProcessor in other
         /// Processors once the New Page/Section IDs have been determined.</remarks>
-        public void SetURLs(PercussionGuid[] newPageIDs, List<SummarySection> topLevelSections)
+        public void SetURLs(/*PercussionGuid[] newPageIDs,*/ List<SummarySection> topLevelSections)
         {
             // Use the same finder on both sets of links
-            CancerInfoSummarySectionFinder finder = new StandardSummarySectionFinder(CMSController);
+            //CancerInfoSummarySectionFinder finder = new StandardSummarySectionFinder(CMSController);
 
             // Convert the Top Level Sections into a String of IDs so they may be more easily compared
             //List<String> topLevelSectionIDs = topLevelSections.ConvertAll(new Converter<SummarySection, String>(SummarySection.SectionByID));
@@ -397,8 +397,8 @@ namespace GKManagers.CMSDocumentProcessing
 
             // Same process for determing URLs for brand new links as well as the old links
             // So call the same function on each list
-            SetURLs(finder, newPageIDs, topLevelSectionIDs, toCreatePermanentLinks);
-            SetURLs(finder, newPageIDs, topLevelSectionIDs, toUpdatePermanentLinks);
+            SetURLs(/*finder, newPageIDs,*/ topLevelSectionIDs, toCreatePermanentLinks);
+            SetURLs(/*finder, newPageIDs,*/ topLevelSectionIDs, toUpdatePermanentLinks);
         }
 
 
@@ -411,23 +411,11 @@ namespace GKManagers.CMSDocumentProcessing
         /// <param name="permanentLinks">The list of Permanent Links that will have its URLs modified.</param>
         /// <remarks>This function was created as a helper function to the public UpdateURLs as the 
         /// same functionality was required for two different lists.</remarks>
-        private void SetURLs(CancerInfoSummarySectionFinder finder, PercussionGuid[] newPageIDs, HashSet<String> topLevelSectionIDs, List<PermanentLink> permanentLinks)
+        private void SetURLs( HashSet<String> topLevelSectionIDs, List<PermanentLink> permanentLinks)
         {
-            SummaryPageInfo temporaryInfo;
             string newURL;
             foreach (PermanentLink link in permanentLinks)
-            {
-                // First find the page containing this Section ID
-                temporaryInfo = finder.FindPageContainingSection(newPageIDs, link.SectionID);
-
-                //For Devon Rex - Remove page numbers
-
-                // Current URL schema is "Page<#>#Section<_#>
-                // Constant are defined at the top of the function with other Permanent Link Constants
-                // If it is a top level section, it should only be Page<#>
-                //newURL = URLConstantPage + temporaryInfo.PageNumber;
-                // If it is deeper than a top level section, it should be Page<#>#Section<#>
-
+            {                
                 // If it is deeper than a top level section, it should be #<SectionID>
                 if (!topLevelSectionIDs.Contains(link.SectionID))
                 {
@@ -550,7 +538,7 @@ namespace GKManagers.CMSDocumentProcessing
             {
                 // Update the placeholder with the FieldSet from CreateFieldValueMapPDQPermanentLink
                 updatedFields = CreateFieldValueMapPDQPermanentLink(link.ID, link.SectionID, link.Url, link.Title);
-                
+
                 // Add the updated item to the list of content to be changed/updated
                 contentForUpdatingList.Add(new ContentItemForUpdating(link.Guid, updatedFields));
             }
