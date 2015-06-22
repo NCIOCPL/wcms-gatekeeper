@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudienceType.cs" />
+    <Compile Include="Dictionary\Dictionary.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermSimple.cs" />
