@@ -46,6 +46,18 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             return null;
         }
 
+
+        /// <summary>
+        /// Implement ReadXml for the IXmlSerializable contract. This method is the only part
+        /// of IXmlSerializable which receives an actual implementation.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <remarks>
+        /// The GlossaryTerm data structure GateKeeper receives from the CDR doesn't
+        /// resemble anything we want to work with for the dictionaries. Implementing custom deserialization
+        /// via IXmlSerializable allows us to take the individual elements we're interested in and store the
+        /// results in memory in a structure more suited to the front end's uses.
+        /// </remarks>
         public void ReadXml(System.Xml.XmlReader reader)
         {
             reader.MoveToAttribute("id");
