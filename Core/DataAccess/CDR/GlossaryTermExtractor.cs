@@ -664,8 +664,16 @@ namespace GateKeeper.DataAccess.CDR
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="glossaryTermDocument"></param>
-        public void Extract(XmlDocument xmlDoc, GlossaryTermDocument glossaryTermDocument, DocumentXPathManager xPath)
+        public void Extract(XmlDocument xmlDoc, Document document, DocumentXPathManager xPath)
         {
+            GlossaryTermDocument glossaryTermDocument = document as GlossaryTermDocument;
+            if (glossaryTermDocument == null)
+            {
+                string message = "Expected document of type GlossaryTermDocument, found {0}.";
+                throw new DocumentTypeMismatchException(string.Format(message, document.GetType().Name));
+            }
+
+
             try
             {
                 XPathNavigator xNav = xmlDoc.CreateNavigator();

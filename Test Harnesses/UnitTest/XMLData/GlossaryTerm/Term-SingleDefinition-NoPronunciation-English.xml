@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GlossaryTerm id="CDR0000045693">
+  <TermName>Definition</TermName>
+  <TermDefinition>
+    <DefinitionText>English dictionary term for Cancer.Gov dictionary, with pronunciation and  patient audience.</DefinitionText>
+    <Dictionary>Cancer.gov</Dictionary>
+    <Audience>Patient</Audience>
+  </TermDefinition>
+  <MediaLink ref="CDR0000707091" type="audio/mpeg" alt="English pronunciation of dictionary term &quot;gene&quot;" language="en" id="_3" />
+  <MediaLink ref="CDR0000761781" type="image/jpeg" alt="English Image for Patients." language="en" audience="Patients" thumb="Yes" id="_5">
+    <Caption language="en=">This image and caption are for English, patient audiences.</Caption>
+  </MediaLink>
+  <DateLastModified>2015-02-09</DateLastModified>
+</GlossaryTerm>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GlossaryTerm id="CDR0000045693">
+  <TermName>Definition</TermName>
+  <TermPronunciation>(ˌdefəˈniSH(ə)n/)</TermPronunciation>
+  <TermDefinition>
+    <DefinitionText>English patient definition.</DefinitionText>
+    <Dictionary>Cancer.gov</Dictionary>
+    <Audience>Patient</Audience>
+  </TermDefinition>
+  <MediaLink ref="CDR0000707091" type="audio/mpeg" alt="English pronunciation of term &quot;definition&quot;" language="en" id="_3" />
+  <MediaLink ref="CDR0000707092" type="audio/mpeg" alt="Pronunciación española de plazo &quot;definición&quot;" language="es" id="_4" />
+  <MediaLink ref="CDR0000761781" type="image/jpeg" alt="English Image for Patients." language="en" audience="Patients" thumb="Yes" id="_5">
+    <Caption language="en=">English Image for Patients.</Caption>
+  </MediaLink>
+  <MediaLink ref="CDR0000768574" type="image/jpeg" alt="Imagen español para pacientes." language="es" audience="Patients" thumb="Yes" id="_6">
+    <Caption language="es=">Imagen español para pacientes.</Caption>
+  </MediaLink>
+  <SpanishTermName>Definición</SpanishTermName>
+  <SpanishTermDefinition>
+    <DefinitionText>Definición paciente español.</DefinitionText>
+    <Dictionary>Cancer.gov</Dictionary>
+    <Audience>Patient</Audience>
+  </SpanishTermDefinition>
+  <DateLastModified>2015-02-09</DateLastModified>
+  <RelatedInformation>
+    <RelatedExternalRef UseWith="en=" xref="http://www.genome.gov/glossary/index.cfm?id=70">Gene</RelatedExternalRef>
+    <RelatedExternalRef UseWith="en=" xref="http://www.cancer.gov/about-cancer/causes-prevention/genetics">The Genetics of Cancer</RelatedExternalRef>
+    <RelatedExternalRef UseWith="es=" xref="http://www.genome.gov/GlossaryS/index.cfm?id=70">Gen</RelatedExternalRef>
+  </RelatedInformation>
+</GlossaryTerm>
