@@ -96,79 +96,79 @@ namespace GateKeeper.DataAccess
             string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
             string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
 
-            StringBuilder sb = new StringBuilder();
-            headerHtml = "";// createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
+            //StringBuilder sb = new StringBuilder();
+            //headerHtml = "";// createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
-            html = "";
-            int count = 0;
+            //html = "";
+            //int count = 0;
             
-            foreach (Language lang in glossary.GlossaryTermTranslationMap.Keys)
-            {
-                GlossaryTermTranslation trans = glossary.GlossaryTermTranslationMap[lang];
+            //foreach (Language lang in glossary.GlossaryTermTranslationMap.Keys)
+            //{
+            //    GlossaryTermTranslation trans = glossary.GlossaryTermTranslationMap[lang];
 
                 
-                foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
-                {
-                    sb.Append("<div class=\"results clearfix\"><dl class=\"dictionary-list\">");
+            //    foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
+            //    {
+            //        sb.Append("<div class=\"results clearfix\"><dl class=\"dictionary-list\">");
 
                    
-                    // Retrieve rendered markup for audio.
-                    String pronunciation = "<dd class=\"pronunciation\">" + trans.GetAudioMarkup();
-                    if (!String.IsNullOrEmpty(pronunciation))
-                    {
-                        pronunciation = pronunciation.Replace("[_audioMediaLocation]", mediaPath);
-                        // Fix audio icon relative to pub-preview.
-                        pronunciation = pronunciation.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
-                    }
+            //        // Retrieve rendered markup for audio.
+            //        String pronunciation = "<dd class=\"pronunciation\">" + trans.GetAudioMarkup();
+            //        if (!String.IsNullOrEmpty(pronunciation))
+            //        {
+            //            pronunciation = pronunciation.Replace("[_audioMediaLocation]", mediaPath);
+            //            // Fix audio icon relative to pub-preview.
+            //            pronunciation = pronunciation.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
+            //        }
 
-                    // Pronuncation key
-                    if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
-                    {
-                        pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span></dd>";
-                    }
+            //        // Pronuncation key
+            //        if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
+            //        {
+            //            pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span></dd>";
+            //        }
 
-                    sb.AppendFormat("<dt><dfn>{0}</dfn></dt>{1}", trans.TermName, pronunciation);
+            //        sb.AppendFormat("<dt><dfn>{0}</dfn></dt>{1}", trans.TermName, pronunciation);
                     
-                    // Definition
-                    string defHtml = gtDef.Html.Trim();
-                    using (GlossaryTermQuery gQuery = new GlossaryTermQuery())
-                    {
-                        if (defHtml.Contains("<SummaryRef"))
-                        {
-                            gQuery.BuildSummaryRefLink(ref defHtml, 1);
-                        }
-                    }
-                    sb.Append("<dd class=\"definition\">" + defHtml + "<br/>");
+            //        // Definition
+            //        string defHtml = gtDef.Html.Trim();
+            //        using (GlossaryTermQuery gQuery = new GlossaryTermQuery())
+            //        {
+            //            if (defHtml.Contains("<SummaryRef"))
+            //            {
+            //                gQuery.BuildSummaryRefLink(ref defHtml, 1);
+            //            }
+            //        }
+            //        sb.Append("<dd class=\"definition\">" + defHtml + "<br/>");
 
-                    // Use the GK rendered HTML for Related Links.
-                    if (gtDef.RelatedInformationHTML != String.Empty)
-                    {
-                        sb.Append("<div id=\"pnlRelatedInfo\"><br/>");
-                        sb.Append(gtDef.RelatedInformationHTML);
-                        sb.Append("</div>");
-                    }
+            //        // Use the GK rendered HTML for Related Links.
+            //        if (gtDef.RelatedInformationHTML != String.Empty)
+            //        {
+            //            sb.Append("<div id=\"pnlRelatedInfo\"><br/>");
+            //            sb.Append(gtDef.RelatedInformationHTML);
+            //            sb.Append("</div>");
+            //        }
 
-                    // Retrieve rendered markup for images.
+            //        // Retrieve rendered markup for images.
                     
-                    String imageHtml = trans.GetImageMarkup(gtDef.AudienceTypeList[0]);
-                    if (!String.IsNullOrEmpty(imageHtml))
-                    {
-                        imageHtml = imageHtml.Replace("[__imagelocation]", imagePath);
-                    }
-                    sb.Append(imageHtml);
+            //        String imageHtml = trans.GetImageMarkup(gtDef.AudienceTypeList[0]);
+            //        if (!String.IsNullOrEmpty(imageHtml))
+            //        {
+            //            imageHtml = imageHtml.Replace("[__imagelocation]", imagePath);
+            //        }
+            //        sb.Append(imageHtml);
 
-                    sb.Append("</dd>");
+            //        sb.Append("</dd>");
                     
-                    sb.Append("</dl></div>");
+            //        sb.Append("</dl></div>");
 
-                }
+            //    }
                 
 
-                count++;
-            }
+            //    count++;
+            //}
             
                    
-            html += sb.ToString();
+            //html += sb.ToString();
         }
 
 

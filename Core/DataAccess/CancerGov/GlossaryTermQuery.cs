@@ -358,38 +358,38 @@ namespace GateKeeper.DataAccess.CancerGov
         {
             try
             {
-                string spSaveGlossaryTerm = SPGlossaryTerm.SP_SAVE_GLOSSARY_TERM;
-                using (DbCommand saveGTCommand = db.GetStoredProcCommand(spSaveGlossaryTerm))
-                {
-                    saveGTCommand.CommandType = CommandType.StoredProcedure;
-                    db.AddInParameter(saveGTCommand, "@GlossaryTermID", DbType.Int32, GTDocument.DocumentID);
-                    db.AddInParameter(saveGTCommand, "@UpdateUserID", DbType.String, userID);
-                    bool spanishTerm = false;
-                    foreach (Language language in GTDocument.GlossaryTermTranslationMap.Keys)
-                    {
-                        GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
-                        if (language.Equals(Language.English))
-                        {
-                            if (trans.TermName.Trim().Length > 0)
-                                db.AddInParameter(saveGTCommand, "@TermName", DbType.String, trans.TermName.Trim());
-                            else
-                                db.AddInParameter(saveGTCommand, "@TermName", DbType.String, null);
+                //string spSaveGlossaryTerm = SPGlossaryTerm.SP_SAVE_GLOSSARY_TERM;
+                //using (DbCommand saveGTCommand = db.GetStoredProcCommand(spSaveGlossaryTerm))
+                //{
+                //    saveGTCommand.CommandType = CommandType.StoredProcedure;
+                //    db.AddInParameter(saveGTCommand, "@GlossaryTermID", DbType.Int32, GTDocument.DocumentID);
+                //    db.AddInParameter(saveGTCommand, "@UpdateUserID", DbType.String, userID);
+                //    bool spanishTerm = false;
+                //    foreach (Language language in GTDocument.GlossaryTermTranslationMap.Keys)
+                //    {
+                //        GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
+                //        if (language.Equals(Language.English))
+                //        {
+                //            if (trans.TermName.Trim().Length > 0)
+                //                db.AddInParameter(saveGTCommand, "@TermName", DbType.String, trans.TermName.Trim());
+                //            else
+                //                db.AddInParameter(saveGTCommand, "@TermName", DbType.String, null);
 
-                            if (trans.Pronounciation.Trim().Length > 0)
-                                db.AddInParameter(saveGTCommand, "@TermPronunciation", DbType.String, trans.Pronounciation.Trim());
-                            else
-                                db.AddInParameter(saveGTCommand, "@TermPronunciation", DbType.String, null);
-                        }
-                        else if (language.Equals(Language.Spanish))
-                        {
-                            spanishTerm = true;
-                            db.AddInParameter(saveGTCommand, "@SpanishTermName", DbType.String, trans.TermName.Trim());
-                        }
-                    }
-                    if (!spanishTerm)
-                        db.AddInParameter(saveGTCommand, "@SpanishTermName", DbType.String, null);
-                    db.ExecuteNonQuery(saveGTCommand, transaction);
-                }
+                //            if (trans.Pronounciation.Trim().Length > 0)
+                //                db.AddInParameter(saveGTCommand, "@TermPronunciation", DbType.String, trans.Pronounciation.Trim());
+                //            else
+                //                db.AddInParameter(saveGTCommand, "@TermPronunciation", DbType.String, null);
+                //        }
+                //        else if (language.Equals(Language.Spanish))
+                //        {
+                //            spanishTerm = true;
+                //            db.AddInParameter(saveGTCommand, "@SpanishTermName", DbType.String, trans.TermName.Trim());
+                //        }
+                //    }
+                //    if (!spanishTerm)
+                //        db.AddInParameter(saveGTCommand, "@SpanishTermName", DbType.String, null);
+                //    db.ExecuteNonQuery(saveGTCommand, transaction);
+                //}
 
             }
             catch (Exception e)
@@ -410,101 +410,101 @@ namespace GateKeeper.DataAccess.CancerGov
         {
             try
             {
-                //SP: Save Glossary Term Definition: English/Spanish
-                //SP: Save Glossary Term Definition Audience: Patient, Health professional
-                //SP: Save Glossary Term Definition Dictionary: Cancer.Gov
-                foreach (Language language in GTDocument.GlossaryTermTranslationMap.Keys)
-                {
-                    GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
-                    string relatedInformationHtml = String.Empty;
+                ////SP: Save Glossary Term Definition: English/Spanish
+                ////SP: Save Glossary Term Definition Audience: Patient, Health professional
+                ////SP: Save Glossary Term Definition Dictionary: Cancer.Gov
+                //foreach (Language language in GTDocument.GlossaryTermTranslationMap.Keys)
+                //{
+                //    GlossaryTermTranslation trans = GTDocument.GlossaryTermTranslationMap[language];
+                //    string relatedInformationHtml = String.Empty;
 
-                    #region GlossaryTerm Definition
-                    foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
-                    {
-                        // Each definition has a discrete audience.
-                        AudienceType currAudience = gtDef.AudienceTypeList[0];
+                //    #region GlossaryTerm Definition
+                //    foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
+                //    {
+                //        // Each definition has a discrete audience.
+                //        AudienceType currAudience = gtDef.AudienceTypeList[0];
 
-                        // If a pronunciation is associated with this translation, find the markup to save.
-                        string audioMediaHTML = trans.GetAudioMarkup();
+                //        // If a pronunciation is associated with this translation, find the markup to save.
+                //        string audioMediaHTML = trans.GetAudioMarkup();
 
-                        // If an image is associated with this definition, find the values to store in the DB.
-                        // Otherwise, store non-NULL "blank" values.
-                        string imageMediaHTML = trans.GetImageMarkup(currAudience);
-                        List<string> imageCaptions = trans.GetImageCaptionColl(currAudience);
-                        List<int> imageMediaIDs = trans.GetImageIDColl(currAudience);
+                //        // If an image is associated with this definition, find the values to store in the DB.
+                //        // Otherwise, store non-NULL "blank" values.
+                //        string imageMediaHTML = trans.GetImageMarkup(currAudience);
+                //        List<string> imageCaptions = trans.GetImageCaptionColl(currAudience);
+                //        List<int> imageMediaIDs = trans.GetImageIDColl(currAudience);
 
 
-                        //Save Glossary Term Definition
-                        String spGlossaryTermDefinition = SPGlossaryTerm.SP_SAVE_GT_DEFINITION;
-                        int definitionID = 0;
-                        using (DbCommand spDefCommand = db.GetStoredProcCommand(spGlossaryTermDefinition))
-                        {
-                            spDefCommand.CommandType = CommandType.StoredProcedure;
-                            db.AddInParameter(spDefCommand, "@GlossaryTermID", DbType.Int32, GTDocument.DocumentID);
-                            db.AddInParameter(spDefCommand, "@Language", DbType.String, language.ToString().Trim());
-                            db.AddInParameter(spDefCommand, "@UpdateUserID", DbType.String, userID);
-                            db.AddInParameter(spDefCommand, "@MediaHTML", DbType.String, imageMediaHTML);
-                            db.AddInParameter(spDefCommand, "@AudioMediaHTML", DbType.String, audioMediaHTML.Trim());
-                            db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, gtDef.RelatedInformationHTML.Trim());
-                            db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
+                //        //Save Glossary Term Definition
+                //        String spGlossaryTermDefinition = SPGlossaryTerm.SP_SAVE_GT_DEFINITION;
+                //        int definitionID = 0;
+                //        using (DbCommand spDefCommand = db.GetStoredProcCommand(spGlossaryTermDefinition))
+                //        {
+                //            spDefCommand.CommandType = CommandType.StoredProcedure;
+                //            db.AddInParameter(spDefCommand, "@GlossaryTermID", DbType.Int32, GTDocument.DocumentID);
+                //            db.AddInParameter(spDefCommand, "@Language", DbType.String, language.ToString().Trim());
+                //            db.AddInParameter(spDefCommand, "@UpdateUserID", DbType.String, userID);
+                //            db.AddInParameter(spDefCommand, "@MediaHTML", DbType.String, imageMediaHTML);
+                //            db.AddInParameter(spDefCommand, "@AudioMediaHTML", DbType.String, audioMediaHTML.Trim());
+                //            db.AddInParameter(spDefCommand, "@RelatedInformationHTML", DbType.String, gtDef.RelatedInformationHTML.Trim());
+                //            db.AddInParameter(spDefCommand, "@DefinitionText", DbType.String, gtDef.Text.Trim());
 
-                            // THIS IS WRONG!!!!
-                            // The business rules allow for multiple images to be referenced from a single definition,
-                            // however the current database schema and front-end code don't support multiple.
-                            // At present, the MediaCaption and MediaId are only used by CancerTypeHomePage on the mobile site.
-                            // This is recorded in OCEPROJECT-756
-                            db.AddInParameter(spDefCommand, "@MediaCaption", DbType.String,
-                                (imageCaptions.Count != 0) ? imageCaptions[0] : string.Empty);
-                            db.AddInParameter(spDefCommand, "@MediaID", DbType.Int32,
-                                (imageMediaIDs.Count != 0) ? imageMediaIDs[0] : 0);
+                //            // THIS IS WRONG!!!!
+                //            // The business rules allow for multiple images to be referenced from a single definition,
+                //            // however the current database schema and front-end code don't support multiple.
+                //            // At present, the MediaCaption and MediaId are only used by CancerTypeHomePage on the mobile site.
+                //            // This is recorded in OCEPROJECT-756
+                //            db.AddInParameter(spDefCommand, "@MediaCaption", DbType.String,
+                //                (imageCaptions.Count != 0) ? imageCaptions[0] : string.Empty);
+                //            db.AddInParameter(spDefCommand, "@MediaID", DbType.Int32,
+                //                (imageMediaIDs.Count != 0) ? imageMediaIDs[0] : 0);
 
-                            // Replace summaryref with prettyURL
-                            string html = gtDef.Html.Trim();
-                            //TODO: Fix SummaryRef tags in Glossary Terms.
-                            if (html.Contains("<SummaryRef"))
-                            {
-                                BuildSummaryRefLink(ref html, 1);
-                            }
-                            db.AddInParameter(spDefCommand, "@DefinitionHTML", DbType.String, html);
-                            db.AddOutParameter(spDefCommand, "@GlossaryTermDefinitionID", DbType.Int32, 1);
-                            db.ExecuteNonQuery(spDefCommand, transaction);
-                            definitionID = (int)db.GetParameterValue(spDefCommand, "@GlossaryTermDefinitionID");
-                        }
+                //            // Replace summaryref with prettyURL
+                //            string html = gtDef.Html.Trim();
+                //            //TODO: Fix SummaryRef tags in Glossary Terms.
+                //            if (html.Contains("<SummaryRef"))
+                //            {
+                //                BuildSummaryRefLink(ref html, 1);
+                //            }
+                //            db.AddInParameter(spDefCommand, "@DefinitionHTML", DbType.String, html);
+                //            db.AddOutParameter(spDefCommand, "@GlossaryTermDefinitionID", DbType.Int32, 1);
+                //            db.ExecuteNonQuery(spDefCommand, transaction);
+                //            definitionID = (int)db.GetParameterValue(spDefCommand, "@GlossaryTermDefinitionID");
+                //        }
 
-                        if (definitionID > 0)
-                        {
-                            // Save Glossary Term Definition Audience
-                            foreach (AudienceType at in gtDef.AudienceTypeList)
-                            {
-                                String spAudience = SPGlossaryTerm.SP_SAVE_GT_DEFINITION_AUDI;
-                                using (DbCommand spAudiCommand = db.GetStoredProcCommand(spAudience))
-                                {
-                                    spAudiCommand.CommandType = CommandType.StoredProcedure;
-                                    db.AddInParameter(spAudiCommand, "@GlossaryTermDefinitionID", DbType.Int32, definitionID);
-                                    db.AddInParameter(spAudiCommand, "@Audience", DbType.String, DocumentHelper.GetAudienceDBString(at).Trim());
-                                    db.AddInParameter(spAudiCommand, "@UpdateUserID", DbType.String, userID);
-                                    db.ExecuteNonQuery(spAudiCommand, transaction);
-                                }
-                            }
+                //        if (definitionID > 0)
+                //        {
+                //            // Save Glossary Term Definition Audience
+                //            foreach (AudienceType at in gtDef.AudienceTypeList)
+                //            {
+                //                String spAudience = SPGlossaryTerm.SP_SAVE_GT_DEFINITION_AUDI;
+                //                using (DbCommand spAudiCommand = db.GetStoredProcCommand(spAudience))
+                //                {
+                //                    spAudiCommand.CommandType = CommandType.StoredProcedure;
+                //                    db.AddInParameter(spAudiCommand, "@GlossaryTermDefinitionID", DbType.Int32, definitionID);
+                //                    db.AddInParameter(spAudiCommand, "@Audience", DbType.String, DocumentHelper.GetAudienceDBString(at).Trim());
+                //                    db.AddInParameter(spAudiCommand, "@UpdateUserID", DbType.String, userID);
+                //                    db.ExecuteNonQuery(spAudiCommand, transaction);
+                //                }
+                //            }
 
-                            // Save Glossary Term Definition Dictionary Name
-                            foreach (String dic in gtDef.DictionaryNameList)
-                            {
-                                String spDictionaryName = SPGlossaryTerm.SP_SAVE_GT_DEFINITION_DIC;
-                                using (DbCommand spDicCommand = db.GetStoredProcCommand(spDictionaryName))
-                                {
-                                    spDicCommand.CommandType = CommandType.StoredProcedure;
-                                    db.AddInParameter(spDicCommand, "@GlossaryTermDefinitionID", DbType.Int32, definitionID);
-                                    db.AddInParameter(spDicCommand, "@Dictionary", DbType.String, dic.Trim());
-                                    db.AddInParameter(spDicCommand, "@UpdateUserID", DbType.String, userID);
-                                    db.ExecuteNonQuery(spDicCommand, transaction);
-                                }
-                            }
-                        }
-                    } // End definition list loop 
-                    #endregion
+                //            // Save Glossary Term Definition Dictionary Name
+                //            foreach (String dic in gtDef.DictionaryNameList)
+                //            {
+                //                String spDictionaryName = SPGlossaryTerm.SP_SAVE_GT_DEFINITION_DIC;
+                //                using (DbCommand spDicCommand = db.GetStoredProcCommand(spDictionaryName))
+                //                {
+                //                    spDicCommand.CommandType = CommandType.StoredProcedure;
+                //                    db.AddInParameter(spDicCommand, "@GlossaryTermDefinitionID", DbType.Int32, definitionID);
+                //                    db.AddInParameter(spDicCommand, "@Dictionary", DbType.String, dic.Trim());
+                //                    db.AddInParameter(spDicCommand, "@UpdateUserID", DbType.String, userID);
+                //                    db.ExecuteNonQuery(spDicCommand, transaction);
+                //                }
+                //            }
+                //        }
+                //    } // End definition list loop 
+                //    #endregion
                     
-                } // End language map loop
+                //} // End language map loop
 
             }
             catch (Exception e)

@@ -43,7 +43,7 @@ namespace GateKeeper.UnitTest.Extract
             RunExtract(filename, doctype);
         }
 
-        [TestCase("GlossaryTerm\\Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
+        [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
         public void CorrectDocumentType(string filename, Type doctype)
         {
             RunExtract(filename, doctype);
