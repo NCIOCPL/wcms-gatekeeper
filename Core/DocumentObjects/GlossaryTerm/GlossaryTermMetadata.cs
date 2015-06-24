@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -10,7 +11,9 @@ using GateKeeper.Common;
 namespace GateKeeper.DocumentObjects.GlossaryTerm
 {
     /// <summary>
-    /// Represents the dictionary metadata extracted from a GlossaryTerm document.
+    /// An IXmlSerializable representation of a GlossaryTerm document.  This class is used by
+    /// GlossaryTermExtractor to perform the bulk of the logic for retrieving data from a GlossaryTerm
+    /// document in a readily available format.
     /// </summary>
     [XmlRoot("GlossaryTerm")]
     public class GlossaryTermMetadata : IXmlSerializable
@@ -21,13 +24,35 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         const String SPANISH_NAME_ELEMENT = "SpanishTermName";
         const String SPANISH_DEFINITION_ELEMENT = "SpanishTermDefinition";
 
+        /// <summary>
+        /// The source GlossaryTerm document's CDRID.
+        /// </summary>
         public String ID { get; private set; }
 
-        private String _englishTermName;
-        private String _spanishTermName;
+        /// <summary>
+        /// The English name for term, as extracted from the original GlossaryTerm document.
+        /// </summary>
+        [XmlIgnore()]
+        public String EnglishTermName { get; private set; }
 
-        private List<GlossaryTermDefinition> englishDefinitionMetadata = new List<GlossaryTermDefinition>();
-        private List<GlossaryTermDefinition> spanishDefinitionMetadata = new List<GlossaryTermDefinition>();
+        /// <summary>
+        /// The Spanish name for term, as extracted from the original GlossaryTerm document.
+        /// </summary>
+        [XmlIgnore()]
+        public String SpanishTermName { get; private set; }
+
+        /// <summary>
+        /// A collection of metadata for each of the definitions contained in the original
+        /// GlosaryTerm document. Use with the EnglishTermName and SpanishTermName to create
+        /// a unique combination of termname, language, audience and dictionary.
+        /// </summary>
+        [XmlIgnore()]
+        public ReadOnlyCollection<GlossaryTermDefinition> DefinitionList
+        {
+            get { return new ReadOnlyCollection<GlossaryTermDefinition>(definitionMetadata); }
+        }
+
+        private List<GlossaryTermDefinition> definitionMetadata = new List<GlossaryTermDefinition>();
 
         
         #region IXmlSerializable Members
@@ -51,13 +76,14 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// </summary>
         /// <param name="reader"></param>
         /// <remarks>
-        /// The GlossaryTerm data structure GateKeeper receives from the CDR doesn't
-        /// resemble anything we want to work with for the dictionaries. Implementing custom deserialization
+        /// The GlossaryTerm data structure GateKeeper receives from the CDR doesn't resemble the
+        /// structure we want to work with for the dictionaries. Implementing custom deserialization
         /// via IXmlSerializable allows us to take the individual elements we're interested in and store the
         /// results in memory in a structure more suited to the front end's uses.
         /// </remarks>
         public void ReadXml(System.Xml.XmlReader reader)
         {
+            // Grab the ID.
             reader.MoveToAttribute("id");
             if (reader.ReadAttributeValue())
             {
@@ -69,41 +95,39 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             {
                 if (reader.Name == NAME_ELEMENT)
                 {
-                    _englishTermName = reader.ReadString();
+                    EnglishTermName = reader.ReadString();
                 }
                 else if (reader.Name == SPANISH_NAME_ELEMENT)
                 {
-                    _spanishTermName = reader.ReadString();
+                    SpanishTermName = reader.ReadString();
                 }
                 else if (reader.Name == ENGLISH_DEFINITION_ELEMENT)
                 {
-                    // Deserialize a TermDefinition and mark it as English.
-                    // This feels slightly kludgy -- XmlSerializer.Deserialize() process the current
-                    // element and its children and then advances to the next element.
-                    // The Read() at the top of the loop also advances to the next element.
-                    // This can result in records being skipped.  Rather than allow that,
-                    // we create a new reader for just the current element and deserialize
-                    // from that, leaving the original reader in place.
-
+                    // Use a nested serializer to extract English definitions instead of
+                    // having to work directly with an XmlReader and advancing through the various
+                    // components.
                     XmlSerializer engSerializer = new XmlSerializer(typeof(EnglishTermDefinition));
                     XmlReader subTree = reader.ReadSubtree();
                     GlossaryTermDefinition def = (GlossaryTermDefinition)engSerializer.Deserialize(subTree);
                     if (def != null)
-                        englishDefinitionMetadata.Add(def);
+                        definitionMetadata.Add(def);
                 }
                 else if (reader.Name == SPANISH_DEFINITION_ELEMENT)
                 {
-                    // Deserialize a TermDefinition and mark it as Spanish.
-                    //XmlSerializer spanSerializer = new XmlSerializer(typeof(SpanishTermDefinition));
-                    //Definition def = (Definition)spanSerializer.Deserialize(reader);
-                    //if (def != null)
-                    //    spanishDefinitionMetadata.Add(def);
+                    // Use a nested serializer to extract Spanish definitions instead of
+                    // having to work directly with an XmlReader and advancing through the various
+                    // components.
+                    XmlSerializer spanSerializer = new XmlSerializer(typeof(SpanishTermDefinition));
+                    XmlReader subTree = reader.ReadSubtree();
+                    GlossaryTermDefinition def = (GlossaryTermDefinition)spanSerializer.Deserialize(subTree);
+                    if (def != null)
+                        definitionMetadata.Add(def);
                 }
             }
         }
 
         /// <summary>
-        /// Provides an WriteXml() in order to implement IXmlSerializable, however this
+        /// Provides a WriteXml() in order to implement IXmlSerializable, however this
         /// method is deliberately not implemented as the CDR is responsible for creating the
         /// XML and GateKeeper is only actually interested in deserializing it.
         /// </summary>

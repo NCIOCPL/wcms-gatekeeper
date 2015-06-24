@@ -28,7 +28,11 @@ namespace GateKeeper.UnitTest.Extract
 
         #endregion
 
-        // Verify that GlossaryTermExtractor fails for everything except actual GlossaryTerm documents.
+        /// <summary>
+        /// Verify that GlossaryTermExtractor fails for everything except actual GlossaryTerm documents.
+        /// </summary>
+        /// <param name="filename">Data file to load</param>
+        /// <param name="doctype">Document type to try extracting.</param>
         [ExpectedException(typeof(DocumentTypeMismatchException))]
         [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.DrugInfoSummary.DrugInfoSummaryDocument))]
         [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GeneticsProfessional.GeneticsProfessionalDocument))]
@@ -43,43 +47,55 @@ namespace GateKeeper.UnitTest.Extract
             RunExtract(filename, doctype);
         }
 
-        [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        public void CorrectDocumentType(string filename, Type doctype)
+        /// <summary>
+        /// Verify that GlossaryTermExtractor is able to load GlossaryTerm documents.
+        /// </summary>
+        /// <param name="filename">GlossaryTerm data file to load</param>
+        [TestCase("Term-SingleDefinition-English.xml")]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
+        [TestCase("Term-MultiDefinition-English.xml")]
+        [TestCase("Term-EnglishAndSpanish.xml")]
+        public void CorrectDocumentType(string filename)
         {
-            RunExtract(filename, doctype);
+            RunExtract(filename);
         }
 
-        [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        [TestCase("Term-EnglishAndSpanish.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        public void LoadSingleEnglishPatientTerm(string filename, Type doctype)
+        [TestCase("Term-SingleDefinition-English.xml")]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
+        [TestCase("Term-EnglishAndSpanish.xml")]
+        public void LoadSingleEnglishPatientTerm(string filename)
         {
-            RunExtract(filename, doctype);
+            RunExtract(filename);
             throw new NotImplementedException();
         }
 
-        [TestCase("Term-MultiDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        public void LoadMultipleEnglishPatientTerm(string filename, Type doctype)
+        [TestCase("Term-MultiDefinition-English.xml")]
+        public void LoadMultipleEnglishPatientTerm(string filename)
         {
-            RunExtract(filename, doctype);
+            RunExtract(filename);
             throw new NotImplementedException();
         }
 
-        [TestCase("Term-EnglishAndSpanish.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
+        [TestCase("Term-EnglishAndSpanish.xml")]
         public void LoadSingleSpanishPatientTerm(string filename, Type doctype)
         {
-            RunExtract(filename, doctype);
+            RunExtract(filename);
             throw new NotImplementedException();
         }
 
-        [TestCase("Term-SingleDefinition-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml", typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument))]
-        public void FailToLoadSpanishPatientTerm(string filename, Type doctype)
+        [TestCase("Term-SingleDefinition-English.xml")]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
+        public void FailToLoadSpanishPatientTerm(string filename)
         {
-            RunExtract(filename, doctype);
+            RunExtract(filename);
             throw new NotImplementedException();
         }
 
+
+        private void RunExtract(string filename)
+        {
+            RunExtract(filename, typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument));
+        }
 
         private void RunExtract(string filename, Type doctype)
         {
