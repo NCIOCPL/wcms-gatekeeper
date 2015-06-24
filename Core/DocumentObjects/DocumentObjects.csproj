@@ -98,7 +98,6 @@
     <Compile Include="Protocol\TypeOfCancer.cs" />
     <Compile Include="GeneticsProfessional\FamilyCancerSyndrome.cs" />
     <Compile Include="GeneticsProfessional\GeneticsProfessionalDocument.cs" />
-    <Compile Include="GlossaryTerm\GlossaryTermTranslation.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDocument.cs" />
     <Compile Include="Media\MediaDocument.cs" />
     <Compile Include="DocumentHelper.cs" />

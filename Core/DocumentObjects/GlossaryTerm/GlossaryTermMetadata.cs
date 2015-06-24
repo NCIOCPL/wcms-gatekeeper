@@ -9,7 +9,9 @@ using GateKeeper.Common;
 
 namespace GateKeeper.DocumentObjects.GlossaryTerm
 {
-    // Represents the metadata extracted from a GlossaryTerm document.
+    /// <summary>
+    /// Represents the dictionary metadata extracted from a GlossaryTerm document.
+    /// </summary>
     [XmlRoot("GlossaryTerm")]
     public class GlossaryTermMetadata : IXmlSerializable
     {
@@ -22,8 +24,10 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         public String ID { get; private set; }
 
         private String _englishTermName;
-
         private String _spanishTermName;
+
+        private List<GlossaryTermDefinition> englishDefinitionMetadata = new List<GlossaryTermDefinition>();
+        private List<GlossaryTermDefinition> spanishDefinitionMetadata = new List<GlossaryTermDefinition>();
 
         
         #region IXmlSerializable Members
@@ -81,11 +85,11 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
                     // we create a new reader for just the current element and deserialize
                     // from that, leaving the original reader in place.
 
-                    //XmlSerializer engSerializer = new XmlSerializer(typeof(EnglishTermDefinition));
-                    //XmlReader subTree = reader.ReadSubtree();
-                    //Definition def = (Definition)engSerializer.Deserialize(subTree);
-                    //if (def != null)
-                    //    englishDefinitionMetadata.Add(def);
+                    XmlSerializer engSerializer = new XmlSerializer(typeof(EnglishTermDefinition));
+                    XmlReader subTree = reader.ReadSubtree();
+                    GlossaryTermDefinition def = (GlossaryTermDefinition)engSerializer.Deserialize(subTree);
+                    if (def != null)
+                        englishDefinitionMetadata.Add(def);
                 }
                 else if (reader.Name == SPANISH_DEFINITION_ELEMENT)
                 {
