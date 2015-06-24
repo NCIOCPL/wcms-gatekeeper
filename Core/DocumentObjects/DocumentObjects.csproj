@@ -77,6 +77,7 @@
     <Compile Include="Dictionary\DictionaryEntry.cs" />
     <Compile Include="Dictionary\TermAlias.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermMetadata.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermSimple.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermSimpleDefinition.cs" />

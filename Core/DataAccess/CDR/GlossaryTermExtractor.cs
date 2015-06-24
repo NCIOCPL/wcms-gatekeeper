@@ -60,15 +60,15 @@ namespace GateKeeper.DataAccess.CDR
             {
                 // Use XML deserialization to extract the meta data.
 
-                XmlSerializer serializer = new XmlSerializer(typeof(GlossaryTermDocument));
+                XmlSerializer serializer = new XmlSerializer(typeof(GlossaryTermMetadata));
 
-                // Extract the meta data and then copy it over to the GlossaryTermDocument which
-                // was passed in from the caller.  It's a little clumsy, but this is necessitated
-                // by the need to retrofit a newer extract onto legacy code.
-                GlossaryTermDocument extractData;
+                // Use XML Serialization to parse the dictionary entry and extract the term details.
+                // Note that this approach is new as of the Feline release (Summer 2015) and is significantly
+                // different from the legacy extract mechanisms used elsewhere in this codebase.
+                GlossaryTermMetadata extractData;
                 using (TextReader reader = new StringReader(xmlDoc.OuterXml))
                 {
-                    extractData = (GlossaryTermDocument)serializer.Deserialize(reader);
+                    extractData = (GlossaryTermMetadata)serializer.Deserialize(reader);
                 }
                 //XPathNavigator xNav = xmlDoc.CreateNavigator();
 
