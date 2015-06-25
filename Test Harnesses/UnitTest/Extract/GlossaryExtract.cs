@@ -10,6 +10,8 @@ using GateKeeper.Common;
 using GateKeeper.DataAccess.CDR;
 using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.Dictionary;
+using GateKeeper.DocumentObjects.GlossaryTerm;
 using GKManagers.BusinessObjects;
 
 namespace GateKeeper.UnitTest.Extract
@@ -83,11 +85,28 @@ namespace GateKeeper.UnitTest.Extract
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Test that no Spanish definitions are found when the source document
+        /// doesn't contain any.
+        /// </summary>
+        /// <param name="filename"></param>
         [TestCase("Term-SingleDefinition-English.xml")]
         [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
         public void FailToLoadSpanishPatientTerm(string filename)
         {
-            RunExtract(filename);
+            XmlDocument xml = new XmlDocument();
+            xml.Load(@"./XMLData/GlossaryTerm/" + filename);
+
+            GlossaryTermDocument gtDoc = new GlossaryTermDocument();
+
+            gtDoc.InformationWriter = _informationWriter;
+            gtDoc.WarningWriter = _warningWriter;
+            GlossaryTermExtractor extractor = new GlossaryTermExtractor();
+
+            // GlossaryTermExtractor doesn't use the DocumentXPathManager argument.
+            // The argument only exists for backwards compatability with a generic signature.
+            extractor.Extract(xml, gtDoc, null);
+
             throw new NotImplementedException();
         }
 
