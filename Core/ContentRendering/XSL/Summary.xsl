@@ -129,7 +129,7 @@
             <!--
    There are no TOC or KeyPoint boxes on mobile
    =================================================================== -->
-            <xsl:if                        test = "$targetedDevice = 'screen'">
+           
               <!-- create container to insert full document TOC -->
               <xsl:element                  name = "div">
                 <xsl:attribute               name = "id">
@@ -140,7 +140,7 @@
                   <xsl:text>pdq-on-this-page</xsl:text>
                 </xsl:attribute>
               </xsl:element>
-            </xsl:if>
+          
 
             <!--
    We have to loop over each top section in order to set the numbering
@@ -153,21 +153,6 @@
                 <xsl:number/>
               </xsl:variable>
 
-              <xsl:if                       test = "(contains(
-                                            concat(' ', @IncludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
                 <xsl:element                 name = "section">
                   <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
@@ -177,43 +162,14 @@
                     <xsl:text>pdq-sections</xsl:text>
                   </xsl:attribute>
 
-                  <!--
-      Mobile needs an extra div
-      ========================= -->
-                  <xsl:choose>
-                    <xsl:when                  test = "$targetedDevice = 'mobile'">
-                      <xsl:element              name = "div">
-                        <xsl:attribute           name = "data-role">
-                          <xsl:text>collapsible</xsl:text>
-                        </xsl:attribute>
-                        <xsl:attribute           name = "data-collapsed">
-                          <xsl:text>true</xsl:text>
-                        </xsl:attribute>
-                        <xsl:attribute           name = "data-iconpos">
-                          <xsl:text>right</xsl:text>
-                        </xsl:attribute>
-                        <xsl:attribute           name = "name">
-                          <xsl:text>Section{@id}</xsl:text>
-                        </xsl:attribute>
-                        <xsl:attribute           name = "id">
-                          <xsl:text>Section{@id}</xsl:text>
-                        </xsl:attribute>
-                        <xsl:call-template       name = "Title_TOC_KP">
-                          <xsl:with-param         name = "topSection"
-                                                select = "$topSection"/>
-                        </xsl:call-template>
-                      </xsl:element>
-                    </xsl:when>
-                    <xsl:otherwise>
+      
                       <xsl:call-template        name = "Title_TOC_KP">
                         <xsl:with-param          name = "topSection"
                                                select = "$topSection"/>
                       </xsl:call-template>
-                    </xsl:otherwise>
-                  </xsl:choose>
+                   
                 </xsl:element>
 
-              </xsl:if>
             </xsl:for-each>
           </article>
         </div>
@@ -232,14 +188,8 @@
         printed above the keypoints box or the TOC -->
     <xsl:apply-templates         select = "Title"/>
 
-    <!--
-   There are no TOC or KeyPoint boxes on mobile
-   These only get created for the desktop.
-   =================================================================== -->
-    <xsl:if                        test = "../descendant::KeyPoint
-                                          and
-                                          not($targetedDevice = 'mobile')">
-      <!-- xsl:call-template         name = "keypointsboxJS"/ -->
+    
+    <xsl:if                        test = "../descendant::KeyPoint">
       <xsl:call-template            name = "keypointsbox"/>
     </xsl:if>
 
@@ -413,22 +363,7 @@
   <xsl:template                  match = "SummarySection">
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
-    <xsl:choose>
-      <xsl:when                     test = "(contains(
-                                            concat(' ', @IncludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
+   
         <xsl:element                 name = "section">
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "@id"/>
@@ -438,8 +373,7 @@
                                       select = "$topSection"/>
           </xsl:apply-templates>
         </xsl:element>
-      </xsl:when>
-    </xsl:choose>
+      
   </xsl:template>
 
   <!--
@@ -480,9 +414,7 @@
     <xsl:param                     name = "topSection"
                                  select = "'title'"/>
     <xsl:choose>
-      <xsl:when                     test = "$topSection = 'title'
-                                          and
-                                          not($targetedDevice = 'mobile')">
+      <xsl:when                     test = "$topSection = 'title'">
         <xsl:element                 name = "h2">
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "parent::SummarySection/@id"/>
@@ -491,23 +423,7 @@
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
-      <xsl:when                     test = "$topSection = 'title'
-                                          and
-                                          $targetedDevice = 'mobile'">
-        <xsl:element                 name = "h2">
-          <xsl:attribute              name = "id">
-            <xsl:value-of            select = "parent::SummarySection/@id"/>
-            <xsl:text>_toc</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute              name = "class">
-            <xsl:text>section_heading</xsl:text>
-          </xsl:attribute>
-
-          <xsl:element                name = "span">
-            <xsl:apply-templates/>
-          </xsl:element>
-        </xsl:element>
-      </xsl:when>
+      
       <xsl:otherwise>
         <!--
      Testing the level of nested sections to determine the H-tag
@@ -1092,21 +1008,7 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "MediaLink">
-    <xsl:if                        test = "(contains(
-                                            concat(' ', @IncludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
+    
       <xsl:element                  name = "figure">
         <xsl:attribute               name = "id">
           <xsl:text>figure</xsl:text>
@@ -1166,19 +1068,12 @@
             <xsl:text>/images/cdr/live/CDR</xsl:text>
             <xsl:value-of            select = "number(
                                             substring-after(@ref, 'CDR'))"/>
-            <xsl:choose>
-              <xsl:when                 test = "$targetedDevice = 'mobile'">
-                <xsl:text>-571.jpg</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
                 <xsl:text>-750.jpg</xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
           </xsl:attribute>
         </xsl:element>
         <xsl:apply-templates/>
       </xsl:element>
-    </xsl:if>
+   
   </xsl:template>
 
   <!--
@@ -1203,28 +1098,14 @@
   <xsl:template                  match = "Table">
     <xsl:param                     name = "topSection"
                                  select = "'table'"/>
-    <xsl:if                        test = "(contains(
-                                            concat(' ', @IncludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
-                                            concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
+    
 
       <!-- Display the Table -->
       <xsl:apply-templates        select = "TGroup">
         <xsl:with-param              name = "topSection"
                                    select = "$topSection"/>
       </xsl:apply-templates>
-    </xsl:if>
+    
   </xsl:template>
 
   <!--
