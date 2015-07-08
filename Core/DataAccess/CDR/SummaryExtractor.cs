@@ -331,7 +331,7 @@ namespace GateKeeper.DataAccess.CDR
                      * SummarySection.RawID and legacy SummarySection.SectionID properties for details. */
                     summarySection.RawSectionID = sectionNav.GetAttribute(xPathManager.GetXPath(CommonXPath.CDRID), string.Empty).Trim();
                 }
-
+                                
                 summarySection.SummarySectionID = Guid.NewGuid();
                 summarySection.Text = sectionNav.Value;
                 summarySection.Xml.LoadXml(sectionNav.OuterXml);
@@ -355,6 +355,95 @@ namespace GateKeeper.DataAccess.CDR
                 summarySection.Level = DocumentHelper.GetLevel(sectionNav);
                 summarySection.Priority = priority;
                 priority++;
+
+                /*Add logic here for figuring out include and exclude devices for top level sections*/
+                /*include all the cases from the device table list*/
+                string includedDevices = sectionNav.GetAttribute("IncludedDevices", string.Empty).Trim();
+                string[] includedDevicesList = includedDevices.Split(' ');
+                string excludedDevices = sectionNav.GetAttribute("ExcludedDevices", string.Empty).Trim();
+                string[] excludedDevicesList = excludedDevices.Split(' ');
+
+                //all summary sections are visible on all devices
+                if (string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
+                {                    
+                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.all);
+
+                }
+
+                //check top level sections first
+                if (summarySection.IsTopLevel == true)
+                {
+                    if (!string.IsNullOrEmpty(includedDevices))
+                    {
+                        foreach (string device in includedDevicesList)
+                        {
+                            if (device.Equals(SummarySectionDeviceType.desktop))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);
+                            else if (device.Equals(SummarySectionDeviceType.mobile))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                            else if (device.Equals(SummarySectionDeviceType.syndication))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                        }
+                        
+                    }
+                    else if (string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                    {
+                        /*update code here to make sure you only add included devices*/
+                        List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                        allIncludedDevicesList.Add(SummarySectionDeviceType.desktop);
+                        allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                        allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                        //SummarySectionDeviceType.desktop + "," + SummarySectionDeviceType.mobile + "," + SummarySectionDeviceType.syndication;
+                        
+                        foreach (string device in excludedDevicesList)
+                        {
+                            if (device.Equals(SummarySectionDeviceType.desktop))
+                                allIncludedDevicesList.Remove(SummarySectionDeviceType.desktop);
+                            else if (device.Equals(SummarySectionDeviceType.mobile))
+                                allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                            else if (device.Equals(SummarySectionDeviceType.syndication))
+                                allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                
+                        }
+
+                        //put together the inlcuded device list for the summary section
+                        if (allIncludedDevicesList.Count > 0)
+                        {
+                            foreach (SummarySectionDeviceType device in allIncludedDevicesList) 
+                            {
+                                if (device.Equals(SummarySectionDeviceType.desktop))
+                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);  
+                                else if (device.Equals(SummarySectionDeviceType.mobile))
+                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                else if (device.Equals(SummarySectionDeviceType.syndication))  
+                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                    {
+                        //at this point the excluded devices are redundant
+                        foreach (string device in includedDevicesList)
+                        {
+                            if (device.Equals(SummarySectionDeviceType.desktop))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);
+                            else if (device.Equals(SummarySectionDeviceType.mobile))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                            else if (device.Equals(SummarySectionDeviceType.syndication))
+                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                        }
+                    }
+                }
+                else
+                { 
+                    //check nested includes, excludes
+                    //this applies to tables and images in subsections marked as included/excluded
+                }
+
             }
             catch (Exception e)
             {

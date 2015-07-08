@@ -1164,15 +1164,22 @@ namespace GKManagers.CMSDocumentProcessing
                     subsectionList = new ChildFieldSet("contained_sections");
                     contentItem.ChildFieldList.Add(subsectionList);
 
-                    FieldSet subsection = new FieldSet();
-                    subsection.Add("section_id", document.SectionList[i].RawSectionID);
-                    string html = document.SectionList[i].Html.OuterXml;
+                    //add row per section that has a device
+                    foreach (SummarySectionDeviceType device in document.SectionList[i].IncludedDeviceTypes)
+                    {
+                        FieldSet subsection = new FieldSet();
+                        subsection.Add("section_id", document.SectionList[i].RawSectionID);
+                        string html = document.SectionList[i].Html.OuterXml;
 
-                    subsection.Add("bodyfield", html);
+                        subsection.Add("bodyfield", html);
 
-                    subsection.Add("section_title", document.SectionList[i].Title);
+                        subsection.Add("section_title", document.SectionList[i].Title);
 
-                    subsectionList.Fields.Add(subsection);
+                        subsection.Add("ForDevice", device.ToString());
+
+                        subsectionList.Fields.Add(subsection);
+
+                    }
 
                 }
 
@@ -1196,16 +1203,22 @@ namespace GKManagers.CMSDocumentProcessing
                     subsectionList = new ChildFieldSet("contained_sections");
                     contentItem.ChildFieldList.Add(subsectionList);
 
-                    FieldSet subsection = new FieldSet();
-                    subsection.Add("section_id", document.SectionList[i].RawSectionID);
-                    string html = document.SectionList[i].Html.OuterXml;
+                    //add row per section that has a device
+                    foreach (SummarySectionDeviceType device in document.SectionList[i].IncludedDeviceTypes)
+                    {
+                        FieldSet subsection = new FieldSet();
+                        subsection.Add("section_id", document.SectionList[i].RawSectionID);
+                        string html = document.SectionList[i].Html.OuterXml;
 
-                    subsection.Add("bodyfield", html);
+                        subsection.Add("bodyfield", html);
 
-                    subsection.Add("section_title", document.SectionList[i].Title);
+                        subsection.Add("section_title", document.SectionList[i].Title);
 
-                    subsectionList.Fields.Add(subsection);
+                        subsection.Add("ForDevice", device.ToString());
 
+                        subsectionList.Fields.Add(subsection);
+
+                    }
                 }
 
             }

@@ -103,6 +103,7 @@
     <Compile Include="DocumentHelper.cs" />
     <Compile Include="Summary\PermanentLink.cs" />
     <Compile Include="Summary\SummaryReference.cs" />
+    <Compile Include="Summary\SummarySectionDeviceType.cs" />
     <Compile Include="Terminology\TerminologyMenu.cs" />
     <Compile Include="Protocol\ProtocolModality.cs" />
     <Compile Include="Organization\OrganizationDocument.cs" />
