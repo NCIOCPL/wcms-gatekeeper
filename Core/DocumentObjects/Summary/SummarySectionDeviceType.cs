@@ -14,7 +14,7 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <summary>
         /// Summary section visible on Desktop only
         /// </summary>
-        desktop,
+        screen,
 
         /// <summary>
         /// Summary section visible on Mobile only
@@ -29,6 +29,11 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <summary>
         /// Summary section visible on All devices
         /// </summary>
-        all
+        all,
+
+        /// <summary>
+        /// Summary section hidden on All devices
+        /// </summary>
+        none
     }
 }
