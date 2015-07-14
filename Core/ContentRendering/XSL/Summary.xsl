@@ -1,6 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output                   method = "xml"/>
   <xsl:param                      name = "section"/>
+  <!-- Default value is screen -->
   <xsl:param                      name = "targetedDevice"
                                select = "'screen'"/>
   <xsl:param                      name = "pp"
@@ -126,10 +127,7 @@
             <xsl:apply-templates         select = "SummaryMetaData"/>
             <xsl:apply-templates         select = "SummaryTitle"/>
 
-            <!--
-   There are no TOC or KeyPoint boxes on mobile
-   =================================================================== -->
-           
+            
               <!-- create container to insert full document TOC -->
               <xsl:element                  name = "div">
                 <xsl:attribute               name = "id">
@@ -140,7 +138,6 @@
                   <xsl:text>pdq-on-this-page</xsl:text>
                 </xsl:attribute>
               </xsl:element>
-          
 
             <!--
    We have to loop over each top section in order to set the numbering
@@ -152,7 +149,6 @@
                 <xsl:text>section_</xsl:text>
                 <xsl:number/>
               </xsl:variable>
-
                 <xsl:element                 name = "section">
                   <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
@@ -162,14 +158,13 @@
                     <xsl:text>pdq-sections</xsl:text>
                   </xsl:attribute>
 
-      
+                
                       <xsl:call-template        name = "Title_TOC_KP">
                         <xsl:with-param          name = "topSection"
                                                select = "$topSection"/>
                       </xsl:call-template>
-                   
-                </xsl:element>
-
+                    
+                </xsl:element> 
             </xsl:for-each>
           </article>
         </div>
@@ -188,7 +183,9 @@
         printed above the keypoints box or the TOC -->
     <xsl:apply-templates         select = "Title"/>
 
-    
+    <!--
+   TOC or KeyPoint boxes
+   =================================================================== -->
     <xsl:if                        test = "../descendant::KeyPoint">
       <xsl:call-template            name = "keypointsbox"/>
     </xsl:if>
@@ -363,7 +360,22 @@
   <xsl:template                  match = "SummarySection">
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
-   
+    <xsl:choose>
+      <xsl:when                     test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
         <xsl:element                 name = "section">
           <xsl:attribute              name = "id">
             <xsl:value-of            select = "@id"/>
@@ -373,7 +385,8 @@
                                       select = "$topSection"/>
           </xsl:apply-templates>
         </xsl:element>
-      
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
   <!--
@@ -1008,74 +1021,189 @@
   <!--
   ================================================================ -->
   <xsl:template                  match = "MediaLink">
-    
-      <xsl:element                  name = "figure">
-        <xsl:attribute               name = "id">
-          <xsl:text>figure</xsl:text>
-          <xsl:value-of             select = "@id"/>
-        </xsl:attribute>
-        <!-- Add expandable-container as a hook for the JavaScript enlarge/collapse
-          generation -->
-        <xsl:attribute               name = "class">
-          <xsl:text>image-center</xsl:text>
-        </xsl:attribute>
-
-        <!-- Enlarge Link -->
-        <xsl:element name="a">
-          <xsl:attribute name="href">
-            <!-- Using 750px image for the enlarged version -->
-            <xsl:text>/images/cdr/live/CDR</xsl:text>
-            <xsl:value-of            select = "number(
-                                            substring-after(@ref, 'CDR'))"/>
-            <xsl:text>.jpg</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="target">
-            <xsl:text>_blank</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="class">
-            <xsl:text>article-image-enlarge</xsl:text>
-          </xsl:attribute>
+    <xsl:choose>
+      <!--When both included and excluded devices are not set
+      draw the figure element as is-->
+      <xsl:when                  test="not(@IncludedDevices) and not(@ExcludedDevices)
+                                 and ($targetedDevice = 'screen' or $targetedDevice = 'syndication')">
+        <xsl:call-template        name = "mediaLinks">
+          <!-- device list is empty-->
+          <xsl:with-param name="deviceList" select = "''" />
+        </xsl:call-template>        
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when                  test = "$targetedDevice = 'screen'">
           <xsl:choose>
-            <xsl:when                  test = "$language = 'es'">
-              <xsl:text>Ampliar</xsl:text>
+            <!--When only included devices are set-->
+            <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+              <xsl:choose>
+                <!--When included devices = screen-->
+                <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) ">
+                  <xsl:call-template        name = "mediaLinks">
+                    <xsl:with-param name="deviceList" select = "'mobile'" />
+                  </xsl:call-template>
+
+
+                </xsl:when>
+                <!--When included devices = mobile-->
+                <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            ) ">
+
+                  <xsl:call-template        name = "mediaLinks">
+                    <xsl:with-param name="deviceList" select = "'screen'" />
+                  </xsl:call-template>
+
+                </xsl:when>
+                <!--When included devices = screen and mobile-->
+                <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) and 
+                                            contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            )">
+                  <xsl:call-template        name = "mediaLinks">
+                    <xsl:with-param name="deviceList" select = "''" />
+                  </xsl:call-template>
+                </xsl:when>
+              </xsl:choose>
+            </xsl:when>
+            <!--When only excluded devices are set-->
+            <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+              <xsl:call-template        name = "mediaLinks">
+                <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+              </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>Enlarge</xsl:text>
+              <!--When both included and excluded devices are set-->
+              <xsl:call-template        name = "mediaLinks">
+                <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+              </xsl:call-template>
             </xsl:otherwise>
           </xsl:choose>
-
-
-        </xsl:element>
-
-        <!--
-     Display the Image
-     ============================= -->
-        <xsl:element                 name = "img">
-          <xsl:attribute              name = "id">
-            <xsl:value-of            select = "@id"/>
-          </xsl:attribute>
-          <xsl:attribute              name = "alt">
-            <xsl:value-of            select = "@alt"/>
-          </xsl:attribute>
-          <xsl:attribute              name = "title">
-            <xsl:value-of            select = "@alt"/>
-          </xsl:attribute>
-          <xsl:attribute              name = "src">
-            <!--
-       Next Line For Testing on DEV only !!! 
-       ===================================== -->
-            <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
-            <xsl:text>/images/cdr/live/CDR</xsl:text>
-            <xsl:value-of            select = "number(
-                                            substring-after(@ref, 'CDR'))"/>
-                <xsl:text>-750.jpg</xsl:text>
-          </xsl:attribute>
-        </xsl:element>
-        <xsl:apply-templates/>
-      </xsl:element>
-   
+        </xsl:when>
+          <xsl:when                  test = "$targetedDevice = 'syndication'">
+          <xsl:choose>
+            <!--When only included devices are set-->
+            <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+              <!--When included devices = syndication-->
+              <xsl:if                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) ">
+                <xsl:call-template        name = "mediaLinks">
+                  <xsl:with-param name="deviceList" select = "''" />
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:when>
+            <!--When only excluded devices are set-->
+            <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+              <xsl:if                  test="contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) ">
+               <!--Don't draw the figure element as it is excluded from syndication-->
+              </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
+              <!--When both included and excluded devices are set-->
+              <!--When included devices = syndication-->
+              <xsl:if                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) ">
+                <xsl:call-template        name = "mediaLinks">
+                  <xsl:with-param name="deviceList" select = "''" />
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
+  <xsl:template                   name = "mediaLinks">
+    <xsl:param                    name = "deviceList" />
+    <xsl:element                  name = "figure">
+      <xsl:attribute               name = "id">
+        <xsl:text>figure</xsl:text>
+        <xsl:value-of             select = "@id"/>
+      </xsl:attribute>
+      <!-- Add expandable-container as a hook for the JavaScript enlarge/collapse
+          generation -->
+      <xsl:attribute               name = "class">
+        <xsl:text>image-center</xsl:text>
+      </xsl:attribute>
+      <xsl:if                     test="$deviceList != ''">
+        <xsl:attribute               name = "data-display-excludedevice">
+          <xsl:text>$deviceList</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      <!-- Enlarge Link -->
+      <xsl:element name="a">
+        <xsl:attribute name="href">
+          <!-- Using 750px image for the enlarged version -->
+          <xsl:text>/images/cdr/live/CDR</xsl:text>
+          <xsl:value-of            select = "number(
+                                            substring-after(@ref, 'CDR'))"/>
+          <xsl:text>.jpg</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="target">
+          <xsl:text>_blank</xsl:text>
+        </xsl:attribute>
+        <xsl:attribute name="class">
+          <xsl:text>article-image-enlarge</xsl:text>
+        </xsl:attribute>
+        <xsl:choose>
+          <xsl:when                  test = "$language = 'es'">
+            <xsl:text>Ampliar</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>Enlarge</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+
+
+      </xsl:element>
+
+      <!--
+     Display the Image
+     ============================= -->
+      <xsl:element                 name = "img">
+        <xsl:attribute              name = "id">
+          <xsl:value-of            select = "@id"/>
+        </xsl:attribute>
+        <xsl:attribute              name = "alt">
+          <xsl:value-of            select = "@alt"/>
+        </xsl:attribute>
+        <xsl:attribute              name = "title">
+          <xsl:value-of            select = "@alt"/>
+        </xsl:attribute>
+        <xsl:attribute              name = "src">
+          <!--
+       Next Line For Testing on DEV only !!! 
+       ===================================== -->
+          <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
+          <xsl:text>/images/cdr/live/CDR</xsl:text>
+          <xsl:value-of            select = "number(
+                                            substring-after(@ref, 'CDR'))"/>
+
+          <xsl:text>-750.jpg</xsl:text>
+
+        </xsl:attribute>
+      </xsl:element>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
   <!--
   ================================================================ -->
   <!--JIRA Ticket 2832 - make sure figcaption tag is not rendered when no caption exists-->
@@ -1098,14 +1226,28 @@
   <xsl:template                  match = "Table">
     <xsl:param                     name = "topSection"
                                  select = "'table'"/>
-    
+    <xsl:if                        test = "(contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) 
+                                           or 
+                                           not(@IncludedDevices)
+                                          ) 
+                                          and 
+                                          (not(contains(
+                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            )) 
+                                           or 
+                                           not(@ExcludedDevices)
+                                          )">
 
       <!-- Display the Table -->
       <xsl:apply-templates        select = "TGroup">
         <xsl:with-param              name = "topSection"
                                    select = "$topSection"/>
       </xsl:apply-templates>
-    
+    </xsl:if>
   </xsl:template>
 
   <!--
