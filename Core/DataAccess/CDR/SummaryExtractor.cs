@@ -21,7 +21,17 @@ namespace GateKeeper.DataAccess.CDR
     public class SummaryExtractor : DocumentExtractor
     {
         #region fields
+
         private int _documentID = 0;
+
+        //handle include exclude devices
+        private List<SummarySectionDeviceType> subSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> subSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> tableSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> tableSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> mediaLinkDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> mediaLinkDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+                  
         #endregion
 
         #region Private Methods
@@ -48,26 +58,7 @@ namespace GateKeeper.DataAccess.CDR
                 }
                 summary.BasePrettyURL = basePrettyURL;
                 summary.ValidOutputDevices.Add(TargetedDevice.screen);  // Always valid for web.
-
-                // Mobile URL.  (Optional element)
-                path = xPathManager.GetXPath(SummaryXPath.MobileURL);
-                XPathNavigator mobileUrlNav = xNav.SelectSingleNode(path);
-                if (mobileUrlNav != null)
-                {
-                    string baseMobileURL = mobileUrlNav.GetAttribute(xPathManager.GetXPath(SummaryXPath.BaseMobileURL), string.Empty).Trim();
-                    if (string.IsNullOrEmpty(baseMobileURL))
-                    {
-                        throw new Exception("Extraction Error: MobileURL node is present, but contains no value.");
-                    }
-
-                    if (baseMobileURL.EndsWith("/"))
-                    {
-                        baseMobileURL = baseMobileURL.Substring(0, baseMobileURL.Length - 1);
-                    }
-                    summary.BaseMobileURL = baseMobileURL;
-                    summary.ValidOutputDevices.Add(TargetedDevice.mobile);
-                }
-
+                              
                 path = xPathManager.GetXPath(SummaryXPath.Title);
                 summary.Title = DocumentHelper.GetXmlDocumentValue(xNav, path);
                              
@@ -355,95 +346,7 @@ namespace GateKeeper.DataAccess.CDR
                 summarySection.Level = DocumentHelper.GetLevel(sectionNav);
                 summarySection.Priority = priority;
                 priority++;
-
-                /*Add logic here for figuring out include and exclude devices for top level sections*/
-                /*include all the cases from the device table list*/
-                string includedDevices = sectionNav.GetAttribute("IncludedDevices", string.Empty).Trim();
-                string[] includedDevicesList = includedDevices.Split(' ');
-                string excludedDevices = sectionNav.GetAttribute("ExcludedDevices", string.Empty).Trim();
-                string[] excludedDevicesList = excludedDevices.Split(' ');
-
-                //all summary sections are visible on all devices
-                if (string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
-                {                    
-                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.all);
-
-                }
-
-                //check top level sections first
-                if (summarySection.IsTopLevel == true)
-                {
-                    if (!string.IsNullOrEmpty(includedDevices))
-                    {
-                        foreach (string device in includedDevicesList)
-                        {
-                            if (device.Equals(SummarySectionDeviceType.desktop))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);
-                            else if (device.Equals(SummarySectionDeviceType.mobile))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
-                            else if (device.Equals(SummarySectionDeviceType.syndication))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-
-                        }
-                        
-                    }
-                    else if (string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
-                    {
-                        /*update code here to make sure you only add included devices*/
-                        List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
-                        allIncludedDevicesList.Add(SummarySectionDeviceType.desktop);
-                        allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
-                        allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
-
-                        //SummarySectionDeviceType.desktop + "," + SummarySectionDeviceType.mobile + "," + SummarySectionDeviceType.syndication;
-                        
-                        foreach (string device in excludedDevicesList)
-                        {
-                            if (device.Equals(SummarySectionDeviceType.desktop))
-                                allIncludedDevicesList.Remove(SummarySectionDeviceType.desktop);
-                            else if (device.Equals(SummarySectionDeviceType.mobile))
-                                allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
-                            else if (device.Equals(SummarySectionDeviceType.syndication))
-                                allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
-                                
-                        }
-
-                        //put together the inlcuded device list for the summary section
-                        if (allIncludedDevicesList.Count > 0)
-                        {
-                            foreach (SummarySectionDeviceType device in allIncludedDevicesList) 
-                            {
-                                if (device.Equals(SummarySectionDeviceType.desktop))
-                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);  
-                                else if (device.Equals(SummarySectionDeviceType.mobile))
-                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
-                                else if (device.Equals(SummarySectionDeviceType.syndication))  
-                                    summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-
-                            }
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
-                    {
-                        //at this point the excluded devices are redundant
-                        foreach (string device in includedDevicesList)
-                        {
-                            if (device.Equals(SummarySectionDeviceType.desktop))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.desktop);
-                            else if (device.Equals(SummarySectionDeviceType.mobile))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
-                            else if (device.Equals(SummarySectionDeviceType.syndication))
-                                summarySection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-
-                        }
-                    }
-                }
-                else
-                { 
-                    //check nested includes, excludes
-                    //this applies to tables and images in subsections marked as included/excluded
-                }
-
+                              
             }
             catch (Exception e)
             {
@@ -497,7 +400,97 @@ namespace GateKeeper.DataAccess.CDR
                     if (topLevelSection.Level == 1)
                         topSectionPriority = topLevelSection.Priority;
 
-                   
+                    //check top level sections first for include/exclude devices
+                    string includedDevices = sectionIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                    string excludedDevices = sectionIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                    if (topLevelSection.IsTopLevel == true)
+                    {                        
+                        //all summary sections are visible on all devices
+                        if (string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
+                        {
+                            topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.all);
+
+                        }
+
+                        //only included devices are set
+                        if (!string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                            }
+
+                        }
+                        //only excluded devices are set
+                        else if (string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] excludedDevicesList = excludedDevices.Split(' ');
+                            List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.screen);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                            foreach (string deviceToExclude in excludedDevicesList)
+                            {
+                                if (deviceToExclude.Equals(SummarySectionDeviceType.screen))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.screen);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.mobile))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.syndication))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                }
+                            }
+
+                            //put together the included device list for the summary section
+                            if (allIncludedDevicesList.Count > 0)
+                            {
+                                foreach (SummarySectionDeviceType deviceToInlcude in allIncludedDevicesList)
+                                {
+                                    if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                                }
+                            }
+                        }
+                        //both included and excluded devices are set    
+                        else if (!string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+
+                            //at this point the excluded devices are redundant
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                    }
+                                         
                     // Handle sub-sections
                     path = xPathManager.GetXPath(SummaryXPath.SubSection, device);
 
@@ -533,8 +526,261 @@ namespace GateKeeper.DataAccess.CDR
                         {
                             summary.SectionList.Add(subSection);
                         }
+
+                        //check sub-section level sections first for include/exclude devices
+                        string subSectionIncludedDevices = subSectionIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string subSectionExcludedDevices = subSectionIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        //if nothing is set for top level sections we still need to figure out the sub-sections and tables and images
+
+                         if (!string.IsNullOrEmpty(subSectionIncludedDevices) && string.IsNullOrEmpty(subSectionExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                        //only excluded devices are set
+                        else if (string.IsNullOrEmpty(subSectionIncludedDevices) && !string.IsNullOrEmpty(subSectionExcludedDevices))
+                        {
+                            string[] excludedDevicesList = excludedDevices.Split(' ');
+                            List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.screen);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                            foreach (string deviceToExclude in excludedDevicesList)
+                            {
+                                if (deviceToExclude.Equals(SummarySectionDeviceType.screen))
+                                {
+                                    subSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.screen);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.screen);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.mobile))
+                                {
+                                    subSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.mobile);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.syndication))
+                                {
+                                    subSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.syndication);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                }
+                            }
+
+                            //put together the included device list for the summary section
+                            if (allIncludedDevicesList.Count > 0)
+                            {
+                                foreach (SummarySectionDeviceType deviceToInlcude in allIncludedDevicesList)
+                                {
+                                    if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                        subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                        subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                        subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                                }
+                            }
+                        }
+                        //both included and excluded devices are set    
+                        else if (!string.IsNullOrEmpty(subSectionIncludedDevices) && !string.IsNullOrEmpty(subSectionExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+
+                            //at this point the excluded devices are redundant
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+
                     }
-                                        
+
+                    //put tgether a method that returns included excluded devices for a particular element.
+                    //go over tables
+                    string tablePath = xPathManager.GetXPath(SummaryXPath.SectTable, device);
+                    XPathNodeIterator tableIter = sectionIter.Current.Select(path);
+                    while (tableIter.MoveNext())
+                    {                       
+                        //check table sections for include/exclude devices
+                        string tableSectionIncludedDevices = tableIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string tableSectionExcludedDevices = tableIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        if (!string.IsNullOrEmpty(tableSectionIncludedDevices) && string.IsNullOrEmpty(tableSectionExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                        //only excluded devices are set
+                        else if (string.IsNullOrEmpty(tableSectionIncludedDevices) && !string.IsNullOrEmpty(tableSectionExcludedDevices))
+                        {
+                            string[] excludedDevicesList = excludedDevices.Split(' ');
+                            List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.screen);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                            foreach (string deviceToExclude in excludedDevicesList)
+                            {
+                                if (deviceToExclude.Equals(SummarySectionDeviceType.screen))
+                                {
+                                    tableSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.screen);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.screen);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.mobile))
+                                {
+                                    tableSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.mobile);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.syndication))
+                                {
+                                    tableSectionDevicesToBeExcluded.Add(SummarySectionDeviceType.syndication);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                }
+                            }
+
+                            //put together the included device list for the summary section
+                            if (allIncludedDevicesList.Count > 0)
+                            {
+                                foreach (SummarySectionDeviceType deviceToInlcude in allIncludedDevicesList)
+                                {
+                                    if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                        tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                        tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                        tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                                }
+                            }
+                        }
+                        //both included and excluded devices are set    
+                        else if (!string.IsNullOrEmpty(tableSectionIncludedDevices) && !string.IsNullOrEmpty(tableSectionExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+
+                            //at this point the excluded devices are redundant
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+
+                    }
+
+                    string mediaLinkPath = xPathManager.GetXPath(SummaryXPath.MediaLink, device);
+                    XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
+                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(mediaLinkPath);
+                    while (mediaLinkIter.MoveNext())
+                    {
+                        //check table sections for include/exclude devices
+                        string mediaLinkIncludedDevices = mediaLinkIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string mediaLinkExcludedDevices = mediaLinkIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        if (!string.IsNullOrEmpty(mediaLinkIncludedDevices) && string.IsNullOrEmpty(mediaLinkExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                        //only excluded devices are set
+                        else if (string.IsNullOrEmpty(mediaLinkIncludedDevices) && !string.IsNullOrEmpty(mediaLinkExcludedDevices))
+                        {
+                            string[] excludedDevicesList = excludedDevices.Split(' ');
+                            List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.screen);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                            foreach (string deviceToExclude in excludedDevicesList)
+                            {
+                                if (deviceToExclude.Equals(SummarySectionDeviceType.screen))
+                                {
+                                    mediaLinkDevicesToBeExcluded.Add(SummarySectionDeviceType.screen);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.screen);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.mobile))
+                                {
+                                    mediaLinkDevicesToBeExcluded.Add(SummarySectionDeviceType.mobile);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.syndication))
+                                {
+                                    mediaLinkDevicesToBeExcluded.Add(SummarySectionDeviceType.syndication);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                }
+                            }
+
+                            //put together the included device list for the summary section
+                            if (allIncludedDevicesList.Count > 0)
+                            {
+                                foreach (SummarySectionDeviceType deviceToInlcude in allIncludedDevicesList)
+                                {
+                                    if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                        mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                        mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                        mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                                }
+                            }
+                        }
+                        //both included and excluded devices are set    
+                        else if (!string.IsNullOrEmpty(mediaLinkIncludedDevices) && !string.IsNullOrEmpty(mediaLinkExcludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+
+                            //at this point the excluded devices are redundant
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                    mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -543,6 +789,87 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
+        //Go through all the section and set up 
+        //include/exclude devices at the top-section level
+        //such that a row will be created per top-section in the child table in Percussion
+        private void SetUpIncludeExcludeDevices(SummaryDocument summary) 
+        {
+            foreach (SummarySection section in summary.SectionList)
+            {
+                if (section.IsTopLevel) 
+                {
+                    //check sub-sections
+                    if (subSectionDevicesToBeIncluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in subSectionDevicesToBeIncluded)
+                        {
+                            if (!section.IncludedDeviceTypes.Contains(device)) 
+                            {
+                                section.IncludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+
+                    if (subSectionDevicesToBeExcluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in subSectionDevicesToBeExcluded)
+                        {
+                            if (!section.ExcludedDeviceTypes.Contains(device))
+                            {
+                                section.ExcludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+
+                    //check table sections
+                    if (tableSectionDevicesToBeIncluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in tableSectionDevicesToBeIncluded)
+                        {
+                            if (!section.IncludedDeviceTypes.Contains(device))
+                            {
+                                section.IncludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+
+                    if (tableSectionDevicesToBeExcluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in tableSectionDevicesToBeExcluded)
+                        {
+                            if (!section.ExcludedDeviceTypes.Contains(device))
+                            {
+                                section.ExcludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+
+                    //check Media links
+                    if (mediaLinkDevicesToBeIncluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in mediaLinkDevicesToBeIncluded)
+                        {
+                            if (!section.IncludedDeviceTypes.Contains(device))
+                            {
+                                section.IncludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+
+                    if (mediaLinkDevicesToBeExcluded.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in mediaLinkDevicesToBeExcluded)
+                        {
+                            if (!section.ExcludedDeviceTypes.Contains(device))
+                            {
+                                section.ExcludedDeviceTypes.Add(device);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+                
         #endregion Extraction
 
         #region Permanent Link Verification
@@ -923,6 +1250,8 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Extract misc metadata and PermanentLinks...
                 ExtractMetadata(xNav, summary, xPathManager);
+                if (xmlDoc.OuterXml.Contains(SummarySectionDeviceType.syndication.ToString()))
+                    summary.ValidOutputDevices.Add(TargetedDevice.syndication);
 
                 // Handle summary relations...
                 ExtractRelations(xNav, summary, xPathManager);
@@ -932,6 +1261,9 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Handle sections...
                 ExtractTopLevelSections(xNav, summary, xPathManager, targetedDevice);
+
+                //Handle include/exclude devices
+                SetUpIncludeExcludeDevices(summary);
 
                 // Handle modified and published dates
                 DocumentHelper.ExtractDates(xNav, summary, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
