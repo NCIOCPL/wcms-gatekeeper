@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMSManager\PSFolder.cs" />
+    <Compile Include="DocumentObjects\GlossaryTerm\GlossaryTermMetadataExtract.cs" />
     <Compile Include="Extract\GlossaryExtract.cs" />
     <Compile Include="Extract\SummaryConditionalExtract.cs" />
     <Compile Include="Extract\PermanentLink.cs" />

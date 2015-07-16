@@ -1,22 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Xml.XPath;
 
 using GateKeeper.Common;
-using GateKeeper.Common.XPathKeys;
-using GateKeeper.DocumentObjects;
-using GateKeeper.DocumentObjects.GlossaryTerm;
-using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DataAccess.GateKeeper;
-using GateKeeper.DataAccess.CancerGov;
-using GateKeeper.DocumentObjects.DrugInfoSummary;
-using GateKeeper.DocumentObjects.Summary;
+using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.Dictionary;
+using GateKeeper.DocumentObjects.GlossaryTerm;
 
 namespace GateKeeper.DataAccess.CDR
 {
@@ -70,6 +62,10 @@ namespace GateKeeper.DataAccess.CDR
                 {
                     extractData = (GlossaryTermMetadata)serializer.Deserialize(reader);
                 }
+
+                GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
+                glossaryTermDocument.Dictionary.AddRange(dictionary);
+
                 //XPathNavigator xNav = xmlDoc.CreateNavigator();
 
                 //// Extract the CDR ID...
@@ -102,5 +98,28 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
+        /// <summary>
+        /// Creates a collection of DictionaryEntry objects from the information contained in GlossaryTermMetadata object.
+        /// </summary>
+        /// <param name="metadata">A GlossaryTermMetadata created from a GlossaryTerm XML document.</param>
+        /// <returns></returns>
+        private GeneralDictionaryEntry[] GetDictionary(GlossaryTermMetadata metadata)
+        {
+            List<GeneralDictionaryEntry> dictionary = new List<GeneralDictionaryEntry>();
+
+            foreach (GlossaryTermDefinition item in metadata.DefinitionList)
+            {
+                GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
+                //entry.TermID = metadata.ID;
+                entry.TermName = metadata.GetTermName(item.Language);
+                entry.DictionaryName = item.Dictionary;
+                entry.Language = item.Language;
+                entry.Audience = item.Audience;
+                
+                dictionary.Add(entry);
+            }
+
+            return dictionary.ToArray();
+        }
     }
 }

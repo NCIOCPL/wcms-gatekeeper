@@ -92,7 +92,7 @@ namespace GateKeeper.UnitTest.Extract
         /// <param name="filename"></param>
         [TestCase("Term-SingleDefinition-English.xml")]
         [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
-        public void FailToLoadSpanishPatientTerm(string filename)
+        public void FailToLoadSpanishPatientDefinition(string filename)
         {
             XmlDocument xml = new XmlDocument();
             xml.Load(@"./XMLData/GlossaryTerm/" + filename);

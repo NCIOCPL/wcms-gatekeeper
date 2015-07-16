@@ -80,6 +80,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// structure we want to work with for the dictionaries. Implementing custom deserialization
         /// via IXmlSerializable allows us to take the individual elements we're interested in and store the
         /// results in memory in a structure more suited to the front end's uses.
+        /// 
+        /// This doesn't deserialize straight to a collection of DictionaryEntry objects, but it does get
+        /// to the point where it's relatively straightforward to use the data to create them.
         /// </remarks>
         public void ReadXml(System.Xml.XmlReader reader)
         {
@@ -91,37 +94,41 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             }
 
 
+            // Find the top-level nodes want to keep, ignore everything else.
             while (reader.Read())
             {
-                if (reader.Name == NAME_ELEMENT)
+                switch (reader.Name)
                 {
-                    EnglishTermName = reader.ReadString();
-                }
-                else if (reader.Name == SPANISH_NAME_ELEMENT)
-                {
-                    SpanishTermName = reader.ReadString();
-                }
-                else if (reader.Name == ENGLISH_DEFINITION_ELEMENT)
-                {
-                    // Use a nested serializer to extract English definitions instead of
-                    // having to work directly with an XmlReader and advancing through the various
-                    // components.
-                    XmlSerializer engSerializer = new XmlSerializer(typeof(EnglishTermDefinition));
-                    XmlReader subTree = reader.ReadSubtree();
-                    GlossaryTermDefinition def = (GlossaryTermDefinition)engSerializer.Deserialize(subTree);
-                    if (def != null)
-                        definitionMetadata.Add(def);
-                }
-                else if (reader.Name == SPANISH_DEFINITION_ELEMENT)
-                {
-                    // Use a nested serializer to extract Spanish definitions instead of
-                    // having to work directly with an XmlReader and advancing through the various
-                    // components.
-                    XmlSerializer spanSerializer = new XmlSerializer(typeof(SpanishTermDefinition));
-                    XmlReader subTree = reader.ReadSubtree();
-                    GlossaryTermDefinition def = (GlossaryTermDefinition)spanSerializer.Deserialize(subTree);
-                    if (def != null)
-                        definitionMetadata.Add(def);
+                    // The term name in English
+                    case NAME_ELEMENT:
+                        EnglishTermName = reader.ReadString();
+                        break;
+
+                    // The term name in Spanish
+                    case SPANISH_NAME_ELEMENT:
+                        SpanishTermName = reader.ReadString();
+                        break;
+
+                    // The English collection of terms.  All definitions go into one collection.
+                    case ENGLISH_DEFINITION_ELEMENT:
+                        {
+                            GlossaryTermDefinition def = ReadTermDefinition(reader, typeof(EnglishTermDefinition));
+                            if (def != null)
+                                definitionMetadata.Add(def);
+                        }
+                        break;
+
+                    case SPANISH_DEFINITION_ELEMENT:
+                        {
+                            GlossaryTermDefinition def = ReadTermDefinition(reader, typeof(SpanishTermDefinition));
+                            if (def != null)
+                                definitionMetadata.Add(def);
+                        }
+                        break;
+
+                    // Ignore any other elements.
+                    default:
+                        break;
                 }
             }
         }
@@ -139,5 +146,30 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
 
         #endregion
 
+        private GlossaryTermDefinition ReadTermDefinition(XmlReader reader, Type termSubType)
+        {
+            // Use a new serializer to extract definitions instead of fiddling around with an
+            // XmlReader and figuring out how to advance through the various components.
+            XmlSerializer engSerializer = new XmlSerializer(termSubType);
+            XmlReader subTree = reader.ReadSubtree();
+            GlossaryTermDefinition def = (GlossaryTermDefinition)engSerializer.Deserialize(subTree);
+
+            return def;
+        }
+
+
+        public String GetTermName(Language language)
+        {
+            String name;
+
+            if (language == Language.English)
+                name = EnglishTermName;
+            else if (language == Language.Spanish)
+                name = SpanishTermName;
+            else
+                throw new UnexpectedExtractedValueException(String.Format("Expected language to be 'English' or 'SpanishTerm' but found '{0}'.", language));
+
+            return name;
+        }
     }
 }
