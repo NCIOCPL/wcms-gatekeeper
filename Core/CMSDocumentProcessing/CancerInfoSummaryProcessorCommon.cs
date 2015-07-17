@@ -1175,7 +1175,7 @@ namespace GKManagers.CMSDocumentProcessing
 
                         subsection.Add("section_title", document.SectionList[i].Title);
 
-                        subsection.Add("ForDevice", device.ToString());
+                        subsection.Add("display_device", device.ToString());
 
                         subsectionList.Fields.Add(subsection);
 
@@ -1203,8 +1203,26 @@ namespace GKManagers.CMSDocumentProcessing
                     subsectionList = new ChildFieldSet("contained_sections");
                     contentItem.ChildFieldList.Add(subsectionList);
 
-                    //add row per section that has a device
-                    foreach (SummarySectionDeviceType device in document.SectionList[i].IncludedDeviceTypes)
+                    //add one row per top level section that has a device
+                    if (document.SectionList[i].IncludedDeviceTypes.Count > 0)
+                    {
+                        foreach (SummarySectionDeviceType device in document.SectionList[i].IncludedDeviceTypes)
+                        {
+                            FieldSet subsection = new FieldSet();
+                            subsection.Add("section_id", document.SectionList[i].RawSectionID);
+                            string html = document.SectionList[i].Html.OuterXml;
+
+                            subsection.Add("bodyfield", html);
+
+                            subsection.Add("section_title", document.SectionList[i].Title);
+
+                            subsection.Add("display_device", device.ToString());
+
+                            subsectionList.Fields.Add(subsection);
+
+                        }
+                    }
+                    else
                     {
                         FieldSet subsection = new FieldSet();
                         subsection.Add("section_id", document.SectionList[i].RawSectionID);
@@ -1214,10 +1232,10 @@ namespace GKManagers.CMSDocumentProcessing
 
                         subsection.Add("section_title", document.SectionList[i].Title);
 
-                        subsection.Add("ForDevice", device.ToString());
+                        //top-level section visible on all devices
+                        subsection.Add("display_device", SummarySectionDeviceType.all.ToString());
 
                         subsectionList.Fields.Add(subsection);
-
                     }
                 }
 
@@ -1264,9 +1282,7 @@ namespace GKManagers.CMSDocumentProcessing
             fields.Add("summary_type", summary.Type);
 
             // Guaranteed by CDR to be (exact text) either "Patients" or "Health professionals".
-            fields.Add("audience", summary.AudienceType);
-
-            //fields.Add("table_of_contents", TOC);
+            fields.Add("audience", summary.AudienceType);          
 
             fields.Add("sys_title", EscapeSystemTitle(summary.Title));
 

@@ -789,9 +789,9 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
-        //Go through all the section and set up 
+        //Go through all the sections and set up 
         //include/exclude devices at the top-section level
-        //such that a row will be created per top-section in the child table in Percussion
+        //such that a row will be created per top-section per device in the child table in Percussion
         private void SetUpIncludeExcludeDevices(SummaryDocument summary) 
         {
             foreach (SummarySection section in summary.SectionList)

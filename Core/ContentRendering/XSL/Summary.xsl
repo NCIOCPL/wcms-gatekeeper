@@ -149,7 +149,8 @@
                 <xsl:text>section_</xsl:text>
                 <xsl:number/>
               </xsl:variable>
-                <xsl:element                 name = "section">
+                <xsl:element                 name = "div">
+                <!--OCE Project 3368 - Change <section class="pdq-sections"> to <div class="pdq-sections">  -->
                   <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
                     <xsl:value-of            select = "./@id"/>
@@ -360,35 +361,166 @@
   <xsl:template                  match = "SummarySection">
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
+
     <xsl:choose>
-      <xsl:when                     test = "(contains(
+      <xsl:when                   test  = "$topSection = 'sub'">
+        <!-- set up devices for sub-sections-->
+        <xsl:choose>
+          <!--When both included and excluded devices are not set
+      draw the sub summary section as is-->
+          <xsl:when                  test="not(@IncludedDevices) and not(@ExcludedDevices)
+                                 and ($targetedDevice = 'screen' or $targetedDevice = 'syndication')">
+            <xsl:call-template        name = "SummarySections">
+              <xsl:with-param             name = "topSection"
+                                        select = "$topSection"/>
+              <!-- device list is empty-->
+              <xsl:with-param name="deviceList" select = "''" />
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when                  test = "$targetedDevice = 'screen'">
+                <xsl:choose>
+                  <!--When only included devices are set-->
+                  <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+                    <xsl:choose>
+                      <!--When included devices = screen-->
+                      <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) ">
+                        <xsl:call-template        name = "SummarySections">
+                          <xsl:with-param             name = "topSection"
+                                                    select = "$topSection"/>
+                          <xsl:with-param name="deviceList" select = "'mobile'" />
+                        </xsl:call-template>
+
+
+                      </xsl:when>
+                      <!--When included devices = mobile-->
+                      <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            ) ">
+
+                        <xsl:call-template        name = "SummarySections">
+                          <xsl:with-param             name = "topSection"
+                                                    select = "$topSection"/>
+                          <xsl:with-param name="deviceList" select = "'screen'" />
+                        </xsl:call-template>
+
+                      </xsl:when>
+                      <!--When included devices = screen and mobile-->
+                      <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) and 
+                                            contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            )">
+                        <xsl:call-template        name = "SummarySections">
+                          <xsl:with-param             name = "topSection"
+                                                    select = "$topSection"/>
+                          <xsl:with-param name="deviceList" select = "''" />
+                        </xsl:call-template>
+                      </xsl:when>
+                    </xsl:choose>
+                  </xsl:when>
+                  <!--When only excluded devices are set-->
+                  <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+                    <xsl:call-template        name = "SummarySections">
+                      <xsl:with-param             name = "topSection"
+                                                select = "$topSection"/>
+                      <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <!--When both included and excluded devices are set-->
+                    <xsl:call-template        name = "SummarySections">
+                      <xsl:with-param             name = "topSection"
+                                                select = "$topSection"/>
+                      <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+                    </xsl:call-template>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:when>
+              <xsl:when                  test = "$targetedDevice = 'syndication'">
+                <xsl:choose>
+                  <!--When only included devices are set-->
+                  <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+                    <!--When included devices = syndication-->
+                    <xsl:if                  test="contains(
                                             concat(' ', @IncludedDevices, ' '), 
                                             concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
+                                            ) ">
+                      <xsl:call-template        name = "SummarySections">
+                        <xsl:with-param             name = "topSection"
+                                                  select = "$topSection"/>
+                        <xsl:with-param name="deviceList" select = "''" />
+                      </xsl:call-template>
+                    </xsl:if>
+                  </xsl:when>
+                  <!--When only excluded devices are set-->
+                  <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+                    <xsl:if                  test="contains(
                                             concat(' ', @ExcludedDevices, ' '), 
                                             concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
-        <xsl:element                 name = "section">
-          <xsl:attribute              name = "id">
-            <xsl:value-of            select = "@id"/>
-          </xsl:attribute>
-          <xsl:apply-templates>
-            <xsl:with-param             name = "topSection"
-                                      select = "$topSection"/>
-          </xsl:apply-templates>
-        </xsl:element>
+                                            ) ">
+                      <!--Don't draw the summary section element as it is excluded from syndication-->
+                    </xsl:if>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <!--When both included and excluded devices are set-->
+                    <!--When included devices = syndication-->
+                    <xsl:if                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) ">
+                      <xsl:call-template        name = "SummarySections">
+                        <xsl:with-param             name = "topSection"
+                                                  select = "$topSection"/>
+                        <xsl:with-param name
+                                        ="deviceList" select = "''" />
+                      </xsl:call-template>
+                    </xsl:if>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:when>
+            </xsl:choose>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
+      <xsl:otherwise>
+        <!--this is a top level section don't worry about device list-->
+        <xsl:call-template        name = "SummarySections">
+          <xsl:with-param             name = "topSection"
+                                      select = "$topSection"/>
+          <!-- device list is empty-->
+          <xsl:with-param name="deviceList" select = "''" />
+        </xsl:call-template>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template                     name = "SummarySections">
+    <xsl:param                      name = "topSection"/>
+    <xsl:param                      name = "deviceList"/>
+    <xsl:element                 name = "section">
+      <xsl:attribute              name = "id">
+        <xsl:value-of            select = "@id"/>
+      </xsl:attribute>
+      <xsl:if                     test="$deviceList != ''">
+        <xsl:attribute               name = "data-display-excludedevice">
+          <xsl:text>$deviceList</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates>
+        <xsl:with-param             name = "topSection"
+                                  select = "$topSection"/>
+      </xsl:apply-templates>
+    </xsl:element>
+  </xsl:template>
   <!--
   Display the Keypoints as Titles within the text
   ================================================================ -->
@@ -1226,28 +1358,143 @@
   <xsl:template                  match = "Table">
     <xsl:param                     name = "topSection"
                                  select = "'table'"/>
-    <xsl:if                        test = "(contains(
+
+    <xsl:choose>
+      <!--When both included and excluded devices are not set
+      draw the table element as is-->
+      <xsl:when                  test="not(@IncludedDevices) and not(@ExcludedDevices)
+                                 and ($targetedDevice = 'screen' or $targetedDevice = 'syndication')">
+        <!-- Display the Table -->
+        <xsl:apply-templates        select = "TGroup">
+          <xsl:with-param              name = "topSection"
+                                     select = "$topSection"/>
+          <!-- device list is empty-->
+          <xsl:with-param               name = "deviceList" 
+                                        select = "''" />
+        </xsl:apply-templates>
+        
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when                  test = "$targetedDevice = 'screen'">
+            <xsl:choose>
+              <!--When only included devices are set-->
+              <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+                <xsl:choose>
+                  <!--When included devices = screen-->
+                  <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) ">
+                    <!-- Display the Table -->
+                    <xsl:apply-templates        select = "TGroup">
+                      <xsl:with-param              name = "topSection"
+                                                 select = "$topSection"/>
+                      <xsl:with-param               name = "deviceList"
+                                                    select = "'mobile'" />
+                    </xsl:apply-templates>
+               
+                  </xsl:when>
+                  <!--When included devices = mobile-->
+                  <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            ) ">
+
+                    <!-- Display the Table -->
+                    <xsl:apply-templates        select = "TGroup">
+                      <xsl:with-param              name = "topSection"
+                                                 select = "$topSection"/>
+                      <xsl:with-param               name = "deviceList"
+                                                    select = "'screen'" />
+                    </xsl:apply-templates>
+
+                  </xsl:when>
+                  <!--When included devices = screen and mobile-->
+                  <xsl:when                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'screen', ' ')
+                                            ) and 
+                                            contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', 'mobile', ' ')
+                                            )">
+                    <!-- Display the Table -->
+                    <xsl:apply-templates        select = "TGroup">
+                      <xsl:with-param              name = "topSection"
+                                                 select = "$topSection"/>
+                      <xsl:with-param               name = "deviceList"
+                                                    select = "@IncludedDevices" />
+                    </xsl:apply-templates>
+                  </xsl:when>
+                </xsl:choose>
+              </xsl:when>
+              <!--When only excluded devices are set-->
+              <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+                <xsl:apply-templates        select = "TGroup">
+                  <xsl:with-param              name = "topSection"
+                                             select = "$topSection"/>
+                  <xsl:with-param               name = "deviceList"
+                                                select = "@ExcludedDevices" />
+                </xsl:apply-templates>
+              </xsl:when>
+              <xsl:otherwise>
+                <!--When both included and excluded devices are set-->
+                <xsl:apply-templates        select = "TGroup">
+                  <xsl:with-param              name = "topSection"
+                                             select = "$topSection"/>
+                  <xsl:with-param               name = "deviceList"
+                                                select = "@ExcludedDevices" />
+                </xsl:apply-templates>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+          <xsl:when                  test = "$targetedDevice = 'syndication'">
+            <xsl:choose>
+              <!--When only included devices are set-->
+              <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+                <!--When included devices = syndication-->
+                <xsl:if                  test="contains(
                                             concat(' ', @IncludedDevices, ' '), 
                                             concat(' ', $targetedDevice, ' ')
-                                            ) 
-                                           or 
-                                           not(@IncludedDevices)
-                                          ) 
-                                          and 
-                                          (not(contains(
+                                            ) ">
+                  <xsl:apply-templates        select = "TGroup">
+                    <xsl:with-param              name = "topSection"
+                                               select = "$topSection"/>
+                    <xsl:with-param               name = "deviceList"
+                                                  select = "''" />
+                  </xsl:apply-templates>
+                </xsl:if>
+              </xsl:when>
+              <!--When only excluded devices are set-->
+              <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+                <xsl:if                  test="contains(
                                             concat(' ', @ExcludedDevices, ' '), 
                                             concat(' ', $targetedDevice, ' ')
-                                            )) 
-                                           or 
-                                           not(@ExcludedDevices)
-                                          )">
-
-      <!-- Display the Table -->
-      <xsl:apply-templates        select = "TGroup">
-        <xsl:with-param              name = "topSection"
-                                   select = "$topSection"/>
-      </xsl:apply-templates>
-    </xsl:if>
+                                            ) ">
+                  <!--Don't draw the table element as it is excluded from syndication-->
+                </xsl:if>
+              </xsl:when>
+              <xsl:otherwise>
+                <!--When both included and excluded devices are set-->
+                <!--When included devices = syndication-->
+                <xsl:if                  test="contains(
+                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', $targetedDevice, ' ')
+                                            ) ">
+                  <xsl:apply-templates        select = "TGroup">
+                    <xsl:with-param              name = "topSection"
+                                               select = "$topSection"/>
+                    <xsl:with-param               name = "deviceList"
+                                                  select = "''" />
+                  </xsl:apply-templates>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!--
@@ -1585,6 +1832,7 @@ Template for Creating a table (from CALS)
   <xsl:template                    match = "TGroup">
     <xsl:param                     name = "topSection"
                                  select = "'tgroup'"/>
+    <xsl:param                    name = "deviceList" />
     <xsl:element                   name = "table">
       <xsl:attribute                name = "id">
         <xsl:value-of              select = "../@id"/>
@@ -1594,6 +1842,12 @@ Template for Creating a table (from CALS)
         <xsl:text> expandable-container</xsl:text>
       </xsl:attribute>
 
+      <xsl:if                     test="$deviceList != ''">
+        <xsl:attribute               name = "data-display-excludedevice">
+          <xsl:text>$deviceList</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      
       <xsl:if                       test = "@PgWide=1">
         <xsl:attribute              name = "width">100%</xsl:attribute>
       </xsl:if>
