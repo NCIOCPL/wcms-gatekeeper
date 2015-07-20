@@ -17,7 +17,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// <summary>
         /// The collection of dictionary items created from the document XML.
         /// </summary>
-        public List<GeneralDictionaryEntry> Dictionary { get; set; }
+        public List<GeneralDictionaryEntry> Dictionary { get; private set; }
 
 
         /// <summary>
@@ -27,6 +27,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             : base()
         {
             this.DocumentType = DocumentType.GlossaryTerm;
+            this.Dictionary = new List<GeneralDictionaryEntry>();
         }
 
     }
