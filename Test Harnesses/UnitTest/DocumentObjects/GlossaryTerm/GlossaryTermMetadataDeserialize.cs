@@ -14,7 +14,7 @@ using GateKeeper.DocumentObjects.GlossaryTerm;
 namespace GateKeeper.UnitTest.DocumentObjects.GlossaryTerm
 {
     [TestFixture]
-    class GlossaryTermMetadataExtract
+    class GlossaryTermMetadataDeserialize
     {
         /// <summary>
         /// Verify that the english term name deserializes.
