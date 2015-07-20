@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -62,60 +63,48 @@ namespace GateKeeper.UnitTest.Extract
             RunExtract(filename);
         }
 
-        [TestCase("Term-SingleDefinition-English.xml")]
-        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
-        [TestCase("Term-EnglishAndSpanish.xml")]
-        public void LoadSingleEnglishPatientTerm(string filename)
+        /// <summary>
+        /// Verify that documents are extracted with the correct number of dictionary entries per-language.
+        /// </summary>
+        /// <param name="filename">GlossaryTerm data file to load</param>
+        /// <param name="targetLanguage">The language to check for</param>
+        /// <param name="expectedCount">The number of documents expected in the targeted language.</param>
+        [TestCase("Term-SingleDefinition-English.xml", Language.English, 1)]
+        [TestCase("Term-SingleDefinition-English.xml", Language.Spanish, 0)]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml", Language.English, 1)]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml", Language.Spanish, 0)]
+        [TestCase("Term-EnglishAndSpanish.xml", Language.English, 1)]
+        [TestCase("Term-EnglishAndSpanish.xml", Language.Spanish, 1)]
+        [TestCase("Term-MultiDefinition-English.xml", Language.English, 2)]
+        [TestCase("Term-MultiDefinition-English.xml", Language.Spanish, 0)]
+        [TestCase("Term-MultiDefinition-Eng-and-Spanish.xml", Language.English, 2)]
+        [TestCase("Term-MultiDefinition-Eng-and-Spanish.xml", Language.Spanish, 2)]
+        public void DictionaryEntryCount(string filename, Language targetLanguage, int expectedCount)
         {
-            RunExtract(filename);
-            throw new NotImplementedException();
+            GlossaryTermDocument document = new GlossaryTermDocument();
+
+            RunExtract(filename, document);
+
+            // Find the number of dictionary entries targeting English.
+            int count = document.Dictionary.Count(entry => { return entry.Language == targetLanguage; });
+            Assert.AreEqual(expectedCount, count, "Number of dictionary entries..");
         }
 
-        [TestCase("Term-MultiDefinition-English.xml")]
-        public void LoadMultipleEnglishPatientTerm(string filename)
-        {
-            RunExtract(filename);
-            throw new NotImplementedException();
-        }
-
-        [TestCase("Term-EnglishAndSpanish.xml")]
-        public void LoadSingleSpanishPatientTerm(string filename, Type doctype)
-        {
-            RunExtract(filename);
-            throw new NotImplementedException();
-        }
 
         /// <summary>
-        /// Test that no Spanish definitions are found when the source document
-        /// doesn't contain any.
+        /// Shared extract code for tests which only require that extract not throw exceptions.
         /// </summary>
-        /// <param name="filename"></param>
-        [TestCase("Term-SingleDefinition-English.xml")]
-        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
-        public void FailToLoadSpanishPatientDefinition(string filename)
-        {
-            XmlDocument xml = new XmlDocument();
-            xml.Load(@"./XMLData/GlossaryTerm/" + filename);
-
-            GlossaryTermDocument gtDoc = new GlossaryTermDocument();
-
-            gtDoc.InformationWriter = _informationWriter;
-            gtDoc.WarningWriter = _warningWriter;
-            GlossaryTermExtractor extractor = new GlossaryTermExtractor();
-
-            // GlossaryTermExtractor doesn't use the DocumentXPathManager argument.
-            // The argument only exists for backwards compatability with a generic signature.
-            extractor.Extract(xml, gtDoc, null);
-
-            throw new NotImplementedException();
-        }
-
-
+        /// <param name="filename">XML data file containing a PDQ document.</param>
         private void RunExtract(string filename)
         {
             RunExtract(filename, typeof(GateKeeper.DocumentObjects.GlossaryTerm.GlossaryTermDocument));
         }
 
+        /// <summary>
+        /// Shared extract code for tests which only require that extract not throw exceptions.
+        /// </summary>
+        /// <param name="filename">XML data file containing a PDQ document.</param>
+        /// <param name="doctype">The document type to create.</param>
         private void RunExtract(string filename, Type doctype)
         {
             XmlDocument xml = new XmlDocument();
@@ -135,5 +124,23 @@ namespace GateKeeper.UnitTest.Extract
             extractor.Extract(xml, document, null);
         }
 
+        /// <summary>
+        /// Shared extract code for tests which use the GlossaryTermDocument object.
+        /// </summary>
+        /// <param name="filename">XML data file containing a PDQ document.</param>
+        /// <param name="document">An instantiated GlossaryTermDocument.</param>
+        private void RunExtract(string filename, GlossaryTermDocument document)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(@"./XMLData/GlossaryTerm/" + filename);
+
+            document.InformationWriter = _informationWriter;
+            document.WarningWriter = _warningWriter;
+            GlossaryTermExtractor extractor = new GlossaryTermExtractor();
+
+            // GlossaryTermExtractor doesn't use the DocumentXPathManager argument.
+            // The argument only exists for backwards compatability with a generic signature.
+            extractor.Extract(xml, document, null);
+        }
     }
 }

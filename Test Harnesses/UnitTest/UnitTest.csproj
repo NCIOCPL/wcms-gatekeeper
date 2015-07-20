@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMSManager\PSFolder.cs" />
-    <Compile Include="DocumentObjects\GlossaryTerm\GlossaryTermMetadataExtract.cs" />
+    <Compile Include="DocumentObjects\GlossaryTerm\GlossaryTermMetadataDeserialize.cs" />
     <Compile Include="Extract\GlossaryExtract.cs" />
     <Compile Include="Extract\SummaryConditionalExtract.cs" />
     <Compile Include="Extract\PermanentLink.cs" />
@@ -159,6 +159,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\GlossaryTerm\CancerTerm-orig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XMLData\GlossaryTerm\Term-MultiDefinition-Eng-and-Spanish.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XMLData\GlossaryTerm\Term-SingleDefinition-English.xml">
