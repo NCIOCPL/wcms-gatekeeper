@@ -110,7 +110,7 @@ namespace GateKeeper.DataAccess.CDR
             foreach (GlossaryTermDefinition item in metadata.DefinitionList)
             {
                 GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
-                //entry.TermID = metadata.ID;
+                entry.TermID = metadata.ID;
                 entry.TermName = metadata.GetTermName(item.Language);
                 entry.DictionaryName = item.Dictionary;
                 entry.Language = item.Language;

@@ -20,6 +20,21 @@ namespace GateKeeper.UnitTest.DocumentObjects.GlossaryTerm
         /// Verify that the english term name deserializes.
         /// </summary>
         /// <param name="filename">GlossaryTerm data file to load</param>
+        [TestCase("Term-SingleDefinition-English.xml", 45693)]
+        [TestCase("Term-SingleDefinition-NoPronunciation-English.xml", 45693)]
+        [TestCase("Term-EnglishAndSpanish.xml", 45693)]
+        [TestCase("Term-MultiDefinition-English.xml", 45693)]
+        public void DeserializeTermID(string filename, int expectedTermID)
+        {
+            GlossaryTermMetadata data = Deserilaize(filename);
+            Assert.AreEqual(data.ID, expectedTermID);
+        }
+
+
+        /// <summary>
+        /// Verify that the english term name deserializes.
+        /// </summary>
+        /// <param name="filename">GlossaryTerm data file to load</param>
         [TestCase("Term-SingleDefinition-English.xml")]
         [TestCase("Term-SingleDefinition-NoPronunciation-English.xml")]
         [TestCase("Term-EnglishAndSpanish.xml")]

@@ -27,7 +27,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// <summary>
         /// The source GlossaryTerm document's CDRID.
         /// </summary>
-        public String ID { get; private set; }
+        public int ID { get; private set; }
 
         /// <summary>
         /// The English name for term, as extracted from the original GlossaryTerm document.
@@ -90,7 +90,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             reader.MoveToAttribute("id");
             if (reader.ReadAttributeValue())
             {
-                this.ID = CDRHelper.ExtractCDRID(reader.ReadContentAsString());
+                this.ID = CDRHelper.ExtractCDRIDAsInt(reader.ReadContentAsString());
             }
 
 

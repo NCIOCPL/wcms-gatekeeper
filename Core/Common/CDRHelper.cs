@@ -28,6 +28,21 @@ namespace GateKeeper.Common
         }
 
         /// <summary>
+        /// Utility function to strip out the base CDR id as an integer.
+        /// </summary>
+        /// <param name="inputCDRID"></param>
+        /// <returns>the integer portion of the inputCDRID string</returns>
+        /// <example>Given: "CDR0000062779#_51", "62779" is returned</example>
+        public static int ExtractCDRIDAsInt(string inputCDRID)
+        {
+            string idString = ExtractCDRID(inputCDRID);
+            int id = int.Parse(idString);
+            return id;
+        }
+
+
+
+        /// <summary>
         /// Utility function to re-create the original CDR id format 
         /// (CDR0000nnnnnn) from the base CDR id.
         /// </summary>
