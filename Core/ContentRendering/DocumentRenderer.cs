@@ -129,6 +129,8 @@ namespace GateKeeper.ContentRendering
 
                 _transform.Load(fileInfo.FullName);
             }
+            else
+                throw new FileNotFoundException("Unable to load XSL transform.", fileInfo.FullName);
         }
 
         #endregion

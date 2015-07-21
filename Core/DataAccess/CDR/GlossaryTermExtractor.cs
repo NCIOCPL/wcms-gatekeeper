@@ -50,8 +50,11 @@ namespace GateKeeper.DataAccess.CDR
 
             try
             {
-                // Use XML deserialization to extract the meta data.
+                // Copy the the XML into the Glossary Term business object
+                DocumentHelper.CopyXml(xmlDoc, glossaryTermDocument);
 
+
+                // Use XML deserialization to extract the meta data.
                 XmlSerializer serializer = new XmlSerializer(typeof(GlossaryTermMetadata));
 
                 // Use XML Serialization to parse the dictionary entry and extract the term details.
@@ -112,7 +115,7 @@ namespace GateKeeper.DataAccess.CDR
                 GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
                 entry.TermID = metadata.ID;
                 entry.TermName = metadata.GetTermName(item.Language);
-                entry.DictionaryName = item.Dictionary;
+                entry.Dictionary = item.Dictionary;
                 entry.Language = item.Language;
                 entry.Audience = item.Audience;
                 

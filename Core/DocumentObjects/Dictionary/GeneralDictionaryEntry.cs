@@ -26,7 +26,7 @@ namespace GateKeeper.DocumentObjects.Dictionary
         /// <summary>
         /// The particular dictionary the row belongs to (glossary, genetics, drugs)
         /// </summary>
-        public String DictionaryName { get; set; }
+        public DictionaryType Dictionary { get; set; }
 
         /// <summary>
         /// The item's language

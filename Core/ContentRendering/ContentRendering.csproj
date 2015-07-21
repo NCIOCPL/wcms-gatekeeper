@@ -114,6 +114,7 @@
     </Content>
     <Content Include="XSL\GeneticsProfessional.xsl">
     </Content>
+    <Content Include="XSL\GlossaryTerm.xsl" />
     <Content Include="XSL\Protocol_HP.xsl">
     </Content>
     <Content Include="XSL\Protocol_Patient.xsl">

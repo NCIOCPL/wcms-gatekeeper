@@ -52,7 +52,42 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         ///     Cancer.gov - Dictionary of Cancer Terms
         ///     Genetics - Dictionary of Genetics Terms
         /// </summary>
-        public String Dictionary { get; set; }
+        /// <remarks>
+        /// The Dictionary element in a TermDefinition or SpanishTermDefinition structure is constrained by the
+        /// CDR to be either "Cancer.Gov" (Dictionary of Cancer Terms) or "Genetics."  The period in "Cancer.gov"
+        /// prevents direct serialization, so we use a workaround in the setter.
+        /// </remarks>
+        [XmlElement(ElementName = "Dictionary")]
+        public String DictionaryKludge
+        {
+            get { return _dictionary; }
+            set
+            {
+                _dictionary = value;
+                if (_dictionary.Equals("cancer.gov", StringComparison.InvariantCultureIgnoreCase))
+                    this.Dictionary = DictionaryType.Term;
+                else if (_dictionary.Equals("genetics", StringComparison.InvariantCultureIgnoreCase))
+                    this.Dictionary = DictionaryType.Genetic;
+                else
+                    throw new ArgumentException(String.Format("Expected 'Cancer.gov' or 'Genetics' but found '{0}'.", value));
+            }
+        }
+        // Storage for the DictionaryKludge property.
+        private String _dictionary;
+
+
+        /// <summary>
+        /// What dictionary is the definition intended for?
+        ///     Cancer.gov - Dictionary of Cancer Terms.
+        ///     Genetics - Genetics dictionary.
+        /// </summary>
+        /// <remarks>
+        /// This property is set in the deserialization of the DictionaryKludge property.
+        /// See that property's remarks for additional detail.
+        /// </remarks>
+        [XmlIgnore()]
+        public DictionaryType Dictionary { get; private set; }
+
 
         /// <summary>
         /// Infrastructure.  This property is not intended to be used outside serialization.
