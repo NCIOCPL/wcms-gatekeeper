@@ -69,11 +69,21 @@ namespace GateKeeper.ContentRendering
             XsltArgumentList renderParameters = new XsltArgumentList();
             renderParameters.AddParam("targetedDevice", string.Empty, outputDevice.ToString());
 
-            StringBuilder sb = new StringBuilder();
+            this.Render(document, renderParameters);
+        }
 
+        /// <summary>
+        /// Performs a document XSL transformation using an arbitrary set of parameters.
+        /// </summary>
+        /// <param name="document">The GateKeeper document object which contains the XML to be rendered.</param>
+        /// <param name="renderParameters">A list of parameter names amd values.</param>
+        public virtual void Render(Document document, XsltArgumentList renderParameters)
+        {
+
+            StringBuilder sb = new StringBuilder();
             System.IO.StringWriter sw = new System.IO.StringWriter(sb);
 
-            this.Render(document.Xml.CreateNavigator(), renderParameters, sw);
+            this._transform.Transform(document.Xml.CreateNavigator(), renderParameters, sw);
                
             document.Html = sb.ToString();
 #if DEBUG
@@ -94,24 +104,15 @@ namespace GateKeeper.ContentRendering
         }
 
         /// <summary>
-        /// Common rendering code.
+        /// Common rendering code.  This is the routine which does the actual rendering.
         /// </summary>
         /// <param name="navigator"></param>
         /// <param name="output"></param>
-        protected void Render(XPathNavigator navigator, XsltArgumentList parameters, System.IO.TextWriter output)
+        private void Render(XPathNavigator navigator, XsltArgumentList parameters, System.IO.TextWriter output)
         {
             this._transform.Transform(navigator, parameters, output);
         }
 
-        /// <summary>
-        /// Common rendering code.
-        /// </summary>
-        /// <param name="navigator"></param>
-        /// <param name="output"></param>
-        protected void Render(XPathNavigator navigator, XsltArgumentList parameters, System.Xml.XmlWriter output)
-        {
-            this._transform.Transform(navigator, parameters, output);
-        }
 
 
         /// <summary>
