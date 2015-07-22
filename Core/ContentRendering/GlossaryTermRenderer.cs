@@ -42,6 +42,8 @@ namespace GateKeeper.ContentRendering
         /// <param name="GlossaryTermDocument"></param>
         public override void Render(Document glossaryDoc)
         {
+            String renderedText;
+
             try
             {
                 GlossaryTermDocument gtDocument = (GlossaryTermDocument)glossaryDoc;
@@ -61,7 +63,8 @@ namespace GateKeeper.ContentRendering
                     renderParams.AddParam(TARGET_AUDIENCE, string.Empty, audience.ToString());
                     renderParams.AddParam(TARGET_DICTIONARY, string.Empty, dictionary.ToString());
 
-                    Render(glossaryDoc, renderParams);
+                    renderedText = RenderToText(glossaryDoc, renderParams);
+                    entry.Object = renderedText;
                 }
             }
             catch (Exception e)

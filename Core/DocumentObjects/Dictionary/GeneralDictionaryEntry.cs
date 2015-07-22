@@ -39,6 +39,11 @@ namespace GateKeeper.DocumentObjects.Dictionary
         public AudienceType Audience { get; set; }
 
         /// <summary>
+        /// What version of the API is this row for?
+        /// </summary>
+        public String ApiVersion { get; set; }
+
+        /// <summary>
         /// The rendered JSON corresponding to the object.
         /// (Why isn't this named JSON? Because We're rendering JSON today, but five years from now might
         /// be using something else.  So the name is generic to reflect the use versus a specific

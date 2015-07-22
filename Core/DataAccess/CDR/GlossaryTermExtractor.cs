@@ -68,32 +68,6 @@ namespace GateKeeper.DataAccess.CDR
 
                 GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
                 glossaryTermDocument.Dictionary.AddRange(dictionary);
-
-                //XPathNavigator xNav = xmlDoc.CreateNavigator();
-
-                //// Extract the CDR ID...
-                //xNav.MoveToFirstChild();
-                //if (CDRHelper.ExtractCDRID(xNav, xPath.GetXPath(CommonXPath.CDRID), out _documentID))
-                //{
-                //    glossaryTermDocument.DocumentID = _documentID;
-                //}
-                //else
-                //{
-                //    throw new Exception("Extraction Error: Failed to extract document (CDR) ID in glossary term document!");
-                //}
-
-                //DocumentHelper.CopyXml(xmlDoc, glossaryTermDocument);
-
-                // Get Glossary Term XPath
-                //xPathManager = xPath;
-
-                //ExtractEnglishTerm(xNav, glossaryTermDocument);
-                //ExtractSpanishTerm(xNav, glossaryTermDocument);
-                //ExtractMediaLinks(xNav, glossaryTermDocument);
-                //ExtractRelatedInformation(xNav, glossaryTermDocument);
-
-                //// Handle modified and published dates
-                //DocumentHelper.ExtractDates(xNav, glossaryTermDocument, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
             }
             catch (Exception e)
             {
@@ -118,6 +92,7 @@ namespace GateKeeper.DataAccess.CDR
                 entry.Dictionary = item.Dictionary;
                 entry.Language = item.Language;
                 entry.Audience = item.Audience;
+                entry.ApiVersion = "v1.0";
                 
                 dictionary.Add(entry);
             }

@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancerGov\DictionaryQuery.cs" />
     <Compile Include="CancerGov\ImageMediaQuery.cs" />
     <Compile Include="CDR\DocumentExtractor.cs" />
     <Compile Include="CDR\DrugInfoSummaryPreviewExtractor.cs" />

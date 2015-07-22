@@ -73,10 +73,11 @@ namespace GateKeeper.ContentRendering
         }
 
         /// <summary>
-        /// Performs a document XSL transformation using an arbitrary set of parameters.
+        /// Performs an XSL transformation, yielding an XML document.
         /// </summary>
         /// <param name="document">The GateKeeper document object which contains the XML to be rendered.</param>
-        /// <param name="renderParameters">A list of parameter names amd values.</param>
+        /// <param name="renderParameters">A list of parameters to the XSL transform.</param>
+        /// <remarks>The rendered XML is stored in the document object's PostRenderXml property.</remarks>
         public virtual void Render(Document document, XsltArgumentList renderParameters)
         {
 
@@ -86,6 +87,8 @@ namespace GateKeeper.ContentRendering
             this._transform.Transform(document.Xml.CreateNavigator(), renderParameters, sw);
                
             document.Html = sb.ToString();
+
+            // In a development setting, save the rendered output to c:\temp\Output\####.txt
 #if DEBUG
             string path = "C:\\temp\\Output\\";
             if (Directory.Exists(path))
@@ -102,6 +105,44 @@ namespace GateKeeper.ContentRendering
             document.PostRenderXml.PreserveWhitespace = true;
             document.PostRenderXml.LoadXml(sb.ToString());
         }
+
+
+        /// <summary>
+        /// Performs an XSL transformation, yielding the transform result as text instead of XML.
+        /// </summary>
+        /// <param name="document">The GateKeeper document object which contains the XML structurte to be transformed.</param>
+        /// <param name="renderParameters">A list of parameters to the XSL transform.</param>
+        /// <returns>The rendered text.</returns>
+        /// <remarks>
+        /// Unlike the Render() overloads, RenderToText() does not modify the document object.
+        /// The decision of what to do with the rendered output is left to the calling routine.
+        /// The document.Html and document.PostRenderXml properties are not set by this method.
+        /// </remarks>
+        public virtual String RenderToText(Document document, XsltArgumentList renderParameters)
+        {
+            StringBuilder sb = new StringBuilder();
+            System.IO.StringWriter sw = new System.IO.StringWriter(sb);
+
+            this._transform.Transform(document.Xml.CreateNavigator(), renderParameters, sw);
+
+            // In a development setting, save the rendered output to c:\temp\Output\####.txt
+#if DEBUG
+            string path = "C:\\temp\\Output\\";
+            if (Directory.Exists(path))
+            {
+                string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".txt";
+                using (StreamWriter writer = File.CreateText(fileName))
+                {
+                    writer.Write(document.Html);
+                    writer.Close();
+                }
+            }
+#endif
+
+            return sb.ToString();;
+        }
+
+
 
         /// <summary>
         /// Common rendering code.  This is the routine which does the actual rendering.
