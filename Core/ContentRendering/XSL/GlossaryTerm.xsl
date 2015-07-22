@@ -46,10 +46,6 @@ term: {
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
-  definition: {
-    html: "<p>NOT IMPLEMENTED</p>",
-    text: "NOT IMPLEMENTED"
-  },
   <xsl:call-template name="RenderImageMediaLinks" />
   <xsl:call-template name="RenderPronunciation" />
   related: {
