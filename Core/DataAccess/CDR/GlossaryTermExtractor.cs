@@ -92,7 +92,7 @@ namespace GateKeeper.DataAccess.CDR
                 entry.Dictionary = item.Dictionary;
                 entry.Language = item.Language;
                 entry.Audience = item.Audience;
-                entry.ApiVersion = "v1.0";
+                entry.ApiVersion = "v1";
                 
                 dictionary.Add(entry);
             }
