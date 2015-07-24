@@ -2,9 +2,9 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="text" indent="yes"/>
 
-  <!-- Default to English, Patient, Cancer.gov dictionary -->
+  <!-- Default targets are English, Patient, Cancer.gov dictionary -->
   <xsl:param        name = "targetLanguage"
-                  select = "'English'"/>
+                  select = "'Spanish'"/>
 
   <xsl:param        name = "targetAudience"
                   select = "'Patient'" />
@@ -13,13 +13,13 @@
                   select = "'Term'"/>
 
   <!--
-    audienceCode, languageCode, and dictionaryCode contain the constant values
-    used by the CDR. These variables provide a translation from the constants used by GateKeeper.
+    Set the audienceCode, languageCode, and dictionaryCode variables to use the same values
+    as the CDR. These variables provide a translation from the constants used by GateKeeper.
   -->
   <xsl:variable name="audienceCode">
     <xsl:choose>
       <xsl:when test="$targetAudience = 'Patient'">Patient</xsl:when>
-      <xsl:when test="$targetAudience = 'HealthProfessional'">Health_professionals</xsl:when>
+      <xsl:when test="$targetAudience = 'HealthProfessional'">Health professional</xsl:when>
     </xsl:choose>
   </xsl:variable>
 
@@ -37,10 +37,10 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:template match="/">
+  <xsl:template match="/GlossaryTerm">
 <!-- Create the JSON structure directly within the root template. -->
 term: {
-  id: "12345",
+  id: "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@id"/></xsl:call-template>",
   term: "<xsl:call-template name="RenderTermName" />",
   alias: [ ], <!-- The alias array is always empty for Glossary Term docs. -->
   <xsl:call-template name="RenderDateFirstPublished" />
@@ -138,20 +138,45 @@ term: {
 
 
   <xsl:template name="RenderPronunciation">
+    <xsl:variable name="audioMediaID">
+      <xsl:value-of select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref"/>
+    </xsl:variable>
+
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
   pronunciation: {
-    audio: "NOT IMPLEMENTED",
+    audio: "<xsl:call-template name="GetNumericID">
+      <xsl:with-param name="cdrid" select="$audioMediaID" />
+    </xsl:call-template>.mp3",
     key: "<xsl:value-of select="//TermPronunciation"/>"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
   pronunciation: {
-    audio: "NOT IMPLEMENTED",
+    audio: "<xsl:call-template name="GetNumericID">
+      <xsl:with-param name="cdrid" select="$audioMediaID" />
+    </xsl:call-template>.mp3",
     key: "" <!-- Never present for Spanish. -->
   },
       </xsl:when>
     </xsl:choose>
+  </xsl:template>
+
+
+  <!--
+    GetNumericID - Converts an id formatted CDR000012345 to a number with no leading zeros.
+    
+    Args:
+      cdrid - A numeric ID with the first four characters being "CDR0".
+  -->
+  <xsl:template name="GetNumericID">
+    <xsl:param name="cdrid" />
+    <!--
+      translate - renders the letters to lowercase.
+      substring-after - remove the leading "cdr0"
+      number - convert to numeric, implictly removing leading zeros.
+    -->
+    <xsl:value-of select="number(substring-after(translate($cdrid,'CDR','cdr'), 'cdr0'))" />
   </xsl:template>
   
 </xsl:stylesheet>
