@@ -87,7 +87,7 @@ namespace GKManagers.CMSDocumentProcessing
                 // When creating new summaries, resolve the summmary references after the summary pages are created.
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> pageSectionReferencedSumamries = ResolveSectionSummaryReferences(document, document.TopLevelSectionList, new MobileSummarySectionFinder(CMSController));
+               // List<List<PercussionGuid>> pageSectionReferencedSumamries = ResolveSectionSummaryReferences(document, document.TopLevelSectionList, new MobileSummarySectionFinder(CMSController));
 
                 //Create Cancer Info Summary Page items
                 List<ContentItemForCreating> summaryPageList = CreatePDQCancerInfoSummaryPage(document, createPath);
@@ -99,7 +99,7 @@ namespace GKManagers.CMSDocumentProcessing
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, summaryPageIDList, SummaryPageSlot, MobileSummarySectionSnippetTemplate);
 
                 // Create relationships to other Cancer Information Summary Objects.
-                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, pageSectionReferencedSumamries);
+                //PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(summaryPageIDList, pageSectionReferencedSumamries);
 
                 // Link to alternate language version.
                 // This step is not needed. The relationship was created when the desktop version was created
@@ -177,8 +177,8 @@ namespace GKManagers.CMSDocumentProcessing
 
                 // Find the list of content items referenced by the summary sections.
                 // After the page items are created, these are used to create relationships.
-                List<List<PercussionGuid>> pageSectionReferencedItems =
-                    ResolveSectionSummaryReferences(summary, summary.TopLevelSectionList, new MobileSummarySectionFinder(CMSController));
+                //List<List<PercussionGuid>> pageSectionReferencedItems =
+                //    ResolveSectionSummaryReferences(summary, summary.TopLevelSectionList, new MobileSummarySectionFinder(CMSController));
 
                 LogDetailedStep("End sub-page setup.");
 
@@ -199,13 +199,13 @@ namespace GKManagers.CMSDocumentProcessing
 
                 LogDetailedStep("Begin Relationship updates.");
 
-                UpdateIncomingSummaryReferences(summary.DocumentID, summaryRoot/*, summaryLink*/, oldpageIDs, newPageIDs, incomingPageRelationships, new MobileSummarySectionFinder(CMSController));
+                //UpdateIncomingSummaryReferences(summary.DocumentID, summaryRoot/*, summaryLink*/, oldpageIDs, newPageIDs, incomingPageRelationships, new MobileSummarySectionFinder(CMSController));
 
                 // Add new cancer information summary pages into the page slot.
                 PSAaRelationship[] relationships = CMSController.CreateActiveAssemblyRelationships(summaryRoot.ID, newSummaryPageIDList, SummaryPageSlot, MobileSummarySectionSnippetTemplate);
 
                 // Create relationships from this summary's pages to other Cancer Information Summary Objects.
-                PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, pageSectionReferencedItems);
+               // PSAaRelationship[] pageExternalRelationships = CreateExternalSummaryRelationships(newSummaryPageIDList, pageSectionReferencedItems);
 
                 LogDetailedStep("End Relationship updates.");
 
@@ -242,49 +242,7 @@ namespace GKManagers.CMSDocumentProcessing
             // Restore original site path.
             CMSController.SiteRootPath = originalSitePath;
         }
-
-        /// <summary>
-        /// Builds the URL to resolve a reference between two summaries.
-        /// </summary>
-        /// <param name="summary">The summary.</param>
-        /// <param name="pageNumber">The page number.</param>
-        /// <param name="sectionID">The section ID.</param>
-        /// <returns></returns>
-        protected override string BuildSummaryRefUrl(SummaryDocument summary, int pageNumber, string sectionID)
-        {
-            string referenceUrl;
-
-            Uri baseUrl = new Uri(summary.BaseMobileURL, UriKind.RelativeOrAbsolute);
-
-            if (baseUrl.IsAbsoluteUri)
-                referenceUrl = BuildSummaryRefUrl(baseUrl.AbsolutePath, pageNumber, sectionID);
-            else
-                referenceUrl = BuildSummaryRefUrl(summary.BaseMobileURL.Trim(), pageNumber, sectionID);
-
-            return referenceUrl;
-        }
-
-        /// <summary>
-        /// Build the URL to resolve a reference between two sections of the same summary
-        /// </summary>
-        /// <param name="summary">The summary.</param>
-        /// <param name="pageNumber">The page number.  (Not used on mobile)</param>
-        /// <param name="sectionID">The section ID.</param>
-        /// <returns></returns>
-        protected override string BuildInternalSummaryRefURL(SummaryDocument summary, int pageNumber, string sectionID)
-        {
-            string referenceUrl;
-
-            Uri baseUrl = new Uri(summary.BaseMobileURL, UriKind.RelativeOrAbsolute);
-
-            if (baseUrl.IsAbsoluteUri)
-                referenceUrl = BuildSummaryRefUrl(baseUrl.AbsolutePath, sectionID);
-            else
-                referenceUrl = BuildSummaryRefUrl(summary.BaseMobileURL.Trim(), sectionID);
-
-            return referenceUrl;
-        }
-
+                
         /// <summary>
         /// Searches the CMS repository for the specified CDR Document.
         /// 

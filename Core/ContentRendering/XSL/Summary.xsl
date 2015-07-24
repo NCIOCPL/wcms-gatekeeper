@@ -361,9 +361,6 @@
   <xsl:template                  match = "SummarySection">
     <xsl:param                     name = "topSection"
                                  select = "'sub'"/>
-
-    <xsl:choose>
-      <xsl:when                   test  = "$topSection = 'sub'">
         <!-- set up devices for sub-sections-->
         <xsl:choose>
           <!--When both included and excluded devices are not set
@@ -392,7 +389,7 @@
                         <xsl:call-template        name = "SummarySections">
                           <xsl:with-param             name = "topSection"
                                                     select = "$topSection"/>
-                          <xsl:with-param name="deviceList" select = "'mobile'" />
+                          <xsl:with-param name="deviceList">mobile</xsl:with-param>
                         </xsl:call-template>
 
 
@@ -406,7 +403,7 @@
                         <xsl:call-template        name = "SummarySections">
                           <xsl:with-param             name = "topSection"
                                                     select = "$topSection"/>
-                          <xsl:with-param name="deviceList" select = "'screen'" />
+                          <xsl:with-param name="deviceList">screen</xsl:with-param>
                         </xsl:call-template>
 
                       </xsl:when>
@@ -490,17 +487,6 @@
             </xsl:choose>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <!--this is a top level section don't worry about device list-->
-        <xsl:call-template        name = "SummarySections">
-          <xsl:with-param             name = "topSection"
-                                      select = "$topSection"/>
-          <!-- device list is empty-->
-          <xsl:with-param name="deviceList" select = "''" />
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
 
   <xsl:template                     name = "SummarySections">
@@ -510,14 +496,15 @@
       <xsl:attribute              name = "id">
         <xsl:value-of            select = "@id"/>
       </xsl:attribute>
-      <xsl:if                     test="$deviceList != ''">
+      <xsl:if                     test = "$deviceList != ''">
         <xsl:attribute               name = "data-display-excludedevice">
-          <xsl:text>$deviceList</xsl:text>
+          <xsl:value-of              select="$deviceList" />
         </xsl:attribute>
       </xsl:if>
       <xsl:apply-templates>
         <xsl:with-param             name = "topSection"
                                   select = "$topSection"/>
+       
       </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
@@ -1176,7 +1163,7 @@
                                             concat(' ', 'screen', ' ')
                                             ) ">
                   <xsl:call-template        name = "mediaLinks">
-                    <xsl:with-param name="deviceList" select = "'mobile'" />
+                    <xsl:with-param name="deviceList">mobile</xsl:with-param>
                   </xsl:call-template>
 
 
@@ -1188,7 +1175,7 @@
                                             ) ">
 
                   <xsl:call-template        name = "mediaLinks">
-                    <xsl:with-param name="deviceList" select = "'screen'" />
+                    <xsl:with-param name="deviceList">screen</xsl:with-param>
                   </xsl:call-template>
 
                 </xsl:when>
@@ -1277,7 +1264,7 @@
       </xsl:attribute>
       <xsl:if                     test="$deviceList != ''">
         <xsl:attribute               name = "data-display-excludedevice">
-          <xsl:text>$deviceList</xsl:text>
+          <xsl:value-of select="$deviceList" />
         </xsl:attribute>
       </xsl:if>
       <!-- Enlarge Link -->
@@ -1390,8 +1377,8 @@
                     <xsl:apply-templates        select = "TGroup">
                       <xsl:with-param              name = "topSection"
                                                  select = "$topSection"/>
-                      <xsl:with-param               name = "deviceList"
-                                                    select = "'mobile'" />
+                      <xsl:with-param               name = "deviceList">mobile</xsl:with-param>
+                                                   
                     </xsl:apply-templates>
                
                   </xsl:when>
@@ -1405,8 +1392,8 @@
                     <xsl:apply-templates        select = "TGroup">
                       <xsl:with-param              name = "topSection"
                                                  select = "$topSection"/>
-                      <xsl:with-param               name = "deviceList"
-                                                    select = "'screen'" />
+                      <xsl:with-param               name = "deviceList">screen</xsl:with-param>
+                                               
                     </xsl:apply-templates>
 
                   </xsl:when>
@@ -1844,7 +1831,7 @@ Template for Creating a table (from CALS)
 
       <xsl:if                     test="$deviceList != ''">
         <xsl:attribute               name = "data-display-excludedevice">
-          <xsl:text>$deviceList</xsl:text>
+          <xsl:value-of select="$deviceList" />
         </xsl:attribute>
       </xsl:if>
       

@@ -155,8 +155,7 @@ namespace GKManagers.CMSDocumentProcessing
                 permanentLinkIDs = PermanentLinkData.CreatePermanentLinks(temporaryPath);
                 rollbackList.AddRange(CMSController.BuildGuidArray(permanentLinkIDs));
                 LogDetailedStep("End Permanent Link creation.");
-
-
+                
 
                 // Update (but don't replace) the CancerInformationSummary and CancerInformationSummaryLink objects.
                 ContentItemForUpdating summaryItem = new ContentItemForUpdating(summaryRootID.ID, CreateFieldValueMapPDQCancerInfoSummary(summary));
@@ -200,39 +199,12 @@ namespace GKManagers.CMSDocumentProcessing
             componentIDs = CMSController.BuildGuidArray(permanentLinkIDs);
 
             // Handle a potential change of URL.
-            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID,/* summaryLinkID,*/ componentIDs);
+            UpdateDocumentURL(summary.BasePrettyURL, summaryRootID, componentIDs);
 
             //update the Nav Label field and add the summary to the landing page slot of the nav on
             UpdateNavOn(summary, summaryRootID, GetTargetFolder(summary.BasePrettyURL));
         }
-
-        /// <summary>
-        /// Builds the URL to resolve a reference between two summaries.
-        /// </summary>
-        /// <param name="summary">The summary.</param>
-        /// <param name="pageNumber">The page number.</param>
-        /// <param name="sectionID">The section ID.</param>
-        /// <returns></returns>
-        protected override string BuildSummaryRefUrl(SummaryDocument summary, int pageNumber, string sectionID)
-        {
-            Uri baseUrl = new Uri(summary.BasePrettyURL, UriKind.RelativeOrAbsolute);
-            return BuildSummaryRefUrl(baseUrl.AbsolutePath, pageNumber, sectionID);
-        }
-
-        /// <summary>
-        /// Build the URL to resolve a reference between two sections of the same summary
-        /// </summary>
-        /// <param name="summary">The summary.</param>
-        /// <param name="pageNumber">The page number.</param>
-        /// <param name="sectionID">The section ID.</param>
-        /// <returns></returns>
-        protected override string BuildInternalSummaryRefURL(SummaryDocument summary, int pageNumber, string sectionID)
-        {
-            // On desktop, references within the same summary have the same construction logic as
-            // links to other summaries.
-            return BuildSummaryRefUrl(summary, pageNumber, sectionID);
-        }
-
+                
         /// <summary>
         /// The base class implementation deletes only the content items specified.
         /// This delete operation is going to remove the standard(desktop) version and the mobile version as well.
