@@ -4,7 +4,7 @@
 
   <!-- Default targets are English, Patient, Cancer.gov dictionary -->
   <xsl:param        name = "targetLanguage"
-                  select = "'Spanish'"/>
+                  select = "'English'"/>
 
   <xsl:param        name = "targetAudience"
                   select = "'Patient'" />
@@ -64,32 +64,32 @@
   <xsl:call-template name="RenderPronunciation" />
   "related": {
     "drug_summary": [
-      {
+      <!--{
         "language": "en",
         "text": "Related Drug Summary",
         "url": "http://www.cancer.gov/publications/dictionaries/cancer-terms?cdrid=45693"
-      }
+      }-->
     ],
     "external": [
-      {
+      <!--{
         "language": "en",
         "text": "Great Googly Moogly!",
         "url": "http://www.google.com/"
-      }
+      }-->
     ],
     "summary": [
-      {
+      <!--{
         "language": "en",
         "text": "A Summary",
         "url": "http://www.cancer.gov/types/lung/patient/non-small-cell-lung-treatment-pdq"
-      }
+      }-->
     ],
     "term": [
-      {
+      <!--{
         "dictionary": "Term",
         "id": "12345",
         "text": "A related Term"
-      }
+      }-->
     ]
   }
 }
