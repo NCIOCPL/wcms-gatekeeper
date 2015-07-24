@@ -67,6 +67,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\3rdPartyDLLs\EnterpriseLibraryJanuary2006\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NCILibrary.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b68440c3db501d2b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\NCILibrary\NCILibrary.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -113,6 +117,7 @@
     <Compile Include="DbBaseQuery.cs" />
     <Compile Include="DbWrapper.cs" />
     <Compile Include="DocumentQuery.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="GateKeeper\DocumentXPathManager.cs" />
     <Compile Include="GenerateCDRPreview.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -56,6 +56,7 @@ namespace GateKeeper.DataAccess.StoreProcedures
         #endregion
     }
 
+    [Obsolete("These procs go away.", true)]
     public class SPGlossaryTerm
     {
         #region Fields
