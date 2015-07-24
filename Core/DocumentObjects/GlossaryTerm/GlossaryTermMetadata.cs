@@ -52,6 +52,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             get { return new ReadOnlyCollection<GlossaryTermDefinition>(definitionMetadata); }
         }
 
+        /// <summary>
+        ///  The collection of definitions.  (All use the same structure.)
+        /// </summary>
         private List<GlossaryTermDefinition> definitionMetadata = new List<GlossaryTermDefinition>();
 
         
@@ -109,7 +112,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
                         SpanishTermName = reader.ReadString();
                         break;
 
-                    // The English collection of terms.  All definitions go into one collection.
+                    // Found an instance of the English definition element.  All definitions go into one collection.
                     case ENGLISH_DEFINITION_ELEMENT:
                         {
                             GlossaryTermDefinition def = ReadTermDefinition(reader, typeof(EnglishTermDefinition));
@@ -118,6 +121,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
                         }
                         break;
 
+                    // Found an instance of the Spanish definition element.  All definitions go into one collection.
                     case SPANISH_DEFINITION_ELEMENT:
                         {
                             GlossaryTermDefinition def = ReadTermDefinition(reader, typeof(SpanishTermDefinition));
@@ -146,6 +150,13 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
 
         #endregion
 
+        /// <summary>
+        /// Shared logic for deserializing the TermDefinition and SpanishTermDefinition structures.
+        /// These two structures are identical except for the outermost term name.
+        /// </summary>
+        /// <param name="reader">XmlReader object, already pointing to the beginning of the structure.</param>
+        /// <param name="termSubType">Type object for the specific GlossaryTermDefinition subclass.</param>
+        /// <returns>A GlossaryTermDefinition object containing the deserialized data.</returns>
         private GlossaryTermDefinition ReadTermDefinition(XmlReader reader, Type termSubType)
         {
             // Use a new serializer to extract definitions instead of fiddling around with an
@@ -157,7 +168,11 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             return def;
         }
 
-
+        /// <summary>
+        /// Convenience method for retrieving the term's name in a given language.
+        /// </summary>
+        /// <param name="language">The desired lanuage.  Supported values are English and Spanish.</param>
+        /// <returns>Term name in the specified language.</returns>
         public String GetTermName(Language language)
         {
             String name;

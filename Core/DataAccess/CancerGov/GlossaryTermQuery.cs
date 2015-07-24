@@ -30,8 +30,6 @@ namespace GateKeeper.DataAccess.CancerGov
         { }
 
 
-        #region Query for Store Procedure Calls
-
         /// <summary>
         /// Save glossary term document into CDR staging database
         /// </summary>
@@ -51,7 +49,8 @@ namespace GateKeeper.DataAccess.CancerGov
                     {
                         GlossaryTermDocument GTDocument = (GlossaryTermDocument)glossaryDoc;
 
-                        //GTDocument.Dictionary
+                        // Save dictionary terms. That's the only artifact to come
+                        // from GlossaryTerm documents.
                         Dictionary.SaveDocument(GTDocument.DocumentID, GTDocument.Dictionary, transaction);
 
                         // Save Glossary Term document metadata.  Legacy code. (Do we need this?)
@@ -81,6 +80,11 @@ namespace GateKeeper.DataAccess.CancerGov
         {
             try
             {
+                // The same DeleteDocument method is called across all promotion levels, and each 
+                // database contains a same-named proc for deleting the data.  So,all we need to do
+                // here is create a connection to the appropriate database and pass that along to
+                // the routines which do the database call.
+
                 Database db;
                 DbConnection conn;
                 switch (databaseName)
@@ -144,6 +148,7 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     try
                     {
+                        // Copy dictionary term from the staging database to preview.
                         Dictionary.PushDocumentToPreview(glossaryDoc.DocumentID, transaction);
 
                         // Update Glossary document metadata.  Legacy code.
@@ -177,6 +182,7 @@ namespace GateKeeper.DataAccess.CancerGov
                 {
                     try
                     {
+                        // Copy dictionary term from the preview database to live.
                         Dictionary.PushDocumentToLive(glossaryDoc.DocumentID, transaction);
 
                         // Update Glossary document metadata.  Legacy code.
@@ -191,36 +197,6 @@ namespace GateKeeper.DataAccess.CancerGov
                         throw new Exception(String.Format("Database error promoting document {0} to live database.", glossaryDoc.DocumentID), e);
                     }
                 }
-            }
-        }
-
-        #endregion
-
-
-        /// <summary>
-        /// Call store procedure to clear existing glossary term data in database
-        /// </summary>
-        /// <param name="documentID"></param
-        /// <param name="db"></param>
-        /// <param name="transaction"></param>
-        /// <param name="userID"></param>
-        /// <returns></returns>
-        [Obsolete("This method goes away in Feline.", true)]
-        private void ClearExtractedData(int documentID, Database db, DbTransaction transaction)
-        {
-            try
-            {
-                string spClearExtractedData = SPGlossaryTerm.SP_CLEAR_GLOSSARY_DATA;
-                using (DbCommand clearCommand = db.GetStoredProcCommand(spClearExtractedData))
-                {
-                    clearCommand.CommandType = CommandType.StoredProcedure;
-                    db.AddInParameter(clearCommand, "@DocumentID", DbType.Int32, documentID);
-                    db.ExecuteNonQuery(clearCommand, transaction);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Database Error: Clearing glossary term data failed. Document CDRID=" + documentID.ToString(), e);
             }
         }
 
