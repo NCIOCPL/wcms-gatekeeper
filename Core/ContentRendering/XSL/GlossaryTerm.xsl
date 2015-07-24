@@ -16,10 +16,20 @@
     Set the audienceCode, languageCode, and dictionaryCode variables to use the same values
     as the CDR. These variables provide a translation from the constants used by GateKeeper.
   -->
+  <!-- General Audience code. MediaLink image uses different values. -->
   <xsl:variable name="audienceCode">
     <xsl:choose>
       <xsl:when test="$targetAudience = 'Patient'">Patient</xsl:when>
       <xsl:when test="$targetAudience = 'HealthProfessional'">Health professional</xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+
+  <!-- MediaLink elements of type image/jpeg use a different string literal for identifying
+      the audience.-->
+  <xsl:variable name="imageLinkAudienceCode">
+    <xsl:choose>
+      <xsl:when test="$targetAudience = 'Patient'">Patients</xsl:when>
+      <xsl:when test="$targetAudience = 'HealthProfessional'">Health_professionals</xsl:when>
     </xsl:choose>
   </xsl:variable>
 
@@ -37,9 +47,12 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:template match="/GlossaryTerm">
-<!-- Create the JSON structure directly within the root template. -->
-term: {
+  
+  <!--
+    Match for the root (GlossaryTerm) element.  The entire JSON structure is created here.
+  -->
+  <xsl:template match="/GlossaryTerm"><!--
+-->term: {
   id: "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@id"/></xsl:call-template>",
   term: "<xsl:call-template name="RenderTermName" />",
   alias: [ ], <!-- The alias array is always empty for Glossary Term docs. -->
@@ -100,7 +113,7 @@ term: {
   <xsl:template name="RenderDefinition">
 <!--
   Using copy-of to copy nested elements, value-of to retrieve only the text.
-  Is the "copy-of" the right way to do this?
+  Is "copy-of" the right way to do this?
 -->
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
@@ -119,22 +132,28 @@ term: {
   </xsl:template>
   
   <xsl:template name="RenderImageMediaLinks">
-    <xsl:if test="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$audienceCode]">
+    <xsl:if test="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
+      <xsl:variable name="count" select="count(//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode])" />
   images: [
-      <xsl:for-each select="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$audienceCode]">
-        <xsl:apply-templates select="."/>
-  </xsl:for-each>],
-    </xsl:if>
+      <xsl:for-each select="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
+        <xsl:apply-templates select="." mode="images"/><!--
+    Output a comma unless this is the last element of the set.
+    --><xsl:if test="position() != $count">,</xsl:if>
+  </xsl:for-each>
+    ],<!--
+--></xsl:if>
   </xsl:template>
 
-  <xsl:template match="MediaLink">
-    {
-      ref: "NOT_IMPLEMENTED",
+  <xsl:template match="MediaLink" mode="images">
+  {
+      ref: "CDR<xsl:call-template name="GetNumericID">
+        <xsl:with-param name="cdrid" select="@ref" />
+      </xsl:call-template>.jpg",
       alt: "<xsl:value-of select="@alt"/>"
       <!-- If caption is rendered, it includes a comma for alt.-->
       <xsl:if test="Caption[@language = $languageCode]">, caption: "<xsl:copy-of select="Caption"/>"</xsl:if>
-    }
-  </xsl:template>
+    }<!--
+--></xsl:template>
 
 
   <xsl:template name="RenderPronunciation">
