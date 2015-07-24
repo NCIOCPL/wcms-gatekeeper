@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using GateKeeper.DocumentObjects.Dictionary;
+
 namespace GateKeeper.DocumentObjects.Terminology
 {
     /// <summary>
@@ -44,6 +46,13 @@ namespace GateKeeper.DocumentObjects.Terminology
             get { return _definitionAudience; }
             set { _definitionAudience = value; }
         }
+
+        /// <summary>
+        /// The single dictionary entry that comes from a TerminologyDocument.
+        /// This element is only set when the term's SemanticTypes collection
+        /// includes a value of "drug/agent."
+        /// </summary>
+        public GeneralDictionaryEntry DictionaryEntry { get; set; }
 
         /// <summary>
         /// Text of the definition.
