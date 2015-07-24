@@ -51,46 +51,48 @@
   <!--
     Match for the root (GlossaryTerm) element.  The entire JSON structure is created here.
   -->
-  <xsl:template match="/GlossaryTerm"><!--
--->term: {
-  id: "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@id"/></xsl:call-template>",
-  term: "<xsl:call-template name="RenderTermName" />",
-  alias: [ ], <!-- The alias array is always empty for Glossary Term docs. -->
+  <xsl:template match="/GlossaryTerm">
+{
+"term": {
+  "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@id"/></xsl:call-template>",
+  "term": "<xsl:call-template name="RenderTermName" />",
+  "alias": [ ], <!-- The alias array is always empty for Glossary Term docs. -->
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
   <xsl:call-template name="RenderImageMediaLinks" />
   <xsl:call-template name="RenderPronunciation" />
-  related: {
-    drug_summary: [
+  "related": {
+    "drug_summary": [
       {
-        language: "en",
-        text: "Related Drug Summary",
-        url: "http://www.cancer.gov/publications/dictionaries/cancer-terms?cdrid=45693"
+        "language": "en",
+        "text": "Related Drug Summary",
+        "url": "http://www.cancer.gov/publications/dictionaries/cancer-terms?cdrid=45693"
       }
     ],
-    external: [
+    "external": [
       {
-        language: "en",
-        text: "Great Googly Moogly!",
-        url: "http://www.google.com/"
+        "language": "en",
+        "text": "Great Googly Moogly!",
+        "url": "http://www.google.com/"
       }
     ],
-    summary: [
+    "summary": [
       {
-        language: "en",
-        text: "A Summary",
-        url: "http://www.cancer.gov/types/lung/patient/non-small-cell-lung-treatment-pdq"
+        "language": "en",
+        "text": "A Summary",
+        "url": "http://www.cancer.gov/types/lung/patient/non-small-cell-lung-treatment-pdq"
       }
     ],
-    term: [
+    "term": [
       {
-        dictionary: "Term",
-        id: "12345",
-        text: "A related Term"
+        "dictionary": "Term",
+        "id": "12345",
+        "text": "A related Term"
       }
     ]
   }
+}
 }
   </xsl:template>
 
@@ -103,11 +105,11 @@
   </xsl:template>
 
   <xsl:template name="RenderDateFirstPublished">
-    <xsl:if test="//DateFirstPublished">date_first_published: "<xsl:value-of select="//DateFirstPublished"/>", </xsl:if>
+    <xsl:if test="//DateFirstPublished">"date_first_published": "<xsl:value-of select="//DateFirstPublished"/>", </xsl:if>
   </xsl:template>
 
   <xsl:template name="RenderDateLastModified">
-    <xsl:if test="//DateLastModified">date_last_modified: "<xsl:value-of select="//DateLastModified"/>", </xsl:if>
+    <xsl:if test="//DateLastModified">"date_last_modified": "<xsl:value-of select="//DateLastModified"/>", </xsl:if>
   </xsl:template>
 
   <xsl:template name="RenderDefinition">
@@ -117,15 +119,15 @@
 -->
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
-  definition: {
-    html: "<xsl:copy-of  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    text: "<xsl:value-of select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
+  "definition": {
+    "html": "<xsl:copy-of  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
+    "text": "<xsl:value-of select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
-  definition: {
-    html: "<xsl:copy-of  select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    text: "<xsl:value-of select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
+  "definition": {
+    "html": "<xsl:copy-of  select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
+    "text": "<xsl:value-of select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
   },
       </xsl:when>
     </xsl:choose>
@@ -134,7 +136,7 @@
   <xsl:template name="RenderImageMediaLinks">
     <xsl:if test="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
       <xsl:variable name="count" select="count(//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode])" />
-  images: [
+  "images": [
       <xsl:for-each select="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
         <xsl:apply-templates select="." mode="images"/><!--
     Output a comma unless this is the last element of the set.
@@ -146,12 +148,12 @@
 
   <xsl:template match="MediaLink" mode="images">
   {
-      ref: "CDR<xsl:call-template name="GetNumericID">
+      "ref": "CDR<xsl:call-template name="GetNumericID">
         <xsl:with-param name="cdrid" select="@ref" />
       </xsl:call-template>.jpg",
-      alt: "<xsl:value-of select="@alt"/>"
+      "alt": "<xsl:value-of select="@alt"/>"
       <!-- If caption is rendered, it includes a comma for alt.-->
-      <xsl:if test="Caption[@language = $languageCode]">, caption: "<xsl:copy-of select="Caption"/>"</xsl:if>
+      <xsl:if test="Caption[@language = $languageCode]">, "caption": "<xsl:copy-of select="Caption"/>"</xsl:if>
     }<!--
 --></xsl:template>
 
@@ -163,19 +165,19 @@
 
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
-  pronunciation: {
-    audio: "<xsl:call-template name="GetNumericID">
+  "pronunciation": {
+    "audio": "<xsl:call-template name="GetNumericID">
       <xsl:with-param name="cdrid" select="$audioMediaID" />
     </xsl:call-template>.mp3",
-    key: "<xsl:value-of select="//TermPronunciation"/>"
+    "key": "<xsl:value-of select="//TermPronunciation"/>"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
-  pronunciation: {
-    audio: "<xsl:call-template name="GetNumericID">
+  "pronunciation": {
+    "audio": "<xsl:call-template name="GetNumericID">
       <xsl:with-param name="cdrid" select="$audioMediaID" />
     </xsl:call-template>.mp3",
-    key: "" <!-- Never present for Spanish. -->
+    "key": "" <!-- Never present for Spanish. -->
   },
       </xsl:when>
     </xsl:choose>
