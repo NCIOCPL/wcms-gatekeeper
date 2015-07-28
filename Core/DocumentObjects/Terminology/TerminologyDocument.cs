@@ -48,11 +48,11 @@ namespace GateKeeper.DocumentObjects.Terminology
         }
 
         /// <summary>
-        /// The single dictionary entry that comes from a TerminologyDocument.
+        /// The dictionary entry that comes from a TerminologyDocument.
         /// This element is only set when the term's SemanticTypes collection
         /// includes a value of "drug/agent."
         /// </summary>
-        public GeneralDictionaryEntry DictionaryEntry { get; set; }
+        public GeneralDictionaryEntry[] DictionaryEntry { get; set; }
 
         /// <summary>
         /// Text of the definition.
