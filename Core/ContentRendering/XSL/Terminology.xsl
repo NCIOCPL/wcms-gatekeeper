@@ -56,40 +56,8 @@
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
-  <xsl:call-template name="RenderImageMediaLinks" />
-  <xsl:call-template name="RenderPronunciation" />
-  "related": {
-    "drug_summary": [
-      <!--{
-        "language": "en",
-        "text": "Related Drug Summary",
-        "url": "http://www.cancer.gov/publications/dictionaries/cancer-terms?cdrid=45693"
-      }-->
-    ],
-    "external": [
-      <!--{
-        "language": "en",
-        "text": "Great Googly Moogly!",
-        "url": "http://www.google.com/"
-      }-->
-    ],
-    "summary": [
-      <!--{
-        "language": "en",
-        "text": "A Summary",
-        "url": "http://www.cancer.gov/types/lung/patient/non-small-cell-lung-treatment-pdq"
-      }-->
-    ],
-    "term": [
-      <!--{
-        "dictionary": "Term",
-        "id": "12345",
-        "text": "A related Term"
-      }-->
-    ]
-  }
-}
-}
+ } <!-- end term -->
+} <!-- end JSON -->
   </xsl:template>
 
   <xsl:template name="RenderTermName">
@@ -119,77 +87,29 @@
     <xsl:if test="//DateLastModified">"date_last_modified": "<xsl:value-of select="//DateLastModified"/>", </xsl:if>
   </xsl:template>
 
+  <!--
+    Renders the data structure containing the term's definition.
+    
+    NOTE: Makes use of a locally defined "ExternalRef" template, rather than the one found in CommonElements.xsl.
+
+          This is the last item in the output data structure and therefore does not render a comma
+          at the end.
+  -->
   <xsl:template name="RenderDefinition">
-<!--
-  Using copy-of to copy nested elements, value-of to retrieve only the text.
-  Is "copy-of" the right way to do this?
--->
-    <xsl:choose>
-      <xsl:when test="$targetLanguage = 'English'">
   "definition": {
-    "html": "<xsl:copy-of  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:value-of select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
-  },
-      </xsl:when>
-      <xsl:when test="$targetLanguage = 'Spanish'">
-  "definition": {
-    "html": "<xsl:copy-of  select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:value-of select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
-  },
-      </xsl:when>
-    </xsl:choose>
+    "html": "<xsl:apply-templates select="//Definition/DefinitionText" />",
+    "text": "<xsl:value-of select="//Definition/DefinitionText" />"
+  }
   </xsl:template>
+
+
   
-  <xsl:template name="RenderImageMediaLinks">
-    <xsl:if test="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
-      <xsl:variable name="count" select="count(//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode])" />
-  "images": [
-      <xsl:for-each select="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
-        <xsl:apply-templates select="." mode="images"/><!--
-    Output a comma unless this is the last element of the set.
-    --><xsl:if test="position() != $count">,</xsl:if>
-  </xsl:for-each>
-    ],<!--
---></xsl:if>
-  </xsl:template>
-
-  <xsl:template match="MediaLink" mode="images">
-  {
-      "ref": "CDR<xsl:call-template name="GetNumericID">
-        <xsl:with-param name="cdrid" select="@ref" />
-      </xsl:call-template>.jpg",
-      "alt": "<xsl:value-of select="@alt"/>"
-      <!-- If caption is rendered, it includes a comma for alt.-->
-      <xsl:if test="Caption[@language = $languageCode]">, "caption": "<xsl:copy-of select="Caption"/>"</xsl:if>
-    }<!--
---></xsl:template>
-
-
-  <xsl:template name="RenderPronunciation">
-    <xsl:variable name="audioMediaID">
-      <xsl:value-of select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref"/>
-    </xsl:variable>
-
-    <xsl:choose>
-      <xsl:when test="$targetLanguage = 'English'">
-  "pronunciation": {
-    "audio": "<xsl:call-template name="GetNumericID">
-      <xsl:with-param name="cdrid" select="$audioMediaID" />
-    </xsl:call-template>.mp3",
-    "key": "<xsl:value-of select="//TermPronunciation"/>"
-  },
-      </xsl:when>
-      <xsl:when test="$targetLanguage = 'Spanish'">
-  "pronunciation": {
-    "audio": "<xsl:call-template name="GetNumericID">
-      <xsl:with-param name="cdrid" select="$audioMediaID" />
-    </xsl:call-template>.mp3",
-    "key": "" <!-- Never present for Spanish. -->
-  },
-      </xsl:when>
-    </xsl:choose>
-  </xsl:template>
-
+  <!--
+  
+    Begin utility templates
+    
+  -->
+  
 
   <!--
     GetNumericID - Converts an id formatted CDR000012345 to a number with no leading zeros.
@@ -206,5 +126,15 @@
     -->
     <xsl:value-of select="number(substring-after(translate($cdrid,'CDR','cdr'), 'cdr0'))" />
   </xsl:template>
+
+
+  <!--
+    ExternalRef - matches the ExternalRef template, outputting external URLs in an <a> tag.
+    
+    This overrides the ExternalRef template seen in CommonElements.xsl
+  -->
+  <xsl:template match="ExternalRef"><!--
+    -->&lt;a class=\"navigation-dark-red\" href=\"<xsl:value-of select="@xref" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
+--></xsl:template>
   
 </xsl:stylesheet>
