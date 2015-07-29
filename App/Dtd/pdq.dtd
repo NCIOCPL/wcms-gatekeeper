@@ -1,6 +1,6 @@
 <!-- PDQ DTD
 
-   $Id: pdqCG.dtd 13152 2015-05-16 14:14:20Z bkline $
+   $Id: pdqCG.dtd 13231 2015-06-18 23:47:49Z volker $
 
    This DTD defines the external structure of the NCI PDQ XML data
    This version is for Cancer.gov only!  Do not provide to licensees.
@@ -431,6 +431,8 @@
                            MobileURL?,
                            MainTopics+,
                            SecondaryTopics*,
+                           SummaryAbstract?,
+                           SummaryKeyWords?,
                            PermaTargs?
                           )>
                            <!--
@@ -470,6 +472,14 @@
 <!ELEMENT MobileURL (#PCDATA)>
 <!ATTLIST MobileURL xref CDATA #REQUIRED>
 
+<!ELEMENT SummaryLanguage (#PCDATA)>
+
+<!-- Used to add an abstract for PubMed -->
+<!ELEMENT SummaryAbstract         (Para+)>
+
+<!ELEMENT SummaryKeyWords (SummaryKeyWord+)>
+<!ELEMENT SummaryKeyWord (#PCDATA)>
+
 <!-- Used by Cancer.gov website to create permanent links -->
 <!ELEMENT PermaTargs (PermaTarg+)>
 
@@ -478,8 +488,6 @@
                     PermaTargId CDATA #REQUIRED
                     PermaTargTitle CDATA #IMPLIED
                     PermaTargUrl CDATA #IMPLIED>
-
-<!ELEMENT SummaryLanguage (#PCDATA)>
 
 <!-- Link to original version of translation
   The id of the original version of a translated summary -->
