@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <xsl:output method="text" indent="yes"/>
+  <xsl:import href="Common/JSON-common-templates.xsl"/>
+  <xsl:output method="text" indent="yes"/>
 
   <!-- Default targets are English, Patient, Cancer.gov dictionary -->
   <xsl:param        name = "targetLanguage"
@@ -113,20 +114,16 @@
   </xsl:template>
 
   <xsl:template name="RenderDefinition">
-<!--
-  Using copy-of to copy nested elements, value-of to retrieve only the text.
-  Is "copy-of" the right way to do this?
--->
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
   "definition": {
-    "html": "<xsl:copy-of  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
+    "html": "<xsl:apply-templates  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
     "text": "<xsl:value-of select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
   "definition": {
-    "html": "<xsl:copy-of  select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
+    "html": "<xsl:apply-templates select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
     "text": "<xsl:value-of select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
   },
       </xsl:when>
@@ -183,21 +180,4 @@
     </xsl:choose>
   </xsl:template>
 
-
-  <!--
-    GetNumericID - Converts an id formatted CDR000012345 to a number with no leading zeros.
-    
-    Args:
-      cdrid - A numeric ID with the first four characters being "CDR0".
-  -->
-  <xsl:template name="GetNumericID">
-    <xsl:param name="cdrid" />
-    <!--
-      translate - renders the letters to lowercase.
-      substring-after - remove the leading "cdr0"
-      number - convert to numeric, implictly removing leading zeros.
-    -->
-    <xsl:value-of select="number(substring-after(translate($cdrid,'CDR','cdr'), 'cdr0'))" />
-  </xsl:template>
-  
 </xsl:stylesheet>
