@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <xsl:output method="text" indent="yes"/>
+  <xsl:import href="Common/JSON-common-templates.xsl"/>
+  <xsl:output method="text" indent="yes"/>
 
 <!--
   This is the stylesheet for rendering Terminology documents into the JSON structure
@@ -90,7 +91,7 @@
   <!--
     Renders the data structure containing the term's definition.
     
-    NOTE: Makes use of a locally defined "ExternalRef" template, rather than the one found in CommonElements.xsl.
+    NOTE: Makes use of a locally defined "ExternalRef" template, rather than the one found in JSON-common-templates.
 
           This is the last item in the output data structure and therefore does not render a comma
           at the end.
@@ -112,26 +113,9 @@
   
 
   <!--
-    GetNumericID - Converts an id formatted CDR000012345 to a number with no leading zeros.
-    
-    Args:
-      cdrid - A numeric ID with the first four characters being "CDR0".
-  -->
-  <xsl:template name="GetNumericID">
-    <xsl:param name="cdrid" />
-    <!--
-      translate - renders the letters to lowercase.
-      substring-after - remove the leading "cdr0"
-      number - convert to numeric, implictly removing leading zeros.
-    -->
-    <xsl:value-of select="number(substring-after(translate($cdrid,'CDR','cdr'), 'cdr0'))" />
-  </xsl:template>
-
-
-  <!--
     ExternalRef - matches the ExternalRef template, outputting external URLs in an <a> tag.
     
-    This overrides the ExternalRef template seen in CommonElements.xsl
+    This overrides the ExternalRef template seen in Common/JSON-common-templates.xsl
   -->
   <xsl:template match="ExternalRef"><!--
     -->&lt;a class=\"navigation-dark-red\" href=\"<xsl:value-of select="@xref" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
