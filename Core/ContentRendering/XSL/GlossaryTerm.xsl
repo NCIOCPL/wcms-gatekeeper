@@ -63,36 +63,7 @@
   <xsl:call-template name="RenderDefinition" />
   <xsl:call-template name="RenderImageMediaLinks" />
   <xsl:call-template name="RenderPronunciation" />
-  "related": {
-    "drug_summary": [
-      <!--{
-        "language": "en",
-        "text": "Related Drug Summary",
-        "url": "http://www.cancer.gov/publications/dictionaries/cancer-terms?cdrid=45693"
-      }-->
-    ],
-    "external": [
-      <!--{
-        "language": "en",
-        "text": "Great Googly Moogly!",
-        "url": "http://www.google.com/"
-      }-->
-    ],
-    "summary": [
-      <!--{
-        "language": "en",
-        "text": "A Summary",
-        "url": "http://www.cancer.gov/types/lung/patient/non-small-cell-lung-treatment-pdq"
-      }-->
-    ],
-    "term": [
-      <!--{
-        "dictionary": "Term",
-        "id": "12345",
-        "text": "A related Term"
-      }-->
-    ]
-  }
+  <xsl:call-template name="RenderRelatedInformation" />
 }
 }
   </xsl:template>
@@ -178,6 +149,84 @@
   },
       </xsl:when>
     </xsl:choose>
+  </xsl:template>
+
+  <!--
+    Renders the Related Information structure.
+    
+    NOTE: This is the last item in the output data structure and therefore does not render a comma
+          at the end.
+  -->
+  <xsl:template name="RenderRelatedInformation">
+    "related": {
+    <xsl:call-template name="RenderRelatedDrugSummaries" />
+    <xsl:call-template name="RenderRelatedExternalRefs" />
+    <xsl:call-template name="RenderRelatedSummaryRefs" />
+    <xsl:call-template name="RenderRelatedTermRefs" />
+    }
+  </xsl:template>
+
+  <!--
+    Helper template to render the Drug Info Summary portion of the related information section.
+  -->
+  <xsl:template name="RenderRelatedDrugSummaries">
+    "drug_summary": [
+      <xsl:variable name="count" select="count(//RelatedInformation/RelatedDrugSummaryRef)" />
+      <xsl:for-each select="//RelatedInformation/RelatedDrugSummaryRef">{
+          "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
+          "text" : "<xsl:value-of select="node()"/>
+      }<xsl:if test="position() != $count">,
+      </xsl:if>
+      </xsl:for-each>
+    ],
+  </xsl:template>
+
+  <!--
+    Helper template to render the External reference portion of the related information section.
+  -->
+  <xsl:template name="RenderRelatedExternalRefs">
+    "external": [
+    <xsl:variable name="count" select="count(//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode])" />
+    <xsl:for-each select="//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode]">  {
+        "url": "<xsl:value-of select="@xref"/>",
+        "text": "<xsl:value-of select="node()"/>
+      }<xsl:if test="position() != $count">,
+    </xsl:if>
+    </xsl:for-each>
+    ],
+  </xsl:template>
+
+  <!--
+    Helper template to render the Summary reference portion of the related information section.
+  -->
+  <xsl:template name="RenderRelatedSummaryRefs">
+    "summary": [
+    <xsl:variable name="count" select="count(//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode])" />
+    <xsl:for-each select="//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode]">  {
+        "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
+        "text": "<xsl:value-of select="node()"/>
+      }<xsl:if test="position() != $count">,
+      </xsl:if>
+    </xsl:for-each>
+    ],
+  </xsl:template>
+
+  <!--
+    Helper template to render the Glossary Term reference portion of the related information section.
+
+    ASSUMPTION: Terms in one dictionary will only reference terms in the same dictionary.
+  -->
+  <xsl:template name="RenderRelatedTermRefs">
+    "term": [
+    <xsl:variable name="count" select="count(//RelatedInformation/RelatedGlossaryTermRef)" />
+    <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef"> {
+        "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
+        "dictionary": "<xsl:value-of select="$targetDictionary" />",
+        "text": "<xsl:value-of select="node()"/>
+      }<xsl:if test="position() != $count">,
+      </xsl:if>
+    </xsl:for-each>
+    ],
   </xsl:template>
 
 </xsl:stylesheet>
