@@ -196,7 +196,7 @@ namespace GateKeeper.DataAccess.CancerGov
                         db.ExecuteNonQuery(pushCommand, transaction);
                     }
 
-                    Dictionary.PushDocumentToPreview(terminologyDoc.DocumentID, transaction);
+                    Dictionary.PushDocumentToLive(terminologyDoc.DocumentID, transaction);
 
                     transaction.Commit();
                 }
