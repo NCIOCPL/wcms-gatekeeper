@@ -32,6 +32,8 @@ namespace GateKeeper.DocumentObjects.Terminology
             : base()
         {
             this.DocumentType = DocumentType.Terminology;
+            this.Dictionary = new List<GeneralDictionaryEntry>();
+            this.TermAliasList = new List<TermAlias>();
         }
 
         #endregion
@@ -52,7 +54,14 @@ namespace GateKeeper.DocumentObjects.Terminology
         /// This element is only set when the term's SemanticTypes collection
         /// includes a value of "drug/agent."
         /// </summary>
-        public GeneralDictionaryEntry[] DictionaryEntry { get; set; }
+        public List<GeneralDictionaryEntry> Dictionary { get; private set; }
+
+        /// <summary>
+        /// The term alias that comes from a TerminologyDocument.
+        /// This element is only set when the term's SemanticTypes collection
+        /// includes a value of "drug/agent."
+        /// </summary>
+        public List<TermAlias> TermAliasList { get; private set; }
 
         /// <summary>
         /// Text of the definition.

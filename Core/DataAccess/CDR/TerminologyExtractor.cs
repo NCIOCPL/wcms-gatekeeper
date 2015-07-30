@@ -8,6 +8,9 @@ using GateKeeper.Common.XPathKeys;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Terminology;
 using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.DocumentObjects.Dictionary;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace GateKeeper.DataAccess.CDR
 {
@@ -184,6 +187,87 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
+        /// <summary>
+        /// Extracts drug dictionary information if it exists in the document.
+        /// </summary>
+        /// <param name="xNav"></param>
+        /// <param name="terminology"></param>
+        private void ExtractDrugDictionaryItems(XmlDocument xmlDoc, TerminologyDocument terminology)
+        {
+            if (terminology.SemanticTypes.Count > 0)
+            {
+                if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
+                {
+                    try
+                    {
+                        // Use XML deserialization to extract the meta data.
+                        XmlSerializer serializer = new XmlSerializer(typeof(TerminologyMetadata));
+
+                        // Use XML Serialization to parse the dictionary entry and extract the term details.
+                        // Note that this approach is new as of the Feline release (Summer 2015) and is significantly
+                        // different from the legacy extract mechanisms used elsewhere in this codebase.
+                        TerminologyMetadata extractData;
+                        using (TextReader reader = new StringReader(xmlDoc.OuterXml))
+                        {
+                            extractData = (TerminologyMetadata)serializer.Deserialize(reader);
+                            //Populating the Audience and Definition using the pre-extracted data
+                            //Since we did not want to do ReadXML and implement ISerializable in 
+                            //the TerminologyMetadata class at this time
+                            extractData.Audience = terminology.DefinitionAudience;
+                            extractData.Definition = terminology.DefinitionText;
+                        }
+
+                        GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
+                        terminology.Dictionary.AddRange(dictionary);
+
+                        //Populating the TermAlias object using the pre-extracted data
+                        //Since we did not want to do ReadXML and implement ISerializable in 
+                        //the TerminologyMetadata class at this time
+                        foreach (TerminologyOtherName otherName in terminology.OtherNames)
+                        {
+                            TermAlias alias = new TermAlias();
+                            alias.AlternateName = otherName.Name;
+                            alias.NameType = otherName.Type;
+                            //For terminology documents the Language is set to English by default
+                            alias.Language = Language.English.ToString();
+                            terminology.TermAliasList.Add(alias);
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Extraction Error: Extracting drug dictionary items failed.  Document CDRID=" + _documentID.ToString(), e);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Creates a collection of DictionaryEntry objects from the information contained in TerminologyMetadata object.
+        /// </summary>
+        /// <param name="metadata">A TerminologyMetadata created from a Terminology XML document.</param>
+        /// <returns></returns>
+        private GeneralDictionaryEntry[] GetDictionary(TerminologyMetadata metadata)
+        {
+            List<GeneralDictionaryEntry> dictionary = new List<GeneralDictionaryEntry>();
+                      
+                GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
+                entry.TermID = _documentID;
+                entry.TermName = metadata.TermName;
+                entry.Dictionary = metadata.Dictionary;
+                entry.Language = metadata.Language;
+                entry.Audience = metadata.Audience;
+                entry.ApiVersion = "v1";
+
+                dictionary.Add(entry);
+            
+
+            return dictionary.ToArray();
+        }
+    
+                   
+
         #endregion Private Methods
 
         #region Public Methods
@@ -231,6 +315,7 @@ namespace GateKeeper.DataAccess.CDR
                 ExtractOtherNames(xNav, terminology);
                 ExtractSemanticTypes(xNav, terminology);
                 ExtractMenus(xNav, terminology);
+                ExtractDrugDictionaryItems(xmlDoc, terminology);
 
                 DocumentHelper.ExtractDates(xNav, terminology, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
             }

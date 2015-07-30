@@ -122,6 +122,7 @@
     <Compile Include="Summary\SummarySectionType.cs" />
     <Compile Include="Summary\SummaryType.cs" />
     <Compile Include="Terminology\TerminologyDocument.cs" />
+    <Compile Include="Terminology\TerminologyMetadata.cs" />
     <Compile Include="Terminology\TerminologyOtherName.cs" />
     <Compile Include="Terminology\TerminologyType.cs" />
     <Compile Include="Terminology\TermSemanticType.cs" />
