@@ -17,6 +17,9 @@ namespace GateKeeper.DataAccess.CancerGov
 {
     public class TerminologyQuery : DocumentQuery
     {
+        DictionaryQuery Dictionary = new DictionaryQuery();
+
+
         public override bool SaveDocument(Document terminologyDoc, string userID)
         {
             bool bSuccess = true;
@@ -49,6 +52,9 @@ namespace GateKeeper.DataAccess.CancerGov
 
                 // SP: Save document data
                 SaveDBDocument(TermDoc, db, transaction);
+
+                // Save the extracted dictionary entry.
+                Dictionary.SaveDocument(TermDoc.DocumentID, TermDoc.Dictionary, transaction);
 
                 transaction.Commit();
             }
@@ -98,6 +104,8 @@ namespace GateKeeper.DataAccess.CancerGov
                     // SP: Clear extracted data
                     ClearTerminologyData(terminologyDoc.DocumentID, db, transaction);
 
+                    Dictionary.DeleteDocument(terminologyDoc.DocumentID, transaction);
+
                     // SP: Clear document
                     ClearDocument(terminologyDoc.DocumentID, db, transaction, databaseName.ToString());
                     transaction.Commit();
@@ -138,8 +146,11 @@ namespace GateKeeper.DataAccess.CancerGov
                         db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, terminologyDoc.DocumentID);
                         db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
                         db.ExecuteNonQuery(pushCommand, transaction);
-                        transaction.Commit();
                     }
+
+                    Dictionary.PushDocumentToPreview(terminologyDoc.DocumentID, transaction);
+
+                    transaction.Commit();
                 }
                 catch (Exception e)
                 {
@@ -183,8 +194,11 @@ namespace GateKeeper.DataAccess.CancerGov
                         db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, terminologyDoc.DocumentID);
                         db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
                         db.ExecuteNonQuery(pushCommand, transaction);
-                        transaction.Commit();
                     }
+
+                    Dictionary.PushDocumentToPreview(terminologyDoc.DocumentID, transaction);
+
+                    transaction.Commit();
                 }
                 catch (Exception e)
                 {
