@@ -57,7 +57,7 @@ namespace GateKeeper.ContentRendering
                 XsltArgumentList renderParams = new XsltArgumentList();
                 String renderedText;
 
-                foreach (GeneralDictionaryEntry entry in termDoc.DictionaryEntry)
+                foreach (GeneralDictionaryEntry entry in termDoc.Dictionary)
                 {
                     // Clear values from any previous iteration.
                     renderParams.Clear();
