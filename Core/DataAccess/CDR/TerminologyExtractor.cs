@@ -122,7 +122,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         terminology.TermType = TerminologyType.Menu;
                     }
-                    else if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
+                     else if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
                     {
                         terminology.TermType = TerminologyType.Drug;
                     }
@@ -194,52 +194,46 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="terminology"></param>
         private void ExtractDrugDictionaryItems(XmlDocument xmlDoc, TerminologyDocument terminology)
         {
-            if (terminology.SemanticTypes.Count > 0)
+
+            if (terminology.TermType == TerminologyType.Drug)
             {
-                if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
+                try
                 {
-                    try
+                    // Use XML deserialization to extract the meta data.
+                    XmlSerializer serializer = new XmlSerializer(typeof(TerminologyMetadata));
+
+                    // Use XML Serialization to parse the dictionary entry and extract the term details.
+                    // Note that this approach is new as of the Feline release (Summer 2015) and is significantly
+                    // different from the legacy extract mechanisms used elsewhere in this codebase.
+                    TerminologyMetadata extractData;
+                    using (TextReader reader = new StringReader(xmlDoc.OuterXml))
                     {
-                        // Use XML deserialization to extract the meta data.
-                        XmlSerializer serializer = new XmlSerializer(typeof(TerminologyMetadata));
-
-                        // Use XML Serialization to parse the dictionary entry and extract the term details.
-                        // Note that this approach is new as of the Feline release (Summer 2015) and is significantly
-                        // different from the legacy extract mechanisms used elsewhere in this codebase.
-                        TerminologyMetadata extractData;
-                        using (TextReader reader = new StringReader(xmlDoc.OuterXml))
-                        {
-                            extractData = (TerminologyMetadata)serializer.Deserialize(reader);
-                            //Populating the Audience and Definition using the pre-extracted data
-                            //Since we did not want to do ReadXML and implement ISerializable in 
-                            //the TerminologyMetadata class at this time
-                            extractData.Audience = terminology.DefinitionAudience;
-                            extractData.Definition = terminology.DefinitionText;
-                        }
-
-                        GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
-                        terminology.Dictionary.AddRange(dictionary);
-
-                        //Populating the TermAlias object using the pre-extracted data
-                        //Since we did not want to do ReadXML and implement ISerializable in 
-                        //the TerminologyMetadata class at this time
-                        foreach (TerminologyOtherName otherName in terminology.OtherNames)
-                        {
-                            TermAlias alias = new TermAlias();
-                            alias.AlternateName = otherName.Name;
-                            alias.NameType = otherName.Type;
-                            //For terminology documents the Language is set to English by default
-                            alias.Language = Language.English.ToString();
-                            terminology.TermAliasList.Add(alias);
-                        }
-
+                        extractData = (TerminologyMetadata)serializer.Deserialize(reader);
                     }
-                    catch (Exception e)
+
+                    GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
+                    terminology.Dictionary.AddRange(dictionary);
+
+                    //Populating the TermAlias object using the pre-extracted data
+                    //Since we did not want to do ReadXML and implement ISerializable in 
+                    //the TerminologyMetadata class at this time
+                    foreach (TerminologyOtherName otherName in terminology.OtherNames)
                     {
-                        throw new Exception("Extraction Error: Extracting drug dictionary items failed.  Document CDRID=" + _documentID.ToString(), e);
+                        TermAlias alias = new TermAlias();
+                        alias.AlternateName = otherName.Name;
+                        alias.NameType = otherName.Type;
+                        //For terminology documents the Language is set to English by default
+                        alias.Language = Language.English.ToString();
+                        terminology.TermAliasList.Add(alias);
                     }
+
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Extraction Error: Extracting drug dictionary items failed.  Document CDRID=" + _documentID.ToString(), e);
                 }
             }
+
 
         }
 
@@ -253,11 +247,11 @@ namespace GateKeeper.DataAccess.CDR
             List<GeneralDictionaryEntry> dictionary = new List<GeneralDictionaryEntry>();
                       
                 GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
-                entry.TermID = _documentID;
+                entry.TermID = metadata.ID;
                 entry.TermName = metadata.TermName;
                 entry.Dictionary = metadata.Dictionary;
                 entry.Language = metadata.Language;
-                entry.Audience = metadata.Audience;
+                entry.Audience = metadata.Definition.Audience;
                 entry.ApiVersion = "v1";
 
                 dictionary.Add(entry);

@@ -19,7 +19,7 @@ namespace GateKeeper.DocumentObjects.Terminology
         private string _definitionText = string.Empty;
         private int     _parentTermID = 0;
         private AudienceType _definitionAudience = AudienceType.Patient;
-        private TerminologyType _termType = TerminologyType.Drug;
+        private TerminologyType _termType = TerminologyType.Other;
         private List<TerminologyOtherName> _otherNames = new List<TerminologyOtherName>();
         private List<TermSemanticType> _semanticTypes = new List<TermSemanticType>();
         private List<TerminologyMenu> _menus = new List<TerminologyMenu>();
