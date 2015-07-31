@@ -46,9 +46,6 @@ namespace GKManagers
                 case CDRDocumentType.GENETICSPROFESSIONAL:
                     promoter = new GeneticsProfessionalPromoter(dataBlock, batchID, action, userName);
                     break;
-                case CDRDocumentType.Protocol:
-                    promoter = new ProtocolPromoter(dataBlock, batchID, action, userName);
-                    break;
                 case CDRDocumentType.CTGovProtocol:
                     promoter = new CTGovProtocolPromoter(dataBlock, batchID, action, userName);
                     break;
@@ -63,7 +60,7 @@ namespace GKManagers
                     break;
                  default:
                      DocMgrLogBuilder.Instance.CreateError(typeof(DocumentPromoterFactory), "Create",
-                         string.Format("Encountered the unknown document type: {0}.", dataBlock.CDRDocType));
+                         string.Format("Encountered the unsupported document type: {0}.", dataBlock.CDRDocType));
                      throw new NotImplementedException(string.Format("Encountered the unknown document type: {0}.",
                             dataBlock.CDRDocType));
                      // promoter = new SpecificDocumentPromoter(dataBlock, batchID, action, userName);
