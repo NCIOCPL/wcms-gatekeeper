@@ -55,9 +55,9 @@
   <xsl:template match="/GlossaryTerm">
 {
 "term": {
-  "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@id"/></xsl:call-template>",
-  "term": "<xsl:call-template name="RenderTermName" />",
-  "alias": [ ], <!-- The alias array is always empty for Glossary Term docs. -->
+  <xsl:call-template name="RenderDocumentID" />
+  <xsl:call-template name="RenderTermName" />
+  <xsl:call-template name="RenderAliasList" />
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
@@ -68,14 +68,25 @@
 }
   </xsl:template>
 
+  <xsl:template name="RenderDocumentID">
+  "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="/GlossaryTerm/@id"/></xsl:call-template>",
+  </xsl:template>
+  
   <xsl:template name="RenderTermName">
-    <xsl:choose>
-      <xsl:when test="$targetLanguage = 'English'"><xsl:value-of select="//TermName"/></xsl:when>
-      <xsl:when test="$targetLanguage = 'Spanish'"><xsl:value-of select="//SpanishTermName"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="//TermName"/></xsl:otherwise>
-    </xsl:choose>
+    <xsl:variable name="termName">
+      <xsl:choose>
+        <xsl:when test="$targetLanguage = 'English'"><xsl:value-of select="//TermName"/></xsl:when>
+        <xsl:when test="$targetLanguage = 'Spanish'"><xsl:value-of select="//SpanishTermName"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="//TermName"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable><!-- Supress line break
+  -->"term": "<xsl:value-of select="$termName"/>",
   </xsl:template>
 
+  <xsl:template name="RenderAliasList">
+  "alias": [ ], <!-- The alias array is always empty for Glossary Term docs. -->
+  </xsl:template>
+  
   <xsl:template name="RenderDateFirstPublished">
     <xsl:if test="//DateFirstPublished">"date_first_published": "<xsl:value-of select="//DateFirstPublished"/>", </xsl:if>
   </xsl:template>
