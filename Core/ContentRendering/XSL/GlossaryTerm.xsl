@@ -126,29 +126,29 @@
 --></xsl:template>
 
 
+  <!--
+    Render the pronunciation data structure with pronunciation key and audio file.
+  -->
   <xsl:template name="RenderPronunciation">
-    <xsl:variable name="audioMediaID">
-      <xsl:value-of select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref"/>
+
+    <!-- Calculate media file name. -->
+    <xsl:variable name="mediaFile">
+      <xsl:call-template name="GetNumericID">
+        <xsl:with-param name="cdrid" select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref" />
+      </xsl:call-template>.mp3<!-- suppress line break.
+--></xsl:variable>
+
+    <xsl:variable name="pronunciationKey">
+      <xsl:choose>
+        <xsl:when test="$targetLanguage = 'English'"><xsl:value-of select="//TermPronunciation"/></xsl:when>
+        <xsl:when test="$targetLanguage = 'Spanish'"><!-- Never present for Spanish --></xsl:when>
+      </xsl:choose>
     </xsl:variable>
 
-    <xsl:choose>
-      <xsl:when test="$targetLanguage = 'English'">
-  "pronunciation": {
-    "audio": "<xsl:call-template name="GetNumericID">
-      <xsl:with-param name="cdrid" select="$audioMediaID" />
-    </xsl:call-template>.mp3",
-    "key": "<xsl:value-of select="//TermPronunciation"/>"
-  },
-      </xsl:when>
-      <xsl:when test="$targetLanguage = 'Spanish'">
-  "pronunciation": {
-    "audio": "<xsl:call-template name="GetNumericID">
-      <xsl:with-param name="cdrid" select="$audioMediaID" />
-    </xsl:call-template>.mp3",
-    "key": "" <!-- Never present for Spanish. -->
-  },
-      </xsl:when>
-    </xsl:choose>
+    "pronunciation": {
+      "audio": "<xsl:value-of select="$mediaFile"/>",
+      "key": "<xsl:value-of select="$pronunciationKey"/>"
+    },
   </xsl:template>
 
   <!--
