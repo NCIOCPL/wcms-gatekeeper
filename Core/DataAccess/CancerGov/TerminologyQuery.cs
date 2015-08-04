@@ -54,7 +54,7 @@ namespace GateKeeper.DataAccess.CancerGov
                 SaveDBDocument(TermDoc, db, transaction);
 
                 // Save the extracted dictionary entry.
-                Dictionary.SaveDocument(TermDoc.DocumentID, TermDoc.Dictionary, transaction);
+                Dictionary.SaveDocument(TermDoc.DocumentID, TermDoc.Dictionary, TermDoc.TermAliasList, transaction);
 
                 transaction.Commit();
             }

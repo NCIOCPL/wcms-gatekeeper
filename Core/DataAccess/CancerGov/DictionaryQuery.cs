@@ -39,7 +39,7 @@ namespace GateKeeper.DataAccess.CancerGov
         /// <param name="entries">A collection of GeneralDictionaryEntry containing the dictionary entries
         /// to be saved in the database.</param>
         /// <param name="transaction">The database transaction the save operation is to be part of.</param>
-        public void SaveDocument(int termId, IEnumerable<GeneralDictionaryEntry> entries, DbTransaction transaction)
+        public void SaveDocument(int termId, IEnumerable<GeneralDictionaryEntry> entries, IEnumerable<TermAlias> aliases,  DbTransaction transaction)
         {
             if (transaction == null)
                 throw new ArgumentException("Argument 'transaction' must not be null.");
@@ -73,9 +73,24 @@ namespace GateKeeper.DataAccess.CancerGov
                 dictionary.Rows.Add(entry.TermID, entry.TermName, entry.Dictionary, entry.Language, entry.Audience, entry.ApiVersion, entry.Object);
             }
 
+            // Create table parameter containing all aliases
+            DataTable aliasList = new DataTable("aliases");
+            aliasList.Columns.Add("TermID", typeof(int));
+            aliasList.Columns.Add("Name", typeof(String));
+            aliasList.Columns.Add("NameType", typeof(String));
+            aliasList.Columns.Add("Language", typeof(String));
+
+            // Populate the table.
+            foreach (TermAlias item in aliases)
+            {
+                aliasList.Rows.Add(termId, item.AlternateName, item.NameType, item.Language);
+            }
+
+
             SqlParameter[] parameters = new SqlParameter[]{
                 new SqlParameter("@TermID", SqlDbType.Int){Value = termId},
-                new SqlParameter("@Entries", SqlDbType.Structured){Value = dictionary}
+                new SqlParameter("@Entries", SqlDbType.Structured){Value = dictionary},
+                new SqlParameter("@Aliases", SqlDbType.Structured){Value = aliasList}
             };
 
             SqlHelper.ExecuteNonQuery(sqlTransaction, CommandType.StoredProcedure, SP_SAVE_DICTIONARY_TERM, parameters);

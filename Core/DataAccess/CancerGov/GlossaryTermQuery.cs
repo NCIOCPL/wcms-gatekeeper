@@ -51,7 +51,7 @@ namespace GateKeeper.DataAccess.CancerGov
 
                         // Save dictionary terms. That's the only artifact to come
                         // from GlossaryTerm documents.
-                        Dictionary.SaveDocument(GTDocument.DocumentID, GTDocument.Dictionary, transaction);
+                        Dictionary.SaveDocument(GTDocument.DocumentID, GTDocument.Dictionary, GTDocument.AliasList, transaction);
 
                         // Save Glossary Term document metadata.  Legacy code. (Do we need this?)
                         SaveDBDocument(GTDocument, db, transaction);

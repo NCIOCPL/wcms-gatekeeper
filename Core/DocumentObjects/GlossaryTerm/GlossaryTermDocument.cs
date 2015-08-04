@@ -19,6 +19,11 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         /// </summary>
         public List<GeneralDictionaryEntry> Dictionary { get; private set; }
 
+        /// <summary>
+        /// The collection of aliases for the term.
+        /// (GlossaryTerm documents don't include an alias element, so this collection is always empty.
+        /// </summary>
+        public List<TermAlias> AliasList { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -28,6 +33,7 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
         {
             this.DocumentType = DocumentType.GlossaryTerm;
             this.Dictionary = new List<GeneralDictionaryEntry>();
+            this.AliasList = new List<TermAlias>();
         }
 
     }
