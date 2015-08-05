@@ -30,7 +30,7 @@ namespace GateKeeper.ContentRendering
             }
             catch (Exception e)
             {
-                throw new Exception("Rendering Error: Loading summary XSL file " + xslPath + " failed.", e);
+                throw new Exception("Rendering Error: Loading XSL file " + xslPath + " failed.", e);
             }
         }
 

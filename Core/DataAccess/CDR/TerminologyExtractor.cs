@@ -211,8 +211,12 @@ namespace GateKeeper.DataAccess.CDR
                         extractData = (TerminologyMetadata)serializer.Deserialize(reader);
                     }
 
-                    GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
-                    terminology.Dictionary.AddRange(dictionary);
+                    if (extractData.HasDefinition())
+                    {
+                        GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
+                        //already initialized to empty in the TerminologyDefinition object
+                        terminology.Dictionary.AddRange(dictionary);
+                    }
 
                     //Populating the TermAlias object using the pre-extracted data
                     //Since we did not want to do ReadXML and implement ISerializable in 

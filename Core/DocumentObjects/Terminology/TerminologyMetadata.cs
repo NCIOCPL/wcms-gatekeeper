@@ -66,7 +66,7 @@ namespace GateKeeper.DocumentObjects.Terminology
         /// </summary>
         [XmlIgnore()]
         public AudienceType Audience { get; set; }
-
+               
         /// <summary>
         /// Logic for deserializing the TerminologyDefinition 
         /// </summary>
@@ -171,6 +171,11 @@ namespace GateKeeper.DocumentObjects.Terminology
 
             }
         
+        }
+
+        public bool HasDefinition() 
+        {
+            return (Definition != null && (Enum.IsDefined(typeof (AudienceType),Audience))) ;
         }
         
     }
