@@ -211,26 +211,28 @@ namespace GateKeeper.DataAccess.CDR
                         extractData = (TerminologyMetadata)serializer.Deserialize(reader);
                     }
 
+                    //Add rows to the Dictionary and DictionaryTermAlias tables only when there is a Definition
                     if (extractData.HasDefinition())
                     {
                         GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
                         //already initialized to empty in the TerminologyDefinition object
                         terminology.Dictionary.AddRange(dictionary);
-                    }
 
-                    //Populating the TermAlias object using the pre-extracted data
-                    //Since we did not want to do ReadXML and implement ISerializable in 
-                    //the TerminologyMetadata class at this time
-                    foreach (TerminologyOtherName otherName in terminology.OtherNames)
-                    {
-                        TermAlias alias = new TermAlias();
-                        alias.AlternateName = otherName.Name;
-                        alias.NameType = otherName.Type;
-                        //For terminology documents the Language is set to English by default
-                        alias.Language = Language.English.ToString();
-                        terminology.TermAliasList.Add(alias);
-                    }
+                        //Populating the TermAlias object using the pre-extracted data
+                        //Since we did not want to do ReadXML and implement ISerializable in 
+                        //the TerminologyMetadata class at this time
+                        foreach (TerminologyOtherName otherName in terminology.OtherNames)
+                        {
+                            TermAlias alias = new TermAlias();
+                            alias.AlternateName = otherName.Name;
+                            alias.NameType = otherName.Type;
+                            //For terminology documents the Language is set to English by default
+                            alias.Language = Language.English.ToString();
+                            terminology.TermAliasList.Add(alias);
+                        }
 
+                    }
+                    
                 }
                 catch (Exception e)
                 {
