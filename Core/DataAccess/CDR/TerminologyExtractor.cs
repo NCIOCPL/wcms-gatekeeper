@@ -212,7 +212,7 @@ namespace GateKeeper.DataAccess.CDR
                     }
 
                     //Add rows to the Dictionary and DictionaryTermAlias tables only when there is a Definition
-                    if (extractData.HasDefinition())
+                    if (extractData.HasDefinition)
                     {
                         GeneralDictionaryEntry[] dictionary = GetDictionary(extractData);
                         //already initialized to empty in the TerminologyDefinition object
