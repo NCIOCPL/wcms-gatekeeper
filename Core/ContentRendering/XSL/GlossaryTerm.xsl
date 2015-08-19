@@ -183,9 +183,9 @@
   <xsl:template name="RenderRelatedDrugSummaries">
     "drug_summary": [
       <xsl:variable name="count" select="count(//RelatedInformation/RelatedDrugSummaryRef)" />
-      <xsl:for-each select="//RelatedInformation/RelatedDrugSummaryRef">{
-          "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
-          "text" : "<xsl:value-of select="node()"/>
+      <xsl:for-each select="//RelatedInformation/RelatedDrugSummaryRef"> {
+        "url": "<xsl:value-of select="@url"/>",
+        "text" : "<xsl:value-of select="node()"/>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
       </xsl:for-each>
@@ -200,7 +200,7 @@
     <xsl:variable name="count" select="count(//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode])" />
     <xsl:for-each select="//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode]">  {
         "url": "<xsl:value-of select="@xref"/>",
-        "text": "<xsl:value-of select="node()"/>
+        "text": "<xsl:value-of select="node()"/>"
       }<xsl:if test="position() != $count">,
     </xsl:if>
     </xsl:for-each>
@@ -214,8 +214,8 @@
     "summary": [
     <xsl:variable name="count" select="count(//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode])" />
     <xsl:for-each select="//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode]">  {
-        "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
-        "text": "<xsl:value-of select="node()"/>
+        "url": "<xsl:value-of select="@url"/>",
+        "text": "<xsl:value-of select="node()"/>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
     </xsl:for-each>
@@ -233,11 +233,11 @@
     <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef"> {
         "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
         "dictionary": "<xsl:value-of select="$targetDictionary" />",
-        "text": "<xsl:value-of select="node()"/>
+        "text": "<xsl:value-of select="node()"/>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
     </xsl:for-each>
-    ],
+    ]<!-- No comma because this is the last sub-element in  the releated items structure-->
   </xsl:template>
 
 </xsl:stylesheet>
