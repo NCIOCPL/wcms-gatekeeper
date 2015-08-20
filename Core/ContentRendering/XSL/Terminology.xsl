@@ -46,20 +46,16 @@
 
   
   <!--
-    Match for the root (GlossaryTerm) element.  The entire JSON structure is created here.
+    Match for the root (Term) element.  The entire JSON structure is created here.
   -->
-  <xsl:template match="/Term">
-{
-"term": {
+<xsl:template match="/Term">
   <xsl:call-template name="RenderDocumentID" />
   <xsl:call-template name="RenderTermName" />
   <xsl:call-template name="RenderAliasList" />
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
- } <!-- end term -->
-} <!-- end JSON -->
-  </xsl:template>
+</xsl:template>
 
   <xsl:template name="RenderDocumentID">
   "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="/Term/@id"/></xsl:call-template>",
