@@ -62,7 +62,7 @@
   </xsl:template>
   
   <xsl:template name="RenderTermName">
-  "term": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="//PreferredName"/></xsl:call-template>",
+  "term": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="//PreferredName"/></xsl:call-template>",
   </xsl:template>
 
   <xsl:template name="RenderAliasList">
@@ -71,8 +71,8 @@
         <xsl:variable name="count" select="count(//OtherName)"/>
         [<xsl:for-each select="//OtherName">
           {
-            "name": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="OtherTermName"/></xsl:call-template>",
-            "type": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="OtherNameType"/></xsl:call-template>"
+            "name": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="OtherTermName"/></xsl:call-template>",
+            "type": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="OtherNameType"/></xsl:call-template>"
           }<xsl:if test="position() != $count">,</xsl:if>
       </xsl:for-each>]
       </xsl:when>
@@ -99,7 +99,7 @@
   <xsl:template name="RenderDefinition">
   "definition": {
     "html": "<xsl:apply-templates select="//Definition/DefinitionText" />",
-    "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="//Definition/DefinitionText" /></xsl:call-template>"
+    "text": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="//Definition/DefinitionText" /></xsl:call-template>"
   }
   </xsl:template>
 
@@ -125,7 +125,7 @@
     Helper template for any element which must be output without spaces.
   -->
   <xsl:template match="DefinitionText">
-    <xsl:call-template name="OutputJsonText">
+    <xsl:call-template name="CreateJsonText">
       <xsl:with-param name="text" select="." />
     </xsl:call-template>
   </xsl:template>
