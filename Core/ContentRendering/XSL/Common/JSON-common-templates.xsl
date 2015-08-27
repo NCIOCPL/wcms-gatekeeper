@@ -34,4 +34,14 @@
 --></xsl:template>
 
 
+  <!--
+    Convert a blob of text into text suitable for inclusion in a JavaScript string literal.
+  -->
+  <xsl:template name="OutputJsonText">
+    <xsl:param name="text" /><!--
+      Transform linefeed and newline into spaces.  (Simply removing them can result in words separated by only
+      a newline being placed together.)
+    --><xsl:value-of select="translate($text, '&#xa;&#xd;','  ')"/>
+  </xsl:template>
+
 </xsl:stylesheet>

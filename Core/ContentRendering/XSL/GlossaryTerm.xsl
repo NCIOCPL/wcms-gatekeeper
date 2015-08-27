@@ -96,23 +96,23 @@
       <xsl:when test="$targetLanguage = 'English'">
   "definition": {
     "html": "<xsl:apply-templates  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:value-of select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
+    "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" /></xsl:call-template>"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
   "definition": {
     "html": "<xsl:apply-templates select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:value-of select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />"
+    "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" /></xsl:call-template>"
   },
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template name="RenderImageMediaLinks">
     <xsl:if test="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
       <xsl:variable name="count" select="count(//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode])" />
   "images": [
-      <xsl:for-each select="//MediaLink[@type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
+      <xsl:for-each select="//MediaLink[string-length(@ref) > 0 and @type='image/jpeg' and @language=$languageCode and @audience=$imageLinkAudienceCode]">
         <xsl:apply-templates select="." mode="images"/><!--
     Output a comma unless this is the last element of the set.
     --><xsl:if test="position() != $count">,</xsl:if>
@@ -126,9 +126,9 @@
       "ref": "CDR<xsl:call-template name="GetNumericID">
         <xsl:with-param name="cdrid" select="@ref" />
       </xsl:call-template>.jpg",
-      "alt": "<xsl:value-of select="@alt"/>"
+      "alt": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="@alt" /></xsl:call-template>"
       <!-- If caption is rendered, it includes a comma for alt.-->
-      <xsl:if test="Caption[@language = $languageCode]">, "caption": "<xsl:copy-of select="Caption"/>"</xsl:if>
+      <xsl:if test="Caption[@language = $languageCode]">, "caption": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="Caption"/></xsl:call-template>"</xsl:if>
     }<!--
 --></xsl:template>
 
@@ -181,7 +181,7 @@
       <xsl:variable name="count" select="count(//RelatedInformation/RelatedDrugSummaryRef)" />
       <xsl:for-each select="//RelatedInformation/RelatedDrugSummaryRef"> {
         "url": "<xsl:value-of select="@url"/>",
-        "text" : "<xsl:value-of select="node()"/>"
+        "text" : "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
       </xsl:for-each>
@@ -196,7 +196,7 @@
     <xsl:variable name="count" select="count(//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode])" />
     <xsl:for-each select="//RelatedInformation/RelatedExternalRef[@UseWith = $languageCode]">  {
         "url": "<xsl:value-of select="@xref"/>",
-        "text": "<xsl:value-of select="node()"/>"
+        "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
       }<xsl:if test="position() != $count">,
     </xsl:if>
     </xsl:for-each>
@@ -211,7 +211,7 @@
     <xsl:variable name="count" select="count(//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode])" />
     <xsl:for-each select="//RelatedInformation/RelatedSummaryRef[@UseWith = $languageCode]">  {
         "url": "<xsl:value-of select="@url"/>",
-        "text": "<xsl:value-of select="node()"/>"
+        "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
     </xsl:for-each>
@@ -229,11 +229,18 @@
     <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef"> {
         "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
         "dictionary": "<xsl:value-of select="$targetDictionary" />",
-        "text": "<xsl:value-of select="node()"/>"
+        "text": "<xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
       }<xsl:if test="position() != $count">,
       </xsl:if>
     </xsl:for-each>
     ]<!-- No comma because this is the last sub-element in  the releated items structure-->
+  </xsl:template>
+
+  <!--
+    Helper template for any element which must be output without spaces.
+  -->
+  <xsl:template match="DefinitionText">
+    <xsl:call-template name="OutputJsonText"><xsl:with-param name="text" select="." /></xsl:call-template>
   </xsl:template>
 
 </xsl:stylesheet>
