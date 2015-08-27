@@ -7,6 +7,7 @@
 >
     <xsl:output method="text" indent="yes"/>
 
+  
   <!--
     GetNumericID - Converts an id formatted CDR000012345 to a number with no leading zeros.
     
@@ -39,9 +40,9 @@
   -->
   <xsl:template name="OutputJsonText">
     <xsl:param name="text" /><!--
-      Transform linefeed and newline into spaces.  (Simply removing them can result in words separated by only
+      translate() changes linefeed and newline into spaces.  (Simply removing them can result in words separated by only
       a newline being placed together.)
-    --><xsl:value-of select="translate($text, '&#xa;&#xd;','  ')"/>
+    --><xsl:value-of select="normalize-space(translate($text, '&#xa;&#xd;','  '))"/>
   </xsl:template>
 
 </xsl:stylesheet>
