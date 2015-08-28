@@ -140,10 +140,12 @@
 
     <!-- Calculate media file name. -->
     <xsl:variable name="mediaFile">
-      <xsl:call-template name="GetNumericID">
-        <xsl:with-param name="cdrid" select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref" />
-      </xsl:call-template>.mp3<!-- suppress line break.
---></xsl:variable>
+      <xsl:if test="//MediaLink[string-length(@ref) > 0 and @type='audio/mpeg' and @language=$languageCode]">
+        <xsl:call-template name="GetNumericID">
+          <xsl:with-param name="cdrid" select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref" />
+       </xsl:call-template>.mp3<!-- suppress line break.
+  --></xsl:if>
+    </xsl:variable>
 
     <xsl:variable name="pronunciationKey">
       <xsl:choose>
