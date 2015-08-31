@@ -154,10 +154,11 @@
       </xsl:choose>
     </xsl:variable>
 
+    <xsl:if test="string-length($mediaFile) > 0 or string-length($pronunciationKey) > 0">
     "pronunciation": {
       "audio": "<xsl:value-of select="$mediaFile"/>",
       "key": "<xsl:value-of select="$pronunciationKey"/>"
-    },
+    },</xsl:if>
   </xsl:template>
 
   <!--
