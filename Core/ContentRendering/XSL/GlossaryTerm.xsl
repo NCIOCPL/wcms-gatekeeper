@@ -238,7 +238,7 @@
     "term": [
     <xsl:variable name="count" select="count(//RelatedInformation/RelatedGlossaryTermRef[@UseWith = $languageCode and @audience = $targetAudience])" />
     <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef[@UseWith = $languageCode and @audience = $targetAudience]"> {
-        "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
+        "id": <xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>,
         "dictionary": "<xsl:value-of select="$targetDictionary" />",
         "text": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
       }<xsl:if test="position() != $count">,
