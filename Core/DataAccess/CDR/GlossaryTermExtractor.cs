@@ -46,10 +46,6 @@ namespace GateKeeper.DataAccess.CDR
 
             try
             {
-                // Copy the the XML into the Glossary Term business object
-                DocumentHelper.CopyXml(xmlDoc, glossaryTermDocument);
-
-
                 // Use XML deserialization to extract the meta data.
                 XmlSerializer serializer = new XmlSerializer(typeof(GlossaryTermMetadata));
 
@@ -67,6 +63,10 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Hack to rewrite related Glosssary Term elements.
                 RewriteRelatedGlossaryTerms(xmlDoc, document);
+
+                // Copy the the XML document into the Glossary Term business object because that's
+                // where all the rest of the code expects to find it.
+                DocumentHelper.CopyXml(xmlDoc, glossaryTermDocument);
             }
             catch (Exception e)
             {
