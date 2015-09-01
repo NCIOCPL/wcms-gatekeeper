@@ -21,6 +21,8 @@ namespace GateKeeper.DataAccess.CancerGov
 {
     public class GlossaryTermQuery : DocumentQuery
     {
+        const String SP_GET_GLOSSARY_TERM = "usp_GetGlossaryTerm";
+
         DictionaryQuery Dictionary = new DictionaryQuery();
 
         /// <summary>
@@ -68,6 +70,85 @@ namespace GateKeeper.DataAccess.CancerGov
             }
 
             return bSuccess;
+        }
+
+
+        /// <summary>
+        /// Retrieve a brief summary of a definition.
+        /// </summary>
+        /// <param name="cdrID">The ID of the GlossaryTerm to retrieve</param>
+        /// <returns>A GlossaryTermSimple object containing the requested GlossaryTerm document.</returns>
+        public GlossaryTermSimple GetGlossaryTerm(int cdrID)
+        {
+            Database db = StagingDBWrapper.SetDatabase();
+            GlossaryTermSimple term = null;
+
+            // Get document data
+            IDataReader reader = null;
+            try
+            {
+                string spGetData = SP_GET_GLOSSARY_TERM;
+                using (DbCommand getCommand = db.GetStoredProcCommand(spGetData))
+                {
+                    getCommand.CommandType = CommandType.StoredProcedure;
+                    db.AddInParameter(getCommand, "@GlossaryTermID", DbType.Int32, cdrID);
+
+                    DataSet ds = db.ExecuteDataSet(getCommand);
+
+                    reader = db.ExecuteReader(getCommand);
+                    if (reader.Read())
+                    {
+                        // Get the Term names and pronunciation
+                        String name = reader["TermName"].ToString();
+                        String spanishName = reader["SpanishTermName"].ToString();
+                        String pronunciation = reader["TermPronunciation"].ToString();
+
+                        term = new GlossaryTermSimple(cdrID, name, spanishName, pronunciation);
+
+                        // Get as many definitions as exist.
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            // Retreive fields
+                            String tmpAudience = reader["Audience"].ToString();
+                            String tmpLanguage = reader["Language"].ToString();
+                            String definitionText = reader["DefinitionText"].ToString();
+                            String definitionHtml = reader["DefinitionHTML"].ToString();
+                            String mediaHtml = reader["MediaHTML"].ToString();
+                            String audioHtml = reader["AudioMediaHTML"].ToString();
+                            String relatedLinksHtml = reader["RelatedInformationHtml"].ToString();
+
+                            // Convert the two tempoaries into strong types.
+                            Language language = ConvertEnum<Language>.Convert(tmpLanguage);
+
+                            // Audience is stored as either "Patient" or "Health professional".  The latter can't be converted
+                            // as an enum, so we end up with a string compare.
+                            AudienceType audience;
+                            if (String.Compare(tmpAudience, "Patient", true) == 0)
+                                audience = AudienceType.Patient;
+                            else if (String.Compare(tmpAudience, "Health professional", true) == 0)
+                                audience = AudienceType.HealthProfessional;
+                            else
+                                throw new Exception("Don't know how to convert audience type: '" + tmpAudience + "'");
+
+                            GlossaryTermSimpleDefinition definition =
+                                new GlossaryTermSimpleDefinition(audience, language, definitionText, definitionHtml, mediaHtml, audioHtml, relatedLinksHtml);
+                            term.DefinitionList.Add(definition);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error: Retrieveing GlossaryTerm data from CDR staging database failed. Document CDRID=" + cdrID, ex);
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
+            }
+
+            return term;
         }
 
         /// <summary>
