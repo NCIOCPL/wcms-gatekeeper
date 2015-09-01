@@ -225,11 +225,19 @@
     Helper template to render the Glossary Term reference portion of the related information section.
 
     ASSUMPTION: Terms in one dictionary will only reference terms in the same dictionary.
+    
+    NOTE: RelatedGlossaryTermRef elements will *NOT* match the document which is sent from
+          the CDR.  During Extract processing, the RelatedGlossaryTermRef elements are rewritten
+          in GlossaryTermExtractor.RewriteRelatedGlossaryTerms() to replace any existing
+          RelatedGlossaryTermRef elements with new elements containing UseWith= and audience=
+          attributes reflecting the language and audiences for which the referenced GlossaryTerm
+          is available.  The GlossaryTerm XSL is then able to determine which JSON blocks should
+          include references to the related term and those from which it should be omitted.
   -->
   <xsl:template name="RenderRelatedTermRefs">
     "term": [
-    <xsl:variable name="count" select="count(//RelatedInformation/RelatedGlossaryTermRef)" />
-    <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef"> {
+    <xsl:variable name="count" select="count(//RelatedInformation/RelatedGlossaryTermRef[@UseWith = $languageCode and @audience = $targetAudience])" />
+    <xsl:for-each select="//RelatedInformation/RelatedGlossaryTermRef[@UseWith = $languageCode and @audience = $targetAudience]"> {
         "id": "<xsl:call-template name="GetNumericID"><xsl:with-param name="cdrid" select="@href"/></xsl:call-template>",
         "dictionary": "<xsl:value-of select="$targetDictionary" />",
         "text": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="node()" /></xsl:call-template>"
