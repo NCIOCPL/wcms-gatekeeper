@@ -825,7 +825,7 @@
         </a>
         <br/>
         <span Class="Protocol-NLMIdentifer">
-          NLM Identifer <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
+          NLM Identifier <xsl:value-of select="/CTGovProtocol/IDInfo/NCTID"/>
         </span>
       </p>
     </xsl:element>
