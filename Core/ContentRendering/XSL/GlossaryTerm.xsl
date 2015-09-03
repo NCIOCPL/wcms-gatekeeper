@@ -53,7 +53,7 @@
     Match for the root (GlossaryTerm) element.  The entire JSON structure is created here.
   -->
 <xsl:template match="/GlossaryTerm">
-  <xsl:call-template name="RenderDocumentID" />
+{ <xsl:call-template name="RenderDocumentID" />
   <xsl:call-template name="RenderTermName" />
   <xsl:call-template name="RenderAliasList" />
   <xsl:call-template name="RenderDateFirstPublished" />
@@ -62,6 +62,7 @@
   <xsl:call-template name="RenderImageMediaLinks" />
   <xsl:call-template name="RenderPronunciation" />
   <xsl:call-template name="RenderRelatedInformation" />
+}
 </xsl:template>
 
   <xsl:template name="RenderDocumentID">

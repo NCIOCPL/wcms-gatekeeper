@@ -49,12 +49,13 @@
     Match for the root (Term) element.  The entire JSON structure is created here.
   -->
 <xsl:template match="/Term">
-  <xsl:call-template name="RenderDocumentID" />
+{ <xsl:call-template name="RenderDocumentID" />
   <xsl:call-template name="RenderTermName" />
   <xsl:call-template name="RenderAliasList" />
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
+}
 </xsl:template>
 
   <xsl:template name="RenderDocumentID">
