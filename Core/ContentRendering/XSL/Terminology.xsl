@@ -3,10 +3,13 @@
   <xsl:import href="Common/JSON-common-templates.xsl"/>
   <xsl:output method="text" indent="yes"/>
 
-<!--
-  This is the stylesheet for rendering Terminology documents into the JSON structure
-  used for the Drug Dictionary.
--->
+  <!--
+  
+    This stylesheet creates the Dictionary JSON structure containing Term details for
+    a single targeted Language, Audience and Dictionary.  Separate transformations are
+    required to generate the JSON structure for each permutation of the three parameters.
+  
+  -->
 
   <!-- Default targets are English, Patient, drug dictionary -->
   <xsl:param        name = "targetLanguage"
