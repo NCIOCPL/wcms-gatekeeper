@@ -3,6 +3,14 @@
   <xsl:import href="Common/JSON-common-templates.xsl"/>
   <xsl:output method="text" indent="yes"/>
 
+  <!--
+  
+    This stylesheet creates the Dictionary JSON structure containing GlossaryTerm details for
+    a single targeted Language, Audience and Dictionary.  Separate transformations are
+    required to generate the JSON structure for each permutation of the three parameters.
+  
+  -->
+  
   <!-- Default targets are English, Patient, Cancer.gov dictionary -->
   <xsl:param        name = "targetLanguage"
                   select = "'English'"/>
@@ -124,7 +132,7 @@
 
   <xsl:template match="MediaLink" mode="images">
   {
-      "ref": "CDR<xsl:call-template name="GetNumericID">
+      "ref": "[__imagelocation]CDR<xsl:call-template name="GetNumericID">
         <xsl:with-param name="cdrid" select="@ref" />
       </xsl:call-template>.jpg",
       "alt": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="@alt" /></xsl:call-template>"
@@ -141,8 +149,8 @@
 
     <!-- Calculate media file name. -->
     <xsl:variable name="mediaFile">
-      <xsl:if test="//MediaLink[string-length(@ref) > 0 and @type='audio/mpeg' and @language=$languageCode]">
-        <xsl:call-template name="GetNumericID">
+      <xsl:if test="//MediaLink[string-length(@ref) > 0 and @type='audio/mpeg' and @language=$languageCode]"><!--
+        -->[__audiolocation]<xsl:call-template name="GetNumericID">
           <xsl:with-param name="cdrid" select="//MediaLink[@type='audio/mpeg' and @language=$languageCode]/@ref" />
        </xsl:call-template>.mp3<!-- suppress line break.
   --></xsl:if>
