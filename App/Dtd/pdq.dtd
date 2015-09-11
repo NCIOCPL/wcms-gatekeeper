@@ -1,6 +1,6 @@
 <!-- PDQ DTD
 
-   $Id: pdqCG.dtd 13450 2015-08-28 03:46:37Z volker $
+   $Id: pdqCG.dtd 13466 2015-09-11 17:12:23Z volker $
 
    This DTD defines the external structure of the NCI PDQ XML data
    This version is for Cancer.gov only!  Do not provide to licensees.
@@ -955,7 +955,7 @@
                        LowAge,
                        HighAge,
                        AgeText,
-                       Gender,
+                       Gender?,
                        Diagnosis*,
                        ExclusionCriteria*
                       )>
