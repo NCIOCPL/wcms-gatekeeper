@@ -1,6 +1,6 @@
 <!-- PDQ DTD
 
-   $Id: pdqCG.dtd 13231 2015-06-18 23:47:49Z volker $
+   $Id: pdqCG.dtd 13450 2015-08-28 03:46:37Z volker $
 
    This DTD defines the external structure of the NCI PDQ XML data
    This version is for Cancer.gov only!  Do not provide to licensees.
@@ -429,7 +429,7 @@
                            SummaryDescription,
                            SummaryURL,
                            MobileURL?,
-                           SummaryEditorialBoard,
+                           SummaryEditorialBoard?,
                            MainTopics+,
                            SecondaryTopics*,
                            SummaryAbstract?,
@@ -653,9 +653,11 @@
 <!ELEMENT RelatedSummaryRef                   (#PCDATA)>
 <!ATTLIST RelatedSummaryRef  href      CDATA  #REQUIRED>
 <!ATTLIST RelatedSummaryRef  UseWith (en | es) #IMPLIED>
+<!ATTLIST RelatedSummaryRef  url       CDATA  #REQUIRED>
 
 <!ELEMENT RelatedDrugSummaryRef               (#PCDATA)>
 <!ATTLIST RelatedDrugSummaryRef href   CDATA  #REQUIRED>
+<!ATTLIST RelatedDrugSummaryRef url    CDATA  #REQUIRED>
 
 <!ELEMENT RelatedGlossaryTermRef              (#PCDATA)>
 <!ATTLIST RelatedGlossaryTermRef href  CDATA  #REQUIRED>
@@ -953,7 +955,7 @@
                        LowAge,
                        HighAge,
                        AgeText,
-                       Gender?,
+                       Gender,
                        Diagnosis*,
                        ExclusionCriteria*
                       )>
