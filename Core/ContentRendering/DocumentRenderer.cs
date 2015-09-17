@@ -133,7 +133,7 @@ namespace GateKeeper.ContentRendering
                 string fileName = path + document.DocumentType.ToString() + document.DocumentID.ToString() + ".txt";
                 using (StreamWriter writer = File.CreateText(fileName))
                 {
-                    writer.Write(document.Html);
+                    writer.Write(sb.ToString());
                     writer.Close();
                 }
             }
