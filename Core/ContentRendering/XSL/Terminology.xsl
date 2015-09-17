@@ -58,6 +58,7 @@
   <xsl:call-template name="RenderDateFirstPublished" />
   <xsl:call-template name="RenderDateLastModified" />
   <xsl:call-template name="RenderDefinition" />
+  <xsl:call-template name="RenderRelatedInformation" />
 }
 </xsl:template>
 
@@ -96,19 +97,50 @@
     Renders the data structure containing the term's definition.
     
     NOTE: Makes use of a locally defined "ExternalRef" template, rather than the one found in JSON-common-templates.
-
-          This is the last item in the output data structure and therefore does not render a comma
-          at the end.
   -->
   <xsl:template name="RenderDefinition">
   "definition": {
     "html": "<xsl:apply-templates select="//Definition/DefinitionText" />",
     "text": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="//Definition/DefinitionText" /></xsl:call-template>"
-  }
+  },
+  </xsl:template>
+
+  <!--
+    Renders the Related Information structure.
+    
+    NOTE: This is the last item in the output data structure and therefore does not render a comma
+          at the end.
+  -->
+  <xsl:template name="RenderRelatedInformation">
+    "related": {
+    <xsl:call-template name="RenderRelatedDrugSummaries" />
+    }
+  </xsl:template>
+
+  <!--
+    Helper template to render the Drug Info Summary portion of the related information section.
+    
+    NOTE: This data is not a native part of the Terminology document type.  This template will
+          likely need to be updated as OCEPROJECT-3605.
+  -->
+  <xsl:template name="RenderRelatedDrugSummaries">
+    "drug_summary": [
+    <xsl:variable name="count" select="count(//RelatedDrugInfoSummary)" />
+    <xsl:for-each select="//RelatedDrugInfoSummary">
+      {
+      "url": "<xsl:value-of select="."/>",
+      "text" : "<xsl:call-template name="CreateJsonText">
+        <xsl:with-param name="text" select="//PreferredName" />
+      </xsl:call-template>"
+      }<xsl:if test="position() != $count">
+        ,
+      </xsl:if>
+    </xsl:for-each>
+    ]
   </xsl:template>
 
 
-  
+
   <!--
   
     Begin utility templates

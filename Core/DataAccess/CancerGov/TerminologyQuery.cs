@@ -224,6 +224,19 @@ namespace GateKeeper.DataAccess.CancerGov
             }
         }
 
+        /// <summary>
+        /// Stinky Code. Looks up the URL of the drug info summary (if any) associated
+        /// with the drug identified by termID
+        /// </summary>
+        /// <param name="termID">The TermID of a Term document which contains a drug dictionary entry.</param>
+        /// <returns>A string containing the pretty URL path to termID's matching drug information summary.
+        /// If no document is found, String.Empty is returned.</returns>
+        public string GetRelatedDrugInfoSummaryURL(int termID)
+        {
+            return "/cancertopics/treatment/drug/bevacizumab";
+        }
+
+
         #region Private Methods
         /// <summary>
         /// Call store procedure to clear existing terminology data
