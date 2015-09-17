@@ -1,17 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
-using System.Collections;
-using System.Transactions;
+using System.Data.SqlClient;
+
+using Microsoft.Practices.EnterpriseLibrary.Data;
+
+using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Terminology;
-using GateKeeper.DocumentObjects.Media;
-using GateKeeper.DataAccess.StoreProcedures;
-using GateKeeper.DataAccess;
-using Microsoft.Practices.EnterpriseLibrary.Data;
-using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using NCI.Data;
 
 namespace GateKeeper.DataAccess.CancerGov
 {
@@ -233,7 +231,30 @@ namespace GateKeeper.DataAccess.CancerGov
         /// If no document is found, String.Empty is returned.</returns>
         public string GetRelatedDrugInfoSummaryURL(int termID)
         {
-            return "/cancertopics/treatment/drug/bevacizumab";
+            string path = String.Empty;
+
+            try
+            {
+                // create our parameter array
+                SqlParameter[] parms = { new SqlParameter("@TermID", SqlDbType.Int) { Value = termID } };
+
+                // Query the database and get the results
+                DataTable dt = SqlHelper.ExecuteDatatable(
+                    ConfigurationManager.ConnectionStrings["Staging"].ConnectionString,
+                    CommandType.StoredProcedure,
+                    "usp_getDruginfoURL",
+                    parms);
+
+                if (dt.Rows.Count > 0)
+                    path = (string)dt.Rows[0]["PrettyURL"];
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
+            return path;
         }
 
 
