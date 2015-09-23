@@ -15,6 +15,7 @@ using GateKeeper.DocumentObjects.GeneticsProfessional;
 using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
+using GateKeeper.DocumentObjects.Dictionary;
 
 namespace GateKeeper.DataAccess
 {
@@ -93,10 +94,32 @@ namespace GateKeeper.DataAccess
         /// <returns>html in parameter reference</returns>
         public static void GlossaryPreview(ref string html, ref string headerHtml, GlossaryTermDocument glossary)
         {
-            string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
-            string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
+            //string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
+            //string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
 
-            //StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(@"<script type=""text/javascript"">");// Open tag
+            sb.Append(@"var definitions = { ""defs"" : [");              // Open Array
+
+            if (glossary != null && glossary.Dictionary != null)
+            {
+                bool first = true;
+                foreach (GeneralDictionaryEntry item in glossary.Dictionary)
+                {
+                    if (!first)
+                        sb.Append(',');
+                    first = false;
+                    sb.AppendFormat(@"{{""id"" : ""{0}"", ""term"" : ""{1}"", ""dictionary"" : ""{2}"", ""language"" : ""{3}"", ""audience"" : ""{4}"", ""version"" : ""{5}"", ""object"" : {6} }}",
+                        item.TermID, item.TermName, item.Dictionary, item.Language, item.Audience, item.ApiVersion, item.Object );
+                }
+            }
+            
+            sb.Append(@"] }");                                // Close Array
+            sb.Append(@"</script>");                        // Close tag
+
+            html = sb.ToString();
+
             //headerHtml = "";// createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
             //html = "";
