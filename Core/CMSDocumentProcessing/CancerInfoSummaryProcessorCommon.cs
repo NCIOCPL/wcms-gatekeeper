@@ -963,6 +963,11 @@ namespace GKManagers.CMSDocumentProcessing
 
             fields.Add("sys_title", EscapeSystemTitle(summary.Title));
 
+            //OCE Project 199 - if the keywords exist save them to the meta keywords field in Percussion as a comma separated list 
+            if (summary.SummaryKeyWords != null && summary.SummaryKeyWords.Count > 0)
+                fields.Add("meta_keywords", string.Join(",", summary.SummaryKeyWords.ToArray()));
+                                  
+
             // HACK: This relies on Percussion not setting anything else in the login session.
             fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
