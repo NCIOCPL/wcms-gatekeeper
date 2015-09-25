@@ -105,6 +105,53 @@
   },
   </xsl:template>
 
+  <xsl:template match="text()">
+    <!-- Escape backslash -->
+    <xsl:variable name="slashEscaped">
+      <xsl:call-template name="Replace">
+        <xsl:with-param name="string" select="." />
+        <xsl:with-param name="target" select="'\'" />
+        <xsl:with-param name="replace" select="'\\'" />
+      </xsl:call-template>
+    </xsl:variable>
+    <!-- Replace Carriage return -->
+    <xsl:variable name="returnEscaped">
+      <xsl:call-template name="Replace">
+        <xsl:with-param name="string" select="$slashEscaped" />
+        <xsl:with-param name="target" select="'&#xa;'" />
+        <xsl:with-param name="replace" select="'\r'" />
+      </xsl:call-template>
+    </xsl:variable>
+    <!-- Replace Newline -->
+    <xsl:variable name="newlineEscaped">
+      <xsl:call-template name="Replace">
+        <xsl:with-param name="string" select="$returnEscaped" />
+        <xsl:with-param name="target" select="'&#xd;'" />
+        <xsl:with-param name="replace" select="'\n'" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:variable name="escaped">
+      <xsl:call-template name="Replace">
+        <xsl:with-param name="string" select="$newlineEscaped" />
+        <xsl:with-param name="target" select="'&quot;'" />
+        <xsl:with-param name="replace" select="'\&quot;'" />
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="normalize-space($escaped)"/>
+
+  </xsl:template>
+  
+  <!--
+    ExternalRef - matches the ExternalRef template, outputting external URLs in an <a> tag.
+    
+    This overrides the ExternalRef template seen in Common/JSON-common-templates.xsl
+  -->
+  <xsl:template match="ExternalRef"><!--
+    -->&lt;a class=\"navigation-dark-red" href=\"<xsl:value-of select="@xref" />"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
+--></xsl:template>
+
+
+
   <!--
     Renders the Related Information structure.
     
@@ -148,23 +195,7 @@
   -->
   
 
-  <!--
-    ExternalRef - matches the ExternalRef template, outputting external URLs in an <a> tag.
-    
-    This overrides the ExternalRef template seen in Common/JSON-common-templates.xsl
-  -->
-  <xsl:template match="ExternalRef"><!--
-    -->&lt;a class=\"navigation-dark-red\" href=\"<xsl:value-of select="@xref" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
---></xsl:template>
 
-  <!--
-    Helper template for any element which must be output without spaces.
-  -->
-  <xsl:template match="DefinitionText">
-    <xsl:call-template name="CreateJsonText">
-      <xsl:with-param name="text" select="." />
-    </xsl:call-template>
-  </xsl:template>
 
 
 </xsl:stylesheet>
