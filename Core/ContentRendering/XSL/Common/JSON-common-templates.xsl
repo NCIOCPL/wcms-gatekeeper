@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   Shared templates for the set of XSL files used for rendering JSON.
+  
+  Correct function of these templates is VERY SENSITIVE TO EXTRA CARRIAGE RETURNS.
+  Be very careful when using an editor (e.g. Visual Studio) which automatically
+  reformats text to a "suggested" format.
+  
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:msxsl="urn:schemas-microsoft-com:xslt" exclude-result-prefixes="msxsl"
@@ -58,6 +63,18 @@
      Quotation mark is replaced with \".
   -->
   <xsl:template match="text()">
+    <!-- Preserve a leading space. -->
+    <xsl:variable name="leadingSpace">
+      <xsl:if test="starts-with(., ' ')"><xsl:text xml:space="preserve"> </xsl:text></xsl:if>
+    </xsl:variable>
+    
+    <!-- Preserve a trailing space. -->
+    <xsl:variable name="trailingSpace">
+      <!-- There's no "ends-with() function, so we end using a slightly odd-looking expression
+           to check for trailing spaces. -->
+      <xsl:if test="string-length(.) > 0 and substring(., string-length(.)) = ' '"><xsl:text xml:space="preserve"> </xsl:text></xsl:if>
+    </xsl:variable>
+    
     <!-- Escape backslash in the current node ("string" param)
          and cascade the change to all subsequent replacements. -->
     <xsl:variable name="slashEscaped">
@@ -91,7 +108,8 @@
         <xsl:with-param name="replace" select="'\&quot;'" />
       </xsl:call-template>
     </xsl:variable>
-    <xsl:value-of select="normalize-space($escaped)"/>
+    <!-- Output text with possible leading/trailing spaces. -->
+    <xsl:value-of select="$leadingSpace"/><xsl:value-of select="normalize-space($escaped)"/><xsl:value-of select="$trailingSpace"/>
   </xsl:template>
 
 
