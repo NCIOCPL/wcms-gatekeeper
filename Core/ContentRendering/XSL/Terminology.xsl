@@ -67,7 +67,7 @@
   </xsl:template>
   
   <xsl:template name="RenderTermName">
-  "term": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="//PreferredName"/></xsl:call-template>",
+  "term": "<xsl:apply-templates select="//PreferredName"/>",
   </xsl:template>
 
   <xsl:template name="RenderAliasList">
@@ -76,8 +76,8 @@
         <xsl:variable name="count" select="count(//OtherName)"/>
         [<xsl:for-each select="//OtherName">
           {
-            "name": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="OtherTermName"/></xsl:call-template>",
-            "type": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="OtherNameType"/></xsl:call-template>"
+            "name": "<xsl:value-of select="OtherTermName"/>",
+            "type": "<xsl:value-of select="OtherNameType"/>"
           }<xsl:if test="position() != $count">,</xsl:if>
       </xsl:for-each>]
       </xsl:when>
@@ -101,53 +101,16 @@
   <xsl:template name="RenderDefinition">
   "definition": {
     "html": "<xsl:apply-templates select="//Definition/DefinitionText" />",
-    "text": "<xsl:call-template name="CreateJsonText"><xsl:with-param name="text" select="//Definition/DefinitionText" /></xsl:call-template>"
+    "text": "<xsl:apply-templates select="//Definition/DefinitionText" mode="JSON" />"
   },
   </xsl:template>
 
-  <xsl:template match="text()">
-    <!-- Escape backslash -->
-    <xsl:variable name="slashEscaped">
-      <xsl:call-template name="Replace">
-        <xsl:with-param name="string" select="." />
-        <xsl:with-param name="target" select="'\'" />
-        <xsl:with-param name="replace" select="'\\'" />
-      </xsl:call-template>
-    </xsl:variable>
-    <!-- Replace Carriage return -->
-    <xsl:variable name="returnEscaped">
-      <xsl:call-template name="Replace">
-        <xsl:with-param name="string" select="$slashEscaped" />
-        <xsl:with-param name="target" select="'&#xa;'" />
-        <xsl:with-param name="replace" select="'\r'" />
-      </xsl:call-template>
-    </xsl:variable>
-    <!-- Replace Newline -->
-    <xsl:variable name="newlineEscaped">
-      <xsl:call-template name="Replace">
-        <xsl:with-param name="string" select="$returnEscaped" />
-        <xsl:with-param name="target" select="'&#xd;'" />
-        <xsl:with-param name="replace" select="'\n'" />
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:variable name="escaped">
-      <xsl:call-template name="Replace">
-        <xsl:with-param name="string" select="$newlineEscaped" />
-        <xsl:with-param name="target" select="'&quot;'" />
-        <xsl:with-param name="replace" select="'\&quot;'" />
-      </xsl:call-template>
-    </xsl:variable>
-    <xsl:value-of select="normalize-space($escaped)"/>
-
-  </xsl:template>
-  
   <!--
-    ExternalRef - matches the ExternalRef template, outputting external URLs in an <a> tag.
-    
-    This overrides the ExternalRef template seen in Common/JSON-common-templates.xsl
+    Local implementation of ExternalRef (overrides JSON-common-templates) in order
+    to output the navigation-dark-red CSS class.
   -->
   <xsl:template match="ExternalRef"><!--
-    -->&lt;a class=\"navigation-dark-red" href=\"<xsl:value-of select="@xref" />"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
+    -->&lt;a class=\"navigation-dark-red\" href=\"<xsl:value-of select="@xref" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
 --></xsl:template>
 
 
@@ -176,25 +139,13 @@
     <xsl:for-each select="//RelatedDrugInfoSummary">
       {
       "url": "<xsl:value-of select="."/>",
-      "text" : "<xsl:call-template name="CreateJsonText">
-        <xsl:with-param name="text" select="//PreferredName" />
-      </xsl:call-template>"
+      "text" : "<xsl:apply-templates select="//PreferredName" />"
       }<xsl:if test="position() != $count">
         ,
       </xsl:if>
     </xsl:for-each>
     ]
   </xsl:template>
-
-
-
-  <!--
-  
-    Begin utility templates
-    
-  -->
-  
-
 
 
 

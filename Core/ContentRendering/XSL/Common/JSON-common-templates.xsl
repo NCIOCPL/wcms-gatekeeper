@@ -36,14 +36,33 @@
 
 
   <!--
-    Convert a blob of text into text suitable for inclusion in a JavaScript string literal.
+     Match for all text nodes when processing with mode="JSON".
+     A call to xsl:apply-templates with mode="JSON" will cause the
+     text in a hierarchy of nodes to be output without element names.
+     
+     NOTE: A template with match="node()" will take priority over this one.
   -->
-  <xsl:template name="CreateJsonText">
-    <xsl:param name="text" />
-    <!-- Escape backslash -->
+  <xsl:template match="text()" mode="JSON">
+    <!-- Allow the regular processing for text nodes (below) to handle the element. -->
+    <xsl:apply-templates select="." />
+  </xsl:template>
+
+
+  <!--
+     Match for all Text nodes.  The text is sent through a series of substitutions
+     to escape special characters.
+     
+     '\' is replaced with \\
+     Carriage return is replaced with \r.
+     Newline is replaced with \n.
+     Quotation mark is replaced with \".
+  -->
+  <xsl:template match="text()">
+    <!-- Escape backslash in the current node ("string" param)
+         and cascade the change to all subsequent replacements. -->
     <xsl:variable name="slashEscaped">
       <xsl:call-template name="Replace">
-        <xsl:with-param name="string" select="$text" />
+        <xsl:with-param name="string" select="." />
         <xsl:with-param name="target" select="'\'" />
         <xsl:with-param name="replace" select="'\\'" />
       </xsl:call-template>
@@ -64,6 +83,7 @@
         <xsl:with-param name="replace" select="'\n'" />
       </xsl:call-template>
     </xsl:variable>
+    <!-- Replace quotation mark -->
     <xsl:variable name="escaped">
       <xsl:call-template name="Replace">
         <xsl:with-param name="string" select="$newlineEscaped" />
