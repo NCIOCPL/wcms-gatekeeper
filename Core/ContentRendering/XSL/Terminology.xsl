@@ -8,7 +8,12 @@
     This stylesheet creates the Dictionary JSON structure containing Term details for
     a single targeted Language, Audience and Dictionary.  Separate transformations are
     required to generate the JSON structure for each permutation of the three parameters.
-  
+
+    Correct function of these templates is VERY SENSITIVE TO EXTRA CARRIAGE RETURNS.
+    Be very careful when using an editor (e.g. Visual Studio) which automatically
+    reformats text to a "suggested" format.  Consider using a diff tool to check for
+    unexpected formatting changes before committing to source control.
+
   -->
 
   <!-- Default targets are English, Patient, drug dictionary -->
