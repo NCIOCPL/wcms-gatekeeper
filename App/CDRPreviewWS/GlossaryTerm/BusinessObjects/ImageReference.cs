@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 
-namespace NCI.Web.Dictionary.BusinessObjects
+namespace CDRPreviewWS.GlossaryTerm.BusinessObjects
 {
     //This particular class needs Data Contract since the data from the database has different names than these
     [DataContract()]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 
-namespace NCI.Web.Dictionary.BusinessObjects
+namespace CDRPreviewWS.GlossaryTerm.BusinessObjects
 {
     /// <summary>
     /// Outermost data structure for returns from Expand().

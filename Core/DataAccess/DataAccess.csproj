@@ -119,7 +119,6 @@
     <Compile Include="DocumentQuery.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GateKeeper\DocumentXPathManager.cs" />
-    <Compile Include="GenerateCDRPreview.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublicationTarget.cs" />
     <Compile Include="QueryWrapper.cs" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace NCI.Web.Dictionary.BusinessObjects
+namespace CDRPreviewWS.GlossaryTerm.BusinessObjects
 {
     [DataContract()]
     public class DictionarySearchResult

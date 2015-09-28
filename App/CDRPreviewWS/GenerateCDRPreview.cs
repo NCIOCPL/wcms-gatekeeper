@@ -17,7 +17,7 @@ using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.DocumentObjects.Dictionary;
 
-namespace GateKeeper.DataAccess
+namespace CDRPreviewWS
 {
     public static class GenerateCDRPreview
     {

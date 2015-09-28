@@ -575,7 +575,7 @@ namespace GateKeeper.DataAccess.CancerGov
         /// </summary>
         /// <param name="section"></param>
         /// <returns>htmlText</returns>
-        internal string FormatSectionHTML(ProtocolSection section)
+        public string FormatSectionHTML(ProtocolSection section)
         {
             string htmlText = string.Empty;
             // To modify the html format to match what's saved in current database

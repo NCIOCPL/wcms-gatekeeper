@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace NCI.Web.Dictionary.BusinessObjects
+namespace CDRPreviewWS.GlossaryTerm.BusinessObjects
 {
     /// <summary>
     /// Infrastructure.  Base class for all the return metadata classes.

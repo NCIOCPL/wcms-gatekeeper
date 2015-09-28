@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NCI.Web.Dictionary
+namespace CDRPreviewWS.GlossaryTerm
 {
     /// <summary>
     /// Enumeration of the known dictionary types.

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using CDRPreviewWS.GlossaryTerm.BusinessObjects;
 
-using NCI.Web.Dictionary.BusinessObjects;
 
-namespace NCI.Web.Dictionary
+namespace CDRPreviewWS.GlossaryTerm
 {
     /// <summary>
     /// Dictionary Collection for Search and Expand

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NCI.Web.Dictionary.BusinessObjects;
+using CDRPreviewWS.GlossaryTerm.BusinessObjects;
 
-namespace NCI.Web.Dictionary
+namespace CDRPreviewWS.GlossaryTerm
 {
     public class DictionarySuggestionCollection : IEnumerable<DictionarySuggestion>
     {
