@@ -13,14 +13,17 @@ namespace CDRPreviewWS.GlossaryTerm
         // We don't know what dictionary this is.  Error condition.
         Unknown = 0,
 
+        // This term should show up, it just does not belong to any specific dictionary
+        NotSet = 1, 
+
         // Dictionary of Cancer Terms
-        term = 1,
+        term = 2,
 
         // Drug Dictionary
-        drug = 2,
+        drug = 3,
 
         // Dictionary of Genetics Terms
-        genetic = 3
+        genetic = 4
     }
 
     /// <summary>
