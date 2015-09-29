@@ -39,6 +39,14 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
     abstract public class GlossaryTermDefinition
     {
         /// <summary>
+        /// Initialization.
+        /// </summary>
+        public GlossaryTermDefinition()
+        {
+            Dictionary = DictionaryType.NotSet;
+        }
+
+        /// <summary>
         /// What language is this definition in?
         ///     Language.English
         ///     Language.Spanish

@@ -12,23 +12,29 @@ namespace GateKeeper.DocumentObjects
     public enum DictionaryType
     {
         /// <summary>
-        /// Dictionary hasn't been properly assigned.
+        /// Dictionary is set, but not to a value we recognize.
         /// </summary>
         Unknown = 0,
 
         /// <summary>
+        /// The source document didn't specify a dictionary.
+        /// Distinct from "A dictioary was assigned, but we don't know what it is."
+        /// </summary>
+        NotSet = 1,
+
+        /// <summary>
         /// Dictionary of Cancer Terms.
         /// </summary>
-        Term = 1,
+        Term = 2,
 
         /// <summary>
         /// Genetics Dictionary
         /// </summary>
-        Genetic = 2,
+        Genetic = 3,
 
         /// <summary>
         /// Drug dictionary.
         /// </summary>
-        Drug = 3
+        Drug = 4
     }
 }
