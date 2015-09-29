@@ -16,6 +16,7 @@ using GateKeeper.DocumentObjects.GlossaryTerm;
 using GateKeeper.DocumentObjects.Media;
 using GateKeeper.DocumentObjects.DrugInfoSummary;
 using GateKeeper.DocumentObjects.Dictionary;
+using CDRPreviewWS.GlossaryTerm;
 
 namespace CDRPreviewWS
 {
@@ -94,104 +95,23 @@ namespace CDRPreviewWS
         /// <returns>html in parameter reference</returns>
         public static void GlossaryPreview(ref string html, ref string headerHtml, GlossaryTermDocument glossary)
         {
-            //string mediaPath = ConfigurationManager.AppSettings["MediaLocation"];
-            //string imagePath = ConfigurationManager.AppSettings["ImageLocation"];
 
-            StringBuilder sb = new StringBuilder();
+            GlossaryTermDeserializer glossaryTermHtml = new GlossaryTermDeserializer();
+            html = glossaryTermHtml.GenerateGlossaryTermPreview(glossary);
 
-            sb.Append(@"<script type=""text/javascript"">");// Open tag
-            sb.Append(@"var definitions = { ""defs"" : [");              // Open Array
+            //StringBuilder sb = new StringBuilder();
 
-            if (glossary != null && glossary.Dictionary != null)
-            {
-                bool first = true;
-                foreach (GeneralDictionaryEntry item in glossary.Dictionary)
-                {
-                    if (!first)
-                        sb.Append(',');
-                    first = false;
-                    sb.AppendFormat(@"{{""id"" : ""{0}"", ""term"" : ""{1}"", ""dictionary"" : ""{2}"", ""language"" : ""{3}"", ""audience"" : ""{4}"", ""version"" : ""{5}"", ""object"" : {6} }}",
-                        item.TermID, item.TermName, item.Dictionary, item.Language, item.Audience, item.ApiVersion, item.Object );
-                }
-            }
+            //sb.Append(@"<script type=""text/javascript"">");// Open tag
+            //sb.Append(@"var definitions = { ""defs"" : [");              // Open Array
+
             
-            sb.Append(@"] }");                                // Close Array
-            sb.Append(@"</script>");                        // Close tag
+            //sb.Append(@"] }");                                // Close Array
+            //sb.Append(@"</script>");                        // Close tag
 
-            html = sb.ToString();
+            //html = sb.ToString();
 
-            //headerHtml = "";// createHeaderZoneContent("Dictionary of Cancer Terms", glossary, PreviewTypes.GlossaryTerm);
 
-            //html = "";
-            //int count = 0;
             
-            //foreach (Language lang in glossary.GlossaryTermTranslationMap.Keys)
-            //{
-            //    GlossaryTermTranslation trans = glossary.GlossaryTermTranslationMap[lang];
-
-                
-            //    foreach (GlossaryTermDefinition gtDef in trans.DefinitionList)
-            //    {
-            //        sb.Append("<div class=\"results clearfix\"><dl class=\"dictionary-list\">");
-
-                   
-            //        // Retrieve rendered markup for audio.
-            //        String pronunciation = "<dd class=\"pronunciation\">" + trans.GetAudioMarkup();
-            //        if (!String.IsNullOrEmpty(pronunciation))
-            //        {
-            //            pronunciation = pronunciation.Replace("[_audioMediaLocation]", mediaPath);
-            //            // Fix audio icon relative to pub-preview.
-            //            pronunciation = pronunciation.Replace("src=\"/images/audio-icon.gif\"", "src=\"images/audio-icon.gif\"");
-            //        }
-
-            //        // Pronuncation key
-            //        if (trans.Pronounciation != null && trans.Pronounciation.Trim().Length > 0)
-            //        {
-            //            pronunciation += "&nbsp;&nbsp;<span>" + trans.Pronounciation.Trim() + "</span></dd>";
-            //        }
-
-            //        sb.AppendFormat("<dt><dfn>{0}</dfn></dt>{1}", trans.TermName, pronunciation);
-                    
-            //        // Definition
-            //        string defHtml = gtDef.Html.Trim();
-            //        using (GlossaryTermQuery gQuery = new GlossaryTermQuery())
-            //        {
-            //            if (defHtml.Contains("<SummaryRef"))
-            //            {
-            //                gQuery.BuildSummaryRefLink(ref defHtml, 1);
-            //            }
-            //        }
-            //        sb.Append("<dd class=\"definition\">" + defHtml + "<br/>");
-
-            //        // Use the GK rendered HTML for Related Links.
-            //        if (gtDef.RelatedInformationHTML != String.Empty)
-            //        {
-            //            sb.Append("<div id=\"pnlRelatedInfo\"><br/>");
-            //            sb.Append(gtDef.RelatedInformationHTML);
-            //            sb.Append("</div>");
-            //        }
-
-            //        // Retrieve rendered markup for images.
-                    
-            //        String imageHtml = trans.GetImageMarkup(gtDef.AudienceTypeList[0]);
-            //        if (!String.IsNullOrEmpty(imageHtml))
-            //        {
-            //            imageHtml = imageHtml.Replace("[__imagelocation]", imagePath);
-            //        }
-            //        sb.Append(imageHtml);
-
-            //        sb.Append("</dd>");
-                    
-            //        sb.Append("</dl></div>");
-
-            //    }
-                
-
-            //    count++;
-            //}
-            
-                   
-            //html += sb.ToString();
         }
 
 
