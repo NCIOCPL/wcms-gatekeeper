@@ -58,6 +58,7 @@
     <xsl:choose>
       <xsl:when test="$targetDictionary = 'Term'">Cancer.gov</xsl:when>
       <xsl:when test="$targetDictionary = 'Genetic'">Genetics</xsl:when>
+      <xsl:otherwise><xsl:value-of select="$targetDictionary"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
@@ -109,14 +110,14 @@
     <xsl:choose>
       <xsl:when test="$targetLanguage = 'English'">
   "definition": {
-    "html": "<xsl:apply-templates  select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:apply-templates select="//TermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" mode="JSON" />"
+    "html": "<xsl:apply-templates select="//TermDefinition[(Dictionary = $dictionaryCode or (not(Dictionary) and $targetDictionary = 'NotSet')) and Audience = $audienceCode]/DefinitionText" />",
+    "text": "<xsl:apply-templates select="//TermDefinition[(Dictionary = $dictionaryCode or (not(Dictionary) and $targetDictionary = 'NotSet')) and Audience = $audienceCode]/DefinitionText" mode="JSON" />"
   },
       </xsl:when>
       <xsl:when test="$targetLanguage = 'Spanish'">
   "definition": {
-    "html": "<xsl:apply-templates select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" />",
-    "text": "<xsl:apply-templates select="//SpanishTermDefinition[Dictionary = $dictionaryCode and Audience = $audienceCode]/DefinitionText" mode="JSON" />"
+    "html": "<xsl:apply-templates select="//SpanishTermDefinition[(Dictionary = $dictionaryCode or (not(Dictionary) and $targetDictionary = 'NotSet')) and Audience = $audienceCode]/DefinitionText" />",
+    "text": "<xsl:apply-templates select="//SpanishTermDefinition[(Dictionary = $dictionaryCode or (not(Dictionary) and $targetDictionary = 'NotSet')) and Audience = $audienceCode]/DefinitionText" mode="JSON" />"
   },
       </xsl:when>
     </xsl:choose>
