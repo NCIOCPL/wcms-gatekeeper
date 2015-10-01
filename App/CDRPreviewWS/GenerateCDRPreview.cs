@@ -95,23 +95,9 @@ namespace CDRPreviewWS
         /// <returns>html in parameter reference</returns>
         public static void GlossaryPreview(ref string html, ref string headerHtml, GlossaryTermDocument glossary)
         {
-
             GlossaryTermDeserializer glossaryTermHtml = new GlossaryTermDeserializer();
             html = glossaryTermHtml.GenerateGlossaryTermPreview(glossary);
 
-            //StringBuilder sb = new StringBuilder();
-
-            //sb.Append(@"<script type=""text/javascript"">");// Open tag
-            //sb.Append(@"var definitions = { ""defs"" : [");              // Open Array
-
-            
-            //sb.Append(@"] }");                                // Close Array
-            //sb.Append(@"</script>");                        // Close tag
-
-            //html = sb.ToString();
-
-
-            
         }
 
 
