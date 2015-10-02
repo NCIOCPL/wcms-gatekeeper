@@ -39,6 +39,14 @@
     -->&lt;a href=\"<xsl:value-of select="@xref" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
 --></xsl:template>
 
+  
+  <!--
+    Matches the SummaryRef element.
+  -->
+  <xsl:template match="SummaryRef"><!--
+    -->&lt;a href=\"<xsl:value-of select="@url" />\"&gt;<xsl:apply-templates select="node()" />&lt;/a&gt;<!--
+--></xsl:template>
+
 
   <!--
      Match for all text nodes when processing with mode="JSON".
