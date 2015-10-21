@@ -103,7 +103,7 @@ namespace GateKeeper.DataAccess.CDR
                 summary.AudienceType = DocumentHelper.GetXmlDocumentValue(xNav, path);
 
                 //OCE Project 199 - get the keywords list
-                path = xPathManager.GetXPath(SummaryXPath.SummaryKeyWords);
+                path = xPathManager.GetXPath(SummaryXPath.SummaryKeyWord);
                 summary.SummaryKeyWords = DocumentHelper.ExtractValueList(xNav, path);
 
                 string tempReplacementForID = DocumentHelper.GetAttribute(xNav, ".", xPathManager.GetXPath(SummaryXPath.Replacement));

@@ -36,6 +36,9 @@ namespace GKManagers.CMSDocumentProcessing
         //in percussion
         const int ShortTitleLength = 100;
 
+        //The meta keywords in Percussion
+        const int MetaKeywordsLength = 255;
+
         protected const string SummaryRefSlot = "pdqCancerInformationSummaryRef";
 
         protected const string SummarySectionSnippetTemplate = "pdqSnCancerInformationSummaryPage";
@@ -965,8 +968,22 @@ namespace GKManagers.CMSDocumentProcessing
 
             //OCE Project 199 - if the keywords exist save them to the meta keywords field in Percussion as a comma separated list 
             if (summary.SummaryKeyWords != null && summary.SummaryKeyWords.Count > 0)
-                fields.Add("meta_keywords", string.Join(",", summary.SummaryKeyWords.ToArray()));
-                                  
+            {               
+                string keywordList = string.Join(",", summary.SummaryKeyWords.ToArray());
+                //OCEPROJECT-3696 - The meta keywords field needs to be truncated to 255 characters
+                //The meta keywords character limit is 255 in Percussion. 
+                //The system needs to truncate the keywords coming in from the CDR to conform to that limit to avoid errrors.
+                if (keywordList.Length > 255)
+                {
+                    //truncate the string to 255
+                    keywordList = keywordList.Substring(0, MetaKeywordsLength);
+                    //truncate to the nearest whole word
+                    keywordList = keywordList.Substring(0, keywordList.LastIndexOf(","));
+                }
+
+                fields.Add("meta_keywords", keywordList);
+
+            }
 
             // HACK: This relies on Percussion not setting anything else in the login session.
             fields.Add("sys_lang", GetLanguageCode(summary.Language));

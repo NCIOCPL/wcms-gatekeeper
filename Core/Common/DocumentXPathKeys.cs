@@ -66,9 +66,9 @@ namespace GateKeeper.Common.XPathKeys
         private static string _permanentLinkTargetID = "PermaTargSectionId";
         private static string _permanentLinkID = "PermaTargId";
         private static string _summarySectionDeviceSpecific = "SummarySectionDeviceSpecific";
-        //OCE Project 199 - XPath for SummaryKeyWords - please note that in addition to adding it here 
+        //OCE Project 199 - XPath for SummaryKeyWord - please note that in addition to adding it here 
         //the same XPath needs to be in the XMLQuery table in the GateKeeper database
-        private static string _summaryKeyWords = "SummaryKeyWords";
+        private static string _summaryKeyWord = "SummaryKeyWord";
 
 
         #endregion
@@ -179,8 +179,8 @@ namespace GateKeeper.Common.XPathKeys
         public static string SummarySectionDeviceSpecific
         { get { return _summarySectionDeviceSpecific; } }
 
-        public static string SummaryKeyWords
-        { get { return _summaryKeyWords; } }
+        public static string SummaryKeyWord
+        { get { return _summaryKeyWord; } }
 
         #endregion
     }
