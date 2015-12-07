@@ -21,7 +21,17 @@ namespace GateKeeper.DataAccess.CDR
     public class SummaryExtractor : DocumentExtractor
     {
         #region fields
+
         private int _documentID = 0;
+
+        //handle include exclude devices
+        private List<SummarySectionDeviceType> subSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> subSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> tableSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> tableSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> mediaLinkDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> mediaLinkDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+                  
         #endregion
 
         #region Private Methods
@@ -48,26 +58,7 @@ namespace GateKeeper.DataAccess.CDR
                 }
                 summary.BasePrettyURL = basePrettyURL;
                 summary.ValidOutputDevices.Add(TargetedDevice.screen);  // Always valid for web.
-
-                // Mobile URL.  (Optional element)
-                path = xPathManager.GetXPath(SummaryXPath.MobileURL);
-                XPathNavigator mobileUrlNav = xNav.SelectSingleNode(path);
-                if (mobileUrlNav != null)
-                {
-                    string baseMobileURL = mobileUrlNav.GetAttribute(xPathManager.GetXPath(SummaryXPath.BaseMobileURL), string.Empty).Trim();
-                    if (string.IsNullOrEmpty(baseMobileURL))
-                    {
-                        throw new Exception("Extraction Error: MobileURL node is present, but contains no value.");
-                    }
-
-                    if (baseMobileURL.EndsWith("/"))
-                    {
-                        baseMobileURL = baseMobileURL.Substring(0, baseMobileURL.Length - 1);
-                    }
-                    summary.BaseMobileURL = baseMobileURL;
-                    summary.ValidOutputDevices.Add(TargetedDevice.mobile);
-                }
-
+                              
                 path = xPathManager.GetXPath(SummaryXPath.Title);
                 summary.Title = DocumentHelper.GetXmlDocumentValue(xNav, path);
                              
@@ -110,6 +101,10 @@ namespace GateKeeper.DataAccess.CDR
                 summary.Language = DocumentHelper.DetermineLanguageString(DocumentHelper.GetXmlDocumentValue(xNav, path));
                 path = xPathManager.GetXPath(SummaryXPath.Audience);
                 summary.AudienceType = DocumentHelper.GetXmlDocumentValue(xNav, path);
+
+                //OCE Project 199 - get the keywords list
+                path = xPathManager.GetXPath(SummaryXPath.SummaryKeyWord);
+                summary.SummaryKeyWords = DocumentHelper.ExtractValueList(xNav, path);
 
                 string tempReplacementForID = DocumentHelper.GetAttribute(xNav, ".", xPathManager.GetXPath(SummaryXPath.Replacement));
                 int replacementForID = 0;
@@ -331,7 +326,7 @@ namespace GateKeeper.DataAccess.CDR
                      * SummarySection.RawID and legacy SummarySection.SectionID properties for details. */
                     summarySection.RawSectionID = sectionNav.GetAttribute(xPathManager.GetXPath(CommonXPath.CDRID), string.Empty).Trim();
                 }
-
+                                
                 summarySection.SummarySectionID = Guid.NewGuid();
                 summarySection.Text = sectionNav.Value;
                 summarySection.Xml.LoadXml(sectionNav.OuterXml);
@@ -355,6 +350,7 @@ namespace GateKeeper.DataAccess.CDR
                 summarySection.Level = DocumentHelper.GetLevel(sectionNav);
                 summarySection.Priority = priority;
                 priority++;
+                              
             }
             catch (Exception e)
             {
@@ -387,6 +383,14 @@ namespace GateKeeper.DataAccess.CDR
                 int topSectionPriority = 0;
                 while (sectionIter.MoveNext())
                 {
+                    //set this value once per top section
+                    subSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+                    subSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+                    mediaLinkDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+                    mediaLinkDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+                    tableSectionDevicesToBeIncluded = new List<SummarySectionDeviceType>();
+                    tableSectionDevicesToBeExcluded = new List<SummarySectionDeviceType>();
+
                     SummarySection topLevelSection = ExtractSection(sectionIter.Current, xPathManager, ref priority);
 
                     // Validate for items required in top-level sections.
@@ -408,7 +412,97 @@ namespace GateKeeper.DataAccess.CDR
                     if (topLevelSection.Level == 1)
                         topSectionPriority = topLevelSection.Priority;
 
-                   
+                    //check top level sections first for include/exclude devices
+                    string includedDevices = sectionIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                    string excludedDevices = sectionIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                    if (topLevelSection.IsTopLevel == true)
+                    {                        
+                        //all summary sections are visible on all devices
+                        if (string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
+                        {
+                            topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.all);
+
+                        }
+
+                        //only included devices are set
+                        if (!string.IsNullOrEmpty(includedDevices) && string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                            }
+
+                        }
+                        //only excluded devices are set
+                        else if (string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] excludedDevicesList = excludedDevices.Split(' ');
+                            List<SummarySectionDeviceType> allIncludedDevicesList = new List<SummarySectionDeviceType>();
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.screen);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.mobile);
+                            allIncludedDevicesList.Add(SummarySectionDeviceType.syndication);
+
+                            foreach (string deviceToExclude in excludedDevicesList)
+                            {
+                                if (deviceToExclude.Equals(SummarySectionDeviceType.screen.ToString()))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.screen);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.mobile.ToString()))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.mobile);
+                                }
+                                else if (deviceToExclude.Equals(SummarySectionDeviceType.syndication.ToString()))
+                                {
+                                    topLevelSection.ExcludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+                                    allIncludedDevicesList.Remove(SummarySectionDeviceType.syndication);
+                                }
+                            }
+
+                            //put together the included device list for the summary section
+                            if (allIncludedDevicesList.Count > 0)
+                            {
+                                foreach (SummarySectionDeviceType deviceToInlcude in allIncludedDevicesList)
+                                {
+                                    if (deviceToInlcude.Equals(SummarySectionDeviceType.screen))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                    else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication))
+                                        topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                                }
+                            }
+                        }
+                        //both included and excluded devices are set    
+                        else if (!string.IsNullOrEmpty(includedDevices) && !string.IsNullOrEmpty(excludedDevices))
+                        {
+                            string[] includedDevicesList = includedDevices.Split(' ');
+
+                            //at this point the excluded devices are redundant
+                            foreach (string deviceToInlcude in includedDevicesList)
+                            {
+                                if (deviceToInlcude.Equals(SummarySectionDeviceType.screen.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.screen);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.mobile.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
+
+                            }
+                        }
+                    }
+                                         
                     // Handle sub-sections
                     path = xPathManager.GetXPath(SummaryXPath.SubSection, device);
 
@@ -416,7 +510,7 @@ namespace GateKeeper.DataAccess.CDR
                     SummarySection secondLevelSection = new SummarySection();
                     SummarySection thirdLevelSection = new SummarySection();
                     while (subSectionIter.MoveNext())
-                    {
+                    {                       
                         SummarySection subSection = ExtractSection(subSectionIter.Current, xPathManager, ref priority);
                         subSection.ParentSummarySectionID = topLevelSection.SummarySectionID;
                         XPathNavigator nav = subSection.Xml.CreateNavigator();
@@ -444,8 +538,67 @@ namespace GateKeeper.DataAccess.CDR
                         {
                             summary.SectionList.Add(subSection);
                         }
+
+                        //check sub-section level sections first for include/exclude devices
+                        string subSectionIncludedDevices = subSectionIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string subSectionExcludedDevices = subSectionIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        //for nested includes and excludes we need to add one row to the child table for all devices
+                        //the xslt will worry about showing or hiding on the front end
+                        //if included or excluded devices are set
+                        if (!string.IsNullOrEmpty(subSectionIncludedDevices) || !string.IsNullOrEmpty(subSectionExcludedDevices))
+                        {
+                            subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                            subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                            subSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+                        } 
+
                     }
-                                        
+
+                    //put tgether a method that returns included excluded devices for a particular element.
+                    //go over tables
+                    string tablePath = xPathManager.GetXPath(SummaryXPath.SectTable, device);
+                    XPathNodeIterator tableIter = sectionIter.Current.Select(tablePath);
+                    while (tableIter.MoveNext())
+                    {
+                        //check table sections for include/exclude devices
+                        string tableSectionIncludedDevices = tableIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string tableSectionExcludedDevices = tableIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        //for nested includes and excludes we need to add one row to the child table for all devices
+                        //the xslt will worry about showing or hiding on the front end
+                        //if included or excluded devices are set
+                        if (!string.IsNullOrEmpty(tableSectionIncludedDevices) || !string.IsNullOrEmpty(tableSectionExcludedDevices))
+                        {
+                            tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                            tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                            tableSectionDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+                        }
+
+                    }
+
+                    string mediaLinkPath = xPathManager.GetXPath(SummaryXPath.MediaLink, device);
+                    XPathNavigator topSectionNav = topLevelSection.Xml.CreateNavigator();
+                    XPathNodeIterator mediaLinkIter = topSectionNav.Select(mediaLinkPath);
+                    while (mediaLinkIter.MoveNext())
+                    {                      
+                        //check media links for include/exclude devices
+                        string mediaLinkIncludedDevices = mediaLinkIter.Current.GetAttribute("IncludedDevices", string.Empty).Trim();
+                        string mediaLinkExcludedDevices = mediaLinkIter.Current.GetAttribute("ExcludedDevices", string.Empty).Trim();
+
+                        //for nested includes and excludes we need to add one row to the child table for all devices
+                        //the xslt will worry about showing or hiding on the front end
+                        //if included or excluded devices are set
+                        if (!string.IsNullOrEmpty(mediaLinkIncludedDevices) || !string.IsNullOrEmpty(mediaLinkExcludedDevices))
+                        {
+                            mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.screen);
+                            mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.mobile);
+                            mediaLinkDevicesToBeIncluded.Add(SummarySectionDeviceType.syndication);
+                        }                        
+                    }
+
+                    //Handle include/exclude devices
+                    SetUpIncludeExcludeDevices(topLevelSection);
                 }
             }
             catch (Exception e)
@@ -454,6 +607,89 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
+        //Set up 
+        //include/exclude devices at the top-section level
+        //such that a row will be created per top-section per device in the child table in Percussion
+        private void SetUpIncludeExcludeDevices(SummarySection topLevelSection)
+        {
+            //check sub-sections
+            if (subSectionDevicesToBeIncluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in subSectionDevicesToBeIncluded)
+                {
+                    if (!topLevelSection.IncludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.IncludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            if (subSectionDevicesToBeExcluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in subSectionDevicesToBeExcluded)
+                {
+                    if (!topLevelSection.ExcludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.ExcludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            //check table sections
+            if (tableSectionDevicesToBeIncluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in tableSectionDevicesToBeIncluded)
+                {
+                    if (!topLevelSection.IncludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.IncludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            if (tableSectionDevicesToBeExcluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in tableSectionDevicesToBeExcluded)
+                {
+                    if (!topLevelSection.ExcludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.ExcludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            //check Media links
+            if (mediaLinkDevicesToBeIncluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in mediaLinkDevicesToBeIncluded)
+                {
+                    if (!topLevelSection.IncludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.IncludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            if (mediaLinkDevicesToBeExcluded.Count > 0)
+            {
+                foreach (SummarySectionDeviceType device in mediaLinkDevicesToBeExcluded)
+                {
+                    if (!topLevelSection.ExcludedDeviceTypes.Contains(device))
+                    {
+                        topLevelSection.ExcludedDeviceTypes.Add(device);
+                    }
+                }
+            }
+
+            //more than 1 device means we need to remove 'all' from the list at the top section level
+            if (topLevelSection.IncludedDeviceTypes.Count > 1)
+            {
+                if (topLevelSection.IncludedDeviceTypes.Contains(SummarySectionDeviceType.all))
+                    topLevelSection.IncludedDeviceTypes.Remove(SummarySectionDeviceType.all);
+            }
+
+        }
+                
         #endregion Extraction
 
         #region Permanent Link Verification
@@ -834,6 +1070,8 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Extract misc metadata and PermanentLinks...
                 ExtractMetadata(xNav, summary, xPathManager);
+                if (xmlDoc.OuterXml.Contains(SummarySectionDeviceType.syndication.ToString()))
+                    summary.ValidOutputDevices.Add(TargetedDevice.syndication);
 
                 // Handle summary relations...
                 ExtractRelations(xNav, summary, xPathManager);
@@ -843,7 +1081,7 @@ namespace GateKeeper.DataAccess.CDR
 
                 // Handle sections...
                 ExtractTopLevelSections(xNav, summary, xPathManager, targetedDevice);
-
+                             
                 // Handle modified and published dates
                 DocumentHelper.ExtractDates(xNav, summary, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
 

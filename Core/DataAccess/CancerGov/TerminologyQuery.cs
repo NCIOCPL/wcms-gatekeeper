@@ -1,22 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
-using System.Collections;
-using System.Transactions;
+using System.Data.SqlClient;
+
+using Microsoft.Practices.EnterpriseLibrary.Data;
+
+using GateKeeper.DataAccess.StoreProcedures;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Terminology;
-using GateKeeper.DocumentObjects.Media;
-using GateKeeper.DataAccess.StoreProcedures;
-using GateKeeper.DataAccess;
-using Microsoft.Practices.EnterpriseLibrary.Data;
-using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using NCI.Data;
 
 namespace GateKeeper.DataAccess.CancerGov
 {
     public class TerminologyQuery : DocumentQuery
     {
+        DictionaryQuery Dictionary = new DictionaryQuery();
+
+
         public override bool SaveDocument(Document terminologyDoc, string userID)
         {
             bool bSuccess = true;
@@ -49,6 +50,9 @@ namespace GateKeeper.DataAccess.CancerGov
 
                 // SP: Save document data
                 SaveDBDocument(TermDoc, db, transaction);
+
+                // Save the extracted dictionary entry.
+                Dictionary.SaveDocument(TermDoc.DocumentID, TermDoc.Dictionary, TermDoc.TermAliasList, transaction);
 
                 transaction.Commit();
             }
@@ -98,6 +102,8 @@ namespace GateKeeper.DataAccess.CancerGov
                     // SP: Clear extracted data
                     ClearTerminologyData(terminologyDoc.DocumentID, db, transaction);
 
+                    Dictionary.DeleteDocument(terminologyDoc.DocumentID, transaction);
+
                     // SP: Clear document
                     ClearDocument(terminologyDoc.DocumentID, db, transaction, databaseName.ToString());
                     transaction.Commit();
@@ -138,8 +144,11 @@ namespace GateKeeper.DataAccess.CancerGov
                         db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, terminologyDoc.DocumentID);
                         db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
                         db.ExecuteNonQuery(pushCommand, transaction);
-                        transaction.Commit();
                     }
+
+                    Dictionary.PushDocumentToPreview(terminologyDoc.DocumentID, transaction);
+
+                    transaction.Commit();
                 }
                 catch (Exception e)
                 {
@@ -183,8 +192,11 @@ namespace GateKeeper.DataAccess.CancerGov
                         db.AddInParameter(pushCommand, "@DocumentID", DbType.Int32, terminologyDoc.DocumentID);
                         db.AddInParameter(pushCommand, "@UpdateUserID", DbType.String, userID);
                         db.ExecuteNonQuery(pushCommand, transaction);
-                        transaction.Commit();
                     }
+
+                    Dictionary.PushDocumentToLive(terminologyDoc.DocumentID, transaction);
+
+                    transaction.Commit();
                 }
                 catch (Exception e)
                 {
@@ -209,6 +221,42 @@ namespace GateKeeper.DataAccess.CancerGov
                 conn.Dispose();
             }
         }
+
+        /// <summary>
+        /// Stinky Code. Looks up the URL of the drug info summary (if any) associated
+        /// with the drug identified by termID
+        /// </summary>
+        /// <param name="termID">The TermID of a Term document which contains a drug dictionary entry.</param>
+        /// <returns>A string containing the pretty URL path to termID's matching drug information summary.
+        /// If no document is found, String.Empty is returned.</returns>
+        public string GetRelatedDrugInfoSummaryURL(int termID)
+        {
+            string path = String.Empty;
+
+            try
+            {
+                // create our parameter array
+                SqlParameter[] parms = { new SqlParameter("@TermID", SqlDbType.Int) { Value = termID } };
+
+                // Query the database and get the results
+                DataTable dt = SqlHelper.ExecuteDatatable(
+                    ConfigurationManager.ConnectionStrings["Staging"].ConnectionString,
+                    CommandType.StoredProcedure,
+                    "usp_getDruginfoURL",
+                    parms);
+
+                if (dt.Rows.Count > 0)
+                    path = (string)dt.Rows[0]["PrettyURL"];
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
+            return path;
+        }
+
 
         #region Private Methods
         /// <summary>

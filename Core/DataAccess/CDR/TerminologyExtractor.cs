@@ -1,13 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Xml.XPath;
+
 using GateKeeper.Common;
 using GateKeeper.Common.XPathKeys;
-using GateKeeper.DocumentObjects;
-using GateKeeper.DocumentObjects.Terminology;
+using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.DocumentObjects;
+using GateKeeper.DocumentObjects.Dictionary;
+using GateKeeper.DocumentObjects.Terminology;
 
 namespace GateKeeper.DataAccess.CDR
 {
@@ -119,7 +122,7 @@ namespace GateKeeper.DataAccess.CDR
                     {
                         terminology.TermType = TerminologyType.Menu;
                     }
-                    else if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
+                     else if (terminology.SemanticTypes[0].Name.Trim().ToLower() == "drug/agent")
                     {
                         terminology.TermType = TerminologyType.Drug;
                     }
@@ -184,6 +187,115 @@ namespace GateKeeper.DataAccess.CDR
             }
         }
 
+        /// <summary>
+        /// Extracts drug dictionary information if it exists in the document.
+        /// </summary>
+        /// <param name="xNav"></param>
+        /// <param name="terminology"></param>
+        private void ExtractDrugDictionaryItems(XmlDocument xmlDoc, TerminologyDocument terminology)
+        {
+            if (terminology.TermType == TerminologyType.Drug)
+            {
+                // Stinky code.  Add the URL of this drug's matching Drug Info Summary (if any)
+                // to the XML structure.  This information should actually come from the CDR
+                // and will in some pending release.
+                AddRelatedDrugInfoSummary(terminology);
+
+                try
+                {
+                    // Use XML deserialization to extract the meta data.
+                    XmlSerializer serializer = new XmlSerializer(typeof(TerminologyMetadata));
+
+                    // Use XML Serialization to parse the dictionary entry and extract the term details.
+                    // Note that this approach is new as of the Feline release (Summer 2015) and is significantly
+                    // different from the legacy extract mechanisms used elsewhere in this codebase.
+                    TerminologyMetadata extractData;
+                    using (TextReader reader = new StringReader(xmlDoc.OuterXml))
+                    {
+                        extractData = (TerminologyMetadata)serializer.Deserialize(reader);
+                    }
+
+                    //Add rows to the Dictionary and DictionaryTermAlias tables only when there is a Definition
+                    if (extractData.HasDefinition)
+                    {
+                        GeneralDictionaryEntry dictionaryEntry = GetDictionary(extractData);
+
+                        //already initialized to empty in the TerminologyDefinition object
+                        terminology.Dictionary.Add(dictionaryEntry);
+
+                        //Populating the TermAlias object using the pre-extracted data
+                        //Since we did not want to do ReadXML and implement ISerializable in 
+                        //the TerminologyMetadata class at this time
+                        foreach (TerminologyOtherName otherName in terminology.OtherNames)
+                        {
+                            TermAlias alias = new TermAlias();
+                            alias.AlternateName = otherName.Name;
+                            alias.NameType = otherName.Type;
+                            //For terminology documents the Language is set to English by default
+                            alias.Language = Language.English.ToString();
+                            terminology.TermAliasList.Add(alias);
+                        }
+
+                    }
+                    
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Extraction Error: Extracting drug dictionary items failed.  Document CDRID=" + _documentID.ToString(), e);
+                }
+            }
+
+
+        }
+
+        /// <summary>
+        /// Creates a collection of DictionaryEntry objects from the information contained in TerminologyMetadata object.
+        /// </summary>
+        /// <param name="metadata">A TerminologyMetadata created from a Terminology XML document.</param>
+        /// <returns></returns>
+        private GeneralDictionaryEntry GetDictionary(TerminologyMetadata metadata)
+        {
+            GeneralDictionaryEntry entry = new GeneralDictionaryEntry();
+            entry.TermID = metadata.ID;
+            entry.TermName = metadata.TermName;
+            entry.Dictionary = metadata.Dictionary;
+            entry.Language = metadata.Language;
+            entry.Audience = metadata.Definition.Audience;
+            entry.ApiVersion = "v1";
+
+            return entry;
+        }
+
+        /// <summary>
+        /// Stinky code.  Modifies the XML document contained in drugTerm to include a
+        /// RelatedDrugInfoSummary element containing the path to the drug information
+        /// summary matching this term.  If no matching drug information summary is found,
+        /// the element is not added.
+        /// </summary>
+        /// <param name="drugTerm">Terminology document containing a term with a drug definition.</param>
+        private void AddRelatedDrugInfoSummary(TerminologyDocument drugTerm)
+        {
+            try
+            {
+                TerminologyQuery query = new TerminologyQuery();
+                string disPath = query.GetRelatedDrugInfoSummaryURL(drugTerm.DocumentID);
+
+                if (!String.IsNullOrEmpty(disPath))
+                {
+                    XPathNavigator nav = drugTerm.Xml.CreateNavigator();
+                    nav.MoveToFirstChild();
+                    
+                    nav.AppendChild(String.Format("<RelatedDrugInfoSummary>{0}</RelatedDrugInfoSummary>", disPath));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Don't let errors in the look up stop processing.
+                drugTerm.WarningWriter("AddRelatedDrugInfoSummary(). Unable to lookup matching Drug Info Summary.\n" + ex.Message);
+            }
+        }
+
+
         #endregion Private Methods
 
         #region Public Methods
@@ -231,6 +343,7 @@ namespace GateKeeper.DataAccess.CDR
                 ExtractOtherNames(xNav, terminology);
                 ExtractSemanticTypes(xNav, terminology);
                 ExtractMenus(xNav, terminology);
+                ExtractDrugDictionaryItems(xmlDoc, terminology);
 
                 DocumentHelper.ExtractDates(xNav, terminology, xPathManager.GetXPath(CommonXPath.LastModifiedDate), xPathManager.GetXPath(CommonXPath.FirstPublishedDate));
             }

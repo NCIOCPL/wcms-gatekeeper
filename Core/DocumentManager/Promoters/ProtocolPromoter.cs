@@ -17,6 +17,7 @@ namespace GKManagers
     /// <summary>
     /// Glossary tem promoter class
     /// </summary>
+    [Obsolete("ProtocolPromoter has been retired.", true)]
     class ProtocolPromoter : DocumentPromoterBase
     {
         #region Public methods

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GlossaryTerm id="CDR0000045693">
+  <TermName>Definition</TermName>
+  <TermPronunciation>(ˌdefəˈniSH(ə)n/)</TermPronunciation>
+  <TermDefinition>
+    <DefinitionText>English patient definition.</DefinitionText>
+    <Dictionary>Cancer.gov</Dictionary>
+    <Audience>Patient</Audience>
+  </TermDefinition>
+  <MediaLink ref="CDR0000707091" type="audio/mpeg" alt="English pronunciation of term &quot;definition&quot;" language="en" id="_3" />
+  <MediaLink ref="CDR0000761781" type="image/jpeg" alt="English Image for Patients." language="en" audience="Patients" thumb="Yes" id="_5">
+    <Caption language="en=">English Image for Patients.</Caption>
+  </MediaLink>
+  <DateLastModified>2015-02-09</DateLastModified>
+</GlossaryTerm>

@@ -224,6 +224,45 @@ namespace NCI.WCM.CMSManager.CMS
             return entrylist;
         }
 
+        public static PSChildEntry[] LoadChildEntries(contentSOAP contentSvc, long parentID, string fieldSetName)
+        {
+            PSChildEntry[] entrylist;
+
+            try
+            {
+                LoadChildEntriesRequest req = new LoadChildEntriesRequest();
+
+                req.Id = parentID;
+                req.Name = fieldSetName;
+
+                entrylist = contentSvc.LoadChildEntries(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in LoadChildEntries", ex);
+            }
+            return entrylist;
+        }
+
+        public static void DeleteChildEntries(contentSOAP contentSvc, long parentID, string fieldSetName, long[] childEntries)
+        {
+
+            try
+            {
+                DeleteChildEntriesRequest req = new DeleteChildEntriesRequest();
+
+                req.Id = parentID;
+                req.Name = fieldSetName;
+                req.ChildId = childEntries;
+                contentSvc.DeleteChildEntries(req);
+            }
+            catch (SoapException ex)
+            {
+                throw new CMSSoapException("Percussion error in DeleteChildEntries", ex);
+            }
+
+        }
+
         public static void SaveChildEntries(contentSOAP contentSvc, long parentID, string fieldSetName, PSChildEntry[] childEntries)
         {
             try
@@ -267,7 +306,7 @@ namespace NCI.WCM.CMSManager.CMS
 
         }
 
-        
+
         /// <summary>
         /// Associates the specified Content Items with the specified Folder.
         /// </summary>
@@ -340,7 +379,7 @@ namespace NCI.WCM.CMSManager.CMS
         {
             try
             {
-                return contentSvc.PrepareForEdit( idList );
+                return contentSvc.PrepareForEdit(idList);
             }
             catch (SoapException ex)
             {
@@ -432,7 +471,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// <param name="sourcePath">The source folder path.</param>
         /// <param name="id">The content item ids to be moved</param>
         /// <remarks>All items being moved must have the same source and target paths.</remarks>
-        public static void MoveFolderChildren(contentSOAP contentSvc, string targetPath,string sourcePath,long[] id)
+        public static void MoveFolderChildren(contentSOAP contentSvc, string targetPath, string sourcePath, long[] id)
         {
             MoveFolderChildrenRequest moveFolder = new MoveFolderChildrenRequest();
             FolderRef folderRefSource = new FolderRef();
@@ -579,7 +618,7 @@ namespace NCI.WCM.CMSManager.CMS
             }
         }
 
-        public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string,string> fieldCriteria)
+        public static PSSearchResults[] FindItemByFieldValues(contentSOAP contentSvc, string contentType, Dictionary<string, string> fieldCriteria)
         {
             return FindItemByFieldValues(contentSvc, contentType, null, fieldCriteria);
         }

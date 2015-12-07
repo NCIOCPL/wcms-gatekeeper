@@ -353,6 +353,30 @@ namespace NCI.WCM.CMSManager.CMS
             }
         }
 
+        //deletes items from a child table
+        public void DeleteChildItems(PercussionGuid parentItemID)
+        {
+            string childFieldName = "contained_sections";
+            PSItemStatus[] checkOutStatus = PSWSUtils.PrepareForEdit(_contentService, new long[] { parentItemID.ID });
+
+            PSChildEntry[] itemChildren =
+                PSWSUtils.LoadChildEntries(_contentService, parentItemID.ID, childFieldName);
+
+            if (itemChildren != null && itemChildren.Length > 0)
+            {
+                long[] ids;
+                ids = new long[itemChildren.Length];
+                int i = 0;
+                foreach (PSChildEntry itemChild in itemChildren)
+                {
+                    ids[i] = itemChild.Id;
+                    i++;
+                }
+                PSWSUtils.DeleteChildEntries(_contentService, parentItemID.ID, childFieldName, ids);
+            }
+
+            PSWSUtils.ReleaseFromEdit(_contentService, checkOutStatus);
+        }
 
         public void CheckInItems(PercussionGuid[] itemIDList)
         {
@@ -391,7 +415,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// </returns>
         public List<long> UpdateContentItemList(List<ContentItemForUpdating> contentItems,
             List<string> replacementPathCollection,
-            List<string>additionalPathCollection)
+            List<string> additionalPathCollection)
         {
             return UpdateContentItemList(contentItems, null, replacementPathCollection, additionalPathCollection);
         }
@@ -434,7 +458,7 @@ namespace NCI.WCM.CMSManager.CMS
             long idUpd;
             foreach (ContentItemForUpdating cmi in contentItems)
             {
-                idUpd = UpdateItem(cmi.ID, cmi.Fields, invalidFieldnameHandler, replacementPathCollection, additionalPathCollection);
+                idUpd = UpdateItem(cmi.ID, cmi.Fields, cmi.ChildFieldList, invalidFieldnameHandler, replacementPathCollection, additionalPathCollection);
                 idUpdList.Add(idUpd);
             }
             return idUpdList;
@@ -458,6 +482,7 @@ namespace NCI.WCM.CMSManager.CMS
         /// </returns>
         private long UpdateItem(long id,
             Dictionary<string, string> newFieldValues,
+            IEnumerable<ChildFieldSet> childFieldList,
             Action<string> invalidFieldnameHandler,
             List<string> replacementPathCollection,
             List<string> additionalPathCollection)
@@ -490,8 +515,10 @@ namespace NCI.WCM.CMSManager.CMS
                 MergeFieldValues(item.Fields, newFieldValues, invalidFieldnameHandler);
             }
 
-            // TODO: Add logic to update child fields.
-
+            if (childFieldList != null)
+            {
+                CreateChildItems(new PercussionGuid(id), childFieldList, invalidFieldnameHandler);
+            }
 
             // Replace the item's list of paths.
             if (replacementPathCollection != null)
@@ -990,7 +1017,7 @@ namespace NCI.WCM.CMSManager.CMS
         public void DeleteActiveAssemblyRelationships(PSAaRelationship[] relationships, bool alreadyInEditingState, PercussionGuid[] idList, string slotName, string templateName)
         {
             PSItemStatus[] parentCheckoutStatus = new PSItemStatus[] { };
-            
+
             if (!alreadyInEditingState)
             {
                 //edit the relationship and checkout the parent
@@ -1009,7 +1036,7 @@ namespace NCI.WCM.CMSManager.CMS
                 long[] relationshipIDs = Array.ConvertAll(incomingRelationship, relationship => (long)((ulong)relationship.id | 0xffffff0000000000));
                 PSWSUtils.DeleteActiveAssemblyRelationships(_contentService, relationshipIDs);
             }
-            
+
             if (!alreadyInEditingState)
             {
                 PSWSUtils.ReleaseFromEdit(_contentService, parentCheckoutStatus);
@@ -1054,7 +1081,8 @@ namespace NCI.WCM.CMSManager.CMS
             if (item == null || item.Folders == null || item.Folders.Length == 0)
                 return null;
 
-            PSItemFolders pathFolder = Array.Find(item.Folders, folder =>{
+            PSItemFolders pathFolder = Array.Find(item.Folders, folder =>
+            {
                 return (!string.IsNullOrEmpty(folder.path)
                     && folder.path.StartsWith(siteBasePath));
             });
@@ -1096,8 +1124,8 @@ namespace NCI.WCM.CMSManager.CMS
                 {
                     string activationUrl = string.Format(publishingUrlFormat, protocol, host, port, edition);
                     WebRequest request = WebRequest.Create(activationUrl);
-                    WebResponse response = request.GetResponse();            
-                    
+                    WebResponse response = request.GetResponse();
+
                 });
 
             }
@@ -1262,7 +1290,7 @@ namespace NCI.WCM.CMSManager.CMS
             {
                 filter.Dependent = new long[] { dependent.ID };
             }
-            
+
             if (!string.IsNullOrEmpty(slotname))
             {
                 filter.slot = slotname;
@@ -1270,7 +1298,7 @@ namespace NCI.WCM.CMSManager.CMS
 
             if (!string.IsNullOrEmpty(templateName))
                 filter.template = templateName;
-            
+
             PSAaRelationship[] relationships = PSWSUtils.FindRelationships(_contentService, filter);
 
             if (relationships.Length > 0)
@@ -1278,7 +1306,7 @@ namespace NCI.WCM.CMSManager.CMS
                 int relCount = relationships.Length;
                 returnList = new PercussionGuid[relCount];
                 for (int i = 0; i < relCount; i++)
-                {                    
+                {
                     returnList[i] = new PercussionGuid(relationships[i].ownerId);
                 }
             }
@@ -1322,10 +1350,10 @@ namespace NCI.WCM.CMSManager.CMS
                     {
                         subsetSize = itemCount - first;
                     }
-                    
+
                 }
-                                
-               try
+
+                try
                 {
                     // As items are checked out, add them to statusList for eventual return.
                     if (subsetSize > 0)
@@ -1385,7 +1413,7 @@ namespace NCI.WCM.CMSManager.CMS
                 first = i * maxChunkSize;
                 //OCEPROJECT 3079 - updated this logic so that 
                 //release from edit does not fail when remainder is 0
-                
+
                 if (i < loopCount)
                 {
                     subsetSize = maxChunkSize;

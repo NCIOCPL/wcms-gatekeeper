@@ -74,7 +74,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudienceType.cs" />
+    <Compile Include="DictionaryType.cs" />
+    <Compile Include="Dictionary\GeneralDictionaryEntry.cs" />
+    <Compile Include="Dictionary\TermAlias.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermMetadata.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDefinition.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermSimple.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermSimpleDefinition.cs" />
@@ -95,12 +99,13 @@
     <Compile Include="Protocol\TypeOfCancer.cs" />
     <Compile Include="GeneticsProfessional\FamilyCancerSyndrome.cs" />
     <Compile Include="GeneticsProfessional\GeneticsProfessionalDocument.cs" />
-    <Compile Include="GlossaryTerm\GlossaryTermTranslation.cs" />
     <Compile Include="GlossaryTerm\GlossaryTermDocument.cs" />
     <Compile Include="Media\MediaDocument.cs" />
     <Compile Include="DocumentHelper.cs" />
     <Compile Include="Summary\PermanentLink.cs" />
     <Compile Include="Summary\SummaryReference.cs" />
+    <Compile Include="Summary\SummarySectionDeviceType.cs" />
+    <Compile Include="Terminology\TerminologyDefinition.cs" />
     <Compile Include="Terminology\TerminologyMenu.cs" />
     <Compile Include="Protocol\ProtocolModality.cs" />
     <Compile Include="Organization\OrganizationDocument.cs" />
@@ -118,6 +123,7 @@
     <Compile Include="Summary\SummarySectionType.cs" />
     <Compile Include="Summary\SummaryType.cs" />
     <Compile Include="Terminology\TerminologyDocument.cs" />
+    <Compile Include="Terminology\TerminologyMetadata.cs" />
     <Compile Include="Terminology\TerminologyOtherName.cs" />
     <Compile Include="Terminology\TerminologyType.cs" />
     <Compile Include="Terminology\TermSemanticType.cs" />

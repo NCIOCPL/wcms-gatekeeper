@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using GateKeeper.DocumentObjects.Dictionary;
+
 namespace GateKeeper.DocumentObjects.Terminology
 {
     /// <summary>
@@ -17,7 +19,7 @@ namespace GateKeeper.DocumentObjects.Terminology
         private string _definitionText = string.Empty;
         private int     _parentTermID = 0;
         private AudienceType _definitionAudience = AudienceType.Patient;
-        private TerminologyType _termType = TerminologyType.Drug;
+        private TerminologyType _termType = TerminologyType.Other;
         private List<TerminologyOtherName> _otherNames = new List<TerminologyOtherName>();
         private List<TermSemanticType> _semanticTypes = new List<TermSemanticType>();
         private List<TerminologyMenu> _menus = new List<TerminologyMenu>();
@@ -30,6 +32,8 @@ namespace GateKeeper.DocumentObjects.Terminology
             : base()
         {
             this.DocumentType = DocumentType.Terminology;
+            this.Dictionary = new List<GeneralDictionaryEntry>();
+            this.TermAliasList = new List<TermAlias>();
         }
 
         #endregion
@@ -44,6 +48,20 @@ namespace GateKeeper.DocumentObjects.Terminology
             get { return _definitionAudience; }
             set { _definitionAudience = value; }
         }
+
+        /// <summary>
+        /// The dictionary entry that comes from a TerminologyDocument.
+        /// This element is only set when the term's SemanticTypes collection
+        /// includes a value of "drug/agent."
+        /// </summary>
+        public List<GeneralDictionaryEntry> Dictionary { get; private set; }
+
+        /// <summary>
+        /// The term alias that comes from a TerminologyDocument.
+        /// This element is only set when the term's SemanticTypes collection
+        /// includes a value of "drug/agent."
+        /// </summary>
+        public List<TermAlias> TermAliasList { get; private set; }
 
         /// <summary>
         /// Text of the definition.

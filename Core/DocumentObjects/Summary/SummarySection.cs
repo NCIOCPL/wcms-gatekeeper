@@ -29,6 +29,8 @@ namespace GateKeeper.DocumentObjects.Summary
         private int _priority = 0;
         private SummarySectionType _sectionType = SummarySectionType.SummarySection;
         private List<string> _linkableNodeRawIDList = new List<string>();
+        private List<SummarySectionDeviceType> _includedDeviceTypes = new List<SummarySectionDeviceType>();
+        private List<SummarySectionDeviceType> _excludedDeviceTypes = new List<SummarySectionDeviceType>();
 
         #endregion
 
@@ -234,6 +236,25 @@ namespace GateKeeper.DocumentObjects.Summary
         {
             get { return _priority; }
             set { _priority = value; }
+        }
+
+        
+        /// <summary>
+        /// Indicates the included device types of the section
+        /// </summary>
+        public List<SummarySectionDeviceType> IncludedDeviceTypes
+        {
+            get { return _includedDeviceTypes; }
+            internal set { _includedDeviceTypes = value; }
+        }
+
+        /// <summary>
+        /// Indicates the excluded device types of the section
+        /// </summary>
+        public List<SummarySectionDeviceType> ExcludedDeviceTypes
+        {
+            get { return _excludedDeviceTypes; }
+            internal set { _excludedDeviceTypes = value; }
         }
 
         #endregion

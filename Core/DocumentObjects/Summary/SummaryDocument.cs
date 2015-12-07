@@ -38,7 +38,8 @@ namespace GateKeeper.DocumentObjects.Summary
         private Guid _relatedDocumentGUID = Guid.Empty;
         private Guid _otherLanguageDocumentGUID = Guid.Empty;
         private Guid _replacementforDocumentGUID = Guid.Empty;
-
+        private List<string> _summaryKeyWords = new List<string>();
+        
         /// <summary>
         /// Summaries/SummarySections that this summary references (may also be internal references).
         /// </summary>
@@ -356,6 +357,11 @@ namespace GateKeeper.DocumentObjects.Summary
             internal set { _replacementforDocumentGUID = value; }
         }
 
+        public List<string> SummaryKeyWords
+        {
+            get { return _summaryKeyWords; }
+            internal set { _summaryKeyWords = value; }
+        }
         #endregion Public Properties
 
         #region Public Methods

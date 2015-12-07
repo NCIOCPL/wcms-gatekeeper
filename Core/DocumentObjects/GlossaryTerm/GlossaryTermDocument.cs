@@ -2,23 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GateKeeper.Common;
+using System.Xml;
+using System.Xml.Serialization;
+
+using GateKeeper.DocumentObjects.Dictionary;
 
 namespace GateKeeper.DocumentObjects.GlossaryTerm
 {
     /// <summary>
-    /// Class to represent a glossary term document.
+    /// Class to maintain the processing context of a glossary term document
     /// </summary>
-    [Serializable]
-    public class GlossaryTermDocument : Document
+    public class GlossaryTermDocument : Document 
     {
-        #region Fields
+        /// <summary>
+        /// The collection of dictionary items created from the document XML.
+        /// </summary>
+        public List<GeneralDictionaryEntry> Dictionary { get; private set; }
 
-        private Dictionary<Language, GlossaryTermTranslation> _glossaryTermTranslationMap = new Dictionary<Language, GlossaryTermTranslation>();
-
-        #endregion
-
-
-        #region Constructors
+        /// <summary>
+        /// The collection of aliases for the term.
+        /// (GlossaryTerm documents don't include an alias element, so this collection is always empty.
+        /// </summary>
+        public List<TermAlias> AliasList { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -27,42 +32,9 @@ namespace GateKeeper.DocumentObjects.GlossaryTerm
             : base()
         {
             this.DocumentType = DocumentType.GlossaryTerm;
+            this.Dictionary = new List<GeneralDictionaryEntry>();
+            this.AliasList = new List<TermAlias>();
         }
 
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Gets, sets a map of different translations of the glossary term.
-        /// </summary>
-        public Dictionary<Language, GlossaryTermTranslation> GlossaryTermTranslationMap
-        {
-            get { return _glossaryTermTranslationMap; }
-            internal set { _glossaryTermTranslationMap = value; }
-        }
-       #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Returns a System.String that represents the GlossaryTermDocument.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder(base.ToString());
-
-            sb.Append("GlossaryTermList = \n");
-            foreach (Language language in this.GlossaryTermTranslationMap.Keys)
-            {
-                sb.Append(string.Format("{0} => {1} \n", language.ToString(), 
-                    GlossaryTermTranslationMap[language].ToString()));
-            }
-
-            return sb.ToString();
-        }
-
-       #endregion
     }
 }

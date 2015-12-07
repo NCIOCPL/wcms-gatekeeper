@@ -16,4 +16,16 @@ namespace GateKeeper.DocumentObjects
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    [global::System.Serializable]
+    public class UnexpectedExtractedValueException : Exception
+    {
+        public UnexpectedExtractedValueException() { }
+        public UnexpectedExtractedValueException(string message) : base(message) { }
+        public UnexpectedExtractedValueException(string message, Exception inner) : base(message, inner) { }
+        protected UnexpectedExtractedValueException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

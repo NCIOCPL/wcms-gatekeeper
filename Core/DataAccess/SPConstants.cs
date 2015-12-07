@@ -56,46 +56,6 @@ namespace GateKeeper.DataAccess.StoreProcedures
         #endregion
     }
 
-    public class SPGlossaryTerm
-    {
-        #region Fields
-            private static string _spClearGlossaryData = "dbo.usp_clearExtractedGlossaryData";
-            private static string _spSaveGlossaryTerm = "dbo.usp_saveGlossaryTerm";
-            private static string _spGetGlossaryTerm = "dbo.usp_GetGlossaryTerm";
-            private static string _spSaveGTDefinition = "dbo.usp_saveGlossaryTermDefinition";
-            private static string _spSaveGTDefinitionAudi = "dbo.usp_saveGlossaryTermDefinitionAudience";
-            private static string _spSaveGTDefinitionDic = "dbo.usp_saveGlossaryTermDefinitionDictionary";
-            private static string _spSaveGTDocumentData = "dbo.usp_saveDocumentData";
-            private static string _spPushGTDocumentData = "dbo.usp_PushExtractedGlossaryData";
-        #endregion
-
-        #region Public properties
-            public static string SP_CLEAR_GLOSSARY_DATA
-            { get { return _spClearGlossaryData; } }
-
-            public static string SP_SAVE_GLOSSARY_TERM
-            { get { return _spSaveGlossaryTerm; } }
-
-            public static string SP_GET_GLOSSARY_TERM
-            { get { return _spGetGlossaryTerm; } }
-
-            public static string SP_SAVE_GT_DEFINITION
-            { get { return _spSaveGTDefinition; } }
-
-            public static string SP_SAVE_GT_DEFINITION_AUDI
-            { get { return _spSaveGTDefinitionAudi; } }
-
-            public static string SP_SAVE_GT_DEFINITION_DIC
-            { get { return _spSaveGTDefinitionDic; } }
-
-            public static string SP_SAVE_GT_DOCUMENT_DATA
-            { get { return _spSaveGTDocumentData; } }
-
-            public static string SP_PUSH_GT_DOCUMENT_DATA
-            { get { return _spPushGTDocumentData; } }
-        #endregion
-    }
-
     public class SPTerminology
     {
         #region Fields

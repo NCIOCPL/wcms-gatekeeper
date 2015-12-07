@@ -194,13 +194,7 @@ namespace CDRPreviewWS
             html = html.Replace("/Common/PopUps/popImage.aspx?", GetServerURL() + "/Common/PopUps/popImage.aspx?");
             html = html.Replace("/images/spacer.gif", GetServerURL() + "/images/spacer.gif");
             html = html.Replace("/images/gray_spacer.gif", GetServerURL() + "/images/gray_spacer.gif");
-
-
-            html = html.Replace("http://www.cancer.gov/images/backtotop_red.gif", "/images/backtotop_red.gif");
-            html = html.Replace("/images/backtotop_red.gif", GetServerURL() + "/images/backtotop_red.gif");
-
-            html = html.Replace("/images/new_search_red.gif", GetServerURL() + "/images/new_search_red.gif");
-
+                      
             html = html.Replace("/images/audio-icon.gif", "images/audio-icon.gif");
             html = html.Replace("images/audio-icon.gif", GetServerURL() + "/images/audio-icon.gif");
 

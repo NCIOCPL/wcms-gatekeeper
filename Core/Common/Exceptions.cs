@@ -50,4 +50,19 @@ namespace GateKeeper.Common
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Thrown when an error occurs during the metadata extraction process.
+    /// </summary>
+    [global::System.Serializable]
+    public class ExtractionException : Exception
+    {
+        public ExtractionException() { }
+        public ExtractionException(string message) : base(message) { }
+        public ExtractionException(string message, Exception inner) : base(message, inner) { }
+        protected ExtractionException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
 }

@@ -43,6 +43,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\3rdPartyDLLs\Json.Net\7.0.1\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -52,6 +56,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -106,6 +113,32 @@
       <DependentUpon>popImage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="GenerateCDRPreview.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\Alias.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\Definition.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\DictionarySearchResult.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\DictionarySuggestion.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\DictionaryTerm.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\ImageReference.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\MetaCommon.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\Pronunciation.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\RelatedDrugSummary.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\RelatedExternalLink.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\RelatedItems.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\RelatedSummary.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\RelatedTerm.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\SearchReturn.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\SearchReturnMeta.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\SuggestReturn.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\SuggestReturnMeta.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\TermReturn.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\TermReturnMeta.cs" />
+    <Compile Include="GlossaryTerm\DictionaryAppManager.cs" />
+    <Compile Include="GlossaryTerm\DictionarySearchResultCollection.cs" />
+    <Compile Include="GlossaryTerm\DictionarySuggestionCollection.cs" />
+    <Compile Include="GlossaryTerm\enum.cs" />
+    <Compile Include="GlossaryTerm\GlossaryTermDeserializer.cs" />
+    <Compile Include="GlossaryTerm\TypeTranslator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CDRPreviewTest.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>

@@ -67,9 +67,10 @@ namespace GKManagers
                         // Rendering summary data
                         target.DocumentRenderer.Render(summary, target.TargetedDevice);
 
-                        // Save summary data
-                        target.DocumentDataAccess.SaveDocument(summary, UserName, warningWriter, informationWriter);
                     }
+                    // Save summary data
+                    target.DocumentDataAccess.SaveDocument(summary, UserName, warningWriter, informationWriter);
+
                 }
                 else if (DataBlock.ActionType == RequestDataActionType.Remove)
                 {

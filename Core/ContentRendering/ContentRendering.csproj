@@ -114,20 +114,15 @@
     </Content>
     <Content Include="XSL\GeneticsProfessional.xsl">
     </Content>
+    <Content Include="XSL\GlossaryTerm.xsl" />
     <Content Include="XSL\Protocol_HP.xsl">
     </Content>
     <Content Include="XSL\Protocol_Patient.xsl">
     </Content>
-    <Content Include="XSL\Protocol_Search_HP.xsl">
-    </Content>
-    <Content Include="XSL\Protocol_Search_Patient.xsl">
-    </Content>
-    <Content Include="XSL\Protocol_StudyContacts.xsl">
-    </Content>
-    <Content Include="XSL\README.txt" />
     <Content Include="XSL\SummaryOriginal.xsl">
     </Content>
     <Content Include="XSL\Summary.xsl" />
+    <Content Include="XSL\Terminology.xsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

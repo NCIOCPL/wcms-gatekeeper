@@ -13,8 +13,9 @@ namespace GateKeeper.Common
     [Flags]
     public enum TargetedDevice
     {
-        screen = 0, // Desktop web browser.
-        mobile = 1, // Mobile device
-        ebook = 4
+        screen, // Desktop web browser.
+        mobile, // Mobile device
+        ebook,
+        syndication //syndicated content
     }
 }
