@@ -81,7 +81,7 @@
         <xsl:variable name="count" select="count(//OtherName)"/>
         [<xsl:for-each select="//OtherName">
           {
-            "name": "<xsl:value-of select="OtherTermName"/>",
+            "name": "<xsl:apply-templates select="OtherTermName" />",
             "type": "<xsl:value-of select="OtherNameType"/>"
           }<xsl:if test="position() != $count">,</xsl:if>
       </xsl:for-each>]
