@@ -491,12 +491,12 @@
       <xsl:text>Basic Trial Information</xsl:text>
     </xsl:element>
 
+    <!-- Basic Info box. -->
     <table class="table-default">
       <tr>
-
         <th>Phase</th>
         <th>Type</th>
-
+        <th>Status</th>
         <th>Age</th>
         <th>Trial IDs</th>
       </tr>
@@ -533,6 +533,7 @@
         </td>
 
 
+        <td><xsl:value-of select="/CTGovProtocol/CurrentProtocolStatus"/></td>
 
 
         <xsl:if test="/CTGovProtocol/Eligibility/AgeText[node()] = true() ">
