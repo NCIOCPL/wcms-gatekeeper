@@ -34,7 +34,7 @@
             <!-- Main Content Area -->
              <div class="row">
                 <div id="nvcgSlSectionNav" class="medium-3 columns local-navigation"><div class="section-nav"><div class="level-0"><div><a>Left Nav Goes Here</a></div></div></div></div>
-                <div class="medium-9 columns contentzone" id="main" tabindex="0" role="main">
+                <div class="medium-9 columns contentzone" id="main" tabindex="-1" role="main">
                     <article>
                         <div id="cgvBody">
                             <% =result %>
