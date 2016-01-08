@@ -594,7 +594,7 @@
         <xsl:value-of              select = "@id"/>
       </xsl:attribute>
       <xsl:attribute                name = "tabindex">
-        <xsl:text>0</xsl:text>
+        <xsl:text>-1</xsl:text>
       </xsl:attribute>
       <xsl:apply-templates>
         <xsl:with-param          name = "topSection"
@@ -1105,7 +1105,7 @@
       <xsl:attribute name="href">
         <xsl:choose>
           <xsl:when test="contains(@href, '#')">
-            <xsl:value-of              select = "@url"/>/#link/<xsl:value-of select="substring-after(@href,'#')"/>
+            <xsl:value-of              select = "@url"/>#link/<xsl:value-of select="substring-after(@href,'#')"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of              select = "@url"/>
