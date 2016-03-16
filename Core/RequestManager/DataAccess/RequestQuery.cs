@@ -77,6 +77,8 @@ namespace GKManagers.DataAccess
             {
                 try
                 {
+                    cmd.CommandTimeout = ApplicationSettings.VeryLongProcessCommandTimeout;
+
                     db.AddInParameter(cmd, "@RequestDataIDs", DbType.String, requestDataIds);
                     db.AddInParameter(cmd, "@RequestID", DbType.String, requestId);
                     db.AddInParameter(cmd, "@updateUserID", DbType.String, updateUserID);
