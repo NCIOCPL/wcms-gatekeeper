@@ -1,6 +1,6 @@
 <!-- PDQ DTD
 
-   $Id: pdqCG.dtd 13466 2015-09-11 17:12:23Z volker $
+   $Id: pdqCG.dtd 13902 2016-04-15 18:09:49Z volker $
 
    This DTD defines the external structure of the NCI PDQ XML data
    This version is for Cancer.gov only!  Do not provide to licensees.
@@ -305,6 +305,8 @@
 
 <!ELEMENT GlossaryTermRef (#PCDATA)>
 <!ATTLIST GlossaryTermRef href CDATA #REQUIRED>
+<!ATTLIST GlossaryTermRef dictionary CDATA #IMPLIED>
+<!ATTLIST GlossaryTermRef audience CDATA #IMPLIED>
 
 <!ELEMENT GlossaryTermLink (#PCDATA)>
 <!ATTLIST GlossaryTermLink ref CDATA #REQUIRED>
