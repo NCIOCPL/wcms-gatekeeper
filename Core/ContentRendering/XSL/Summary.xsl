@@ -20,7 +20,7 @@
       <xsl:when                     test = "/Summary/
                                            SummaryMetaData/
                                            SummaryType = 
-                                      'Complementary and alternative medicine'">
+                                      'Integrative, alternative, and complementary therapies'">
         <xsl:text>cam</xsl:text>
       </xsl:when>
       <xsl:when                     test = "/Summary/
@@ -988,7 +988,7 @@
     </xsl:variable>
 
     <xsl:element                   name = "a">
-      <xsl:attribute                name = "class">
+      <xsl:attribute                name = "class"> 
         <xsl:text>definition</xsl:text>
       </xsl:attribute>
       <xsl:attribute                name = "type">
