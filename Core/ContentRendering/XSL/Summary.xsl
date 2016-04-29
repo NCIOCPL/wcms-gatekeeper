@@ -20,7 +20,8 @@
       <xsl:when                     test = "/Summary/
                                            SummaryMetaData/
                                            SummaryType = 
-                                      'Integrative, alternative, and complementary therapies'">
+                                      'Integrative, alternative, and complementary therapies'
+                                        or 'Complementary and alternative medicine'">
         <xsl:text>cam</xsl:text>
       </xsl:when>
       <xsl:when                     test = "/Summary/
@@ -36,7 +37,7 @@
 
   <!-- Define a variable for the audience type -->
   <xsl:variable                   name = "audience">
-    <xsl:choose>
+    <xsl:choose> 
       <xsl:when                     test = "/Summary/
                                            SummaryMetaData/
                                            SummaryAudience = 'Patients'">
