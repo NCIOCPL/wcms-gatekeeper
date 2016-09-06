@@ -1,6 +1,6 @@
 <!-- PDQ DTD
 
-   $Id: pdqCG.dtd 13902 2016-04-15 18:09:49Z volker $
+   $Id: pdqCG.dtd 14028 2016-05-13 12:26:56Z bkline $
 
    This DTD defines the external structure of the NCI PDQ XML data
    This version is for Cancer.gov only!  Do not provide to licensees.
@@ -12,6 +12,8 @@
    BZIssue::4949 - Changes for Display of DIS information
    OCECTS-116 - Add nct_id attribute to ProtocolRef element
    OCEPROJECT-3147 - Remove Protocol document type
+   OCECDR-3903: Cancer.gov displaying Patient definitions for terms 
+                in HP Summaries
 
 -->
 
@@ -432,6 +434,7 @@
                            SummaryLanguage,
                            SummaryDescription,
                            SummaryURL,
+                           SummaryToggleURL?,
                            MobileURL?,
                            SummaryEditorialBoard?,
                            MainTopics+,
@@ -472,6 +475,10 @@
 <!-- Used by Cancer.gov website to link to the summary. -->
 <!ELEMENT SummaryURL (#PCDATA)>
 <!ATTLIST SummaryURL xref CDATA #REQUIRED>
+
+<!-- Used by Cancer.gov website to link to HP/Patient version. -->
+<!ELEMENT SummaryToggleURL (#PCDATA)>
+<!ATTLIST SummaryToggleURL xref CDATA #REQUIRED>
 
 <!-- Used by Cancer.gov website to link to the mobile site. -->
 <!ELEMENT MobileURL (#PCDATA)>
