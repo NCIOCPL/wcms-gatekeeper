@@ -393,7 +393,7 @@
 
   <!--
   ================================================================ -->
-  <xsl:template                  match = "SummaryRef">
+  <xsl:template                  match = "SummaryRef | DrugRef">
     <xsl:element                   name = "a">
       <xsl:attribute                name = "href">
         <!--
