@@ -821,7 +821,7 @@
     <xsl:element name="a">
       <xsl:attribute name="name">RequiredHeader</xsl:attribute>
       <p>
-        <a href="{./LinkText/@xref}">
+        <a href="{./LinkText/@xref}" target="_blank">
           <xsl:value-of select="./LinkText" />
         </a>
         <br/>
