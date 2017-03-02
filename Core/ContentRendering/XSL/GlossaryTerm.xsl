@@ -97,6 +97,7 @@ source control.
  ======================================================================= -->
  <xsl:template                   match = "/GlossaryTerm">
   <xsl:text>{</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
   <xsl:call-template              name = "RenderDocumentID"/>
   <xsl:call-template              name = "RenderTermName"/>
   <xsl:call-template              name = "RenderAliasList"/>
@@ -104,8 +105,10 @@ source control.
   <xsl:call-template              name = "RenderDateLastModified"/>
   <xsl:call-template              name = "RenderDefinition"/>
   <xsl:call-template              name = "RenderImageMediaLinks"/>
+  <xsl:call-template              name = "RenderVideoLinks"/>
   <xsl:call-template              name = "RenderPronunciation"/>
   <xsl:call-template              name = "RenderRelatedInformation"/>
+  <xsl:text>&#xa;</xsl:text>
   <xsl:text>}</xsl:text>
  </xsl:template>
 
@@ -115,12 +118,13 @@ source control.
  Template to create the id JSON value
  ======================================================================= -->
  <xsl:template                    name = "RenderDocumentID">
-  <xsl:text>"id": "</xsl:text>
+  <xsl:text> "id": "</xsl:text>
   <xsl:call-template              name = "GetNumericID">
    <xsl:with-param                name = "cdrid" 
                                 select = "/GlossaryTerm/@id"/>
   </xsl:call-template>
   <xsl:text>",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
   
 
@@ -143,9 +147,10 @@ source control.
    </xsl:choose>
   </xsl:variable>
 
-  <xsl:text>"term": "</xsl:text>
+  <xsl:text> "term": "</xsl:text>
   <xsl:value-of                 select = "$termName"/>
   <xsl:text>",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
 
 
@@ -155,7 +160,8 @@ source control.
  The alias array is always empty for Glossary Term docs.
  ======================================================================= -->
  <xsl:template                    name = "RenderAliasList">
-  <xsl:text>"alias": [ ],</xsl:text>
+  <xsl:text> "alias": [],</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
   
 
@@ -165,9 +171,10 @@ source control.
  ======================================================================= -->
  <xsl:template                    name = "RenderDateFirstPublished">
   <xsl:if                         test = "//DateFirstPublished">
-   <xsl:text>"date_first_published": "</xsl:text>
+   <xsl:text> "date_first_published": "</xsl:text>
    <xsl:value-of                select = "//DateFirstPublished"/>
    <xsl:text>", </xsl:text>
+   <xsl:text>&#xa;</xsl:text>
   </xsl:if>
  </xsl:template>
 
@@ -178,9 +185,10 @@ source control.
  ======================================================================= -->
  <xsl:template                    name = "RenderDateLastModified">
   <xsl:if                         test = "//DateLastModified">
-   <xsl:text>"date_last_modified": "</xsl:text>
+   <xsl:text> "date_last_modified": "</xsl:text>
    <xsl:value-of                select = "//DateLastModified"/>
    <xsl:text>", </xsl:text>
+   <xsl:text>&#xa;</xsl:text>
   </xsl:if>
  </xsl:template>
 
@@ -189,10 +197,28 @@ source control.
  Template to create the definition JSON value
  ======================================================================= -->
  <xsl:template                    name = "RenderDefinition">
+  <xsl:variable                   name = "j-def-tag">
+    <xsl:text> "definition": {</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:variable>
+
+  <xsl:variable                   name = "j-html-tag">
+    <xsl:text>    "html": "</xsl:text>
+  </xsl:variable>
+
+  <xsl:variable                   name = "j-text-tag">
+    <xsl:text>    "text": "</xsl:text>
+  </xsl:variable>
+
+  <xsl:variable                   name = "j-end-nl">
+    <xsl:text>",</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:variable>
+
   <xsl:choose>
    <xsl:when                      test = "$targetLanguage = 'English'">
-    <xsl:text>"definition": {</xsl:text>
-    <xsl:text>"html": "</xsl:text>
+    <xsl:value-of select = "$j-def-tag"/>
+    <xsl:value-of select = "$j-html-tag"/>
     <xsl:apply-templates        select = "//TermDefinition[
                                               (Dictionary = $dictionaryCode 
                                                or 
@@ -204,8 +230,8 @@ source control.
                                               and 
                                               Audience = $audienceCode
                                                          ]/DefinitionText" />
-    <xsl:text>",</xsl:text>
-    <xsl:text>"text": "</xsl:text>
+    <xsl:value-of select = "$j-end-nl"/>
+    <xsl:value-of select = "$j-text-tag"/>
     <xsl:apply-templates        select = "//TermDefinition[
                                               (Dictionary = $dictionaryCode 
                                                or 
@@ -219,11 +245,13 @@ source control.
                                                          ]/DefinitionText" 
                                   mode = "JSON" />
     <xsl:text>"</xsl:text>
-    <xsl:text>},</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text> },</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
    </xsl:when>
    <xsl:when                      test = "$targetLanguage = 'Spanish'">
-    <xsl:text>"definition": {</xsl:text>
-    <xsl:text>"html": "</xsl:text>
+    <xsl:value-of select = "$j-def-tag"/>
+    <xsl:value-of select = "$j-html-tag"/>
     <xsl:apply-templates        select = "//SpanishTermDefinition[
                                                (Dictionary = $dictionaryCode 
                                                 or 
@@ -235,8 +263,8 @@ source control.
                                                and 
                                                Audience = $audienceCode
                                                           ]/DefinitionText" />
-    <xsl:text>",</xsl:text>
-    <xsl:text>"text": "</xsl:text>
+    <xsl:value-of select = "$j-end-nl"/>
+    <xsl:value-of select = "$j-text-tag"/>
     <xsl:apply-templates        select = "//SpanishTermDefinition[
                                                (Dictionary = $dictionaryCode 
                                                 or 
@@ -250,7 +278,9 @@ source control.
                                                           ]/DefinitionText" 
                                   mode = "JSON" />
     <xsl:text>"</xsl:text>
-    <xsl:text>},</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text> },</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
    </xsl:when>
   </xsl:choose>
  </xsl:template>
@@ -260,22 +290,14 @@ source control.
  =======================================================================
  Template to create the definition JSON value
  ======================================================================= -->
- <xsl:template name = "RenderImageMediaLinks">
+ <xsl:template                    name = "RenderImageMediaLinks">
   <xsl:if                         test = "//MediaLink[@type = 'image/jpeg' 
                                                   and 
                                                   @language = $languageCode 
                                                   and 
                                                   @audience = 
                                                       $imageLinkAudienceCode]">
-   <xsl:variable                  name = "count" 
-                                select = "count(//MediaLink[
-                                                  @type ='image/jpeg' 
-                                                  and 
-                                                  @language = $languageCode 
-                                                  and 
-                                                  @audience = 
-                                                     $imageLinkAudienceCode])"/>
-   <xsl:text>"images": [</xsl:text>
+   <xsl:text> "images": [</xsl:text>
 
    <xsl:for-each                select = "//MediaLink[string-length(@ref) > 0 
                                           and 
@@ -288,12 +310,13 @@ source control.
                                   mode = "images"/>
      <!--
      Output a comma unless this is the last element of the set. -->
-    <xsl:if                       test = "position() != $count">
+    <xsl:if                       test = "position() != last()">
      <xsl:text>,</xsl:text>
     </xsl:if>
    </xsl:for-each>
 
    <xsl:text>],</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
   </xsl:if>
  </xsl:template>
 
@@ -305,26 +328,157 @@ source control.
  <xsl:template                   match = "MediaLink" 
                                   mode = "images">
   <xsl:text>{</xsl:text>
-  <xsl:text>"ref": "[__imagelocation]CDR</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text>    "ref": "[__imagelocation]CDR</xsl:text>
 
   <xsl:call-template              name = "GetNumericID">
    <xsl:with-param                name = "cdrid" 
                                 select = "@ref" />
   </xsl:call-template>
+
   <xsl:text>.jpg",</xsl:text>
-  <xsl:text>"alt": "</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text>    "alt": "</xsl:text>
   <xsl:apply-templates          select = "@alt" 
                                   mode = "JSON" />
   <xsl:text>"</xsl:text>
   <!-- 
   If caption is rendered, it includes a comma for alt.-->
   <xsl:if                         test = "Caption[@language = $languageCode]">
-   <xsl:text>, "caption": "</xsl:text>
+   <xsl:text>,</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>    "caption": "</xsl:text>
    <xsl:apply-templates         select = "Caption" />
    <xsl:text>"</xsl:text>
   </xsl:if>
 
-  <xsl:text>}</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text> }</xsl:text>
+ </xsl:template>
+
+
+ <!--
+ =======================================================================
+ Template to create the videos JSON value
+ ======================================================================= -->
+ <xsl:template                    name = "RenderVideoLinks">
+   <xsl:text> "videos": [</xsl:text>
+   <xsl:for-each                select = "EmbeddedVideo[
+                                              @language = $languageCode
+                                              and
+                                              @audience = 
+                                                      $imageLinkAudienceCode]">
+    <xsl:apply-templates        select = "."/>
+     <!--
+     Output a comma unless this is the last element of the set. -->
+    <xsl:if                       test = "position() != last()">
+     <xsl:text>,</xsl:text>
+    </xsl:if>
+   </xsl:for-each>
+
+   <xsl:text>],</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+  <!--
+  </xsl:if>
+  -->
+ </xsl:template>
+
+
+ <!--
+ =======================================================================
+ Template to process EmbeddedVideo elements
+ ======================================================================= -->
+ <xsl:template                   match = "EmbeddedVideo">
+  <xsl:text>{</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text>    "ref": "[__videolocation]CDR</xsl:text>
+
+  <xsl:call-template              name = "GetNumericID">
+   <xsl:with-param                name = "cdrid" 
+                                select = "@ref" />
+  </xsl:call-template>
+
+  <xsl:text>.xml",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "id": "</xsl:text>
+  <xsl:value-of                 select = "@id"/>
+  <xsl:text>",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "hosting": "</xsl:text>
+  <xsl:value-of                 select = "@hosting"/>
+  <xsl:text>",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "unique_id": "</xsl:text>
+  <xsl:value-of                 select = "@unique_id"/>
+  <xsl:text>",</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "template": "</xsl:text>
+  <xsl:value-of                 select = "@template"/>
+  <xsl:text>"</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "language": "</xsl:text>
+  <xsl:value-of                 select = "@language"/>
+  <xsl:text>"</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "audience": "</xsl:text>
+  <xsl:value-of                 select = "@audience"/>
+  <xsl:text>"</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+
+  <xsl:text>    "audience": "</xsl:text>
+  <xsl:value-of                 select = "$imageLinkAudienceCode"/>
+  <xsl:text>"</xsl:text>
+
+  <xsl:apply-templates          select = "VideoTitle" />
+  <xsl:apply-templates          select = "Caption"
+                                  mode = "video"/>
+
+  <!-- 
+  If caption is rendered, it includes a comma for alt.-->
+  <!--
+  <xsl:if                         test = "Caption[@language = $languageCode]">
+   <xsl:text>,</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>    "caption": "</xsl:text>
+   <xsl:text>"</xsl:text>
+  </xsl:if>
+  -->
+
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text> }</xsl:text>
+ </xsl:template>
+
+
+ <!--
+ =======================================================================
+  Match for the VideoTitle
+ ======================================================================= -->
+ <xsl:template                   match = "VideoTitle">
+  <xsl:text>,</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text>    "title": "</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>"</xsl:text>
+ </xsl:template>
+
+
+ <!--
+ =======================================================================
+  Match for the VideoTitle
+ ======================================================================= -->
+ <xsl:template                   match = "Caption"
+                                  mode = "video">
+  <xsl:text>,</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text>    "caption": "</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>"</xsl:text>
  </xsl:template>
 
 
@@ -370,14 +524,18 @@ source control.
   <xsl:if                         test = "string-length($mediaFile) > 0 
                                           or 
                                           string-length($pronunciationKey) > 0">
-   <xsl:text>"pronunciation": {</xsl:text>
-   <xsl:text>"audio": "</xsl:text>
+   <xsl:text> "pronunciation": {</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>    "audio": "</xsl:text>
    <xsl:value-of                select = "$mediaFile"/>
    <xsl:text>",</xsl:text>
-   <xsl:text>"key": "</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>    "key": "</xsl:text>
    <xsl:value-of                select = "$pronunciationKey"/>
    <xsl:text>"</xsl:text>
-   <xsl:text>},</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text> },</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
   </xsl:if>
  </xsl:template>
 
@@ -391,12 +549,14 @@ source control.
        does not render a comma at the end.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedInformation">
-  <xsl:text>"related": {</xsl:text>
+  <xsl:text> "related": {</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
   <xsl:call-template              name = "RenderRelatedDrugSummaries" />
   <xsl:call-template              name = "RenderRelatedExternalRefs" />
   <xsl:call-template              name = "RenderRelatedSummaryRefs" />
   <xsl:call-template              name = "RenderRelatedTermRefs" />
-  <xsl:text>}</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
+  <xsl:text> }</xsl:text>
  </xsl:template>
 
 
@@ -407,27 +567,28 @@ source control.
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedDrugSummaries">
-  <xsl:text>"drug_summary": [</xsl:text>
-  <xsl:variable                   name = "count" 
-                                select = "count(//RelatedInformation/
-                                                 RelatedDrugSummaryRef)" />
+  <xsl:text>    "drug_summary": [</xsl:text>
   <xsl:for-each                 select = "//RelatedInformation/
                                             RelatedDrugSummaryRef"> 
    <xsl:text>{</xsl:text>
-   <xsl:text>"url": "</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>        "url": "</xsl:text>
    <xsl:value-of                select = "@url"/>
    <xsl:text>",</xsl:text>
-   <xsl:text>"text" : "</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>        "text" : "</xsl:text>
    <xsl:apply-templates         select = "node()" 
                                   mode = "JSON" />
    <xsl:text>"</xsl:text>
    <xsl:text>}</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
    
-   <xsl:if                        test = "position() != $count">
+   <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
   </xsl:for-each>
   <xsl:text>],</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
 
 
@@ -438,31 +599,30 @@ source control.
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedExternalRefs">
-  <xsl:text>"external": [</xsl:text>
-  <xsl:variable                   name = "count" 
-                                select = "count(//RelatedInformation/
-                                                  RelatedExternalRef[
-                                                     @UseWith = 
-                                                             $languageCode])" />
+  <xsl:text>    "external": [</xsl:text>
   <xsl:for-each                 select = "//RelatedInformation/
                                             RelatedExternalRef[
                                                      @UseWith = $languageCode]">
    <xsl:text>{</xsl:text>
-   <xsl:text>"url": "</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>        "url": "</xsl:text>
    <xsl:value-of                select = "@xref"/>
    <xsl:text>",</xsl:text>
-   <xsl:text>"text": "</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>        "text": "</xsl:text>
    <xsl:apply-templates         select = "node()" 
                                   mode = "JSON" />
    <xsl:text>"</xsl:text>
-   <xsl:text>}</xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text>    }</xsl:text>
    
-   <xsl:if                        test = "position() != $count">
+   <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
   </xsl:for-each>
 
   <xsl:text>],</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
 
 
@@ -473,12 +633,7 @@ source control.
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedSummaryRefs">
-  <xsl:text>"summary": [</xsl:text>
-  <xsl:variable                   name = "count" 
-                                select = "count(//RelatedInformation/
-                                                  RelatedSummaryRef[
-                                                     @UseWith = 
-                                                             $languageCode])" />
+  <xsl:text>    "summary": [</xsl:text>
   <xsl:for-each                 select = "//RelatedInformation/
                                             RelatedSummaryRef[
                                                      @UseWith = $languageCode]">
@@ -492,11 +647,12 @@ source control.
    <xsl:text>"</xsl:text>
    <xsl:text>}</xsl:text>
    
-   <xsl:if test = "position() != $count">
+   <xsl:if test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
   </xsl:for-each>
   <xsl:text>],</xsl:text>
+  <xsl:text>&#xa;</xsl:text>
  </xsl:template>
 
 
@@ -521,14 +677,7 @@ source control.
        it should be omitted.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedTermRefs">
-  <xsl:text>"term": [</xsl:text>
-  <xsl:variable                   name = "count" 
-                                select = "count(//RelatedInformation
-                                                 /RelatedGlossaryTermRef
-                                                   [@UseWith = $languageCode 
-                                                    and 
-                                                    @audience = $targetAudience
-                                                   ])"/>
+  <xsl:text>    "term": [</xsl:text>
 
   <xsl:for-each                 select = "//RelatedInformation
                                            /RelatedGlossaryTermRef
@@ -537,7 +686,8 @@ source control.
                                                     @audience = $targetAudience
                                                    ]">
    <xsl:text>{</xsl:text>
-   <xsl:text>"id": </xsl:text>
+   <xsl:text>&#xa;</xsl:text>
+   <xsl:text> "id": </xsl:text>
 
    <xsl:call-template             name = "GetNumericID">
     <xsl:with-param               name = "cdrid" 
@@ -555,10 +705,8 @@ source control.
    <xsl:text>}</xsl:text>
 
    <!-- 
-   No comma because this is the last sub-element in  the releated items 
-   structure 
-   Why aren't we using position () != last() here? 2017-02-09, VE -->
-   <xsl:if                        test = "position() != $count">
+   No comma after the last sub-element in the releated items structure  -->
+   <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
   </xsl:for-each>
