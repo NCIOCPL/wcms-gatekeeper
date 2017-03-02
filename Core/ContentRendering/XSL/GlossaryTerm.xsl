@@ -391,6 +391,7 @@ source control.
  <xsl:template                   match = "EmbeddedVideo">
   <xsl:text>{</xsl:text>
   <xsl:text>&#xa;</xsl:text>
+  <!--
   <xsl:text>    "ref": "[__videolocation]CDR</xsl:text>
 
   <xsl:call-template              name = "GetNumericID">
@@ -400,11 +401,14 @@ source control.
 
   <xsl:text>.xml",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
+  -->
 
+  <!--
   <xsl:text>    "id": "</xsl:text>
   <xsl:value-of                 select = "@id"/>
   <xsl:text>",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
+  -->
 
   <xsl:text>    "hosting": "</xsl:text>
   <xsl:value-of                 select = "@hosting"/>
@@ -418,18 +422,20 @@ source control.
 
   <xsl:text>    "template": "</xsl:text>
   <xsl:value-of                 select = "@template"/>
-  <xsl:text>"</xsl:text>
+  <xsl:text>",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
 
   <xsl:text>    "language": "</xsl:text>
   <xsl:value-of                 select = "@language"/>
-  <xsl:text>"</xsl:text>
+  <xsl:text>",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
 
+  <!--
   <xsl:text>    "audience": "</xsl:text>
   <xsl:value-of                 select = "@audience"/>
-  <xsl:text>"</xsl:text>
+  <xsl:text>",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
+  -->
 
   <xsl:text>    "audience": "</xsl:text>
   <xsl:value-of                 select = "$imageLinkAudienceCode"/>
