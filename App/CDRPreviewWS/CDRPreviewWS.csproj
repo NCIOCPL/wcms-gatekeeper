@@ -133,6 +133,7 @@
     <Compile Include="GlossaryTerm\BusinessObjects\SuggestReturnMeta.cs" />
     <Compile Include="GlossaryTerm\BusinessObjects\TermReturn.cs" />
     <Compile Include="GlossaryTerm\BusinessObjects\TermReturnMeta.cs" />
+    <Compile Include="GlossaryTerm\BusinessObjects\VideoReference.cs" />
     <Compile Include="GlossaryTerm\DictionaryAppManager.cs" />
     <Compile Include="GlossaryTerm\DictionarySearchResultCollection.cs" />
     <Compile Include="GlossaryTerm\DictionarySuggestionCollection.cs" />

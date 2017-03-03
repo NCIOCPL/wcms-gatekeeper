@@ -64,7 +64,8 @@ namespace CDRPreviewWS.GlossaryTerm
                                 dictionaryTerm.Related.Summary.Length > 0 ||
                                 dictionaryTerm.Related.DrugSummary.Length > 0 ||
                                 dictionaryTerm.Related.External.Length > 0 ||
-                                dictionaryTerm.Images.Length > 0)
+                                dictionaryTerm.Images.Length > 0 ||
+                                dictionaryTerm.HasVideos )
                             {
                                 string moreInformationText = "More Information";
                                 if (item.Language == GateKeeper.DocumentObjects.Language.Spanish)
@@ -189,6 +190,33 @@ namespace CDRPreviewWS.GlossaryTerm
                                         glossaryTermHtml.Append("</figcaption>");
                                         glossaryTermHtml.Append("</figure>");
 
+                                    }
+                                }
+
+                                // Output any videos
+                                if (dictionaryTerm.HasVideos)
+                                {
+                                    foreach (VideoReference video in dictionaryTerm.Videos)
+                                    {
+                                        // TODO class attribute
+                                        glossaryTermHtml.Append("<figure>");
+
+                                        glossaryTermHtml.AppendFormat("<div id=\"ytplayer-{0}\" class=\"flex-video widescreen\" data-video-id=\"{0}\" data-video-title=\"{1}\">",
+                                            video.UniqueID,
+                                            video.Title
+                                            );
+
+                                        glossaryTermHtml.Append("<noscript><p>");
+                                        glossaryTermHtml.AppendFormat("<a href=\"https://www.youtube.com/watch?v={0}\" target=\"_blank\" title=\"{1}\">View this video on YouTube.</a>",
+                                            video.UniqueID, video.Title);
+                                        glossaryTermHtml.Append("</p></noscript>");
+
+                                        glossaryTermHtml.Append("</div>");
+
+
+                                        // TODO Caption
+
+                                        glossaryTermHtml.Append("</figure>");
                                     }
                                 }
 

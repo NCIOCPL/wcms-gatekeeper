@@ -94,5 +94,19 @@ namespace CDRPreviewWS.GlossaryTerm.BusinessObjects
         {
             get { return this.Related != null; }
         }
+
+        /// <summary>
+        /// List of videos for the term.
+        /// </summary>
+        [DataMember(Name = "videos")]
+        public VideoReference[] Videos { get; set; }
+
+        /// <summary>
+        /// Does the term have any related videos?
+        /// </summary>
+        public bool HasVideos
+        {
+            get { return Videos != null && Videos.Length > 0; }
+        }
     }
 }
