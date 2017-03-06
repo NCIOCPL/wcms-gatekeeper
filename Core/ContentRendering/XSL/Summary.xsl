@@ -1435,23 +1435,29 @@ Header
    <xsl:param                     name = "template"/>
 
     <xsl:attribute                name = "class">
-     <xsl:text>video center </xsl:text>
+     <xsl:text>video</xsl:text>
+     <!-- Set the video size and positioning (for larger sizes)-->
      <xsl:choose>
       <xsl:when                   test = "starts-with($template, 'Video100')">
-       <xsl:text>size100</xsl:text>
+       <xsl:text> size100 center</xsl:text>
       </xsl:when>
       <xsl:when                   test = "starts-with($template, 'Video75')">
-       <xsl:text>size75</xsl:text>
+       <xsl:text> size75 center</xsl:text>
       </xsl:when>
       <xsl:when                   test = "starts-with($template, 'Video50')">
-       <xsl:text>size50</xsl:text>
+       <xsl:text> size50</xsl:text>
 
-       <!-- The size50 also allows float right  -->
-       <xsl:if                    test = "contains($template, 'Right')">
-        <xsl:text> right</xsl:text>
-       </xsl:if>
-
+       <!-- The size50 also allows float right or center -->
+       <xsl:choose>
+        <xsl:when                 test = "contains($template, 'Right')">
+         <xsl:text> right</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+         <xsl:text> center</xsl:text>
+        </xsl:otherwise>
+       </xsl:choose>
       </xsl:when>
+      <!-- No known template name, display the name itself -->
       <xsl:otherwise>
        <xsl:value-of            select = "$template"/>
       </xsl:otherwise>
