@@ -198,8 +198,13 @@ namespace CDRPreviewWS.GlossaryTerm
                                 {
                                     foreach (VideoReference video in dictionaryTerm.Videos)
                                     {
-                                        // TODO class attribute
-                                        glossaryTermHtml.Append("<figure>");
+                                        String classes = GetVideoClassesFromTemplateName(video.Template);
+                                        glossaryTermHtml.AppendFormat("<figure class=\"{0}\">", classes);
+
+                                        if (!video.Template.ToLowerInvariant().Contains("notitle") && !String.IsNullOrEmpty(video.Title))
+                                        {
+                                            glossaryTermHtml.AppendFormat("<h4>{0}</h4>", video.Title);
+                                        }
 
                                         glossaryTermHtml.AppendFormat("<div id=\"ytplayer-{0}\" class=\"flex-video widescreen\" data-video-id=\"{0}\" data-video-title=\"{1}\">",
                                             video.UniqueID,
@@ -238,5 +243,41 @@ namespace CDRPreviewWS.GlossaryTerm
           
             return glossaryTermHtml.ToString();
         }
+
+        private string GetVideoClassesFromTemplateName(string templateName)
+        {
+            string classList;
+
+            // These are the templates allowed by the CDR's DTD for GlossaryTerm Embedded videos.
+            // Others do exist in Percussion, but are deprecated per OCECDR-3558.
+            switch (templateName.ToLowerInvariant())
+            {
+                case "video100notitle":
+                case "video100title":
+                    classList = "video center size100";
+                    break;
+
+                case "video50notitle":
+                    classList = "video center size50";
+                    break;
+
+                case "video50notitleright":
+                case "video50titleright":
+                    classList = "video right size50";
+                    break;
+
+                case "video75notitle":
+                case "video75title":
+                    classList = "video center size75";
+                    break;
+
+                default:
+                    classList = "video center size100";
+                    break;
+            }
+
+            return classList;
+        }
+
     }
 }
