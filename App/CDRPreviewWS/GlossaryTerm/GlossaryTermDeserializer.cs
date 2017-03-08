@@ -198,14 +198,17 @@ namespace CDRPreviewWS.GlossaryTerm
                                 {
                                     foreach (VideoReference video in dictionaryTerm.Videos)
                                     {
+                                        // Container element.
                                         String classes = GetVideoClassesFromTemplateName(video.Template);
                                         glossaryTermHtml.AppendFormat("<figure class=\"{0}\">", classes);
 
+                                        // Title
                                         if (!video.Template.ToLowerInvariant().Contains("notitle") && !String.IsNullOrEmpty(video.Title))
                                         {
                                             glossaryTermHtml.AppendFormat("<h4>{0}</h4>", video.Title);
                                         }
 
+                                        // the player
                                         glossaryTermHtml.AppendFormat("<div id=\"ytplayer-{0}\" class=\"flex-video widescreen\" data-video-id=\"{0}\" data-video-title=\"{1}\">",
                                             video.UniqueID,
                                             video.Title
@@ -219,7 +222,11 @@ namespace CDRPreviewWS.GlossaryTerm
                                         glossaryTermHtml.Append("</div>");
 
 
-                                        // TODO Caption
+                                        // Caption
+                                        if (!String.IsNullOrEmpty(video.Caption))
+                                        {
+                                            glossaryTermHtml.AppendFormat("<figcaption class=\"caption-container no-resize\">{0}</figcaption>", video.Caption);
+                                        }
 
                                         glossaryTermHtml.Append("</figure>");
                                     }
