@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RequestID>3170</RequestID>
+  <Description>GlossaryTerms for testing fallback chain</Description>
+  <Source>CDR-DEV</Source>
+  <DtdVersion>1036</DtdVersion>
+  <DataType>XML</DataType>
+  <MaxPacketNumber>1</MaxPacketNumber>
+  <RequestDatas>
+    <RequestData>
+      <RequestDataID>1</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>1</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000002</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000002">
+          <TermName>Glossary 01100000002</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English Patient Definition for Dictionary of Cancer Terms.</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Patient</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish Patient Definition for Dictionary of Cancer Terms.</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Patient</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+    <RequestData>
+      <RequestDataID>2</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>2</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000003</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000003">
+          <TermName>Glossary 01100000003</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English HP Definition for Dictionary of Cancer Terms.</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Health professional</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish HP Definition for Dictionary of Cancer Terms.</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Health professional</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+    <RequestData>
+      <RequestDataID>3</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>3</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000004</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000004">
+          <TermName>Glossary 01100000004</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English Patient Definition for Genetics Dictionary.</DefinitionText>
+            <Dictionary>Genetics</Dictionary>
+            <Audience>Patient</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish Patient Definition for Genetics Dictionary.</DefinitionText>
+            <Dictionary>Genetics</Dictionary>
+            <Audience>Patient</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+    <RequestData>
+      <RequestDataID>4</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>4</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000005</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000005">
+          <TermName>Glossary 01100000005</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English HP Definition for Genetics Dictionary.</DefinitionText>
+            <Dictionary>Genetics</Dictionary>
+            <Audience>Health professional</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish HP Definition for Genetics Dictionary.</DefinitionText>
+            <Dictionary>Genetics</Dictionary>
+            <Audience>Health professional</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+    <RequestData>
+      <RequestDataID>5</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>5</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000006</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000006">
+          <TermName>Glossary 01100000006</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English Patient Definition for No Dictionary.</DefinitionText>
+            <Audience>Patient</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish Patient Definition for No Dictionary.</DefinitionText>
+            <Audience>Patient</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+    <RequestData>
+      <RequestDataID>6</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>6</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000007</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000007">
+          <TermName>Glossary 01100000007</TermName>
+          <TermPronunciation>(test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>English HP Definition for No Dictionary.</DefinitionText>
+            <Audience>Health professional</Audience>
+          </TermDefinition>
+
+
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Spanish HP Definition for No Dictionary.</DefinitionText>
+            <Audience>Health professional</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+  </RequestDatas>
+</Request>
