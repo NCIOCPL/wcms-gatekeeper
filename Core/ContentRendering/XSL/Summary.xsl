@@ -1100,8 +1100,6 @@
         <xsl:value-of              select = "$glossAudience"/>
         <xsl:text>&amp;language=</xsl:text>
         <xsl:value-of              select = "$glossLanguage"/>
-        <xsl:text>&amp;summaryType=</xsl:text>
-        <xsl:value-of              select = "$sType"/>
       </xsl:attribute>
       <xsl:attribute                name = "onclick">
         <xsl:text>javascript:popWindow('defbyid','</xsl:text>
@@ -1110,8 +1108,6 @@
         <xsl:value-of              select = "$glossAudience"/>
         <xsl:text>&amp;language=</xsl:text>
         <xsl:value-of              select = "$glossLanguage"/>
-        <xsl:text>&amp;summaryType=</xsl:text>
-        <xsl:value-of              select = "$sType"/>
         <xsl:text>'); </xsl:text>
         <xsl:text>return(false);</xsl:text>
       </xsl:attribute>
