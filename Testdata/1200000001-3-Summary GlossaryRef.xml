@@ -270,5 +270,115 @@ maintaining the PDQ summaries can be found on the <SummaryRef href="CDR000055263
         </Summary>
       </XML>
     </RequestData>
+    <RequestData>
+      <RequestDataID>2351094</RequestDataID>
+      <RequestID>3177</RequestID>
+      <PacketNumber>3</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>Summary</CDRDocType>
+      <GKDocType>Summary</GKDocType>
+      <CdrID>1200000003</CdrID>
+      <CdrVersion>724</CdrVersion>
+      <Status>OK</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <Summary id="CDR01200000003" LegacyPDQID="">
+          <SummaryMetaData>
+            <SummaryType>Treatment</SummaryType>
+            <SummaryAudience>Health professionals</SummaryAudience>
+            <SummaryLanguage>English</SummaryLanguage>
+            <SummaryDescription>Expert-reviewed information summary about the treatment of skin cancer.</SummaryDescription>
+            <SummaryURL xref="https://www.cancer.gov/types/test/hp/non-genetic-pdq">NON-Genetic Summary with Glossary Refs</SummaryURL>
+            <SummaryToggleURL xref="https://www.cancer.gov/types/skin/patient/skin-treatment-pdq">Skin Cancer (PDQ®): Treatment</SummaryToggleURL>
+            <SummaryEditorialBoard ref="CDR0000028327">PDQ Adult Treatment Editorial Board</SummaryEditorialBoard>
+            <MainTopics>
+              <TermRef ref="CDR0000038781">skin cancer</TermRef>
+            </MainTopics>
+            <SummaryAbstract>
+              <Para id="_459">This PDQ cancer information summary for health professionals provides comprehensive, peer-reviewed, evidence-based information about the treatment of skin cancer. It is intended as a resource to inform and assist clinicians who care for cancer patients. It does not provide formal guidelines or recommendations for making health care decisions.</Para>
+              <Para id="_460">This summary is reviewed regularly and updated as necessary by the PDQ Adult Treatment Editorial Board, which is editorially independent of the National Cancer Institute (NCI). The summary reflects an independent review of the literature and does not represent a policy statement of NCI or the National Institutes of Health (NIH).</Para>
+            </SummaryAbstract>
+            <SummaryKeyWords>
+              <SummaryKeyWord>skin cancer</SummaryKeyWord>
+            </SummaryKeyWords>
+          </SummaryMetaData>
+          <SummaryTitle>Skin Cancer Treatment (PDQ®)–Health Professional Version</SummaryTitle>
+          <AltTitle TitleType="Short">Skin Cancer Treatment</AltTitle>
+          <SummarySection id="_1">
+            <Title>Introduction</Title>
+            <Para id="_231">
+              <Note>Many of the medical and scientific terms used in this summary are found in the <ExternalRef xref="https://www.cancer.gov/publications/dictionaries/genetics-dictionary">NCI Dictionary of Genetics Terms</ExternalRef>. When a linked term is clicked, the definition will appear in a separate window.</Note>
+            </Para>
+			<Para id="_9"> This is a Health Professional summary, but NOT Genetic</Para>
+            <SummarySection id="_81">
+              <Title>Single Dictionary links</Title>
+			  <Para id="_10"> Links in this section do not specify a dictionary, but not all terms have an entry for "no dictionary". They should fall back as noted.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000002" audience="Health professional">link</GlossaryTermRef> English Patient Definition for Dictionary of Cancer Terms.</Para>
+              <Para id="_30"> <GlossaryTermRef href="CDR01100000003" audience="Health professional">link</GlossaryTermRef> English HP Definition for Dictionary of Cancer Terms.</Para>
+              <Para id="_40"> <GlossaryTermRef href="CDR01100000004" audience="Health professional">link</GlossaryTermRef> English Patient Definition for Genetics Dictionary.</Para>
+              <Para id="_50"> <GlossaryTermRef href="CDR01100000005" audience="Health professional">link</GlossaryTermRef> English HP Definition for Genetics Dictionary.</Para>
+              <Para id="_60"> <GlossaryTermRef href="CDR01100000006" audience="Health professional">link</GlossaryTermRef> English Patient Definition for No Dictionary.</Para>
+              <Para id="_60"> <GlossaryTermRef href="CDR01100000007" audience="Health professional">link</GlossaryTermRef> English Hp Definition for No Dictionary.</Para>
+            </SummarySection>
+            <SummarySection id="_91">
+              <Title>Multiple Dictionary links</Title>
+			  <Para id="_10"> Links in this section go to glossary terms defined for multiple dictionaries, not all terms have a "no dictionary" entry. They should fall back as noted.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000008" audience="Health professional">link</GlossaryTermRef> Has all, should go to English HP Definition for "No Dictionary".</Para>
+              <Para id="_30"> <GlossaryTermRef href="CDR01100000009" audience="Health professional">link</GlossaryTermRef> No Genetics, should go to English HP Definition for "No Dictionary."</Para>
+              <Para id="_40"> <GlossaryTermRef href="CDR01100000010" audience="Health professional">link</GlossaryTermRef> No CancerTerms, should go to English HP Definition for "No Dictionary"</Para>
+              <Para id="_50"> <GlossaryTermRef href="CDR01100000011" audience="Health professional">link</GlossaryTermRef> No NoDictionary, should go to English HP Definition for Genetics Dictionary.</Para>
+            </SummarySection>
+		  </SummarySection>
+          <SummarySection id="_AboutThis_1">
+            <Title>About This PDQ Summary</Title>
+            <SummarySection id="_AboutThis_2">
+              <Title>Purpose of This Summary</Title>
+              <Para id="_AboutThis_3">This PDQ cancer information summary for health professionals provides comprehensive, peer-reviewed, evidence-based information about the treatment of skin cancer. It is intended as a resource to inform and assist clinicians who care for cancer patients.  It does not provide formal guidelines or recommendations for making health care decisions.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_4">
+              <Title>Reviewers and Updates</Title>
+              <Para id="_AboutThis_5">This summary is reviewed regularly and updated as necessary by the <ExternalRef xref="http://www.cancer.gov/publications/pdq/editorial-boards/adult-treatment">PDQ Adult Treatment Editorial Board</ExternalRef>, which is editorially independent of the National Cancer Institute (NCI).  The summary reflects an independent review of the literature and does not represent a policy statement of NCI or the National Institutes of Health (NIH).</Para>
+              <Para id="_AboutThis_22"> Board members review recently published articles each month to determine whether an article should:</Para>
+              <ItemizedList id="_AboutThis_6" Style="bullet">
+                <ListItem>be discussed at a meeting,</ListItem>
+                <ListItem>be cited with text, or</ListItem>
+                <ListItem>replace or update an existing article that is already cited.</ListItem>
+              </ItemizedList>
+              <Para id="_AboutThis_7">Changes to the summaries are made through a consensus process in which Board members evaluate the strength of the evidence in  the published articles and determine how the article should be included in the summary.</Para>
+              <Para>The lead reviewers for Skin Cancer Treatment are:</Para>
+              <ItemizedList Style="bullet">
+                <ListItem>Russell S. Berman, MD (New York University School of Medicine)</ListItem>
+                <ListItem>Scharukh Jalisi, MD, FACS (Boston University Medical Center)</ListItem>
+              </ItemizedList>
+              <Para id="_AboutThis_9">Any comments or questions about the summary content should be submitted to Cancer.gov through the NCI website's <ExternalRef xref="https://www.cancer.gov/contact/email-us">Email Us</ExternalRef>. Do not contact the individual Board Members with questions or comments about the summaries. Board members will not respond to individual inquiries.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_10">
+              <Title>Levels of Evidence</Title>
+              <Para id="_AboutThis_11">Some of the reference citations in this summary are accompanied by a level-of-evidence designation. These designations are intended to help readers assess the strength of the evidence supporting the use of specific interventions or approaches. The PDQ Adult Treatment Editorial Board uses a <SummaryRef href="CDR0000062796" url="">formal evidence ranking system</SummaryRef> in developing its level-of-evidence designations.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_12">
+              <Title>Permission to Use This Summary</Title>
+              <Para id="_AboutThis_13">PDQ is a registered trademark. Although the content of PDQ documents can be used freely as text, it cannot be identified as an NCI PDQ cancer information summary unless it is presented in its entirety and is regularly updated. However, an author would be permitted to write a sentence such as “NCI’s PDQ cancer information summary about breast cancer prevention states the risks succinctly: [include excerpt from the summary].”</Para>
+              <Para id="_AboutThis_14">The preferred citation for this PDQ summary is:</Para>
+              <Para id="_AboutThis_15">PDQ® Adult Treatment Editorial Board. PDQ Skin Cancer Treatment. Bethesda, MD: National Cancer Institute. Updated  &lt;MM/DD/YYYY&gt;. Available at: <ExternalRef xref="https://www.cancer.gov/types/skin/hp/skin-treatment-pdq">https://www.cancer.gov/types/skin/hp/skin-treatment-pdq</ExternalRef>.  Accessed &lt;MM/DD/YYYY&gt;. [PMID: 26389366]</Para>
+              <Para id="_AboutThis_16">Images in this summary are used with permission of the author(s), artist, and/or publisher for use within the PDQ summaries only. Permission to use images outside the context of PDQ information must be obtained from the owner(s) and cannot be granted by  the National Cancer Institute. Information about using the illustrations in this summary, along with many other cancer-related images, is available in <ExternalRef xref="https://visualsonline.cancer.gov/">Visuals Online</ExternalRef>, a collection of over 2,000 scientific images.
+
+</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_17">
+              <Title>Disclaimer</Title>
+              <Para id="_AboutThis_18">Based on the strength of the available evidence, treatment options may be described as either “standard” or “under clinical evaluation.” These classifications should not be used as a basis for insurance reimbursement determinations. More information on insurance coverage is available on Cancer.gov on the <ExternalRef xref="https://www.cancer.gov/about-cancer/managing-care">Managing Cancer Care</ExternalRef> page.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_20">
+              <Title>Contact Us</Title>
+              <Para id="_AboutThis_21">More information about contacting us or receiving help with the Cancer.gov website can be found on our <ExternalRef xref="https://www.cancer.gov/contact">Contact Us for Help</ExternalRef> page. Questions can also be submitted to Cancer.gov through the website’s <ExternalRef xref="https://www.cancer.gov/contact/email-us">Email Us</ExternalRef>.</Para>
+            </SummarySection>
+          </SummarySection>
+          <DateLastModified>2015-12-23</DateLastModified>
+        </Summary>
+      </XML>
+    </RequestData>
   </RequestDatas>
 </Request>
