@@ -194,7 +194,7 @@ maintaining the PDQ summaries can be found on the <SummaryRef href="CDR000055263
               <SummaryKeyWord>skin cancer</SummaryKeyWord>
             </SummaryKeyWords>
           </SummaryMetaData>
-          <SummaryTitle>Patient Summary with Glossary Refs (PDQ®)–Health Professional Version</SummaryTitle>
+          <SummaryTitle>Treatment Summary with Glossary Refs (PDQ®)–Patient Version</SummaryTitle>
           <AltTitle TitleType="Short">Patient Summary with Glossary Refs</AltTitle>
           <SummarySection id="_1">
             <Title>Introduction</Title>
@@ -304,7 +304,7 @@ maintaining the PDQ summaries can be found on the <SummaryRef href="CDR000055263
               <SummaryKeyWord>skin cancer</SummaryKeyWord>
             </SummaryKeyWords>
           </SummaryMetaData>
-          <SummaryTitle>Skin Cancer Treatment (PDQ®)–Health Professional Version</SummaryTitle>
+          <SummaryTitle>Treatment (not genetic) Summary–Health Professional Version</SummaryTitle>
           <AltTitle TitleType="Short">Skin Cancer Treatment</AltTitle>
           <SummarySection id="_1">
             <Title>Introduction</Title>
