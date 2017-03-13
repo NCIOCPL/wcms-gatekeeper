@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RequestID>3177</RequestID>
+  <Description>Summaries with Glossary References</Description>
+  <Source>Gatekeeper</Source>
+  <DtdVersion>9403</DtdVersion>
+  <DataType>XML</DataType>
+  <MaxPacketNumber>1</MaxPacketNumber>
+  <RequestDatas>
+    <RequestData>
+      <RequestDataID>2351094</RequestDataID>
+      <RequestID>3177</RequestID>
+      <PacketNumber>1</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>Summary</CDRDocType>
+      <GKDocType>Summary</GKDocType>
+      <CdrID>1200000001</CdrID>
+      <CdrVersion>724</CdrVersion>
+      <Status>OK</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <Summary id="CDR01200000001" LegacyPDQID="">
+          <SummaryMetaData>
+            <SummaryType>Genetics</SummaryType>
+            <SummaryAudience>Health professionals</SummaryAudience>
+            <SummaryLanguage>English</SummaryLanguage>
+            <SummaryDescription>Expert-reviewed information summary about the genetics of skin cancer — basal cell carcinoma, squamous cell carcinoma, and melanoma — including information about specific gene mutations and related cancer syndromes.  The summary also contains information about interventions that may influence the risk of developing skin cancer in individuals who may be genetically susceptible to these syndromes.</SummaryDescription>
+            <SummaryURL xref="https://www.cancer.gov/types/test/hp/genetic-glossary-refs">Genetic Summary with Glossary Refs</SummaryURL>
+            <SummaryEditorialBoard ref="CDR0000032120">PDQ Cancer Genetics Editorial Board</SummaryEditorialBoard>
+            <MainTopics>
+              <TermRef ref="CDR0000038781">skin cancer</TermRef>
+            </MainTopics>
+            <MainTopics>
+              <TermRef ref="CDR0000043329">cancer genetics</TermRef>
+            </MainTopics>
+            <SummaryAbstract>
+              <Para id="_936">This PDQ cancer information summary for health professionals provides comprehensive, peer-reviewed, evidence-based information about the genetics of skin cancer. It is intended as a resource to inform and assist clinicians who care for cancer patients. It does not provide formal guidelines or recommendations for making health care decisions.</Para>
+              <Para id="_937">This summary is reviewed regularly and updated as necessary by the PDQ Cancer Genetics Editorial Board, which is editorially independent of the National Cancer Institute (NCI). The summary reflects an independent review of the literature and does not represent a policy statement of NCI or the National Institutes of Health (NIH).</Para>
+            </SummaryAbstract>
+            <SummaryKeyWords>
+              <SummaryKeyWord>skin cancer</SummaryKeyWord>
+              <SummaryKeyWord>cancer genetics</SummaryKeyWord>
+            </SummaryKeyWords>
+          </SummaryMetaData>
+          <SummaryTitle>Genetic Summary with Glossary Refs (PDQ®)–Health Professional Version</SummaryTitle>
+          <AltTitle TitleType="Short">Genetic Summary with Glossary Refs</AltTitle>
+          <SummarySection id="_1">
+            <Title>Introduction</Title>
+            <Para id="_231">
+              <Note>Many of the medical and scientific terms used in this summary are found in the <ExternalRef xref="https://www.cancer.gov/publications/dictionaries/genetics-dictionary">NCI Dictionary of Genetics Terms</ExternalRef>. When a linked term is clicked, the definition will appear in a separate window.</Note>
+            </Para>
+			<Para id="_9"> This is a Health Professional Genetic summary</Para>
+            <SummarySection id="_81">
+              <Title>Single Dictionary Genetic links</Title>
+			  <Para id="_10"> All links in this section go to the genetic dictionary, but not all terms have a genetics entry. They should fall back as noted.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000002" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English Patient Definition for Dictionary of Cancer Terms.</Para>
+              <Para id="_30"> <GlossaryTermRef href="CDR01100000003" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English HP Definition for Dictionary of Cancer Terms.</Para>
+              <Para id="_40"> <GlossaryTermRef href="CDR01100000004" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English Patient Definition for Genetics Dictionary.</Para>
+              <Para id="_50"> <GlossaryTermRef href="CDR01100000005" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English HP Definition for Genetics Dictionary.</Para>
+              <Para id="_60"> <GlossaryTermRef href="CDR01100000006" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English Patient Definition for No Dictionary.</Para>
+              <Para id="_60"> <GlossaryTermRef href="CDR01100000007" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> English Hp Definition for No Dictionary.</Para>
+            </SummarySection>
+            <SummarySection id="_81">
+              <Title>Multiple Dictionary Genetic links</Title>
+			  <Para id="_10"> All links in this section go to glossary terms defined for multiple dictionary, not all terms have a genetics entry. They should fall back as noted.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000008" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> Has all, should go to English HP Definition for Genetics Dictionary.</Para>
+              <Para id="_30"> <GlossaryTermRef href="CDR01100000009" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> No Genetics, should go to English HP Definition for Dictionary of Cancer Terms.</Para>
+              <Para id="_40"> <GlossaryTermRef href="CDR01100000010" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> No CancerTerms, should go to English HP Definition for Genetics Dictionary.</Para>
+              <Para id="_50"> <GlossaryTermRef href="CDR01100000011" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> No NoDictionary, should go to English HP Definition for Genetics Dictionary.</Para>
+            </SummarySection>
+		  </SummarySection>
+          <SummarySection id="_4">
+            <SectMetaData>
+              <SectionType>Changes to summary</SectionType>
+            </SectMetaData>
+            <Title>Changes to This Summary (11/05/2015)</Title>
+            <Para id="_628">The PDQ cancer information summaries are reviewed regularly and updated as new information becomes available. This section describes the latest changes made to this summary as of the date above.</Para>
+            <Para id="_946">
+              <Strong>
+                <SummaryRef href="CDR0000552637#_20" url="/types/skin/hp/skin-genetics-pdq">Squamous Cell Carcinoma (SCC)</SummaryRef>
+              </Strong>
+            </Para>
+            <Para id="_947">Added <SummaryRef href="CDR0000552637#_385" url="/types/skin/hp/skin-genetics-pdq">text</SummaryRef> about a case-control study of 415 cases and 415 controls in which, relative to Fitzpatrick Type I skin, individuals with increasingly darker skin had decreased risks of skin cancer (cited Asgari et al. as reference 31); the same study found that blue eyes and blond/red hair were also associated with increased risks of SCC, with crude odds ratios (ORs) of 1.7 for blue eyes, 1.5 for blond hair, and 2.2 for red hair.</Para>
+            <Para id="_948">Added <SummaryRef href="CDR0000552637#_462" url="/types/skin/hp/skin-genetics-pdq">text</SummaryRef> to state that in an independent survey-based study of 415 SCC cases and 415 controls, SCC risk was increased in those with a family history of SCC, even after adjustment for skin type, hair color, and eye color; this risk was elevated to an OR of 5.6 in those with a family history of melanoma, an OR of 9.8 in those with a family history of basal cell carcinoma (BCC), and an OR of 10.5 in those with a family history of multiple types of skin cancer.</Para>
+            <Para id="_949">
+              <Strong>
+                <SummaryRef href="CDR0000552637#_38" url="/types/skin/hp/skin-genetics-pdq">Melanoma</SummaryRef>
+              </Strong>
+            </Para>
+            <Para id="_950">Added de Ávila et al. as <SummaryRef href="CDR0000552637#_180" url="/types/skin/hp/skin-genetics-pdq">reference 90</SummaryRef>.</Para>
+            <Para id="_951">Revised <SummaryRef href="CDR0000552637#_787" url="/types/skin/hp/skin-genetics-pdq">text</SummaryRef> to state that another name for the tumor predisposition syndrome associated with <GeneName>BAP1</GeneName> germline
+mutations is COMMON (<Strong>c</Strong>utaneous and <Strong>o</Strong>cular <Strong>m</Strong>elanoma and atypical <Strong>m</Strong>elanocytic proliferation with <Strong>o</Strong>ther internal <Strong>n</Strong>eoplasms) syndrome. Also revised text to state that although data are currently limited, patients with germline mutations in <GeneName>BAP1</GeneName> may be at increased risk of lung adenocarcinoma, mesothelioma, BCC, and clear cell carcinoma of the kidney (cited Rai et al. as reference 143).</Para>
+            <Para id="_952">Added <SummaryRef href="CDR0000552637#_815" url="/types/skin/hp/skin-genetics-pdq">text</SummaryRef> to state that standard recommendations for screening and management of patients with deleterious <GeneName>BAP1</GeneName> germline mutations are not currently available, but one group of experts has recommended annual ocular examinations starting at age 16 years, full-body skin examinations starting at age 20 years, and consideration of annual renal ultrasound and/or abdominal magnetic resonance imaging every 2 years.</Para>
+            <Para id="_953">Added <SummaryRef href="CDR0000552637#_944" url="/types/skin/hp/skin-genetics-pdq">level of evidence 5</SummaryRef>.</Para>
+            <Para id="_954">Added <SummaryRef href="CDR0000552637#_545" url="/types/skin/hp/skin-genetics-pdq">text</SummaryRef> to state that an independent study found a survival benefit in individuals carrying two <GeneName>MC1R</GeneName> variants (cited Taylor et al. as reference 187).</Para>
+            <Para id="_disclaimerHP_3">This summary is written and maintained by the <ExternalRef xref="http://www.cancer.gov/publications/pdq/editorial-boards/genetics">PDQ Cancer Genetics Editorial Board</ExternalRef>, which is
+editorially independent of NCI.  The summary reflects an independent review of
+the literature and does not represent a policy statement of NCI or NIH.  More
+information about summary policies and the role of the PDQ Editorial Boards  in
+maintaining the PDQ summaries can be found on the <SummaryRef href="CDR0000552637#_AboutThis_1" url="/types/skin/hp/skin-genetics-pdq">About This PDQ Summary</SummaryRef> and <ExternalRef xref="http://www.cancer.gov/publications/pdq">PDQ® - NCI's Comprehensive Cancer Database</ExternalRef> pages.
+</Para>
+          </SummarySection>
+          <SummarySection id="_AboutThis_1">
+            <Title>About This PDQ Summary</Title>
+            <SummarySection id="_AboutThis_2">
+              <Title>Purpose of This Summary</Title>
+              <Para id="_AboutThis_3">This PDQ cancer information summary for health professionals provides comprehensive, peer-reviewed, evidence-based information about the genetics of skin cancer. It is intended as a resource to inform and assist clinicians who care for cancer patients.  It does not provide formal guidelines or recommendations for making health care decisions.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_4">
+              <Title>Reviewers and Updates</Title>
+              <Para id="_AboutThis_5">This summary is reviewed regularly and updated as necessary by the <ExternalRef xref="http://www.cancer.gov/publications/pdq/editorial-boards/genetics">PDQ Cancer Genetics Editorial Board</ExternalRef>, which is editorially independent of the National Cancer Institute (NCI).  The summary reflects an independent review of the literature and does not represent a policy statement of NCI or the National Institutes of Health (NIH).</Para>
+              <Para id="_AboutThis_22"> Board members review recently published articles each month to determine whether an article should:</Para>
+              <ItemizedList id="_AboutThis_6" Style="bullet">
+                <ListItem>be discussed at a meeting,</ListItem>
+                <ListItem>be cited with text, or</ListItem>
+                <ListItem>replace or update an existing article that is already cited.</ListItem>
+              </ItemizedList>
+              <Para id="_AboutThis_7">Changes to the summaries are made through a consensus process in which Board members evaluate the strength of the evidence in  the published articles and determine how the article should be included in the summary.</Para>
+              <Para>The lead reviewers for Genetics of Skin Cancer are:</Para>
+              <ItemizedList Style="bullet">
+                <ListItem>Kathleen A. Calzone, PhD, RN, APNG, FAAN (National Cancer Institute)</ListItem>
+                <ListItem>Jennifer Lynn Hay, PhD (Memorial Sloan-Kettering Cancer Center)</ListItem>
+                <ListItem>Joanne Marie Jeter, MD (The Ohio State University)</ListItem>
+                <ListItem>Laurence J. Meyer, MD, PhD (University of Utah Health Sciences Center)</ListItem>
+                <ListItem>Suzanne M. O'Neill, MS, PhD, CGC (Northwestern University)</ListItem>
+                <ListItem>Beth N. Peshkin, MS, CGC (Lombardi Comprehensive Cancer Center at Georgetown University Medical Center)</ListItem>
+                <ListItem>Susan K. Peterson, PhD, MPH (University of Texas, M.D. Anderson Cancer Center)</ListItem>
+                <ListItem>Amanda Ewart Toland, PhD, FACMG (The Ohio State University)</ListItem>
+                <ListItem>Susan T. Vadaparampil, PhD, MPH (H. Lee Moffitt Cancer Center &amp; Research Institute)</ListItem>
+                <ListItem>Catharine Wang, PhD, MSc (Boston University School of Public Health)</ListItem>
+              </ItemizedList>
+              <Para id="_AboutThis_9">Any comments or questions about the summary content should be submitted to Cancer.gov through the NCI website's <ExternalRef xref="https://www.cancer.gov/contact/email-us">Email Us</ExternalRef>. Do not contact the individual Board Members with questions or comments about the summaries. Board members will not respond to individual inquiries.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_10">
+              <Title>Levels of Evidence</Title>
+              <Para id="_AboutThis_11">Some of the reference citations in this summary are accompanied by a level-of-evidence designation. These designations are intended to help readers assess the strength of the evidence supporting the use of specific interventions or approaches. The PDQ Cancer Genetics Editorial Board uses a <SummaryRef href="CDR0000685387" url="">formal evidence ranking system</SummaryRef> in developing its level-of-evidence designations.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_12">
+              <Title>Permission to Use This Summary</Title>
+              <Para id="_AboutThis_13">PDQ is a registered trademark. Although the content of PDQ documents can be used freely as text, it cannot be identified as an NCI PDQ cancer information summary unless it is presented in its entirety and is regularly updated. However, an author would be permitted to write a sentence such as “NCI’s PDQ cancer information summary about breast cancer prevention states the risks succinctly: [include excerpt from the summary].”</Para>
+              <Para id="_AboutThis_14">The preferred citation for this PDQ summary is:</Para>
+              <Para id="_AboutThis_15">PDQ® Cancer Genetics Editorial Board. PDQ Genetics of Skin Cancer. Bethesda, MD: National Cancer Institute. Updated  &lt;MM/DD/YYYY&gt;. Available at: <ExternalRef xref="https://www.cancer.gov/types/skin/hp/skin-genetics-pdq">https://www.cancer.gov/types/skin/hp/skin-genetics-pdq</ExternalRef>.  Accessed &lt;MM/DD/YYYY&gt;. [PMID: 26389333]</Para>
+              <Para id="_AboutThis_16">Images in this summary are used with permission of the author(s), artist, and/or publisher for use within the PDQ summaries only. Permission to use images outside the context of PDQ information must be obtained from the owner(s) and cannot be granted by  the National Cancer Institute. Information about using the illustrations in this summary, along with many other cancer-related images, is available in <ExternalRef xref="https://visualsonline.cancer.gov/">Visuals Online</ExternalRef>, a collection of over 2,000 scientific images.
+
+</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_17">
+              <Title>Disclaimer</Title>
+              <Para id="_AboutThis_19">The information in these summaries should not be used as a basis for insurance reimbursement determinations. More information on insurance coverage is available on Cancer.gov on the <ExternalRef xref="https://www.cancer.gov/about-cancer/managing-care">Managing Cancer Care</ExternalRef> page.</Para>
+            </SummarySection>
+            <SummarySection id="_AboutThis_20">
+              <Title>Contact Us</Title>
+              <Para id="_AboutThis_21">More information about contacting us or receiving help with the Cancer.gov website can be found on our <ExternalRef xref="https://www.cancer.gov/contact">Contact Us for Help</ExternalRef> page. Questions can also be submitted to Cancer.gov through the website’s <ExternalRef xref="https://www.cancer.gov/contact/email-us">Email Us</ExternalRef>.</Para>
+            </SummarySection>
+          </SummarySection>
+          <DateFirstPublished>2009-07-29</DateFirstPublished>
+          <DateLastModified>2015-11-05</DateLastModified>
+        </Summary>
+      </XML>
+    </RequestData>
+  </RequestDatas>
+</Request>
