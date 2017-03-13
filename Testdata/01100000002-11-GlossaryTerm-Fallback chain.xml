@@ -332,7 +332,7 @@
       <GroupID>1</GroupID>
       <XML>
         <GlossaryTerm id="CDR01100000009">
-          <TermName>Glossary with all dictionaries 01100000009</TermName>
+          <TermName>Glossary without genetic 01100000009</TermName>
           <TermPronunciation>(test)</TermPronunciation>
           <TermDefinition>
             <DefinitionText>English Patient Definition for Dictionary of Cancer Terms.</DefinitionText>
