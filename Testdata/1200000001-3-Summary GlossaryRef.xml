@@ -70,6 +70,11 @@
               <Para id="_40"> <GlossaryTermRef href="CDR01100000010" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> No CancerTerms, should go to English HP Definition for Genetics Dictionary.</Para>
               <Para id="_50"> <GlossaryTermRef href="CDR01100000011" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> No NoDictionary, should go to English HP Definition for Genetics Dictionary.</Para>
             </SummarySection>
+            <SummarySection id="_101">
+              <Title>Cross-audience Dictionary Genetic links</Title>
+			  <Para id="_10"> This link specifies health professional but goes to a glossary terms which only has patient definitions.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000012" dictionary="Genetics" audience="Health professional">link</GlossaryTermRef> Should go to English Patient Definition for Genetics Dictionary.</Para>
+            </SummarySection>
 		  </SummarySection>
           <SummarySection id="_4">
             <SectMetaData>
@@ -220,6 +225,11 @@ maintaining the PDQ summaries can be found on the <SummaryRef href="CDR000055263
               <Para id="_40"> <GlossaryTermRef href="CDR01100000010" dictionary="Cancer.gov" audience="Patient">link</GlossaryTermRef> No CancerTerms, should go to English Patient Definition for No Dictionary.</Para>
               <Para id="_50"> <GlossaryTermRef href="CDR01100000011" dictionary="Cancer.gov" audience="Patient">link</GlossaryTermRef> No NoDictionary, should go to English Patient Definition for Dictionary of Cancer Terms.</Para>
             </SummarySection>
+            <SummarySection id="_101">
+              <Title>Cross-audience Dictionary links</Title>
+			  <Para id="_10"> This link specifies patient but goes to a glossary terms which only has health professional definitions.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000013" dictionary="Cancer.gov" audience="Patient">link</GlossaryTermRef> Should go to English HP Definition for Dictionary of Cancer Terms.</Para>
+            </SummarySection>
 		  </SummarySection>
           <SummarySection id="_AboutThis_1">
             <Title>About This PDQ Summary</Title>
@@ -329,6 +339,11 @@ maintaining the PDQ summaries can be found on the <SummaryRef href="CDR000055263
               <Para id="_30"> <GlossaryTermRef href="CDR01100000009" audience="Health professional">link</GlossaryTermRef> No Genetics, should go to English HP Definition for "No Dictionary."</Para>
               <Para id="_40"> <GlossaryTermRef href="CDR01100000010" audience="Health professional">link</GlossaryTermRef> No CancerTerms, should go to English HP Definition for "No Dictionary"</Para>
               <Para id="_50"> <GlossaryTermRef href="CDR01100000011" audience="Health professional">link</GlossaryTermRef> No NoDictionary, should go to English HP Definition for Genetics Dictionary.</Para>
+            </SummarySection>
+            <SummarySection id="_101">
+              <Title>Cross-audience Dictionary Genetic links</Title>
+			  <Para id="_10"> This link specifies health professional but goes to a glossary terms which only has patient definitions.</Para>
+              <Para id="_20"> <GlossaryTermRef href="CDR01100000012" audience="Health professional">link</GlossaryTermRef> Should go to English Patient Definition for No Dictionary.</Para>
             </SummarySection>
 		  </SummarySection>
           <SummarySection id="_AboutThis_1">
