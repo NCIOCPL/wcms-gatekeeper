@@ -166,6 +166,19 @@ Header
                   </xsl:attribute>
 
                 
+                <!--
+                Add the HP/Patient toggle to the top.
+                It will be moved using JS to be positioned underneath the
+                SummaryTitle
+                ======================================================= -->
+                <xsl:if            test="position() = 1
+                                         and
+                                         /Summary/
+                                           SummaryMetaData/
+                                           SummaryToggleURL">
+                 <xsl:call-template name="addHpPatientToggle"/>
+                </xsl:if>
+
                       <xsl:call-template        name = "Title_TOC_KP">
                         <xsl:with-param          name = "topSection"
                                                select = "$topSection"/>
@@ -183,6 +196,9 @@ Header
     </html>
   </xsl:template>
 
+  <!--
+  Template to create TOC or KeyPoint boxes
+  =================================================================== -->
   <xsl:template                   name = "Title_TOC_KP">
     <xsl:param                     name = "topSection"
                                  select = "'toc'"/>
@@ -220,6 +236,52 @@ Header
       </xsl:text>
     </script>
   </xsl:template>
+
+
+  <!--
+  Template to add the HP/Patient toggle to the page
+  =================================================================== -->
+  <xsl:template                    name="addHpPatientToggle">
+   <xsl:element                    name="div">
+     <xsl:attribute                name="class">
+      <xsl:text>pdq-hp-patient-toggle</xsl:text>
+     </xsl:attribute>
+     <xsl:element                  name="a">
+      <xsl:attribute               name="href">
+       <xsl:value-of             select="substring-after(/Summary/
+                                                         SummaryMetaData/
+                                                         SummaryToggleURL/
+                                                         @xref, '.gov')"/>
+      </xsl:attribute>
+      <!--
+      <xsl:value-of              select="$strAudienceToggle"/>
+     -->
+      <xsl:choose>
+       <xsl:when                   test="$language = 'en'">
+        <xsl:choose>
+         <xsl:when                 test="$audience = 'healthprofessional'">
+          <xsl:text>Go to Patient Version</xsl:text>
+         </xsl:when>
+         <xsl:otherwise>
+          <xsl:text>Go to Health Professional Version</xsl:text>
+         </xsl:otherwise>
+        </xsl:choose>
+       </xsl:when>
+       <xsl:otherwise>
+        <xsl:choose>
+         <xsl:when                 test="$audience = 'healthprofessional'">
+          <xsl:text>Vaya a la versi&#243;n para pacientes</xsl:text>
+         </xsl:when>
+         <xsl:otherwise>
+          <xsl:text>Vaya a la versi&#243;n para profesionales de salud</xsl:text>
+         </xsl:otherwise>
+        </xsl:choose>
+       </xsl:otherwise>
+      </xsl:choose>
+     </xsl:element>
+   </xsl:element>
+  </xsl:template>
+
 
   <!--
   This JavaScript calls the TOC function to attach the TOC to the DIV
