@@ -4,3 +4,4 @@
 @set LIBPATH=c:\Windows\Microsoft.NET\Framework\v3.5;c:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB;c:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\LIB;%LIBPATH%
 
 msbuild BuildGateKeeper.xml /t:ALL
+pause
