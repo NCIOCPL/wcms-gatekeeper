@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RequestID>3170</RequestID>
+  <Description>GlossaryTerm with EmbeddedVideo</Description>
+  <Source>CDR-DEV</Source>
+  <DtdVersion>1036</DtdVersion>
+  <DataType>XML</DataType>
+  <MaxPacketNumber>1</MaxPacketNumber>
+  <RequestDatas>
+    <RequestData>
+      <RequestDataID>2349379</RequestDataID>
+      <RequestID>3170</RequestID>
+      <PacketNumber>1</PacketNumber>
+      <ActionType>Export</ActionType>
+      <CDRDocType>GlossaryTerm</CDRDocType>
+      <GKDocType>GlossaryTerm</GKDocType>
+      <CdrID>1100000001</CdrID>
+      <CdrVersion>11</CdrVersion>
+      <Status>Error</Status>
+      <DependencyStatus>OK</DependencyStatus>
+      <Location>Live</Location>
+      <GroupID>1</GroupID>
+      <XML>
+        <GlossaryTerm id="CDR01100000001">
+          <TermName>video test</TermName>
+          <TermPronunciation>(vih-dee-oh test)</TermPronunciation>
+          <TermDefinition>
+            <DefinitionText>Patient Definition for Dictionary of Cancer Terms.
+				(1) 100% width, no title, captioned
+				(2) 100% width, has title, no caption
+				(3) 50% width, centered, no title, captioned
+				(4) 50% width, right-aligned, no title, captioned
+				(5) 50% width, right-aligned, has title, no caption
+				(6) 75% width, centered, no title, caption
+				(7) 75% width, centered, has title, and caption
+			</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Patient</Audience>
+          </TermDefinition>
+          <TermDefinition>
+            <DefinitionText>HP Definition Text</DefinitionText>
+            <Dictionary>Genetics</Dictionary>
+            <Audience>Health professional</Audience>
+          </TermDefinition>
+          <MediaLink ref="CDR0000709967" type="audio/mpeg" alt="Pronunciation of dictionary term &quot;metastasis&quot;" language="en" id="_3" />
+          <MediaLink ref="CDR0000709966" type="audio/mpeg" alt="Pronunciation of dictionary term &quot;metástasis&quot;" language="es" id="_4" />
+          <MediaLink ref="CDR0000764135" type="image/jpeg" alt="Metastasis; drawing shows primary cancer that has spread from the colon to other parts of the body (the lung and the brain). An inset shows cancer cells spreading from the primary cancer, through the blood and lymph system, to another part of the body where a metastatic tumor has formed." language="en" audience="Patients" placement="image-center" id="_3">
+            <Caption language="en">Metastasis. In metastasis, cancer cells break away from where they first formed (primary cancer), travel through the blood or lymph system, and form new tumors (metastatic tumors) in other parts of the body. The metastatic tumor is the same type of cancer as the primary tumor. </Caption>
+          </MediaLink>
+          <MediaLink ref="CDR0000764135" type="image/jpeg" alt="" language="en" audience="Health_professionals" placement="image-center" id="_10" />
+          <MediaLink ref="CDR0000415502" type="image/jpeg" alt="Fecal Occult Blood Test (FOBT) kit; shows card, applicator, and return envelope." language="en" audience="Patients" id="_8.11">
+            <Caption language="en">Fecal Occult Blood Test (FOBT) kit to check for blood in stool.</Caption>
+          </MediaLink>
+          <MediaLink ref="CDR0000415502" type="image/jpeg" alt="HP Fecal Occult Blood Test (FOBT) kit; shows card, applicator, and return envelope." language="en" audience="Patients" id="_8.12">
+            <Caption language="en">HP Fecal Occult Blood Test (FOBT) kit to check for blood in stool.</Caption>
+          </MediaLink>
+          <MediaLink ref="CDR0000415502" type="image/jpeg" alt="Estuche de prueba para Sangre Oculta en la Materia Fecal (SOMF) muestra  aplicador y sobre para el reenvío." language="es" audience="Patients" id="_8.13">
+            <Caption language="es">Estuche de prueba para Sangre Oculta en la Materia Fecal (SOMF) para detectar sangre en las heces.</Caption>
+          </MediaLink>
+          <MediaLink ref="CDR0000415502" type="image/jpeg" alt="HP Estuche de prueba para Sangre Oculta en la Materia Fecal (SOMF) muestra  aplicador y sobre para el reenvío." language="es" audience="Patients" id="_8.14">
+            <Caption language="es">HP Estuche de prueba para Sangre Oculta en la Materia Fecal (SOMF) para detectar sangre en las heces.</Caption>
+          </MediaLink>
+          <MediaLink ref="CDR0000766321" type="image/jpeg" alt="Metástasis; en la ilustración, se muestra un cáncer primario que se diseminó desde el colon hasta otras partes del cuerpo (pulmón y cerebro). En el panel, se muestran células cancerosas que se diseminan desde el cáncer primario, por medio de sistema vascular y linfático, hasta otra parte del cuerpo donde se formó un tumor metastásico." language="es" audience="Patients" placement="image-center" id="_4">
+            <Caption language="es">Metástasis. En la metástasis, las células cancerosas se separan del sitio donde se formaron inicialmente (cáncer primario), se desplazan por medio del sistema vascular o linfático, y forman nuevos tumores (tumores metastásicos) en otras partes del cuerpo. El tumor metastásico es el mismo tipo de cáncer que el tumor primario. </Caption>
+          </MediaLink>
+
+          <EmbeddedVideo id="_6" ref="CDR01200000001" hosting="youtube" unique_id="yfWbtBwADL8" language="en" audience="Patients" template="Video100NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">100% width, no title, captioned (patients-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_7" ref="CDR01200000002" hosting="youtube" unique_id="DS9eIhcuWEM" language="en" audience="Patients" template="Video100Title">
+            <VideoTitle>100% width, has title, no caption (patients-EN)</VideoTitle>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_8" ref="CDR01200000003" hosting="youtube" unique_id="dmm_IvqTyzw" language="en" audience="Patients" template="Video50NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">50% width, centered, no title, captioned (patients-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_9" ref="CDR01200000004" hosting="youtube" unique_id="1mIAbOE7Jkg" language="en" audience="Patients" template="Video50NoTitleRight">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">50% width, right-aligned, no title, captioned (patients-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_10" ref="CDR01200000005" hosting="youtube" unique_id="cs0rQZl2lt4" language="en" audience="Patients" template="Video50TitleRight">
+            <VideoTitle>50% width, right-aligned, has title, no caption (patients-EN)</VideoTitle>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_11" ref="CDR01200000006" hosting="youtube" unique_id="GdFozCuMaa4" language="en" audience="Patients" template="Video75NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">75% width, centered, no title, caption (patients-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_12" ref="CDR01200000007" hosting="youtube" unique_id="Ya8IzYwguVM" language="en" audience="Patients" template="Video75Title">
+            <VideoTitle>75% width, centered, has title, and caption</VideoTitle>
+            <Caption language="en">75% width, centered, has title, caption (patients-EN)</Caption>
+          </EmbeddedVideo>
+
+
+
+          <EmbeddedVideo id="_6" ref="CDR01200000001" hosting="youtube" unique_id="yfWbtBwADL8" language="en" audience="Health_professionals" template="Video100NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">100% width, no title, captioned (HP-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_7" ref="CDR01200000002" hosting="youtube" unique_id="DS9eIhcuWEM" language="en" audience="Health_professionals" template="Video100Title">
+            <VideoTitle>100% width, has title, no caption (HP-EN)</VideoTitle>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_8" ref="CDR01200000003" hosting="youtube" unique_id="dmm_IvqTyzw" language="en" audience="Health_professionals" template="Video50NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">50% width, centered, no title, captioned (HP-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_9" ref="CDR01200000004" hosting="youtube" unique_id="1mIAbOE7Jkg" language="en" audience="Health_professionals" template="Video50NoTitleRight">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">50% width, right-aligned, no title, captioned (HP-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_10" ref="CDR01200000005" hosting="youtube" unique_id="cs0rQZl2lt4" language="en" audience="Health_professionals" template="Video50TitleRight">
+            <VideoTitle>50% width, right-aligned, has title, no caption (HP-EN)</VideoTitle>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_11" ref="CDR01200000006" hosting="youtube" unique_id="GdFozCuMaa4" language="en" audience="Health_professionals" template="Video75NoTitle">
+            <VideoTitle>Title should be hidden</VideoTitle>
+            <Caption language="en">75% width, centered, no title, caption (HP-EN)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_12" ref="CDR01200000007" hosting="youtube" unique_id="Ya8IzYwguVM" language="en" audience="Health_professionals" template="Video75Title">
+            <VideoTitle>75% width, centered, has title, and caption</VideoTitle>
+            <Caption language="en">75% width, centered, has title, caption (HP-EN)</Caption>
+          </EmbeddedVideo>
+		  
+
+          <EmbeddedVideo id="_5.16" ref="CDR0000779579" hosting="youtube" unique_id="1ZkucaApozA" language="es" audience="Health_professionals" template="Video100Title">
+            <VideoTitle>DUDU</VideoTitle>
+            <Caption language="es">Auf dem Web zum 18-ten Australian Open Title. (HP-ES)</Caption>
+          </EmbeddedVideo>
+
+
+          <EmbeddedVideo id="_5.18" ref="CDR0000779579" hosting="youtube" unique_id="1ZkucaApozA" language="es" audience="Patients" template="Video100Title">
+            <VideoTitle>DUDU</VideoTitle>
+            <Caption language="es">Auf dem Web zum 18-ten Australian Open Title. (Patienten-ES)</Caption>
+          </EmbeddedVideo>
+          <EmbeddedVideo id="_7" ref="CDR0000779579" hosting="youtube" unique_id="1ZkucaApozA" language="es" audience="Patients" template="Video100Title">
+            <VideoTitle>ESES</VideoTitle>
+            <Caption language="es">Auf dem Web zum 18-ten Australian Open Title. (Patienten-ES)</Caption>
+          </EmbeddedVideo>
+          <SpanishTermName>metástasis</SpanishTermName>
+          <SpanishTermDefinition>
+            <DefinitionText>Diseminación del cáncer de una parte del cuerpo a otra. Un tumor formado por células que se han diseminado se llama "tumor metastásico" o "metástasis". El tumor metastásico contiene células que son como aquellas del tumor original (primario).</DefinitionText>
+            <Dictionary>Cancer.gov</Dictionary>
+            <Audience>Patient</Audience>
+          </SpanishTermDefinition>
+          <DateLastModified>2014-11-19</DateLastModified>
+          <RelatedInformation>
+            <RelatedExternalRef UseWith="en" xref="http://www.cancer.gov/about-cancer/what-is-cancer/metastatic-fact-sheet">Metastatic Cancer</RelatedExternalRef>
+            <RelatedExternalRef UseWith="es" xref="http://www.cancer.gov/espanol/cancer/que-es/hoja-informativa-metastasico">Cáncer metastático</RelatedExternalRef>
+          </RelatedInformation>
+        </GlossaryTerm>
+      </XML>
+    </RequestData>
+  </RequestDatas>
+</Request>

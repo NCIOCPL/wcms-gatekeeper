@@ -64,7 +64,8 @@ namespace CDRPreviewWS.GlossaryTerm
                                 dictionaryTerm.Related.Summary.Length > 0 ||
                                 dictionaryTerm.Related.DrugSummary.Length > 0 ||
                                 dictionaryTerm.Related.External.Length > 0 ||
-                                dictionaryTerm.Images.Length > 0)
+                                dictionaryTerm.Images.Length > 0 ||
+                                dictionaryTerm.HasVideos )
                             {
                                 string moreInformationText = "More Information";
                                 if (item.Language == GateKeeper.DocumentObjects.Language.Spanish)
@@ -192,6 +193,45 @@ namespace CDRPreviewWS.GlossaryTerm
                                     }
                                 }
 
+                                // Output any videos
+                                if (dictionaryTerm.HasVideos)
+                                {
+                                    foreach (VideoReference video in dictionaryTerm.Videos)
+                                    {
+                                        // Container element.
+                                        String classes = GetVideoClassesFromTemplateName(video.Template);
+                                        glossaryTermHtml.AppendFormat("<figure class=\"{0}\">", classes);
+
+                                        // Title
+                                        if (!video.Template.ToLowerInvariant().Contains("notitle") && !String.IsNullOrEmpty(video.Title))
+                                        {
+                                            glossaryTermHtml.AppendFormat("<h4>{0}</h4>", video.Title);
+                                        }
+
+                                        // the player
+                                        glossaryTermHtml.AppendFormat("<div id=\"ytplayer-{0}\" class=\"flex-video widescreen\" data-video-id=\"{0}\" data-video-title=\"{1}\">",
+                                            video.UniqueID,
+                                            video.Title
+                                            );
+
+                                        glossaryTermHtml.Append("<noscript><p>");
+                                        glossaryTermHtml.AppendFormat("<a href=\"https://www.youtube.com/watch?v={0}\" target=\"_blank\" title=\"{1}\">View this video on YouTube.</a>",
+                                            video.UniqueID, video.Title);
+                                        glossaryTermHtml.Append("</p></noscript>");
+
+                                        glossaryTermHtml.Append("</div>");
+
+
+                                        // Caption
+                                        if (!String.IsNullOrEmpty(video.Caption))
+                                        {
+                                            glossaryTermHtml.AppendFormat("<figcaption class=\"caption-container no-resize\">{0}</figcaption>", video.Caption);
+                                        }
+
+                                        glossaryTermHtml.Append("</figure>");
+                                    }
+                                }
+
                                 glossaryTermHtml.Append("</div></div>");
 
                             }
@@ -210,5 +250,41 @@ namespace CDRPreviewWS.GlossaryTerm
           
             return glossaryTermHtml.ToString();
         }
+
+        private string GetVideoClassesFromTemplateName(string templateName)
+        {
+            string classList;
+
+            // These are the templates allowed by the CDR's DTD for GlossaryTerm Embedded videos.
+            // Others do exist in Percussion, but are deprecated per OCECDR-3558.
+            switch (templateName.ToLowerInvariant())
+            {
+                case "video100notitle":
+                case "video100title":
+                    classList = "video center size100";
+                    break;
+
+                case "video50notitle":
+                    classList = "video center size50";
+                    break;
+
+                case "video50notitleright":
+                case "video50titleright":
+                    classList = "video right size50";
+                    break;
+
+                case "video75notitle":
+                case "video75title":
+                    classList = "video center size75";
+                    break;
+
+                default:
+                    classList = "video center size100";
+                    break;
+            }
+
+            return classList;
+        }
+
     }
 }

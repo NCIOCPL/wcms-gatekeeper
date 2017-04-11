@@ -1045,10 +1045,10 @@ Header
       </xsl:choose>
     </xsl:variable>
 
-    <!-- CAM summaries are using the HP dictionary -->
-    <xsl:variable                  name = "glossAudience">
+    <!-- Find the audience specified for the individual link -->
+    <xsl:variable                 name="glossAudience">
       <xsl:choose>
-        <xsl:when                    test = "$sType = 'genetics'">
+        <xsl:when                 test="@audience = 'Health professional'">
           <xsl:text>HealthProfessional</xsl:text>
         </xsl:when>
         <xsl:otherwise>
@@ -1056,8 +1056,19 @@ Header
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    
+    <!-- Translate requested dictionary into value understood by the front end
+         (mostly, handling genetics vs. genetic). -->
+    <xsl:variable                  name = "glossDictionary">
+      <xsl:choose>
+        <xsl:when                   test="@dictionary = 'Genetics'">genetic</xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of             select="@dictionary"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
-    <xsl:element                   name = "a">
+      <xsl:element                   name = "a">
       <xsl:attribute                name = "class"> 
         <xsl:text>definition</xsl:text>
       </xsl:attribute>
@@ -1073,17 +1084,26 @@ Header
         <xsl:value-of              select = "number(
                                            substring-after(@href, 'CDR'))"/>
         <xsl:text>&amp;version=</xsl:text>
-        <xsl:value-of              select = "$glossAudience"/>
+        <xsl:value-of              select = "$audience"/>
         <xsl:text>&amp;language=</xsl:text>
         <xsl:value-of              select = "$glossLanguage"/>
+        <xsl:if                   test="string-length($glossDictionary) > 0">
+          <xsl:text>&amp;dictionary=</xsl:text>
+          <xsl:value-of              select = "$glossDictionary"/>
+        </xsl:if>
+
       </xsl:attribute>
       <xsl:attribute                name = "onclick">
         <xsl:text>javascript:popWindow('defbyid','</xsl:text>
         <xsl:value-of              select = "@href"/>
         <xsl:text>&amp;version=</xsl:text>
-        <xsl:value-of              select = "$glossAudience"/>
+        <xsl:value-of              select = "$audience"/>
         <xsl:text>&amp;language=</xsl:text>
         <xsl:value-of              select = "$glossLanguage"/>
+        <xsl:if                   test="string-length($glossDictionary) > 0">
+          <xsl:text>&amp;dictionary=</xsl:text>
+          <xsl:value-of             select = "$glossDictionary"/>
+        </xsl:if>
         <xsl:text>'); </xsl:text>
         <xsl:text>return(false);</xsl:text>
       </xsl:attribute>
