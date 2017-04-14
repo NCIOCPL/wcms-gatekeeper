@@ -704,6 +704,8 @@
 
 <!ELEMENT RelatedGlossaryTermRef              (#PCDATA)>
 <!ATTLIST RelatedGlossaryTermRef href  CDATA  #REQUIRED>
+<!ATTLIST RelatedGlossaryTermRef  UseWith (en | es) #REQUIRED>
+<!ATTLIST RelatedGlossaryTermRef  audience (Patient | HealthProfessional) #REQUIRED>
 
 <!-- End Glossary -->
 
