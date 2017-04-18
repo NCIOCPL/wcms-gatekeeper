@@ -36,7 +36,7 @@ source control.
  the same values as the CDR. These variables provide a translation from 
  the constants used by GateKeeper.
  -->
- <!-- General Audience code. MediaLink image uses different values. -->
+ <!-- General Audience code. MediaLink images and related glossary terms uses different values. -->
  <xsl:variable                    name = "audienceCode">
   <xsl:choose>
    <xsl:when                      test = "$targetAudience = 'Patient'">
@@ -64,7 +64,22 @@ source control.
   </xsl:choose>
  </xsl:variable>
 
- <xsl:variable                    name = "languageCode">
+  <!-- 
+ RelatedGlossaryTermRef elements use a different string literal
+ for identifying the audience. -->
+  <xsl:variable                    name = "relatedGlossaryTermRefLinkAudienceCode">
+    <xsl:choose>
+      <xsl:when                      test = "$targetAudience = 'Patient'">
+        <xsl:text>Patients</xsl:text>
+      </xsl:when>
+      <xsl:when                      test = "$targetAudience = 
+                                                 'HealthProfessional'">
+        <xsl:text>Health_professionals</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable                    name = "languageCode">
   <xsl:choose>
    <xsl:when                      test = "$targetLanguage = 'English'">
     <xsl:text>en</xsl:text>
@@ -689,7 +704,7 @@ source control.
                                            /RelatedGlossaryTermRef
                                                    [@UseWith = $languageCode 
                                                     and 
-                                                    @audience = $targetAudience
+                                                    @audience = $relatedGlossaryTermRefLinkAudienceCode
                                                    ]">
    <xsl:text>{</xsl:text>
    <xsl:text>&#xa;</xsl:text>
