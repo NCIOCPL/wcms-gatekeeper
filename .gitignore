@@ -1,0 +1,220 @@
+
+# /
+/*.suo
+/*.ncb
+/*.user
+/_ReSharper.*
+
+# /App/Admin/
+/App/Admin/*.aps
+/App/Admin/*.eto
+/App/Admin/*.user
+/App/Admin/[Ww]eb.config
+/App/Admin/[Bb]in
+/App/Admin/[Dd]ebug
+/App/Admin/[Rr]elease
+/App/Admin/obj
+
+# /App/CDRPreviewWS/
+/App/CDRPreviewWS/*.aps
+/App/CDRPreviewWS/*.eto
+/App/CDRPreviewWS/*.user
+/App/CDRPreviewWS/PreviewMediaHtml
+/App/CDRPreviewWS/TestPubPreview
+/App/CDRPreviewWS/[Ww]eb.config
+/App/CDRPreviewWS/[Bb]in
+/App/CDRPreviewWS/[Dd]ebug
+/App/CDRPreviewWS/[Rr]elease
+/App/CDRPreviewWS/obj
+
+# /App/CDRPreviewWS/GlossaryTerm/
+/App/CDRPreviewWS/GlossaryTerm/bin
+/App/CDRPreviewWS/GlossaryTerm/obj
+
+# /App/ProcMgr/
+/App/ProcMgr/*.aps
+/App/ProcMgr/*.eto
+/App/ProcMgr/*.user
+/App/ProcMgr/[Aa]pp.config
+/App/ProcMgr/[Bb]in
+/App/ProcMgr/[Dd]ebug
+/App/ProcMgr/[Rr]elease
+/App/ProcMgr/obj
+
+# /App/WebSvc/
+/App/WebSvc/*.aps
+/App/WebSvc/*.eto
+/App/WebSvc/*.user
+/App/WebSvc/[Ww]eb.config
+/App/WebSvc/[Bb]in
+/App/WebSvc/[Dd]ebug
+/App/WebSvc/[Rr]elease
+/App/WebSvc/obj
+
+# /Core/BatchManager/
+/Core/BatchManager/[Bb]in
+/Core/BatchManager/obj
+/Core/BatchManager/[Dd]ebug
+/Core/BatchManager/[Rr]elease
+/Core/BatchManager/*.user
+/Core/BatchManager/*.aps
+/Core/BatchManager/*.eto
+
+# /Core/CMSDocumentProcessing/
+/Core/CMSDocumentProcessing/[Bb]in
+/Core/CMSDocumentProcessing/obj
+/Core/CMSDocumentProcessing/[Dd]ebug
+/Core/CMSDocumentProcessing/[Rr]elease
+/Core/CMSDocumentProcessing/*.user
+/Core/CMSDocumentProcessing/*.aps
+/Core/CMSDocumentProcessing/*.eto
+
+# /Core/CMSManager/
+/Core/CMSManager/[Bb]in
+/Core/CMSManager/obj
+/Core/CMSManager/[Dd]ebug
+/Core/CMSManager/[Rr]elease
+/Core/CMSManager/*.user
+/Core/CMSManager/*.aps
+/Core/CMSManager/*.eto
+
+# /Core/Common/
+/Core/Common/[Bb]in
+/Core/Common/obj
+/Core/Common/[Dd]ebug
+/Core/Common/[Rr]elease
+/Core/Common/*.user
+/Core/Common/*.aps
+/Core/Common/*.eto
+
+# /Core/ContentRendering/
+/Core/ContentRendering/[Bb]in
+/Core/ContentRendering/obj
+/Core/ContentRendering/[Dd]ebug
+/Core/ContentRendering/[Rr]elease
+/Core/ContentRendering/*.user
+/Core/ContentRendering/*.aps
+/Core/ContentRendering/*.eto
+
+# /Core/DataAccess/
+/Core/DataAccess/[Bb]in
+/Core/DataAccess/obj
+/Core/DataAccess/[Dd]ebug
+/Core/DataAccess/[Rr]elease
+/Core/DataAccess/*.user
+/Core/DataAccess/*.aps
+/Core/DataAccess/*.eto
+
+# /Core/Diagrams/
+/Core/Diagrams/[Bb]in
+/Core/Diagrams/obj
+/Core/Diagrams/[Dd]ebug
+/Core/Diagrams/[Rr]elease
+/Core/Diagrams/*.user
+/Core/Diagrams/*.aps
+/Core/Diagrams/*.eto
+
+# /Core/DocumentManager/
+/Core/DocumentManager/[Bb]in
+/Core/DocumentManager/obj
+/Core/DocumentManager/[Dd]ebug
+/Core/DocumentManager/[Rr]elease
+/Core/DocumentManager/*.user
+/Core/DocumentManager/*.aps
+/Core/DocumentManager/*.eto
+
+# /Core/DocumentObjects/
+/Core/DocumentObjects/[Bb]in
+/Core/DocumentObjects/obj
+/Core/DocumentObjects/[Dd]ebug
+/Core/DocumentObjects/[Rr]elease
+/Core/DocumentObjects/*.user
+/Core/DocumentObjects/*.aps
+/Core/DocumentObjects/*.eto
+
+# /Core/Logging/
+/Core/Logging/[Bb]in
+/Core/Logging/obj
+/Core/Logging/[Dd]ebug
+/Core/Logging/[Rr]elease
+/Core/Logging/*.user
+/Core/Logging/*.aps
+/Core/Logging/*.eto
+
+# /Core/RequestManager/
+/Core/RequestManager/[Bb]in
+/Core/RequestManager/obj
+/Core/RequestManager/[Dd]ebug
+/Core/RequestManager/[Rr]elease
+/Core/RequestManager/*.user
+/Core/RequestManager/*.aps
+/Core/RequestManager/*.eto
+
+# /Core/Security/
+/Core/Security/[Bb]in
+/Core/Security/obj
+/Core/Security/[Dd]ebug
+/Core/Security/[Rr]elease
+/Core/Security/*.user
+/Core/Security/*.aps
+/Core/Security/*.eto
+
+# /Test Harnesses/GateKeeperTest/
+/Test Harnesses/GateKeeperTest/[Bb]in
+/Test Harnesses/GateKeeperTest/obj
+/Test Harnesses/GateKeeperTest/[Dd]ebug
+/Test Harnesses/GateKeeperTest/[Rr]elease
+/Test Harnesses/GateKeeperTest/[Gg]ate[Kk]eeper[Tt]est.exe.config
+/Test Harnesses/GateKeeperTest/*.user
+/Test Harnesses/GateKeeperTest/*.aps
+/Test Harnesses/GateKeeperTest/*.eto
+
+# /Test Harnesses/ImportTool/
+/Test Harnesses/ImportTool/[Bb]in
+/Test Harnesses/ImportTool/obj
+/Test Harnesses/ImportTool/[Dd]ebug
+/Test Harnesses/ImportTool/[Rr]elease
+/Test Harnesses/ImportTool/[Aa]pp.config
+/Test Harnesses/ImportTool/*.user
+/Test Harnesses/ImportTool/*.aps
+/Test Harnesses/ImportTool/*.eto
+
+# /Test Harnesses/ProcessTester/
+/Test Harnesses/ProcessTester/[Bb]in
+/Test Harnesses/ProcessTester/obj
+/Test Harnesses/ProcessTester/[Dd]ebug
+/Test Harnesses/ProcessTester/[Rr]elease
+/Test Harnesses/ProcessTester/[Aa]pp.config
+/Test Harnesses/ProcessTester/*.user
+/Test Harnesses/ProcessTester/*.aps
+/Test Harnesses/ProcessTester/*.eto
+
+# /Test Harnesses/PromotionTester/
+/Test Harnesses/PromotionTester/[Bb]in
+/Test Harnesses/PromotionTester/obj
+/Test Harnesses/PromotionTester/[Dd]ebug
+/Test Harnesses/PromotionTester/[Rr]elease
+/Test Harnesses/PromotionTester/*.user
+/Test Harnesses/PromotionTester/*.aps
+/Test Harnesses/PromotionTester/*.eto
+/Test Harnesses/PromotionTester/App.config
+
+# /Test Harnesses/PubPreviewTest/
+/Test Harnesses/PubPreviewTest/[Bb]in
+/Test Harnesses/PubPreviewTest/obj
+/Test Harnesses/PubPreviewTest/[Dd]ebug
+/Test Harnesses/PubPreviewTest/[Rr]elease
+/Test Harnesses/PubPreviewTest/[Aa]pp.config
+/Test Harnesses/PubPreviewTest/*.user
+/Test Harnesses/PubPreviewTest/*.aps
+/Test Harnesses/PubPreviewTest/*.eto
+
+# /Test Harnesses/UnitTest/
+/Test Harnesses/UnitTest/*.aps
+/Test Harnesses/UnitTest/*.eto
+/Test Harnesses/UnitTest/*.user
+/Test Harnesses/UnitTest/UnitTest.dll.config
+/Test Harnesses/UnitTest/[Bb]in
+/Test Harnesses/UnitTest/[Dd]ebug
+/Test Harnesses/UnitTest/[Rr]elease
+/Test Harnesses/UnitTest/obj
