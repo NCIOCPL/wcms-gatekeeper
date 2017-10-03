@@ -1,0 +1,12 @@
+# Editor common configuration.  http://EditorConfig.org
+
+# This is the top of the directory tree
+root = true
+
+[*]
+trim_trailing_whitespace = true
+
+
+# windows batch, PowerShell and text files.
+[*.{bat,ps1,txt}]
+end_of_line = crlf
