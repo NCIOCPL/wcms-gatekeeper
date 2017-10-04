@@ -5,6 +5,14 @@
 /*.user
 /_ReSharper.*
 
+msbuild.log
+Build.txt
+GateKeeper.sln.cache
+
+# Legacy shared configuration folders
+/Config
+sharedconfig
+
 # /App/Admin/
 /App/Admin/*.aps
 /App/Admin/*.eto
