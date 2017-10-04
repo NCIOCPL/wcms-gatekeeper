@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Help"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Import required targets and configuration items. -->
+  <Import Project="bin\MSBuild.Community.Tasks.Targets"/>
+  <Import Project="build.config"/>
+
+  
+  <!--
+    Determine directory tree and subversion URLs from user input values.
+    
+    $(BuildLocation) is specified in build.config and is used as the root
+    location for all files in the build.  Beneath it are three sub-trees:
+
+      source - Retrieval destination for Subversion.
+      output - Holding bin for compiled binaries.
+      staging - Copy of all files to be deployed (i.e. without source code).
+
+    $(SVNBaseFolder) is specified in build.config and is the application's
+    root URL in Subversion.  The folder structure is assumed to follow the
+    standard pattern with trunk, branches, and tags folders as immediate
+    children of the base.
+  -->
+  <PropertyGroup>
+    <SourceLocation>$(BuildLocation)\source</SourceLocation>
+    <OutputFolder>$(BuildLocation)\output\</OutputFolder>
+    <StagingLocation>$(BuildLocation)\staging\</StagingLocation>
+    <SVNRetrieveFrom>$(SVNBaseFolder)/branches/$(Branch)</SVNRetrieveFrom>
+    <SVNTagsFolder>$(SVNBaseFolder)/tags/</SVNTagsFolder>
+    <SVNBuildsFolder>$(SVNBaseFolder)/Builds/</SVNBuildsFolder>
+  </PropertyGroup>
+  
+  <!--
+    Retrieve the most recent version of the project source code from the
+    branch specified on the command-line (/p:Branch=<branch_name>).
+    
+    The revision number is returned to the calling target as the
+    $(Revision) output property.
+  -->
+  <Target Name="FetchSourceCode" Condition="$(Branch) != ''" Outputs="$(Revision)">
+
+
+    <Message Text="Clean up $(SourceLocation)"/>
+    <RemoveDir Directories="$(SourceLocation)" />
+
+    <Message Text="Fetching latest source code from $(SVNRetrieveFrom)"/>
+    <SvnExport RepositoryPath="$(SVNRetrieveFrom)"
+      LocalPath="$(SourceLocation)">
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </SvnExport>
+
+    <Message Text="Revision: $(Revision)"/>
+  </Target>
+
+
+  <!--
+    Tags the code revision used in the build based on the $(Revision)
+    value retrieved from the FetchSourceCode target.
+  -->
+  <Target Name="ApplySourceCodeTag" Condition="$(Branch) != ''">
+
+    <!--
+      Tag Name = R + RevisionNumber + TargetEnvironment
+    -->
+    <CreateProperty Value="$(Branch)-$(TargetEnvironment)-R$(Revision)">
+      <Output TaskParameter="Value" PropertyName="TagName"/>
+    </CreateProperty>
+    
+    <CreateProperty Value="$(SVNTagsFolder)$(TagName)">
+      <Output TaskParameter="Value" PropertyName="TagUrl" />
+    </CreateProperty>
+    
+    <Message Text="Creating tag: $(TagName)"/>
+
+    <SvnCopy SourcePath="$(SVNRetrieveFrom)"
+             DestinationPath="$(TagUrl)"
+             Revision="$(Revision)"
+             Message="Automatic build of GateKeeper Revision $(Revision) for the $(TargetEnvironment) environment."/>
+
+  </Target>
+
+  
+  <!--
+    File lists used by the Build target.  See comments in the target
+    for details.
+  -->
+  <ItemGroup>
+    <FakeAdminConfig Include="$(SourceLocation)\app\Admin\web.config" />
+    <FakeProcMgrConfig Include="$(SourceLocation)\app\ProcMgr\app.config" />
+    <FakeWebSvcConfig Include="$(SourceLocation)\app\WebSvc\web.config" />
+    <FakeCDRPreviewConfig Include="$(SourceLocation)\app\CdrPreviewWS\web.config" />
+    <FakePromoTesterConfig Include="$(SourceLocation)\Test Harnesses\PromotionTester\app.config" />
+    <FakeUnitTestrConfig Include="$(SourceLocation)\Test Harnesses\UnitTest\UnitTest.dll.config" />
+    <NonDeployedFiles Include="$(SourceLocation)\app\*.pdb;$(SourceLocation)\app\*.pdb" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <FakeConfigLines>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;&lt;configuration&gt;&lt;/configuration></FakeConfigLines>
+  </PropertyGroup>
+  
+  <!--
+    Build the solution and copy only the necessary files to the staging folder.
+  -->
+  <Target Name="Build">
+    <!-- 
+      Create fake config files.  We don't version control the web.config
+      in the application root folder, but the publishing portion of the
+      build step will fail if it can't find one.  Rather than very painfully
+      (and undoubted brittlely) trying to recreate the publishing step,
+      we just create a fake web.config and then delete it afterward.
+    -->
+    <WriteLinesToFile File="@(FakeAdminConfig)" />
+    <WriteLinesToFile File="@(FakeProcMgrConfig)" Lines="$(FakeConfigLines)" />
+    <WriteLinesToFile File="@(FakeWebSvcConfig)" />
+    <WriteLinesToFile File="@(FakeCDRPreviewConfig)" />
+    <WriteLinesToFile File="@(FakePromoTesterConfig)" Lines="$(FakeConfigLines)" />
+    <WriteLinesToFile File="@(FakeUnitTestrConfig)" Lines="$(FakeConfigLines)" />
+
+    <!--
+      In order to make publishing work, we have to specify locations for
+      both OutDir and WebProjectOutputDir.
+    -->
+
+    <Message Text="Clean up intermediate output folder: $(OutputFolder)"/>
+    <RemoveDir Directories="$(OutputFolder)" />
+
+    <Message Text="Clean up staging folder: $(StagingLocation)"/>
+    <RemoveDir Directories="$(StagingLocation)" />
+    <!--<MakeDir Directories="$(StagingLocation)" />-->
+
+    <!-- Write revision note file. -->
+    <Message Text="Notefile in $(SourceLocation)."/>
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Version: $(Branch);" />
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Revision: $(Revision)" />
+    <WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
+
+    <Message Text="Build applications"/>
+
+    <!-- Admin tool -->
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(AdminFolder) "
+             Targets="$(AdminProjectname);"
+             />
+    <!-- Web service -->
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(WebSvcFolder) "
+             Targets="$(WebSvcProjectname);"
+             />
+    <!-- CDR Preview service -->
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder); WebProjectOutputDir=$(OutputFolder)$(CDRPreviewFolder) "
+             Targets="$(CDRPreviewProjectname);"
+             />
+    <!-- Process Manager -->
+    <MSBuild
+             Projects="$(SourceLocation)\$(SolutionName)"
+             Properties="Configuration=Release; Platform=Any CPU; WarningLevel=0;  OutDir=$(OutputFolder)$(ProcMgrFolder)\ "
+             Targets="$(ProcMgrProjectname);"
+             />
+
+    <!-- Copy built code to staging location. -->
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(AdminFolder)" DestinationFolder="$(StagingLocation)$(AdminFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(WebSvcFolder)" DestinationFolder="$(StagingLocation)$(WebSvcFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(CDRPreviewFolder)" DestinationFolder="$(StagingLocation)$(CDRPreviewFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+    <RoboCopy
+        SourceFolder="$(OutputFolder)$(ProcMgrFolder)" DestinationFolder="$(StagingLocation)$(ProcMgrFolder)"
+        Mirror="True" ExcludeFiles="*.config;*.pdb;" ExcludeFolders="sharedconfig"
+    />
+
+    <!-- Copy XSL to staging location. -->
+    <RoboCopy
+        SourceFolder="$(SourceLocation)\Core\ContentRendering\XSL" DestinationFolder="$(StagingLocation)\XSL"
+        Mirror="True"
+    />
+
+	<!-- Copy Dtd to staging location -->
+    <RoboCopy
+        SourceFolder="$(SourceLocation)\App\Dtd" DestinationFolder="$(StagingLocation)\Dtd"
+        Mirror="True"
+    />
+
+    <!-- Copy build note to staging location -->
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(AdminFolder)" />
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(WebSvcFolder)" />
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(ProcMgrFolder)" />
+    <Copy SourceFiles="$(SourceLocation)\$(BuildNoteFile)" DestinationFolder ="$(StagingLocation)\$(CDRPreviewFolder)" />
+
+    <Message Text="Debug NonDeployedFiles @(NonDeployedFiles)"/>
+    <!--<Delete Files="@(NonDeployedFiles)" />-->
+
+    <Delete Files="@(FakeAdminConfig);@(FakeProcMgrConfig);@(FakeWebSvcConfig);@(FakeCDRPreviewConfig);@(NonDeployedFiles)" />
+  </Target>
+
+  
+  <!--
+    Deploy the built code (.as?x and .dll) to the location set in
+    the $(DeployLocation) value, defined in build.config.  (If the
+    value is not defined, this step will be skipped.)
+  -->
+  <Target Name="Deploy" Condition="$(DeployLocation) != ''">
+
+    <!-- Deploy executables -->
+    <RoboCopy
+        SourceFolder="$(StagingLocation)"
+        DestinationFolder="$(DeployLocation)"
+        Mirror="True"
+        ExcludeFiles="*.config;*.pdb;"
+        ExcludeFolders="sharedconfig"
+    />
+
+
+  </Target>
+
+  <Target Name="SaveExecutables">
+
+    <!--
+      Tag Name = R + RevisionNumber + TargetEnvironment
+    -->
+    <CreateProperty Value="$(Branch)-$(TargetEnvironment)-R$(Revision)">
+      <Output TaskParameter="Value" PropertyName="TagName"/>
+    </CreateProperty>
+
+    <CreateProperty Value="$(SVNBuildsFolder)$(TagName)">
+      <Output TaskParameter="Value" PropertyName="BuildsUrl" />
+    </CreateProperty>
+
+    <Message Text="Saving executables to: $(TagName)"/>
+    <!--
+      SvnClient is a wrapper for the svn command line.
+      The import command line orders repository and file system path
+      opposite of most other commands, so we have to do put the "wrong"
+      values in RepositoryPath and LocalPath.
+    -->
+    <SvnClient RepositoryPath="$(BuildLocation)\staging"
+      LocalPath="$(BuildsUrl)"
+      Command="import"
+      Message="Automatic build of GateKeeper Revision $(Revision) for the $(TargetEnvironment) environment."
+    />
+    
+
+  </Target>
+  
+  <!--
+    The "main" target which defines the list and order of other
+    targets to be run.
+  -->
+  <Target Name="All">
+
+    <CallTarget Targets="FetchSourceCode">
+      <Output TaskParameter="TargetOutputs" PropertyName="Revision"/>
+    </CallTarget>
+
+    <CallTarget Targets="Build"/>
+
+    <CallTarget Targets="SaveExecutables"/>
+
+    <CallTarget Targets="ApplySourceCodeTag"/>
+
+    <CallTarget Targets="Deploy"/>
+
+  </Target>
+
+  <Target Name="Help">
+    <Message Text="To run this script, enter the command:" />
+    <Message Text="" />
+    <Message Text="  msbuild BuildMaster.xml /p:Branch={name} /target:All" />
+    <Message Text="" />
+    <Message Text="Where {name} is the specific branch to be built." />
+  </Target>
+  
+</Project>
