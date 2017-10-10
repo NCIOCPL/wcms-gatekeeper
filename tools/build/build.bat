@@ -38,5 +38,7 @@ IF "%FAIL%" NEQ "" (
 REM Determine the current Git commit hash.
 FOR /f %%a IN ('git rev-parse --verify HEAD') DO SET COMMIT_ID=%%a
 
+REM Insert placeholder configuration files.
+call "%WORKSPACE%\tools\build\insert-placeholders.bat"
 
 msbuild /fileLogger /t:ALL "%WORKSPACE%\tools\build\build-gatekeeper.xml"

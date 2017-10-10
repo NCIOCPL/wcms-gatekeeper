@@ -29,16 +29,6 @@
 		for details.
 	-->
 	<ItemGroup>
-		<FakeAdminConfig Include="$(SourceLocation)\app\Admin\web.config" />
-		<FakeAdminSharedConfig Include="$(SourceLocation)\app\Admin\sharedconfig\connectionStrings.config" />
-		<FakeProcMgrConfig Include="$(SourceLocation)\app\ProcMgr\app.config" />
-		<FakeProcMgrSharedConfig Include="$(SourceLocation)\app\ProcMgr\sharedconfig\connectionStrings.config" />
-		<FakeWebSvcConfig Include="$(SourceLocation)\app\WebSvc\web.config" />
-		<FakeWebSvcSharedConfig Include="$(SourceLocation)\app\WebSvc\sharedconfig\connectionStrings.config" />
-		<FakeCDRPreviewConfig Include="$(SourceLocation)\app\CdrPreviewWS\web.config" />
-		<FakeCDRPreviewSharedConfig Include="$(SourceLocation)\app\CdrPreviewWS\sharedconfig\connectionStrings.config" />
-		<FakePromoTesterConfig Include="$(SourceLocation)\Test Harnesses\PromotionTester\app.config" />
-		<FakeUnitTestrConfig Include="$(SourceLocation)\Test Harnesses\UnitTest\UnitTest.dll.config" />
 		<NonDeployedFiles Include="$(SourceLocation)\app\*.pdb;$(SourceLocation)\app\*.pdb" />
 	</ItemGroup>
 
@@ -50,25 +40,6 @@
 	Build the solution and copy only the necessary files to the staging folder.
 	-->
 	<Target Name="Build">
-		<!-- 
-		  Create fake config files.  We don't version control the web.config
-		  in the application root folder, but the publishing portion of the
-		  build step will fail if it can't find one.  Rather than very painfully
-		  (and undoubted brittlely) trying to recreate the publishing step,
-		  we just create a fake web.config and then delete it afterward.
-		-->
-		<MakeDir Directories="$(SourceLocation)\app\Admin\sharedconfig" />
-		<MakeDir Directories="$(SourceLocation)\app\ProcMgr\sharedconfig" />
-		<MakeDir Directories="$(SourceLocation)\app\WebSvc\sharedconfig" />
-		<MakeDir Directories="$(SourceLocation)\app\CdrPreviewWS\sharedconfig" />
-		<WriteLinesToFile File="@(FakeAdminConfig)" />
-		<WriteLinesToFile File="@(FakeAdminSharedConfig)" />
-		<WriteLinesToFile File="@(FakeProcMgrConfig)" Lines="$(FakeConfigLines)" />
-		<WriteLinesToFile File="@(FakeWebSvcConfig)" />
-		<WriteLinesToFile File="@(FakeCDRPreviewConfig)" />
-		<WriteLinesToFile File="@(FakePromoTesterConfig)" Lines="$(FakeConfigLines)" />
-		<WriteLinesToFile File="@(FakeUnitTestrConfig)" Lines="$(FakeConfigLines)" />
-
 		<!--
 		  In order to make publishing work, we have to specify locations for
 		  both OutDir and WebProjectOutputDir.
@@ -156,7 +127,7 @@
 		<Message Text="Debug NonDeployedFiles @(NonDeployedFiles)"/>
 		<!--<Delete Files="@(NonDeployedFiles)" />-->
 
-		<Delete Files="@(FakeAdminConfig);@(FakeProcMgrConfig);@(FakeWebSvcConfig);@(FakeCDRPreviewConfig);@(NonDeployedFiles)" />
+		<Delete Files="@(NonDeployedFiles)" />
 	</Target>
 
   
@@ -208,7 +179,6 @@
 	<Target Name="All">
 		<CallTarget Targets="Build"/>
 		<CallTarget Targets="SaveExecutables"/>
-		<CallTarget Targets="ApplySourceCodeTag"/>
 	</Target>
 
 	<Target Name="Help">
