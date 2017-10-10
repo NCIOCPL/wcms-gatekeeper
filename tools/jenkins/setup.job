@@ -1,0 +1,46 @@
+/*
+    This is the main set up job for the wcms-cde project.
+    Definitions for general purpose jobs (e.g. jobs which aren't tied to a specific branch)
+    belong in this file.
+*/
+
+def FOLDER_NAME  = 'wcms-gatekeeper'    // Jenkins folder where the jbos will be placed.
+
+def GH_REPO_NAME = 'wcms-gatekeeper'     // The project's repository name (as used in the URL).
+def TARGET_BRANCH = 'git-build'            // Branch to run against.
+def GH_ORGANIZATION_NAME = 'blairlearn'   // GitHub Organization name (as used in the URL/userid).
+def GH_USER_TOKEN_KEY = 'NCIOCPL-GitHub-Token'  // Jenkins ID of the credential string containing the GitHub access token for creating releases.
+
+def sourceRepository = "$GH_ORGANIZATION_NAME/$GH_REPO_NAME"
+
+job("${FOLDER_NAME}/Create build job for a branch") {
+  description("Creates the jobs that build individual branches.\n\nTo modify this job, see the contents of setup.job and create-branch-skeleton.job.")
+
+  wrappers {
+    environmentVariables {
+      envs (
+        // Values common to the setup and job creation scripts that we don't want to maintain in two places.
+        FOLDER_NAME : FOLDER_NAME,
+        GH_REPO_NAME : GH_REPO_NAME,
+        TARGET_BRANCH : TARGET_BRANCH,
+        GH_ORGANIZATION_NAME : GH_ORGANIZATION_NAME,
+        GH_USER_TOKEN_KEY : GH_USER_TOKEN_KEY
+      )
+    }
+  }
+
+  parameters {
+    stringParam('BRANCH', '', 'New Branch\'s Name')
+    choiceParam('ENVIRONMENT', ['pink', 'blue', 'red'], 'WCMS build environment.\n\nBlue - Dev\nRed - Hotfixes\nPink - Special projects')
+  }
+
+  scm {
+    github(sourceRepository, "*/$TARGET_BRANCH")
+  }
+
+  steps {
+    dsl {
+      external("tools/jenkins/create_branch_skeleton.job")
+    }
+  }
+}
