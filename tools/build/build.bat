@@ -41,4 +41,4 @@ FOR /f %%a IN ('git rev-parse --verify HEAD') DO SET COMMIT_ID=%%a
 REM Insert placeholder configuration files.
 call "%WORKSPACE%\tools\build\insert-placeholders.bat"
 
-msbuild /fileLogger /t:ALL "%WORKSPACE%\tools\build\build-gatekeeper.xml"
+msbuild /fileLogger /t:ALL "/p:TargetEnvironment=%my_environ%;Branch=%my_branch%" "%WORKSPACE%\tools\build\build-gatekeeper.xml"
