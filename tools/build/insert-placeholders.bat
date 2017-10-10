@@ -1,8 +1,6 @@
 @echo off
 SETLOCAL
 
-echo on
-
 REM Insert placeholders for web.config / app.config
 set placeholder=%WORKSPACE%\tools\build\resources\placeholder.config
 

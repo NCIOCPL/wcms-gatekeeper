@@ -16,13 +16,13 @@
 		<SourceLocation>$(WORKSPACE)</SourceLocation>
 
 		<TempBase>$(TEMP)\Build-$(BUILD_NUMBER)</TempBase>
-		
+
 		<OutputFolder>$(TempBase)\output\</OutputFolder>
 		<StagingLocation>$(TempBase)\staging\</StagingLocation>
-		
+
 		<BuildName>$(branch)-$(TargetEnvironment)-$(BUILD_NUMBER)</BuildName>
 	</PropertyGroup>
-  
+
 	<!--
 		File lists used by the Build target.  See comments in the target
 		for details.
@@ -48,9 +48,11 @@
 
 		<!-- Write revision note file. -->
 		<Message Text="Notefile in $(SourceLocation)."/>
+		<Delete Files="$(SourceLocation)\$(BuildNoteFile)" />
 		<WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Version: $(Branch);" />
-		<WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Revision: $(Revision)" />
+		<WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Build: $(BuildName)" />
 		<WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Build Target: $(TargetEnvironment)" />
+		<WriteLinesToFile File="$(SourceLocation)\$(BuildNoteFile)" Lines="Commit: $(COMMIT_ID)" />
 
 		<Message Text="Build applications"/>
 
@@ -124,22 +126,11 @@
 		<Delete Files="@(NonDeployedFiles)" />
 	</Target>
 
-  
+
 	<Target Name="SaveExecutables">
-	
-		<Message Text="*********************************************" />
-		<Message Text="*                                           *" />
-		<Message Text="*                                           *" />
-		<Message Text="*                                           *" />
-		<Message Text="*  SaveExecutables is not yet implemented.  *" />
-		<Message Text="*                                           *" />
-		<Message Text="*                                           *" />
-		<Message Text="*                                           *" />
-		<Message Text="*********************************************" />
-	
 		<Message Text="Creating $(TempBase)\$(BuildName).zip from $(StagingLocation)" />
 		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\create-zip.ps1 -sourcePath &quot;$(StagingLocation)\*&quot;  -destinationPath &quot;$(TempBase)\$(BuildName).zip&quot;" />
-		
+
 		<Message Text="Creating tag $(BuildName)." />
 		<Exec Command="git tag $(BuildName) $(COMMIT_ID)" />
 
@@ -154,7 +145,7 @@
 	<Target Name="PostBuildCleanup">
 		<RemoveDir Directories="$(TempBase)" />
 	</Target>
-	
+
 	<!-- This target validates properties that are expected to be passed into msbuild -->
 	<Target Name="ValidateProps">
 		<Error Condition=" '$(TargetEnvironment)'=='' "
@@ -176,7 +167,7 @@
 				Text=" Missing required property [GITHUB_TOKEN]" />
 	</Target>
 
-	
+
 	<!--
 		The "main" target which defines the list and order of other
 		targets to be run.
@@ -194,5 +185,5 @@
 		<Message Text="" />
 		<Message Text="Where {name} is the specific branch to be built." />
 	</Target>
-  
+
 </Project>
