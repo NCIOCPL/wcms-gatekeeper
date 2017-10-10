@@ -8,10 +8,7 @@
 	<!--
 		Determine directory tree and subversion URLs from user input values.
 
-		$(BuildLocation) is specified in build.config and is used as the root
-		location for all files in the build.  Beneath it are three sub-trees:
-
-		  source - Retrieval destination for Subversion.
+		  source - Location of source code
 		  output - Holding bin for compiled binaries.
 		  staging - Copy of all files to be deployed (i.e. without source code).
 	-->
@@ -34,10 +31,6 @@
 		<NonDeployedFiles Include="$(SourceLocation)\app\*.pdb;$(SourceLocation)\app\*.pdb" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<FakeConfigLines>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;&lt;configuration&gt;&lt;/configuration></FakeConfigLines>
-	</PropertyGroup>
-  
 	<!--
 	Build the solution and copy only the necessary files to the staging folder.
 	-->
@@ -52,7 +45,6 @@
 
 		<Message Text="Clean up staging folder: $(StagingLocation)"/>
 		<RemoveDir Directories="$(StagingLocation)" />
-		<!--<MakeDir Directories="$(StagingLocation)" />-->
 
 		<!-- Write revision note file. -->
 		<Message Text="Notefile in $(SourceLocation)."/>
@@ -156,6 +148,13 @@
 	</Target>
 
 
+	<!--
+		Clean up after the build completes
+	-->
+	<Target Name="PostBuildCleanup">
+		<RemoveDir Directories="$(TempBase)" />
+	</Target>
+	
 	<!-- This target validates properties that are expected to be passed into msbuild -->
 	<Target Name="ValidateProps">
 		<Error Condition=" '$(TargetEnvironment)'=='' "
@@ -185,6 +184,7 @@
 	<Target Name="All" DependsOnTargets="ValidateProps">
 		<CallTarget Targets="Build"/>
 		<CallTarget Targets="SaveExecutables"/>
+		<CallTarget Targets="PostBuildCleanup" />
 	</Target>
 
 	<Target Name="Help">
