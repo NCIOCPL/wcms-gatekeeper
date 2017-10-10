@@ -22,6 +22,8 @@
 		
 		<OutputFolder>$(TempBase)\output\</OutputFolder>
 		<StagingLocation>$(TempBase)\staging\</StagingLocation>
+		
+		<BuildName>$(branch)-$(TargetEnvironment)-$(BUILD_NUMBER)</BuildName>
 	</PropertyGroup>
   
 	<!--
@@ -143,40 +145,44 @@
 		<Message Text="*                                           *" />
 		<Message Text="*********************************************" />
 	
-		<!--
-		  Tag Name = R + RevisionNumber + TargetEnvironment
-		-->
-		<!--
-		<CreateProperty Value="$(Branch)-$(TargetEnvironment)-R$(Revision)">
-		  <Output TaskParameter="Value" PropertyName="TagName"/>
-		</CreateProperty>
-		-->
+		<Message Text="Creating $(TempBase)\$(BuildName).zip from $(StagingLocation)" />
+		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\create-zip.ps1 -sourcePath &quot;$(StagingLocation)\*&quot;  -destinationPath &quot;$(TempBase)\$(BuildName).zip&quot;" />
+		
+		<Message Text="Creating tag $(BuildName)." />
+		<Exec Command="git tag $(BuildName) $(COMMIT_ID)" />
 
-		<!--
-		<CreateProperty Value="$(SVNBuildsFolder)$(TagName)">
-		  <Output TaskParameter="Value" PropertyName="BuildsUrl" />
-		</CreateProperty>
-		-->
-
-		<!--Message Text="Saving executables to: $(TagName)"/-->
-		<!--
-		  SvnClient is a wrapper for the svn command line.
-		  The import command line orders repository and file system path
-		  opposite of most other commands, so we have to do put the "wrong"
-		  values in RepositoryPath and LocalPath.
-		-->
-		<!--SvnClient RepositoryPath="$(BuildLocation)\staging"
-		  LocalPath="$(BuildsUrl)"
-		  Command="import"
-		  Message="Automatic build of GateKeeper Revision $(Revision) for the $(TargetEnvironment) environment."
-		/-->
+		<Message Text="Uploading $(BuildName).zip to GitHub" />
+		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\github-release.ps1 -tagname $(BuildName) -releaseName $(BuildName) -commitId $(COMMIT_ID) -IsPreRelease -releaseNotes \&quot;Automated build $(BuildName)\&quot; -artifactDirectory &quot;$(TempBase)&quot; -artifactFileName &quot;$(BuildName).zip&quot; -gitHubUsername $(GITHUB_USER) -gitHubRepository $(GITHUB_REPO)" />
 	</Target>
-  
+
+
+	<!-- This target validates properties that are expected to be passed into msbuild -->
+	<Target Name="ValidateProps">
+		<Error Condition=" '$(TargetEnvironment)'=='' "
+				Text=" Missing required property [TargetEnvironment]" />
+
+		<Error Condition=" '$(Branch)'=='' "
+				Text=" Missing required property [Branch]" />
+
+		<Error Condition=" '$(COMMIT_ID)'=='' "
+				Text=" Missing required property [COMMIT_ID]" />
+
+		<Error Condition=" '$(GITHUB_USER)'=='' "
+				Text=" Missing required property [GITHUB_USER]" />
+
+		<Error Condition=" '$(GITHUB_REPO)'=='' "
+				Text=" Missing required property [GITHUB_REPO]" />
+
+		<Error Condition=" '$(GITHUB_TOKEN)'=='' "
+				Text=" Missing required property [GITHUB_TOKEN]" />
+	</Target>
+
+	
 	<!--
 		The "main" target which defines the list and order of other
 		targets to be run.
 	-->
-	<Target Name="All">
+	<Target Name="All" DependsOnTargets="ValidateProps">
 		<CallTarget Targets="Build"/>
 		<CallTarget Targets="SaveExecutables"/>
 	</Target>
