@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Help"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Help"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
 
 	<!-- Import required targets and configuration items. -->
 	<Import Project="bin\MSBuild.Community.Tasks.Targets"/>
@@ -128,6 +128,11 @@
 
 
 	<Target Name="SaveExecutables">
+		<Message Text="Copying deployment scripts" />
+		<Copy	SourceFiles="$(SourceLocation)\tools\build\resources\gkDeploy.bat"		DestinationFolder="$(StagingLocation)"		OverwriteReadOnlyFiles="true" />
+		<Copy	SourceFiles="$(SourceLocation)\tools\build\resources\gkDeploy.ps1"		DestinationFolder="$(StagingLocation)"		OverwriteReadOnlyFiles="true" />
+		<Copy	SourceFiles="$(SourceLocation)\tools\build\resources\gkBackup.ps1"		DestinationFolder="$(StagingLocation)"		OverwriteReadOnlyFiles="true" />
+
 		<Message Text="Creating $(TempBase)\$(BuildName).zip from $(StagingLocation)" />
 		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\create-zip.ps1 -sourcePath &quot;$(StagingLocation)\*&quot;  -destinationPath &quot;$(TempBase)\$(BuildName).zip&quot;" />
 

@@ -7,18 +7,19 @@ $APPLICATION_LIST = @("Admin", "CDRPreviewWS", "WebSvc", "ProcMgr", "XSL", "DTD"
 $DEPLOY_BASE = "E:\Content\GateKeeper"
 
 function Main ($sourceLocation) {
-    if( -not $sourceLocation ) {
-        Write-Host ""
-        Write-Host -foregroundcolor "green" "You must specify the location of the CDE files to deploy."
-        Write-Host ""
-        exit
-    }
+	if( -not $sourceLocation ) {
+		Write-Host ""
+		Write-Host -foregroundcolor "green" "You must specify the location of the CDE files to deploy."
+		Write-Host ""
+		exit
+	}
 
-    ValidateLocation $sourceLocation
+	ValidateLocation $sourceLocation
 	Stop-Service "GateKeeper Process Manager"
-    Deploy $sourceLocation
+	Deploy $sourceLocation
 	Start-Service "GateKeeper Process Manager"
-    Write-Host -foregroundcolor 'green' "Deployment completed."
+	Write-Host -foregroundcolor 'green' "Code deployment completed."
+	Write-Host -foregroundcolor 'yellow' "Configuration files must be deployed manually."
 }
 
 
@@ -28,7 +29,7 @@ function Deploy ($sourceLocation) {
 
         $source = "$sourceLocation\$app"
 		$destination = "$DEPLOY_BASE\$app"
-		
+
 		Robocopy $source $destination /mir /xf *.config robots.txt *.pdb
     }
 
@@ -59,7 +60,7 @@ function ValidateLocation ($sourceLocation) {
     if( -not $exists ) {
         $errors = $errors + "Deployment base location $DEPLOY_BASE not found."
     } else {
-        # Check for per-site destinations.    
+        # Check for per-site destinations.
         foreach( $app in $APPLICATION_LIST ) {
 			$location = "$DEPLOY_BASE\$app"
 			$exists = Test-Path $location
