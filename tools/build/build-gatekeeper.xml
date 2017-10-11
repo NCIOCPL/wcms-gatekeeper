@@ -135,7 +135,7 @@
 		<Exec Command="git tag $(BuildName) $(COMMIT_ID)" />
 
 		<Message Text="Uploading $(BuildName).zip to GitHub" />
-		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\github-release.ps1 -tagname $(BuildName) -releaseName $(BuildName) -commitId $(COMMIT_ID) -IsPreRelease -releaseNotes \&quot;Automated build $(BuildName)\&quot; -artifactDirectory &quot;$(TempBase)&quot; -artifactFileName &quot;$(BuildName).zip&quot; -gitHubUsername $(GITHUB_USER) -gitHubRepository $(GITHUB_REPO)" />
+		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\github-release.ps1 -tagname $(BuildName) -releaseName $(BuildName) -commitId $(COMMIT_ID) -IsPreRelease -releaseNotes \&quot;Automated build $(BuildName)\&quot; -artifactDirectory &quot;$(TempBase)&quot; -artifactFileName &quot;$(BuildName).zip&quot; -gitHubUsername $(GH_ORGANIZATION_NAME) -gitHubRepository $(GH_REPO_NAME)" />
 	</Target>
 
 
@@ -157,11 +157,11 @@
 		<Error Condition=" '$(COMMIT_ID)'=='' "
 				Text=" Missing required property [COMMIT_ID]" />
 
-		<Error Condition=" '$(GITHUB_USER)'=='' "
-				Text=" Missing required property [GITHUB_USER]" />
+		<Error Condition=" '$(GH_ORGANIZATION_NAME)'=='' "
+				Text=" Missing required property [GH_ORGANIZATION_NAME]" />
 
-		<Error Condition=" '$(GITHUB_REPO)'=='' "
-				Text=" Missing required property [GITHUB_REPO]" />
+		<Error Condition=" '$(GH_REPO_NAME)'=='' "
+				Text=" Missing required property [GH_REPO_NAME]" />
 
 		<Error Condition=" '$(GITHUB_TOKEN)'=='' "
 				Text=" Missing required property [GITHUB_TOKEN]" />

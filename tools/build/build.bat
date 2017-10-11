@@ -24,14 +24,17 @@ IF "%GITHUB_TOKEN%"=="" set FAIL=True
 
 IF "%FAIL%" NEQ "" (
 	ECHO.
-	ECHO You must pass the branch and build environment names and to this script.
+	ECHO You must pass the branch and build environment names to this script.
+	ECHO.
 	ECHO USAGE:
 	ECHO 	c:\Build.bat ^<branch^> ^<environment^>
+	ECHO.
 	ECHO Additonally, the following environment variables must be set:
+	ECHO.
 	ECHO 	WORKSPACE - directory containing the source code.
-	ECHO	TEMP - Location for temporary files
-	ECHO	BUILD_NUMBER - Build number ^(automatically generated/set by Jenkins^)
-	ECHO	GITHUB_TOKEN - GitHub access token for the build user.
+	ECHO 	TEMP - Location for temporary files
+	ECHO 	BUILD_NUMBER - Build number ^(automatically generated/set by Jenkins^)
+	ECHO 	GITHUB_TOKEN - GitHub access token for the build user.
 	GOTO :EOF
 )
 
