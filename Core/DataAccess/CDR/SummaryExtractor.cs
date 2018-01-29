@@ -370,7 +370,7 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="summary"></param>
         private void ExtractTopLevelSections(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager, TargetedDevice device)
         {
-            string path = xPathManager.GetXPath(SummaryXPath.TopSection, device);
+            string path = "//Summary/SummarySection"; // xPathManager.GetXPath(SummaryXPath.TopSection, device);
 
             try
             {
@@ -437,7 +437,10 @@ namespace GateKeeper.DataAccess.CDR
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
                                 else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication.ToString()))
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.overview.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.overview);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.main.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.main);
                             }
 
                         }
