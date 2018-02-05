@@ -168,6 +168,7 @@ sharedconfig
 /Core/Security/*.eto
 
 # /Test Harnesses/GateKeeperTest/
+/Test Harnesses/GateKeeperTest/app.config
 /Test Harnesses/GateKeeperTest/[Bb]in
 /Test Harnesses/GateKeeperTest/obj
 /Test Harnesses/GateKeeperTest/[Dd]ebug
