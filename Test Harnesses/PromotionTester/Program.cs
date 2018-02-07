@@ -11,6 +11,9 @@ using GateKeeper.Common;
 using GateKeeper.DataAccess.GateKeeper;
 using System.Threading;
 using System.Configuration;
+using Newtonsoft.Json.Linq;
+using GateKeeper.DocumentObjects.Summary;
+
 namespace PromotionTester
 {
     public class Program
@@ -82,6 +85,13 @@ where:
                 }
 
                 RequestData data = DeserializeData(args[0]);
+
+
+                string splitDataFile = ConfigurationManager.AppSettings["summary-split-file-location"];
+                if (String.IsNullOrWhiteSpace(splitDataFile))
+                    throw new ConfigurationErrorsException("Required setting summary-split-file-location not set.");
+                SplitDataManager splitData = SplitDataManager.Create(splitDataFile);
+
 
                 foreach (ProcessActionType processActionType in promotions)
                 {

@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -76,6 +77,10 @@
     <ProjectReference Include="..\..\Core\DocumentManager\DocumentManager.csproj">
       <Project>{FE716DD2-A9A1-4253-AB75-7F27D9CC2C51}</Project>
       <Name>DocumentManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\DocumentObjects\DocumentObjects.csproj">
+      <Project>{BB780523-A6AA-466F-9D35-986D60AEB82D}</Project>
+      <Name>DocumentObjects</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\RequestManager\RequestManager.csproj">
       <Project>{899D3B57-B535-4899-8ED5-2BD900065555}</Project>
