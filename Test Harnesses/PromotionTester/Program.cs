@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using GKManagers;
-using GKManagers.BusinessObjects;
-using NCI.WCM.CMSManager.CMS;
-using GateKeeper.Common;
-using GateKeeper.DataAccess.GateKeeper;
 using System.Threading;
 using System.Configuration;
-using Newtonsoft.Json.Linq;
+using System.Xml.Serialization;
+
+using GKManagers;
+using GKManagers.BusinessObjects;
+using GateKeeper.Common;
+using GateKeeper.DataAccess.GateKeeper;
 using GateKeeper.DocumentObjects.Summary;
+using NCI.WCM.CMSManager.CMS;
 
 namespace PromotionTester
 {
@@ -33,12 +30,12 @@ where:
         {
             try
             {
-                if (ConfigurationSettings.AppSettings["MultiThread"] == "True")
+                if (ConfigurationManager.AppSettings["MultiThread"] == "True")
                 {
                     //Process documents using multi thread.
                     RunUsingThreads(args);
                 }
-                else if (ConfigurationSettings.AppSettings["SingleThread"] == "True")
+                else if (ConfigurationManager.AppSettings["SingleThread"] == "True")
                 {
 
                     //Document processing as a single thread
