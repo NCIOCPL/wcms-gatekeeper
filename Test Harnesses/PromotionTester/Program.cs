@@ -85,21 +85,20 @@ where:
 
 
                 string splitDataFile = ConfigurationManager.AppSettings["summary-split-file-location"];
-                if (String.IsNullOrWhiteSpace(splitDataFile))
-                    throw new ConfigurationErrorsException("Required setting summary-split-file-location not set.");
-                SplitDataManager splitData = SplitDataManager.Create(splitDataFile);
-
-
-                foreach (ProcessActionType processActionType in promotions)
+                using (SplitDataManager splitData = SplitDataManager.Create(splitDataFile))
                 {
-                    ProcessActionType processAction = processActionType;
 
-                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+                    foreach (ProcessActionType processActionType in promotions)
+                    {
+                        ProcessActionType processAction = processActionType;
 
-                    // Instantiate a promoter and go to town.
-                    DocumentPromoterBase promoter =
-                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                    promoter.Promote(xPathManager);
+                        DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+                        // Instantiate a promoter and go to town.
+                        DocumentPromoterBase promoter =
+                            DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                        promoter.Promote(xPathManager);
+                    }
                 }
 
                 CMSController.CMSPublishingTarget? publishingFlag = null;
