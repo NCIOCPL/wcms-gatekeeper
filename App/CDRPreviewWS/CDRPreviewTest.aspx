@@ -15,12 +15,10 @@
     <form id="form1" runat="server">
         <div>
         <asp:Panel ID="Panel1" runat="server" Height="125px" Width="500px">
-            RequestID:&nbsp;
-            <asp:TextBox ID="requestID" runat="server"></asp:TextBox>
-            &nbsp; &nbsp; &nbsp;&nbsp;<br />
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br />
-            CDRID: &nbsp; &nbsp; &nbsp;<asp:TextBox ID="cdrID" runat="server"></asp:TextBox>
-            &nbsp; &nbsp; &nbsp; DocumentType:
+            <p>RequestID:&nbsp;
+            <asp:TextBox ID="requestID" runat="server"></asp:TextBox></p>
+            <p>CDRID: &nbsp; &nbsp; &nbsp;<asp:TextBox ID="cdrID" runat="server"></asp:TextBox></p>
+            <p>DocumentType:
             <asp:DropDownList ID="dropDownList" runat="server">
                 <asp:ListItem>Summary</asp:ListItem>
                 <asp:ListItem Value="Protocol_HP">Protocol_HP</asp:ListItem>
@@ -29,7 +27,7 @@
                 <asp:ListItem>GlossaryTerm</asp:ListItem>
                 <asp:ListItem>DrugInfoSummary</asp:ListItem>
                 <asp:ListItem>GeneticsProfessional</asp:ListItem>
-            </asp:DropDownList><br />
+            </asp:DropDownList></p>
             <br />
             &nbsp;<asp:Button ID="btnPreview" runat="server" Height="30px" OnClick="btnPreview_Click"
                 Style="position: static" Text="Preview" Width="126px" />
