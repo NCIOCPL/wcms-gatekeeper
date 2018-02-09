@@ -78,30 +78,31 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <returns>A SplitDataManager object.</returns>
         static public SplitDataManager Create(string dataFile)
         {
-            SplitDataManager instance = new SplitDataManager();
+            // Prevent old data from being used by explicitly overwriting theInstance.
+            theInstance = new SplitDataManager();
 
             try
             {
                 if (!String.IsNullOrWhiteSpace(dataFile))
                 {
                     JArray arr = JArray.Parse(File.ReadAllText(dataFile));
-                    instance.splitConfigs = arr.ToObject<IList<SplitData>>();
+                    theInstance.splitConfigs = arr.ToObject<IList<SplitData>>();
                 }
                 else
                 {
                     // Log that the configuration file is not specified.
                     Log.CreateError(typeof(SplitDataManager), "Create", "Summary split metadata datafile not specified.");
-                    instance.splitConfigs = new List<SplitData>();
+                    theInstance.splitConfigs = new List<SplitData>();
                 }
             }
             catch (Exception)
             {
                 // Log any errors, but allow execution to consider.
                 Log.CreateError(typeof(SplitDataManager), "Create", "Error loading summary split metadata file.");
-                instance.splitConfigs = new List<SplitData>();
+                theInstance.splitConfigs = new List<SplitData>();
             }
 
-            return instance;
+            return theInstance;
         }
     }
 }
