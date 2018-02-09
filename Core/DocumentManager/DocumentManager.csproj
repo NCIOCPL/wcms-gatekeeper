@@ -87,6 +87,7 @@
     <Compile Include="DocumentTypeTracker.cs" />
     <Compile Include="DocumentTypeFlag.cs" />
     <Compile Include="Configuration\NamedSingleValueElement.cs" />
+    <Compile Include="Preprocessors\SummaryPreprocessor.cs" />
     <Compile Include="Processors\ProcessingTarget.cs" />
     <Compile Include="Processors\Processor.cs" />
     <Compile Include="Processors\ProcessorLoader.cs" />

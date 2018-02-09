@@ -12,6 +12,7 @@ using GateKeeper.DataAccess.CancerGov;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
 using GateKeeper.ContentRendering;
+using GKManagers.Preprocessors;
 using GKManagers.Processors;
 using GKManagers.BusinessObjects;
 using GKManagers.CMSDocumentProcessing;
@@ -43,6 +44,10 @@ namespace GKManagers
                                HistoryEntryWriter informationWriter)
         {
             informationWriter("Start to promote summary document to the staging database.");
+
+            // Apply any pre-processing changes to the XML
+            SummaryPreprocessor preprocessor = new SummaryPreprocessor();
+            preprocessor.Preprocess( DataBlock.DocumentData );
 
             ProcessorPool pool = ProcessorLoader.Load();
             ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
