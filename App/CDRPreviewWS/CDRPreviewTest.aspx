@@ -28,9 +28,7 @@
                 <asp:ListItem>DrugInfoSummary</asp:ListItem>
                 <asp:ListItem>GeneticsProfessional</asp:ListItem>
             </asp:DropDownList></p>
-            <br />
-            &nbsp;<asp:Button ID="btnPreview" runat="server" Height="30px" OnClick="btnPreview_Click"
-                Style="position: static" Text="Preview" Width="126px" />
+            <asp:Button ID="btnPreview" runat="server" Height="30px" OnClick="btnPreview_Click" Style="position: static" Text="Preview" Width="126px" />
       </asp:Panel>
     </div>
 
