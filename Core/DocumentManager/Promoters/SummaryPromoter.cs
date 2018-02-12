@@ -47,7 +47,7 @@ namespace GKManagers
 
             // Apply any pre-processing changes to the XML
             SummaryPreprocessor preprocessor = new SummaryPreprocessor();
-            preprocessor.Preprocess( DataBlock.DocumentData );
+            preprocessor.Preprocess(DataBlock.DocumentData, warningWriter, informationWriter);
 
             ProcessorPool pool = ProcessorLoader.Load();
             ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
