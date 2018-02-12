@@ -29,8 +29,9 @@ namespace GKManagers.Preprocessors
 
             // Get Split data. (Data is loaded prior to document processing.)
             ISplitDataManager splitData = SplitDataManager.Instance;
-            Validate(document, splitData);
 
+            Validate(document, splitData);
+            // Rewrite SummaryRef URL attributes.
         }
 
         public void Validate(XmlDocument document, ISplitDataManager splitData)
@@ -39,6 +40,19 @@ namespace GKManagers.Preprocessors
             if (root.Name.CompareTo(SUMMARY_TYPE) != 0)
                 throw new ValidationException(string.Format("Expected document type Summary, found '{0}' instead.", root.Name));
 
+            // Check whether we need to do anything with this document.
+            string idString = document.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
+            int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
+
+            if (splitData.SummaryIsSplit(cdrid))
+            {
+                // Validation for summaries in the split.
+                // Validate top-level sections.
+                // Validate that sections ID'ed as general sections exist.
+            }
+
+            // Validation for all summaries.
+            // Validate that SummaryRefs to split summaries exist.
         }
     }
 }
