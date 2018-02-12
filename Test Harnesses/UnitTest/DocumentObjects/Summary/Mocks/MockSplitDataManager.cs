@@ -10,7 +10,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 {
     class MockSplitDataManager : ISplitDataManager
     {
-        public IList<SplitData> splitConfigs = null;
+        public bool MockSummaryIsSplit { get; set; }
 
         public MockSplitDataManager() { }
 
@@ -21,7 +21,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         /// <returns>True if the summary is supposed to be split, false otherwise.</returns>
         public bool SummaryIsSplit(int summaryID)
         {
-            throw new NotImplementedException();
+            return MockSummaryIsSplit;
         }
 
     }

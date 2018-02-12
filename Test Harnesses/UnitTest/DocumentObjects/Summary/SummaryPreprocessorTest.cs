@@ -43,66 +43,71 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 </GlossaryTerm>
 ";
 
-        MockSplitDataManager MatchingSplitData; // Split manager which matches VALID_SUMMARY
-        MockSplitDataManager UnmatchedSplitData;// Split manager which does NOT matches VALID_SUMMARY
-        MockSplitDataManager incorrectGISplitData;// Split manager with a non-existant section identified as General Information.
+        SplitDataManager MatchingSplitData; // Split manager which matches VALID_SUMMARY
+        SplitDataManager UnmatchedSplitData;// Split manager which does NOT matches VALID_SUMMARY
+        SplitDataManager incorrectGISplitData;// Split manager with a non-existant section identified as General Information.
 
         [TestFixtureSetUp]
         public void Setup()
         {
             // Split manager which matches VALID_SUMMARY
-            MatchingSplitData = new MockSplitDataManager();
-            MatchingSplitData.splitConfigs = new List<SplitData>();
-            MatchingSplitData.splitConfigs.Add(
-                new SplitData()
-                {
-                    CdrId = 1,
-                    PageSections = new string[] { "_1", "_2", "_AboutThis_1" },
-                    GeneralSections = new string[] { "_1" },
-                    LinkedSections= new string[] { "_1", "_90" },
-                    LongDescription = "Long description",
-                    LongTitle = "Long title",
-                    ShortTitle = "Short title",
-                    MetaKeywords = "word1 word2",
-                    Url = "Not sure what goes here"
-                }
-            );
+            MatchingSplitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split manager which matches VALID_SUMMARY"",
 
-            // Split manager which does NOT matches VALID_SUMMARY
-            UnmatchedSplitData = new MockSplitDataManager();
-            UnmatchedSplitData.splitConfigs = new List<SplitData>();
-            UnmatchedSplitData.splitConfigs.Add(
-                new SplitData()
-                {
-                    CdrId = 2,
-                    PageSections = new string[] { "_1", "_2", "_AboutThis_1" },
-                    GeneralSections = new string[] { "_1" },
-                    LinkedSections = new string[] { "_1", "_90" },
-                    LongDescription = "Long description",
-                    LongTitle = "Long title",
-                    ShortTitle = "Short title",
-                    MetaKeywords = "word1 word2",
-                    Url = "Not sure what goes here"
-                }
-            );
+        ""cdrid"": ""1"",
+        ""url"": ""Not sure what goes here"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""The long title for the pilot page"",
+		""short-title"": ""The short title for the summary's pilot page"",
+		""long-description"": ""The pilot page's long description"",
+		""meta-keywords"": ""keyword1 keyword2""
+	}
+]    
+");
+
+            // Split manager which does NOT match VALID_SUMMARY
+            UnmatchedSplitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split manager which does NOT match VALID_SUMMARY"",
+
+        ""cdrid"": ""2"",
+        ""url"": ""Not sure what goes here"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""The long title for the pilot page"",
+		""short-title"": ""The short title for the summary's pilot page"",
+		""long-description"": ""The pilot page's long description"",
+		""meta-keywords"": ""keyword1 keyword2""
+	}
+]    
+");
+
 
             // Split manager with a non-existant section identified as General Information.
-            incorrectGISplitData = new MockSplitDataManager();
-            incorrectGISplitData.splitConfigs = new List<SplitData>();
-            incorrectGISplitData.splitConfigs.Add(
-                new SplitData()
-                {
-                    CdrId = 2,
-                    PageSections = new string[] { "_1", "_2", "_AboutThis_1" },
-                    GeneralSections = new string[] { "_7" }, // Non-existant
-                    LinkedSections = new string[] { "_1", "_90" },
-                    LongDescription = "Long description",
-                    LongTitle = "Long title",
-                    ShortTitle = "Short title",
-                    MetaKeywords = "word1 word2",
-                    Url = "Not sure what goes here"
-                }
-            );
+            incorrectGISplitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split manager with a non-existant section identified as General Information."",
+
+        ""cdrid"": ""1"",
+        ""url"": ""Not sure what goes here"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_7""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""The long title for the pilot page"",
+		""short-title"": ""The short title for the summary's pilot page"",
+		""long-description"": ""The pilot page's long description"",
+		""meta-keywords"": ""keyword1 keyword2""
+	}
+]    
+");
+
 
         }
 

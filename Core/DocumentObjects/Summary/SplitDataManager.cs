@@ -78,15 +78,11 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <returns>A SplitDataManager object.</returns>
         static public SplitDataManager Create(string dataFile)
         {
-            // Prevent old data from being used by explicitly overwriting theInstance.
-            theInstance = new SplitDataManager();
-
             try
             {
                 if (!String.IsNullOrWhiteSpace(dataFile))
                 {
-                    JArray arr = JArray.Parse(File.ReadAllText(dataFile));
-                    theInstance.splitConfigs = arr.ToObject<IList<SplitData>>();
+                    theInstance = CreateFromString(File.ReadAllText(dataFile));
                 }
                 else
                 {
@@ -99,6 +95,40 @@ namespace GateKeeper.DocumentObjects.Summary
             {
                 // Log any errors, but allow execution to consider.
                 Log.CreateError(typeof(SplitDataManager), "Create", "Error loading summary split metadata file.");
+                theInstance.splitConfigs = new List<SplitData>();
+            }
+
+            return theInstance;
+        }
+
+        /// <summary>
+        /// Creates an instance of the SplitDataManager class.
+        /// </summary>
+        /// <param name="json">String containing the summary split metadata.</param>
+        /// <returns>A SplitDataManager object.</returns>
+        static public SplitDataManager CreateFromString(string json)
+        {
+            // Prevent old data from being used by explicitly overwriting theInstance.
+            theInstance = new SplitDataManager();
+
+            try
+            {
+                if (!String.IsNullOrWhiteSpace(json))
+                {
+                    JArray arr = JArray.Parse(json);
+                    theInstance.splitConfigs = arr.ToObject<IList<SplitData>>();
+                }
+                else
+                {
+                    // Log that the configuration data is missing.
+                    Log.CreateError(typeof(SplitDataManager), "CreateFromString", "Summary split metadata string is empty.");
+                    theInstance.splitConfigs = new List<SplitData>();
+                }
+            }
+            catch (Exception)
+            {
+                // Log any errors, but allow execution to consider.
+                Log.CreateError(typeof(SplitDataManager), "CreateFromString", "Error parsing summary split metadata text.");
                 theInstance.splitConfigs = new List<SplitData>();
             }
 
