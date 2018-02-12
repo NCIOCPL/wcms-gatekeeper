@@ -84,6 +84,7 @@
     <Compile Include="CMSManager\PSFolder.cs" />
     <Compile Include="DocumentObjects\GlossaryTerm\GlossaryTermMetadataDeserialize.cs" />
     <Compile Include="DocumentObjects\Summary\Mocks\MockSplitDataManager.cs" />
+    <Compile Include="DocumentObjects\Summary\SplitDataManagerTest.cs" />
     <Compile Include="DocumentObjects\Summary\SummaryPreprocessorTest.cs" />
     <Compile Include="Extract\GlossaryExtract.cs" />
     <Compile Include="Extract\SummaryConditionalExtract.cs" />

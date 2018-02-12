@@ -142,7 +142,13 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <returns>True if the summary is supposed to be split, false otherwise.</returns>
         public bool SummaryIsSplit(int summaryID)
         {
-            throw new NotImplementedException();
+            foreach (SplitData item in splitConfigs)
+            {
+                if (item.CdrId == summaryID)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
