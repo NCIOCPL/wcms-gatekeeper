@@ -17,7 +17,7 @@ namespace GateKeeper.DocumentObjects.Summary
     /// in existence, and accessible from scopes other than where it was instantiated. But, unlike
     /// a traditional singleton, the object is explicitly disposed once it's no longer needed.
     /// </summary>
-    public class SplitDataManager : IDisposable
+    public class SplitDataManager : ISplitDataManager, IDisposable
     {
         // Logger
         static DocumentLogBuilder Log = new DocumentLogBuilder();
@@ -103,6 +103,16 @@ namespace GateKeeper.DocumentObjects.Summary
             }
 
             return theInstance;
+        }
+
+        /// <summary>
+        /// Checks whether summaryID exists in the collection of summary data.
+        /// </summary>
+        /// <param name="summaryID"></param>
+        /// <returns>True if the summary is supposed to be split, false otherwise.</returns>
+        public bool SummaryIsSplit(int summaryID)
+        {
+            throw new NotImplementedException();
         }
     }
 }

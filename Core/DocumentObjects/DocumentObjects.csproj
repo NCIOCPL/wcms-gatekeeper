@@ -111,6 +111,7 @@
     <Compile Include="GlossaryTerm\GlossaryTermDocument.cs" />
     <Compile Include="Media\MediaDocument.cs" />
     <Compile Include="DocumentHelper.cs" />
+    <Compile Include="Summary\ISplitDataManager.cs" />
     <Compile Include="Summary\PermanentLink.cs" />
     <Compile Include="Summary\SplitData.cs" />
     <Compile Include="Summary\SplitDataManager.cs" />
