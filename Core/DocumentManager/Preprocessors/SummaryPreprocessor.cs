@@ -34,7 +34,7 @@ namespace GKManagers.Preprocessors
             // Rewrite SummaryRef URL attributes.
         }
 
-        public void Validate(XmlDocument document, ISplitDataManager splitData)
+        public void Validate(XmlDocument document, ISplitDataManager summaryData)
         {
             XmlElement root = document.DocumentElement;
             if (root.Name.CompareTo(SUMMARY_TYPE) != 0)
@@ -44,15 +44,14 @@ namespace GKManagers.Preprocessors
             string idString = document.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
             int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
 
-            if (splitData.SummaryIsSplit(cdrid))
+            if (summaryData.SummaryIsSplit(cdrid))
             {
+                SplitData split = summaryData.GetSplitData(cdrid);
                 // Validation for summaries in the split.
                 // Validate top-level sections.
                 // Validate that sections ID'ed as general sections exist.
             }
-
-            // Validation for all summaries.
-            // Validate that SummaryRefs to split summaries exist.
         }
+
     }
 }

@@ -18,5 +18,12 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <param name="summaryID"></param>
         /// <returns>True if the summary is supposed to be split, false otherwise.</returns>
         bool SummaryIsSplit(int summaryID);
+
+        /// <summary>
+        /// Retrieves a SplitData object containing information about how to split a given summary.
+        /// </summary>
+        /// <param name="summaryID"></param>
+        /// <returns>SplitData object. NULL if summaryID is not found.</returns>
+        SplitData GetSplitData(int summaryID);
     }
 }

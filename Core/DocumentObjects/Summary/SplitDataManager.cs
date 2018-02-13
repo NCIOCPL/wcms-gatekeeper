@@ -23,7 +23,7 @@ namespace GateKeeper.DocumentObjects.Summary
         static DocumentLogBuilder Log = new DocumentLogBuilder();
 
         // Internal collection of split metadata.
-        private IList<SplitData> splitConfigs = null;
+        private Dictionary<int, SplitData> splitConfigs = new Dictionary<int, SplitData>();
 
         // The one-and-only instance of the SplitDataManager object.
         static SplitDataManager theInstance = null;
@@ -88,14 +88,12 @@ namespace GateKeeper.DocumentObjects.Summary
                 {
                     // Log that the configuration file is not specified.
                     Log.CreateError(typeof(SplitDataManager), "Create", "Summary split metadata datafile not specified.");
-                    theInstance.splitConfigs = new List<SplitData>();
                 }
             }
             catch (Exception)
             {
                 // Log any errors, but allow execution to consider.
                 Log.CreateError(typeof(SplitDataManager), "Create", "Error loading summary split metadata file.");
-                theInstance.splitConfigs = new List<SplitData>();
             }
 
             return theInstance;
@@ -116,20 +114,25 @@ namespace GateKeeper.DocumentObjects.Summary
                 if (!String.IsNullOrWhiteSpace(json))
                 {
                     JArray arr = JArray.Parse(json);
-                    theInstance.splitConfigs = arr.ToObject<IList<SplitData>>();
+                    IList <SplitData> configList = arr.ToObject<IList<SplitData>>();
+                    foreach(SplitData item in configList)
+                    {
+                        if (!Instance.splitConfigs.ContainsKey(item.CdrId))
+                            Instance.splitConfigs.Add(item.CdrId, item);
+                        else
+                            Log.CreateError(typeof(SplitDataManager), "CreateFromString", String.Format("Duplicate document ID found '{0}'.", item.CdrId));
+                    }
                 }
                 else
                 {
                     // Log that the configuration data is missing.
                     Log.CreateError(typeof(SplitDataManager), "CreateFromString", "Summary split metadata string is empty.");
-                    theInstance.splitConfigs = new List<SplitData>();
                 }
             }
             catch (Exception)
             {
                 // Log any errors, but allow execution to consider.
                 Log.CreateError(typeof(SplitDataManager), "CreateFromString", "Error parsing summary split metadata text.");
-                theInstance.splitConfigs = new List<SplitData>();
             }
 
             return theInstance;
@@ -142,13 +145,21 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <returns>True if the summary is supposed to be split, false otherwise.</returns>
         public bool SummaryIsSplit(int summaryID)
         {
-            foreach (SplitData item in splitConfigs)
-            {
-                if (item.CdrId == summaryID)
-                    return true;
-            }
-
-            return false;
+            return splitConfigs.ContainsKey(summaryID);
         }
+
+        /// <summary>
+        /// Retrieves a SplitData object containing information about how to split a given summary.
+        /// </summary>
+        /// <param name="summaryID"></param>
+        /// <returns>SplitData object. NULL if summaryID is not found.</returns>
+        public SplitData GetSplitData(int summaryID)
+        {
+            if (splitConfigs.ContainsKey(summaryID))
+                return splitConfigs[summaryID];
+            else
+                return null;
+        }
+
     }
 }
