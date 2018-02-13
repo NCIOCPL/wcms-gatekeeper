@@ -187,23 +187,13 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(VALID_SUMMARY);
 
-            // Split data with top-level sections matching VALID_SUMMARY
-            SplitData split = new SplitData() {
-                CdrId = 1,
-                PageSections = new string[]{"_1", "_2", "_AboutThis_1"},
-                Url = "n/a",
-                GeneralSections = new string[] {"n/a", "n/a", "n/a" },
-                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
-                LongTitle = "n/a",
-                ShortTitle = "n/a",
-                LongDescription = "n/a",
-                MetaKeywords = "n/a"
-            };
+            // List of top-level sections appearing in VALID_SUMMARY
+            String[] pageSections = { "_1", "_2", "_AboutThis_1" };
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
             Assert.DoesNotThrow(
                 () => {
-                    processor.ValidateTopLevelSections(doc, split);
+                    processor.ValidateTopLevelSections(doc, pageSections);
                 });
         }
 
@@ -216,24 +206,13 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(VALID_SUMMARY);
 
-            // Split data with top-level sections that are NOT in VALID_SUMMARY
-            SplitData split = new SplitData()
-            {
-                CdrId = 1,
-                PageSections = new string[] { "_1", "_2", "_3", "_AboutThis_1" },
-                Url = "n/a",
-                GeneralSections = new string[] { "n/a", "n/a", "n/a" },
-                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
-                LongTitle = "n/a",
-                ShortTitle = "n/a",
-                LongDescription = "n/a",
-                MetaKeywords = "n/a"
-            };
+            // Section _91 is not a top-level section in VALID_SUMMARY
+            String[] pageSections = { "_1", "_2", "_91", "_AboutThis_1" };
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
             Assert.Throws<ValidationException>
                 (() => {
-                    processor.ValidateTopLevelSections(doc, split);
+                    processor.ValidateTopLevelSections(doc, pageSections);
                 });
         }
 
@@ -246,24 +225,13 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(VALID_SUMMARY);
 
-            // Split data that doesn't list all the top-level sections in VALID_SUMMARY.
-            SplitData split = new SplitData()
-            {
-                CdrId = 1,
-                PageSections = new string[] { "_1", "_2", "_3", "_AboutThis_1" },
-                Url = "n/a",
-                GeneralSections = new string[] { "n/a", "n/a", "n/a" },
-                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
-                LongTitle = "n/a",
-                ShortTitle = "n/a",
-                LongDescription = "n/a",
-                MetaKeywords = "n/a"
-            };
+            // Section _2 is also a top-level section in VALID_SUMMARY.
+            String[] pageSections = { "_1", "_AboutThis_1" };
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
             Assert.Throws<ValidationException>
                 (() => {
-                    processor.ValidateTopLevelSections(doc, split);
+                    processor.ValidateTopLevelSections(doc, pageSections);
                 });
         }
     }

@@ -85,7 +85,7 @@
     <Compile Include="DocumentObjects\GlossaryTerm\GlossaryTermMetadataDeserialize.cs" />
     <Compile Include="DocumentObjects\Summary\Mocks\MockSplitDataManager.cs" />
     <Compile Include="DocumentObjects\Summary\SplitDataManagerTest.cs" />
-    <Compile Include="DocumentObjects\Summary\SummaryPreprocessorTest.cs" />
+    <Compile Include="DocumentObjects\Summary\SummaryPreprocessorValidateTest.cs" />
     <Compile Include="Extract\GlossaryExtract.cs" />
     <Compile Include="Extract\SummaryConditionalExtract.cs" />
     <Compile Include="Extract\PermanentLink.cs" />
