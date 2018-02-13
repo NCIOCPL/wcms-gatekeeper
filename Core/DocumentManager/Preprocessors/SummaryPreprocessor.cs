@@ -57,6 +57,7 @@ namespace GKManagers.Preprocessors
                 ValidateTopLevelSections(document, split.PageSections);
 
                 // Validate that sections ID'ed as general sections exist.
+                ValidateGeneralInformationSections(document, split.GeneralSections);
             }
 
             // Validation that applies to any summary goes here.
@@ -76,12 +77,12 @@ namespace GKManagers.Preprocessors
 
             // Build hash set for actual sections.
             IEnumerable<string> foundSections = GetTopSections(summary);
-            HashSet<string> actualSections = new HashSet<string>(foundSections);
+            HashSet<string> actualLookup = new HashSet<string>(foundSections);
 
             // Are all expected sections present?
             foreach(string section in expectedSections)
             {
-                if (!actualSections.Contains(section))
+                if (!actualLookup.Contains(section))
                     throw new ValidationException(String.Format("Expected page-level section '{0}' was not found in the summary.", section));
             }
 
@@ -90,6 +91,28 @@ namespace GKManagers.Preprocessors
             {
                 if (!expectedLookup.Contains(section))
                     throw new ValidationException(String.Format("Page-level section '{0}' was found in the expected list.", section));
+            }
+        }
+
+        /// <summary>
+        /// Verify that all sections identifed as General Information sections are also top-level sections.
+        /// </summary>
+        /// <param name="summary"></param>
+        /// <param name="expectedSections"></param>
+        public void ValidateGeneralInformationSections(XmlDocument summary, string[] expectedSections)
+        {
+            // Build hash set for expected sections.
+            HashSet<string> expectedLookup = new HashSet<string>(expectedSections);
+
+            // Build hash set for actual sections.
+            IEnumerable<string> foundSections = GetTopSections(summary);
+            HashSet<string> actualLookup = new HashSet<string>(foundSections);
+
+            // Are all expected sections present?
+            foreach (string section in expectedSections)
+            {
+                if (!actualLookup.Contains(section))
+                    throw new ValidationException(String.Format("General Information '{0}' was not a page-level section.", section));
             }
         }
 

@@ -166,19 +166,6 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
 
         /// <summary>
-        /// Test that processing fails for split data with a non-existant section identified as General Information.
-        /// </summary>
-        [Test]
-        public void FailNonExistantGISection()
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(VALID_SUMMARY);
-            ISplitDataManager splitMgr = UnmatchedSplitData;
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.Throws<ValidationException>(() => { processor.Validate(doc, splitMgr); });
-        }
-
-        /// <summary>
         /// Test that the validator succeeds when all top-level sections are correctly identified.
         /// </summary>
         [Test]
@@ -234,5 +221,42 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
                     processor.ValidateTopLevelSections(doc, pageSections);
                 });
         }
+
+
+        /// <summary>
+        /// Test that validation succeeds for top-level sections that are identified as General Information sections.
+        /// </summary>
+        /// <param name="sectionID">A section which is NOT a top-level section in VALID_SUMMARY</param>
+        [TestCase("_1")]
+        [TestCase("_2")]
+        public void VerifyExistingGISection(string sectionID)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(VALID_SUMMARY);
+
+            // Section _7 is NOT a top-level section
+            String[] sectionList = new string[] { sectionID };
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            Assert.DoesNotThrow(() => { processor.ValidateGeneralInformationSections(doc, sectionList); });
+        }
+
+
+        /// <summary>
+        /// Test that validation fails sections that are identified as General Information sections, but aren't top-level sections.
+        /// </summary>
+        /// <param name="sectionID">A section which is NOT a top-level section in VALID_SUMMARY</param>
+        [TestCase("_7")]    // Non-existant section
+        [TestCase("_91")]   // Section exists, but is not top-level.
+        public void FailNonExistantGISection(string sectionID)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(VALID_SUMMARY);
+
+            // Section _7 is NOT a top-level section
+            String[] sectionList = new string[]{ "_1", sectionID };
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            Assert.Throws<ValidationException>(() => { processor.ValidateGeneralInformationSections(doc, sectionList); });
+        }
+
     }
 }
