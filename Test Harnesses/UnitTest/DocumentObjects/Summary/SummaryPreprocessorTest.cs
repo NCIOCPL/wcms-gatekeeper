@@ -177,5 +177,94 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             SummaryPreprocessor processor = new SummaryPreprocessor();
             Assert.Throws<ValidationException>(() => { processor.Validate(doc, splitMgr); });
         }
+
+        /// <summary>
+        /// Test that the validator succeeds when all top-level sections are correctly identified.
+        /// </summary>
+        [Test]
+        public void TopLevelSectionsExist()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(VALID_SUMMARY);
+
+            // Split data with top-level sections matching VALID_SUMMARY
+            SplitData split = new SplitData() {
+                CdrId = 1,
+                PageSections = new string[]{"_1", "_2", "_AboutThis_1"},
+                Url = "n/a",
+                GeneralSections = new string[] {"n/a", "n/a", "n/a" },
+                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
+                LongTitle = "n/a",
+                ShortTitle = "n/a",
+                LongDescription = "n/a",
+                MetaKeywords = "n/a"
+            };
+
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            Assert.DoesNotThrow(
+                () => {
+                    processor.ValidateTopLevelSections(doc, split);
+                });
+        }
+
+        /// <summary>
+        /// Verify that validation fails when an identified top-level section is not present.
+        /// </summary>
+        [Test]
+        public void FailMissingTopLevelSections()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(VALID_SUMMARY);
+
+            // Split data with top-level sections that are NOT in VALID_SUMMARY
+            SplitData split = new SplitData()
+            {
+                CdrId = 1,
+                PageSections = new string[] { "_1", "_2", "_3", "_AboutThis_1" },
+                Url = "n/a",
+                GeneralSections = new string[] { "n/a", "n/a", "n/a" },
+                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
+                LongTitle = "n/a",
+                ShortTitle = "n/a",
+                LongDescription = "n/a",
+                MetaKeywords = "n/a"
+            };
+
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            Assert.Throws<ValidationException>
+                (() => {
+                    processor.ValidateTopLevelSections(doc, split);
+                });
+        }
+
+        /// <summary>
+        /// Verify that validation fails when a top-level section is not present in the list.
+        /// </summary>
+        [Test]
+        public void FailExtraTopLevelSections()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(VALID_SUMMARY);
+
+            // Split data that doesn't list all the top-level sections in VALID_SUMMARY.
+            SplitData split = new SplitData()
+            {
+                CdrId = 1,
+                PageSections = new string[] { "_1", "_2", "_3", "_AboutThis_1" },
+                Url = "n/a",
+                GeneralSections = new string[] { "n/a", "n/a", "n/a" },
+                LinkedSections = new string[] { "n/a", "n/a", "n/a" },
+                LongTitle = "n/a",
+                ShortTitle = "n/a",
+                LongDescription = "n/a",
+                MetaKeywords = "n/a"
+            };
+
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            Assert.Throws<ValidationException>
+                (() => {
+                    processor.ValidateTopLevelSections(doc, split);
+                });
+        }
     }
 }

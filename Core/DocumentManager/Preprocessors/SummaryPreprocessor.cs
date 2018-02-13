@@ -48,9 +48,20 @@ namespace GKManagers.Preprocessors
             {
                 SplitData split = summaryData.GetSplitData(cdrid);
                 // Validation for summaries in the split.
-                // Validate top-level sections.
+
+                // Verify the top-level sections are identified correctly.
+                ValidateTopLevelSections(document, split);
+
                 // Validate that sections ID'ed as general sections exist.
             }
+
+            // Validation that applies to any summary goes here.
+            // Is there any?
+        }
+
+        public void ValidateTopLevelSections(XmlDocument document, SplitData splitData)
+        {
+            throw new NotImplementedException();
         }
 
     }
