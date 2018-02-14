@@ -38,30 +38,33 @@ namespace GKManagers.Preprocessors
             // Rewrite SummaryRef URL attributes.
         }
 
-        public void Validate(XmlDocument document, ISplitDataManager summaryData)
+        public void Validate(XmlDocument summary, ISplitDataManager summaryData)
         {
-            XmlElement root = document.DocumentElement;
+            XmlElement root = summary.DocumentElement;
             if (root.Name.CompareTo(SUMMARY_TYPE) != 0)
                 throw new ValidationException(string.Format("Expected document type Summary, found '{0}' instead.", root.Name));
 
             // Check whether we need to do anything with this document.
-            string idString = document.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
+            string idString = summary.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
             int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
 
+            // Validation for summaries appearing in the pilot.
             if (summaryData.SummaryIsSplit(cdrid))
             {
                 SplitData split = summaryData.GetSplitData(cdrid);
-                // Validation for summaries in the split.
-
+                
                 // Verify the top-level sections are identified correctly.
-                ValidateTopLevelSections(document, split.PageSections);
+                ValidateTopLevelSections(summary, split.PageSections);
 
                 // Validate that sections ID'ed as general sections exist.
-                ValidateGeneralInformationSections(document, split.GeneralSections);
+                ValidateGeneralInformationSections(summary, split.GeneralSections);
             }
 
             // Validation that applies to any summary goes here.
-            // Is there any?
+
+            // If a SummaryRef references a piloted Summary, verify that the
+            // section appears in the piloted Summary's linked sections list.
+            ValidateOutgoingSummaryRefs(summary, summaryData);
         }
 
         /// <summary>
@@ -140,5 +143,9 @@ namespace GKManagers.Preprocessors
             return foundSections;
         }
 
+        public void ValidateOutgoingSummaryRefs(XmlDocument summary, ISplitDataManager splitData)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
