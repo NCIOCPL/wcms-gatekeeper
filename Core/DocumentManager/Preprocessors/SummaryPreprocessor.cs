@@ -19,6 +19,8 @@ namespace GKManagers.Preprocessors
         const string CDRID_ATTRIBUTE = "id";
         const string PAGE_SECTION_SELECTOR = "/Summary/SummarySection";
         const string SECTION_ID_ATTRIBUTE = "id";
+        const string SUMMARY_REFERENCE_SELECTOR = "//SummaryRef";
+        const string SUMMARY_REFERENCE_ID_ATTRIBUTE  ="href";
 
         private HistoryEntryWriter WarningWriter;
         private HistoryEntryWriter InformationWriter;
@@ -145,7 +147,42 @@ namespace GKManagers.Preprocessors
 
         public void ValidateOutgoingSummaryRefs(XmlDocument summary, ISplitDataManager splitData)
         {
-            throw new NotImplementedException();
+            IEnumerable<string> references = GetSummaryRefList(summary);
+            foreach (string item in references)
+            {
+                // If the reference only has one segment, it's a reference to an entire summary and therefore valid.
+                // If there are two segments, the first is the summary's CDRID and the second is the specific section.
+                string[] segments = item.Split('#');
+                if(segments.Length == 2)
+                {
+                    int summaryid = CDRHelper.ExtractCDRIDAsInt(segments[0]);
+                    string sectionRef = segments[1];
+                    if (splitData.SummaryIsSplit(summaryid))
+                    {
+                        SplitData split = splitData.GetSplitData(summaryid);
+                        if (!Array.Exists(split.LinkedSections, section => section.Equals(sectionRef, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            throw new ValidationException(String.Format("SummaryPreprocessor: Section '{1}' is not a known section for document '{0}'", summaryid, sectionRef));
+                        }
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<string> GetSummaryRefList(XmlDocument summary)
+        {
+            List<string> references = new List<string>();
+
+            XPathNavigator xNav = summary.CreateNavigator();
+            XPathNodeIterator nodeList = xNav.Select(SUMMARY_REFERENCE_SELECTOR);
+
+            foreach (XPathNavigator node in nodeList)
+            {
+                string reference = DocumentHelper.GetAttribute(node, SUMMARY_REFERENCE_ID_ATTRIBUTE);
+                references.Add(reference);
+            }
+
+            return references;
         }
     }
 }

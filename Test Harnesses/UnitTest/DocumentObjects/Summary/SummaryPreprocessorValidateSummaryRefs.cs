@@ -46,26 +46,27 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
           */
 
-        MockSplitDataManager splitData;
+        ISplitDataManager SplitData;
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            splitData = new MockSplitDataManager()
-            {
-                MockSplitData = new SplitData()
-                {
-                    CdrId = 1,
-                    Url = "n/a",
-                    PageSections = new string[] {"_1", "_2", "_3", "_AboutThis_1"},
-                    GeneralSections = new string[] {"_1", "_2"},
-                    LinkedSections = new string[] {"_1", "_2", "_100", "_201", "_202", "_203"},
-                    LongTitle = "n/a",
-                    ShortTitle = "n/a",
-                    LongDescription = "n/a",
-                    MetaKeywords = "n/a"
-                }
-            };
+            SplitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split manager which matches VALID_SUMMARY"",
+
+        ""cdrid"": ""1"",
+        ""url"": ""n/a"",
+        ""page-sections"": [""_1"", ""_2"", ""_3"", ""_AboutThis_1""],
+		""general-sections"": [""_1"", ""_2""],
+		""linked-sections"": [""_1"", ""_2"", ""_100"", ""_201"", ""_202"", ""_203""],
+        ""long-title"": ""n/a"",
+		""short-title"": ""n/a"",
+		""long-description"": ""n/a"",
+		""meta-keywords"": ""n/a""
+	}
+]");
         }
 
         /// <summary>
@@ -88,10 +89,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Title>About This PDQ Summary</Title>
         <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
     </SummarySection>
-</summary >
+</Summary>
 ");
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, splitData); });
+            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
         /// <summary>
@@ -114,10 +115,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Title>About This PDQ Summary</Title>
         <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
     </SummarySection>
-</summary >
+</Summary>
 ");
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.Throws<ValidationException>(() => { processor.ValidateOutgoingSummaryRefs(summary, splitData); });
+            Assert.Throws<ValidationException>(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
         /// <summary>
@@ -141,10 +142,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Title>About This PDQ Summary</Title>
         <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
     </SummarySection>
-</summary >
+</Summary>
 ");
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, splitData); });
+            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
         /// <summary>
@@ -167,10 +168,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Title>About This PDQ Summary</Title>
         <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000010#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
     </SummarySection>
-</summary >
+</Summary>
 ");
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, splitData); });
+            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
         /// <summary>
@@ -193,10 +194,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Title>About This PDQ Summary</Title>
         <Para id = ""_400"">Paragraph 1.4 </Para>
     </SummarySection>
-</summary >
+</Summary>
 ");
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, splitData); });
+            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
     }
