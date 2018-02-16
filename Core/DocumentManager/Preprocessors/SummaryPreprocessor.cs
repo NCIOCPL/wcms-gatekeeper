@@ -40,6 +40,18 @@ namespace GKManagers.Preprocessors
             // Rewrite SummaryRef URL attributes.
         }
 
+        /// <summary>
+        /// Validate assumptions for the summary and the summary split data.
+        /// - Is the document really a summary?
+        /// - If it's part of the split pilot:
+        ///     - Are all the top-level sections known?
+        ///     - Are all the "General Information" sections valid?
+        /// - For all summaries:
+        ///     - If it references a pilot summary, does the link exist in the list of links?
+        /// </summary>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
         public void Validate(XmlDocument summary, ISplitDataManager summaryData)
         {
             XmlElement root = summary.DocumentElement;
@@ -73,8 +85,9 @@ namespace GKManagers.Preprocessors
         /// Verify that all top-level sections in document appear in expectedSections and that all
         /// sections in expectedSections are present as top-level sections in document.
         /// </summary>
-        /// <param name="summary"></param>
-        /// <param name="expectedSections"></param>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="expectedSections">List of the top-level sections which are expected to exist.</param>
         public void ValidateTopLevelSections(XmlDocument summary, string[] expectedSections)
         {
             // Build hash set for expected sections.
@@ -102,8 +115,9 @@ namespace GKManagers.Preprocessors
         /// <summary>
         /// Verify that all sections identifed as General Information sections are also top-level sections.
         /// </summary>
-        /// <param name="summary"></param>
-        /// <param name="expectedSections"></param>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="expectedSections">The list of sections which belong in the General Information</param>
         public void ValidateGeneralInformationSections(XmlDocument summary, string[] expectedSections)
         {
             // Build hash set for expected sections.
@@ -124,8 +138,9 @@ namespace GKManagers.Preprocessors
         /// <summary>
         /// Helper method to find all of a summary's page-level section IDs.
         /// </summary>
-        /// <param name="summary"></param>
-        /// <returns>A List of string values.</returns>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <returns>A List of strings containing the IDs of the summary's top-level sections.</returns>
         private List<string> GetTopSections(XmlDocument summary)
         {
             List<string> foundSections = new List<string>();
@@ -145,6 +160,13 @@ namespace GKManagers.Preprocessors
             return foundSections;
         }
 
+        /// <summary>
+        /// Verifies that if the Summary contains any SummaryRefs which refer to a summary in the pilot,
+        /// are those sections listed as part of the split data?
+        /// </summary>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
         public void ValidateOutgoingSummaryRefs(XmlDocument summary, ISplitDataManager splitData)
         {
             IEnumerable<string> references = GetSummaryRefList(summary);
@@ -169,6 +191,11 @@ namespace GKManagers.Preprocessors
             }
         }
 
+        /// <summary>
+        /// Helper method to get a list of all Summary references 
+        /// </summary>
+        /// <param name="summary"></param>
+        /// <returns></returns>
         private IEnumerable<string> GetSummaryRefList(XmlDocument summary)
         {
             List<string> references = new List<string>();
