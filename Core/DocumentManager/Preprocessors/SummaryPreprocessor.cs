@@ -25,19 +25,45 @@ namespace GKManagers.Preprocessors
         private HistoryEntryWriter WarningWriter;
         private HistoryEntryWriter InformationWriter;
 
-        public void Preprocess(XmlDocument document, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
+        public void Preprocess(XmlDocument summary, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
             WarningWriter = warningWriter;
             InformationWriter = informationWriter;
 
-            if (document == null)
+            if (summary == null)
                 throw new ArgumentNullException("document");
 
             // Get Split data. (Data is loaded prior to document processing.)
             ISplitDataManager splitData = SplitDataManager.Instance;
 
-            Validate(document, splitData);
+            Validate(summary, splitData);
+
             // Rewrite SummaryRef URL attributes.
+            RewriteSummaryRefAttributes(summary, splitData);
+
+            // Add IncludedDevices attributes.
+            SetIncludedDevices(summary, splitData);
+        }
+
+        /// <summary>
+        /// Checks a summary for SummaryRef elements. If found, checks whether the reference is to the general
+        /// page of a piloted summary and rewrites the url attribute if necessary.
+        /// </summary>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
+        public void RewriteSummaryRefAttributes(XmlDocument summary, ISplitDataManager splitData)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
+        public void SetIncludedDevices(XmlDocument summary, ISplitDataManager splitData)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
