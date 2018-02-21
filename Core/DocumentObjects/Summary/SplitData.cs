@@ -67,5 +67,15 @@ namespace GateKeeper.DocumentObjects.Summary
         [DataMember(Name = "meta-keywords")]
         public string MetaKeywords { get; set; }
 
+        /// <summary>
+        /// Checks whether sectionID appears in the summary's linked-section list.
+        /// </summary>
+        /// <param name="sectionID">ID of the section to be checked.</param>
+        /// <returns>Returns true if sectionID appears in the linked-section list, false otherwise.</returns>
+        public bool IsLinkedSection(string sectionID)
+        {
+            sectionID = sectionID.Trim();
+            return Array.Exists(LinkedSections, ID => ID.Equals(sectionID, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 }

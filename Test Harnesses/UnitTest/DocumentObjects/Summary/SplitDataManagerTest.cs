@@ -130,5 +130,69 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             SplitData data = MatchingSplitData.GetSplitData(summaryID);
             Assert.IsNull(data);
         }
+
+
+        /// <summary>
+        /// Verify that references to a section in a summary's general information section are
+        /// correctly identified.
+        /// </summary>
+        /// <param name="summaryID">ID of a summary which is potentially part of the split pilot.</param>
+        /// <param name="sectionID">ID of a summary section.</param>
+        [TestCase(1, "_1")]
+        [TestCase(1, "_90")]
+        public void SummaryReferenceToGeneralInformationDetected(int summaryID, string sectionID)
+        {
+            SplitDataManager splitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split data for first summary"",
+
+        ""cdrid"": ""1"",
+        ""url"": ""n/a"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""n/a"",
+		""short-title"": ""n/a"",
+		""long-description"": ""n/a"",
+		""meta-keywords"": ""n/a""
+	}
+]    
+");
+            bool result = splitData.ReferenceIsForGeneralSection(summaryID, sectionID);
+            Assert.IsTrue(result);
+        }
+
+
+        /// <summary>
+        /// Verify that references to a section in which is not part of a summary's general information section are
+        /// correctly identified.
+        /// </summary>
+        /// <param name="summaryID">ID of a summary which is potentially part of the split pilot.</param>
+        /// <param name="sectionID">ID of a summary section.</param>
+        [TestCase(1, "_2")] // Piloted summary, Top-level section, not part of general information.
+        [TestCase(7, "_1")] // Non-pilot summary.
+        public void SummaryReferenceToNonGeneralSectionIgnored(int summaryID, string sectionID)
+        {
+            SplitDataManager splitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split data for first summary"",
+
+        ""cdrid"": ""1"",
+        ""url"": ""n/a"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""n/a"",
+		""short-title"": ""n/a"",
+		""long-description"": ""n/a"",
+		""meta-keywords"": ""n/a""
+	}
+]    
+");
+            bool result = splitData.ReferenceIsForGeneralSection(summaryID, sectionID);
+            Assert.IsFalse(result);
+        }
     }
 }
