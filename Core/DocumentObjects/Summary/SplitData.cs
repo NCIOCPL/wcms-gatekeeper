@@ -77,5 +77,16 @@ namespace GateKeeper.DocumentObjects.Summary
             sectionID = sectionID.Trim();
             return Array.Exists(LinkedSections, ID => ID.Equals(sectionID, StringComparison.InvariantCultureIgnoreCase));
         }
+
+        /// <summary>
+        /// Checks whether sectionID appears in the summary's general-section list.
+        /// </summary>
+        /// <param name="sectionID">ID of the section to be checked.</param>
+        /// <returns>Returns true if sectionID appears in the general-section list, false otherwise.</returns>
+        public bool IsGeneralSection(string sectionID)
+        {
+            sectionID = sectionID.Trim();
+            return Array.Exists(GeneralSections, ID => ID.Equals(sectionID, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 }

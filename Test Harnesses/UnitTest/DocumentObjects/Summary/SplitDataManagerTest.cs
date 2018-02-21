@@ -194,5 +194,71 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             bool result = splitData.ReferenceIsForGeneralSection(summaryID, sectionID);
             Assert.IsFalse(result);
         }
+
+
+
+        /// <summary>
+        /// Verify that sections for a summary's general information pages are
+        /// correctly identified.
+        /// </summary>
+        /// <param name="summaryID">ID of a summary which is potentially part of the split pilot.</param>
+        /// <param name="sectionID">ID of a summary section.</param>
+        [TestCase(1, "_1")]
+        public void GeneralInformationPagesDetected(int summaryID, string sectionID)
+        {
+            SplitDataManager splitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split data for first summary"",
+
+        ""cdrid"": ""1"",
+        ""url"": ""n/a"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""n/a"",
+		""short-title"": ""n/a"",
+		""long-description"": ""n/a"",
+		""meta-keywords"": ""n/a""
+	}
+]    
+");
+            bool result = splitData.SectionIsAGeneralInformationPage(summaryID, sectionID);
+            Assert.IsTrue(result);
+        }
+
+
+        /// <summary>
+        /// Verify that sections which are not top-level general information sections/pages are
+        /// correctly identified.
+        /// </summary>
+        /// <param name="summaryID">ID of a summary which is potentially part of the split pilot.</param>
+        /// <param name="sectionID">ID of a summary section.</param>
+        [TestCase(1, "_2")] // Piloted summary, Top-level section, not part of general information.
+        [TestCase(1, "_90")] // Piloted summary, general information section, but *not* a general information *page*.
+        [TestCase(7, "_1")] // Non-pilot summary.
+        public void NonGeneralInformationPageSectionIdentified(int summaryID, string sectionID)
+        {
+            SplitDataManager splitData = SplitDataManager.CreateFromString(@"
+[
+	{
+		""comment"": ""Split data for first summary"",
+
+        ""cdrid"": ""1"",
+        ""url"": ""n/a"",
+        ""page-sections"": [""_1"", ""_2"", ""_AboutThis_1""],
+		""general-sections"": [""_1""],
+		""linked-sections"": [""_1"", ""_90""],
+		""long-title"": ""n/a"",
+		""short-title"": ""n/a"",
+		""long-description"": ""n/a"",
+		""meta-keywords"": ""n/a""
+	}
+]    
+");
+            bool result = splitData.SectionIsAGeneralInformationPage(summaryID, sectionID);
+            Assert.IsFalse(result);
+        }
+
     }
 }

@@ -109,7 +109,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             summary.LoadXml(PILOT_SUMMARY_XML);
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            processor.RewriteSummaryRefAttributes(summary, SplitData);
+            processor.SetIncludedDevices(summary, SplitData);
 
             XmlNode testElement = summary.SelectSingleNode(targetPage);
             string testValue = testElement.Attributes["IncludedDevices"].Value;
@@ -132,7 +132,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             summary.LoadXml(PILOT_SUMMARY_XML);
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            processor.RewriteSummaryRefAttributes(summary, SplitData);
+            processor.SetIncludedDevices(summary, SplitData);
 
             XmlNode testElement = summary.SelectSingleNode(targetPage);
             Assert.IsNull(testElement.Attributes["IncludedDevices"], "The 'IncludedDevices' attribute should not be found.");
@@ -148,7 +148,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             summary.LoadXml(PILOT_SUMMARY_XML);
 
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            processor.RewriteSummaryRefAttributes(summary, SplitData);
+            processor.SetIncludedDevices(summary, SplitData);
 
             XPathNavigator xNav = summary.CreateNavigator();
             XPathNodeIterator nodeList = xNav.Select("/Summary/SummarySection");
@@ -193,7 +193,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             string originalXml = nonPilotSummary.OuterXml;
             SummaryPreprocessor processor = new SummaryPreprocessor();
-            processor.RewriteSummaryRefAttributes(nonPilotSummary, SplitData);
+            processor.SetIncludedDevices(nonPilotSummary, SplitData);
 
             string unchangedXml = nonPilotSummary.OuterXml;
             Assert.AreEqual(originalXml, unchangedXml, "Processing should not change the XML.");

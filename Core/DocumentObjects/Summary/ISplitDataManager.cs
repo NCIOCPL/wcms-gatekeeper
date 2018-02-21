@@ -29,5 +29,14 @@
         /// <returns>True if summaryID refers to a summary which is in the pilot AND sectionID refers to a section
         /// which is identified as part of the summary's general information section.</returns>
         bool ReferenceIsForGeneralSection(int summaryID, string sectionID);
+
+        /// <summary>
+        /// Checks whether an identified summary sectionID belongs to one of the summary's top-level general information sections.
+        /// </summary>
+        /// <param name="summaryID">ID of a summary which is potentially part of the split pilot.</param>
+        /// <param name="sectionID">ID of a summary section.</param>
+        /// <returns>True if summaryID refers to a summary which is in the pilot AND sectionID refers to a section
+        /// which is identified as one of the summary's general information pages.</returns>
+        bool SectionIsAGeneralInformationPage(int summaryID, string sectionID);
     }
 }

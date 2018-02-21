@@ -56,5 +56,15 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Checks whether sectionID appears in the summary's general-section list.
+        /// </summary>
+        /// <param name="sectionID">ID of the section to be checked.</param>
+        /// <returns>Returns true if sectionID appears in the general-section list, false otherwise.</returns>
+        public bool SectionIsAGeneralInformationPage(int summaryID, string sectionID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
