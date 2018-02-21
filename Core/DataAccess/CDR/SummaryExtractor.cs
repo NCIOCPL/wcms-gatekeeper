@@ -437,8 +437,8 @@ namespace GateKeeper.DataAccess.CDR
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
                                 else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication.ToString()))
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.overview.ToString()))
-                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.overview);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.general.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.general);
                                 else if (deviceToInlcude.Equals(SummarySectionDeviceType.main.ToString()))
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.main);
                             }

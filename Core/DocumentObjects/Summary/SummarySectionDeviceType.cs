@@ -39,7 +39,7 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <summary>
         /// Summary section appears as part of the "overview" page.
         /// </summary>
-        overview,
+        general,
 
         /// <summary>
         /// Summary section appears as part of the "main" page.
