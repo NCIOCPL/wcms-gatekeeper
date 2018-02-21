@@ -97,13 +97,23 @@ namespace GKManagers.Preprocessors
         }
 
         /// <summary>
-        /// 
+        /// If summary is part of the Summary Split pilot, then all top-level sections which are part of
+        /// the general information page(s) are marked to be included only on the "general" and "syndication"
+        /// meta-devices.
         /// </summary>
         /// <param name="summary">XML Document containing a PDQ Summary.</param>
         /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
         public void SetIncludedDevices(XmlDocument summary, ISplitDataManager splitData)
         {
-            throw new NotImplementedException();
+            // Get the summary's ID.
+            string idString = summary.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
+            int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
+
+            // Only make changes if this summary is part of the pilot
+            if (splitData.SummaryIsSplit(cdrid))
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
