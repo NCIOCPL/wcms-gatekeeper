@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GateKeeper.DocumentObjects.Summary
+﻿namespace GateKeeper.DocumentObjects.Summary
 {
     /// <summary>
     /// Interface definition for an object which contains data about which
