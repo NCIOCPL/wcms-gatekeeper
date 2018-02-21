@@ -111,7 +111,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
 
         /// <summary>
-        /// Test that sumamry with a valid root element is allowed.
+        /// Test that summary with a valid root element is allowed.
         /// </summary>
         [Test]
         public void ValidSummaryRoot()
@@ -124,7 +124,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         }
 
         /// <summary>
-        /// Test that sumamry with an invalid root element fails.
+        /// Test that summary with an invalid root element fails.
         /// </summary>
         [Test]
         public void FailInvalidSummaryRoot()

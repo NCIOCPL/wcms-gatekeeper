@@ -20,7 +20,8 @@ namespace GKManagers.Preprocessors
         const string PAGE_SECTION_SELECTOR = "/Summary/SummarySection";
         const string SECTION_ID_ATTRIBUTE = "id";
         const string SUMMARY_REFERENCE_SELECTOR = "//SummaryRef";
-        const string SUMMARY_REFERENCE_ID_ATTRIBUTE  ="href";
+        const string SUMMARY_REFERENCE_ID_ATTRIBUTE  = "href";
+        const string SUMMARY_REFERENCE_URL_ATTRIBUTE = "url";
 
         private HistoryEntryWriter WarningWriter;
         private HistoryEntryWriter InformationWriter;
@@ -51,9 +52,48 @@ namespace GKManagers.Preprocessors
         /// </summary>
         /// <param name="summary">XML Document containing a PDQ Summary.</param>
         /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
-        public void RewriteSummaryRefAttributes(XmlDocument summary, ISplitDataManager splitData)
+        public void RewriteSummaryRefAttributes(XmlDocument summary, ISplitDataManager summaryData)
         {
-            throw new NotImplementedException();
+            // Get the summary's ID.
+            string idString = summary.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
+            int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
+
+            XPathNavigator xNav = summary.CreateNavigator();
+            XPathNodeIterator nodeList = xNav.Select(SUMMARY_REFERENCE_SELECTOR);
+
+            foreach (XPathNavigator node in nodeList)
+            {
+                string reference = DocumentHelper.GetAttribute(node, SUMMARY_REFERENCE_ID_ATTRIBUTE);
+                string[] segments = reference.Split('#');
+
+                // If there's only one segment, then the reference is just a CDRID, which means it refers to
+                // the summary as a whole.  In this case, there is no need to modify the url.
+                if( segments.Length == 1 || String.IsNullOrWhiteSpace(segments[1]))
+                    continue;
+
+                // If there are two segments, that means there's a section ID.  (CDR validation enforces no other segments counts are possible.)
+                // segment[0] may be empty, in which case the reference is internal.
+                bool theReferenceIsInternal = String.IsNullOrWhiteSpace(segments[0]);
+
+                // If it's an internal reference, the summary being processed is the referenced summary.
+                // Otherwise, get the summaryID.
+                int referencedSummaryId;
+                if (theReferenceIsInternal)
+                    referencedSummaryId = cdrid;
+                else
+                    referencedSummaryId = CDRHelper.ExtractCDRIDAsInt(segments[0]);
+
+
+                // Does the reference go to a split summary?
+                if (summaryData.ReferenceIsForGeneralSection(referencedSummaryId, segments[1]))
+                {
+                    SplitData data = summaryData.GetSplitData(referencedSummaryId);
+
+                    // Rewrite URL
+                    node.MoveToAttribute(SUMMARY_REFERENCE_URL_ATTRIBUTE, String.Empty);
+                    node.SetValue(data.Url);
+                }
+            }
         }
 
         /// <summary>
@@ -84,13 +124,15 @@ namespace GKManagers.Preprocessors
             if (root.Name.CompareTo(SUMMARY_TYPE) != 0)
                 throw new ValidationException(string.Format("Expected document type Summary, found '{0}' instead.", root.Name));
 
-            // Check whether we need to do anything with this document.
+            // Get the summary's ID.
             string idString = summary.DocumentElement.GetAttribute(CDRID_ATTRIBUTE);
             int cdrid = CDRHelper.ExtractCDRIDAsInt(idString);
 
-            // Validation for summaries appearing in the pilot.
+            // Check whether we need to do anything with this document.
             if (summaryData.SummaryIsSplit(cdrid))
             {
+
+                // Validation for summaries appearing in the pilot.
                 SplitData split = summaryData.GetSplitData(cdrid);
                 
                 // Verify the top-level sections are identified correctly.

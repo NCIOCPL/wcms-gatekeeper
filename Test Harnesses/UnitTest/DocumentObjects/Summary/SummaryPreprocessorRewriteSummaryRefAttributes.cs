@@ -61,7 +61,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 [
 	{
         ""cdrid"": ""1"",
-        ""url"": ""/general-information-page"",
+        ""url"": ""/general-information-page-1"",
         ""page-sections"": [""_1"", ""_2"", ""_3"", ""_AboutThis_1""],
 		""general-sections"": [""_1"", ""_2""],
 		""linked-sections"": [""_1"", ""_2"", ""_100"", ""_201"", ""_202"", ""_203""],
@@ -124,9 +124,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             SummaryPreprocessor processor = new SummaryPreprocessor();
             processor.RewriteSummaryRefAttributes(summary, SplitData);
 
+            // Reference to the entire summary, the URL shouldn't change.
             XmlNode testElement = summary.SelectSingleNode("//SummaryRef[@href='CDR0000000001']");
             string testUrl = testElement.Attributes["url"].Value;
-            Assert.AreEqual("/general-information-page", testUrl);
+            Assert.AreEqual("/path/to/original/url", testUrl);
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             // Contains a reference to a summary which is not in the pilot.
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-<Summary id=""CDR000000010"" LegacyPDQID=""12345"">
+<Summary id=""CDR000000020"" LegacyPDQID=""12345"">
     <SummarySection id=""_1"">
         <Para id=""_100""><SummaryRef href=""CDR0000000001"" url=""/path/to/original/url"">Reference to Pilot Summary</SummaryRef></Para>
         <Para id=""_200""><SummaryRef href=""CDR0000000002"" url=""/path/to/non-pilot/summary"">Reference to Non-pilot Summary</SummaryRef></Para>
@@ -171,14 +172,14 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             // Contains a reference to a summary in the pilot.
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-<Summary id=""CDR000000010"" LegacyPDQID=""12345"">
+<Summary id=""CDR000000030"" LegacyPDQID=""12345"">
     <SummarySection id=""_1"">
         <Para id=""_100""><SummaryRef href=""CDR0000000001#_1"" url=""/path/to/original/url-1"">Reference to 1st Pilot Summary</SummaryRef></Para>
         <Para id=""_200""><SummaryRef href=""CDR0000000002#_2"" url=""/path/to/original/url-2"">Reference to 2nd Pilot Summary</SummaryRef></Para>
     </SummarySection>
     <SummarySection id = ""_2"">
         <Para id = ""_201"">Sub - section 2.1</Para>
-        <Para id = ""_202""><SummaryRef href=""CDR0000000003#_3"" url=""/path/to/original/url-3"">Reference to 3rd Pilot Summary</SummaryRef></Para>
+        <Para id = ""_202""><SummaryRef href=""CDR0000000003#_3"" url=""/path/to/original/url-3"">Reference to Non Pilot section</SummaryRef></Para>
         <Para id = ""_203"">Sub - section 2.3</Para>
     </SummarySection>
     <SummarySection id = ""_AboutThis_1"">
@@ -190,9 +191,9 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             SummaryPreprocessor processor = new SummaryPreprocessor();
             processor.RewriteSummaryRefAttributes(summary, SplitData);
 
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 2; i++)
             {
-                string xpath = String.Format("//SummaryRef[@href='CDR000000000{0}']", i);
+                string xpath = String.Format("//SummaryRef[@href='CDR000000000{0}#_{0}']", i);
                 string expected = String.Format("/general-information-page-{0}", i);
 
                 XmlNode testElement = summary.SelectSingleNode(xpath);
@@ -207,10 +208,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         [Test]
         public void ReferenceToNonpilotSummarySection()
         {
-            // Contains a reference to a summary in the pilot.
+            // Only contains references to summaries which are not in the pilot.
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-<Summary id=""CDR000000010"" LegacyPDQID=""12345"">
+<Summary id=""CDR000000040"" LegacyPDQID=""12345"">
     <SummarySection id=""_1"">
         <Para id=""_100""><SummaryRef href=""CDR0000000010#_1"" url=""/path/to/original/url-1"">Reference to 1st Pilot Summary</SummaryRef></Para>
         <Para id=""_200""><SummaryRef href=""CDR0000000020#_2"" url=""/path/to/original/url-2"">Reference to 2nd Pilot Summary</SummaryRef></Para>
@@ -231,14 +232,47 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             for (int i = 1; i <= 3; i++)
             {
-                string xpath = String.Format("//SummaryRef[@href='CDR00000000{0}0']", i);
-                string expected = String.Format("/path/to/original/url--{0}", i);
+                string xpath = String.Format("//SummaryRef[@href='CDR00000000{0}0#_{0}']", i);
+                string expected = String.Format("/path/to/original/url-{0}", i);
 
                 XmlNode testElement = summary.SelectSingleNode(xpath);
                 string testUrl = testElement.Attributes["url"].Value;
                 Assert.AreEqual(expected, testUrl);
             }
         }
+
+
+        /// <summary>
+        /// Test for correct handling of an internal reference where a piloted summary
+        /// contains a reference to itself.
+        /// </summary>
+        [Test]
+        public void InternalReferenceToPilotSummarySection()
+        {
+            // Contains a reference to a summary in the pilot.
+            XmlDocument summary = new XmlDocument();
+            summary.LoadXml(@"
+<Summary id=""CDR000000001"" LegacyPDQID=""12345"">
+    <SummarySection id=""_1"">
+        <Para id=""_100""><SummaryRef href=""#_1"" url=""/path/to/original/url-1"">Pilot summary refers to itself</SummaryRef></Para>
+    </SummarySection>
+    <SummarySection id = ""_AboutThis_1"">
+        <Title>About This PDQ Summary</Title >
+    </SummarySection>
+</Summary>
+");
+
+            SummaryPreprocessor processor = new SummaryPreprocessor();
+            processor.RewriteSummaryRefAttributes(summary, SplitData);
+
+            string xpath = "//SummaryRef[@href='#_1']";
+            string expected = "/general-information-page-1";
+
+            XmlNode testElement = summary.SelectSingleNode(xpath);
+            string testUrl = testElement.Attributes["url"].Value;
+            Assert.AreEqual(expected, testUrl);
+        }
+
 
         /// <summary>
         /// Test for correct handling when there is no summary reference.
@@ -259,7 +293,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         <Para id = ""_203"">Sub - section 2.3</Para>
     </SummarySection>
     <SummarySection id = ""_AboutThis_1"">
-        <Title>About This PDQ Summary</ Title >
+        <Title>About This PDQ Summary</Title>
     </SummarySection>
 </Summary>
 ");
