@@ -101,8 +101,8 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         /// Verify that the devices "general" and "syndication" are added to top-level
         /// sections on the general-sections list.
         /// </summary>
-        [TestCase ("/Summary/SummarySection[id=\"_1\"")] // Section has no existing IncludedDevices
-        [TestCase ("/Summary/SummarySection[id=\"_2\"")] // Section has an existing IncludedDevices which we will deliberately overwrite.
+        [TestCase ("/Summary/SummarySection[@id='_1']")] // Section has no existing IncludedDevices
+        [TestCase ("/Summary/SummarySection[@id='_2']")] // Section has an existing IncludedDevices which we will deliberately overwrite.
         public void DevicesAddedOnGeneralSections(string targetPage)
         {
             XmlDocument summary = new XmlDocument();
@@ -122,10 +122,10 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         }
 
         /// <summary>
-        /// Verify that no devices are added to top-level sections which are not on general-sections list.
+        /// Verify that top-level sections which are not on the general-sections list are marked with the "main" and "syndication" devices.
         /// </summary>
-        [TestCase("/Summary/SummarySection[id=\"_3\"")] // Section has no existing IncludedDevices
-        [TestCase("/Summary/SummarySection[id=\"_AboutThis_1\"")] // Section has an existing IncludedDevices which we will deliberately overwrite.
+        [TestCase("/Summary/SummarySection[@id='_3']")] // Section has no existing IncludedDevices
+        [TestCase("/Summary/SummarySection[@id='_AboutThis_1']")] // Section has an existing IncludedDevices which we will deliberately overwrite.
         public void DevicesNotAddedToTreatmentSections(string targetPage)
         {
             XmlDocument summary = new XmlDocument();
@@ -135,7 +135,13 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
             processor.SetIncludedDevices(summary, SplitData);
 
             XmlNode testElement = summary.SelectSingleNode(targetPage);
-            Assert.IsNull(testElement.Attributes["IncludedDevices"], "The 'IncludedDevices' attribute should not be found.");
+            string testValue = testElement.Attributes["IncludedDevices"].Value;
+            string[] devices = testValue.Split(' ');
+
+            bool main = Array.Exists(devices, device => device == "main");
+            Assert.IsTrue(main, "Device 'main' not found.");
+            bool syndicationFound = Array.Exists(devices, device => device == "syndication");
+            Assert.IsTrue(syndicationFound, "Device 'syndication' not found.");
         }
 
         /// <summary>
@@ -170,7 +176,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
         {
             XmlDocument nonPilotSummary = new XmlDocument();
             nonPilotSummary.LoadXml(@"
-<Summary id=""CDR000000001"" LegacyPDQID=""1278"">
+<Summary id=""CDR000000002"" LegacyPDQID=""1278"">
     <SummarySection id=""_1"">
         <Para id = ""_100"" >Sub-section 1.100 </Para>
         <Para id = ""_200"" >Sub-section 1.200 </Para>

@@ -22,6 +22,7 @@ namespace GKManagers.Preprocessors
         const string SUMMARY_REFERENCE_SELECTOR = "//SummaryRef";
         const string SUMMARY_REFERENCE_ID_ATTRIBUTE  = "href";
         const string SUMMARY_REFERENCE_URL_ATTRIBUTE = "url";
+        const string SUMMARY_SECTION_INCLUDED_ATTRIBUTE = "IncludedDevices";
 
         private HistoryEntryWriter WarningWriter;
         private HistoryEntryWriter InformationWriter;
@@ -112,7 +113,31 @@ namespace GKManagers.Preprocessors
             // Only make changes if this summary is part of the pilot
             if (splitData.SummaryIsSplit(cdrid))
             {
-                throw new NotImplementedException();
+                XPathNavigator xNav = summary.CreateNavigator();
+                XPathNodeIterator pageList = xNav.Select(PAGE_SECTION_SELECTOR);
+
+                foreach (XPathNavigator page in pageList)
+                {
+                    string section = DocumentHelper.GetAttribute(page, SECTION_ID_ATTRIBUTE);
+                    string devices;
+                    if (splitData.SectionIsAGeneralInformationPage(cdrid, section))
+                    {
+                        // Set IncludedDevices to general and syndication with some shenanigans because SummarySectionDeviceType isn't marked as
+                        // a bitflag and I don't want to risk break things by changing it.
+                        devices = SummarySectionDeviceType.general + " " + SummarySectionDeviceType.syndication;
+                    }
+                    else
+                    {
+                        // Set IncludedDevices to main and syndication
+                        devices = SummarySectionDeviceType.main + " " + SummarySectionDeviceType.syndication;
+                    }
+
+                    // True if Attribute exists, false if it doesn't.
+                    if (page.MoveToAttribute(SUMMARY_SECTION_INCLUDED_ATTRIBUTE, String.Empty))
+                        page.SetValue(devices);
+                    else
+                        page.CreateAttribute(String.Empty, SUMMARY_SECTION_INCLUDED_ATTRIBUTE, String.Empty, devices.ToString());
+                }
             }
         }
 
