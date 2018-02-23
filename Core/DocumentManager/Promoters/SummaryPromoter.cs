@@ -45,10 +45,6 @@ namespace GKManagers
         {
             informationWriter("Start to promote summary document to the staging database.");
 
-            // Apply any pre-processing changes to the XML
-            SummaryPreprocessor preprocessor = new SummaryPreprocessor();
-            preprocessor.Preprocess(DataBlock.DocumentData, warningWriter, informationWriter);
-
             ProcessorPool pool = ProcessorLoader.Load();
             ProcessingTarget[] processingTargets = pool.GetProcessingTargets(DocumentType.Summary);
 
@@ -63,6 +59,15 @@ namespace GKManagers
                 summary.DocumentID = DataBlock.CdrID;
                 if (DataBlock.ActionType == RequestDataActionType.Export)
                 {
+                    // Apply any needed pre-processing changes to the XML
+                    // DataBlock.DocumentData returns a copy of the document, so in order to preserve the changes, we need to keep a local reference
+                    // and then save the updated version back into DataBlock.DocumentData. (It's a read/write property, but it's designed to prevent
+                    // changes from being propogated back by mistake. Fortunately, it does include a mechanism for doing it deliberately.)
+                    XmlDocument documentData = DataBlock.DocumentData;
+                    SummaryPreprocessor preprocessor = new SummaryPreprocessor();
+                    preprocessor.Preprocess(documentData, warningWriter, informationWriter);
+                    DataBlock.DocumentData = documentData;
+
                     // Extract summary data
                     target.DocumentExtractor.Extract(DataBlock.DocumentData, summary, xPathManager, target.TargetedDevice);
 
