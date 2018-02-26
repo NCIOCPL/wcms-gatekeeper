@@ -38,6 +38,8 @@ job("${FOLDER_NAME}/Create build job for a branch") {
     github(sourceRepository, "*/$TARGET_BRANCH")
   }
 
+  label("!master") // Run anywhere except master.
+
   steps {
     dsl {
       external("tools/jenkins/create_branch_skeleton.job")
