@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2EF2080A-C5FB-4FF9-B8F5-B01D97BD0E42}"
 	ProjectSection(SolutionItems) = preProject
@@ -56,6 +56,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMSDocumentProcessing", "Core\CMSDocumentProcessing\CMSDocumentProcessing.csproj", "{DD69C2C5-626D-4A06-9C6E-37461F0B93F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubPreviewTest", "Test Harnesses\PubPreviewTest\PubPreviewTest.csproj", "{ADA53B8C-9264-491B-B94D-2AC4F86E4084}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{255BB3A8-609E-4D2A-9210-6695DE9E4B23}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -306,5 +313,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {A1B8C60A-2CF7-49F5-995B-091C26ED2FB4}
 	EndGlobalSection
 EndGlobal
