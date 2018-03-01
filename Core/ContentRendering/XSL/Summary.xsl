@@ -171,11 +171,19 @@ Header
                 It will be moved using JS to be positioned underneath the
                 SummaryTitle
                 ======================================================= -->
-                <xsl:if            test="position() = 1
-                                         and
-                                         /Summary/
+                <xsl:if            test="/Summary/
                                            SummaryMetaData/
-                                           SummaryToggleURL">
+                                           SummaryToggleURL
+                                          and
+                                           (
+                                            position() = 1
+                                            or
+                                            (
+                                             contains(@IncludedDevices, 'main')
+                                             and
+                                             contains(preceding-sibling::*[1]/@IncludedDevices, 'general')
+                                            )
+                                           )">
                  <xsl:call-template name="addHpPatientToggle"/>
                 </xsl:if>
 
