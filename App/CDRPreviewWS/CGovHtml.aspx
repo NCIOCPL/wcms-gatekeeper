@@ -4,8 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<%= currentLanguage %>">
 
      <head id="header">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta charset="utf-8">
       <title>CDR Preview</title>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <link rel="preconnect" crossorigin="" href="https://cdnjs.cloudflare.com" />
+      <link rel="preconnect" crossorigin="" href="https://ajax.googleapis.com" />
+      <link rel="preconnect" crossorigin="" href="https://fonts.gstatic.com" />
+      <link rel="preconnect" href="https://static.cancer.gov" />
+      <link id="gFonts" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700,700i" />
       <meta name="content-language" content="<%= currentLanguage %>">
       <meta name="english-linking-policy" content="<%=serverUrl%>/global/web/policies/exit">
       <meta name="espanol-linking-policy" content="<%=serverUrl%>/espanol/global/politicas/salda">
