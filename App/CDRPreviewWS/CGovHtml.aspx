@@ -35,7 +35,8 @@
                 fieldDelimiter: '~'
                 };
       </script>
-      <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet" />
+      <link href="<%=serverUrl%>/PublishedContent/Styles/PDQPage.css" rel="stylesheet" />
+      <link href="<%=serverUrl%>/PublishedContent/Styles/InnerPage.css" rel="stylesheet" />
     </head>
 
   <body class="pdqcancerinfosummary">
