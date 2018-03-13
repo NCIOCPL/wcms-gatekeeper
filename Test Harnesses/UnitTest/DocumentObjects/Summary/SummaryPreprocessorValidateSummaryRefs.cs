@@ -37,7 +37,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-        <Summary id=""CDR000000001"""" LegacyPDQID=""""1278"""">
+        <Summary id=""CDR000000001"" LegacyPDQID=""1278"">
             <SummarySection id=""_1"">
                 <Para id = ""_100"" >Sub-section 1.100 </Para>
                 <Para id = ""_200"" >Sub-section 1.200 </Para>
@@ -87,7 +87,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-        <Summary id=""CDR000000001"""" LegacyPDQID=""""1278"""">
+        <Summary id=""CDR000000001"" LegacyPDQID=""1278"">
             <SummarySection id=""_1"">
                 <Para id = ""_100"" >Sub-section 1.100 </Para>
                 <Para id = ""_200"" >Sub-section 1.200 </Para>
@@ -137,7 +137,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-        <Summary id=""CDR000000001"""" LegacyPDQID=""""1278"""">
+        <Summary id=""CDR000000001"" LegacyPDQID=""1278"">
             <SummarySection id=""_1"">
                 <Para id = ""_100"" >Sub-section 1.100 </Para>
                 <Para id = ""_200"" >Sub-section 1.200 </Para>
@@ -187,7 +187,7 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 
             XmlDocument summary = new XmlDocument();
             summary.LoadXml(@"
-        <Summary id=""CDR000000001"""" LegacyPDQID=""""1278"""">
+        <Summary id=""CDR000000001"" LegacyPDQID=""1278"">
             <SummarySection id=""_1"">
                 <Para id = ""_100"" >Sub-section 1.100 </Para>
                 <Para id = ""_200"" >Sub-section 1.200 </Para>
