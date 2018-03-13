@@ -10,7 +10,7 @@ using GateKeeper.DocumentObjects;
 namespace GateKeeper.UnitTest.DocumentObjects.Summary
 {
     /// <summary>
-    /// Tests for the SummaryPreprocessor ValidateOutgoingSummaryRefs() method.
+    /// Tests for the SummaryPreprocessor ValidateSummaryRefs() method.
     /// </summary>
     [TestFixture]
     class SummaryPreprocessorValidateSummaryRefs
@@ -67,137 +67,6 @@ namespace GateKeeper.UnitTest.DocumentObjects.Summary
 		""meta-keywords"": ""n/a""
 	}
 ]");
-        }
-
-        /// <summary>
-        /// Check that summary is successfully validated when all SummaryRef sections appear in the linked section list.
-        /// </summary>
-        [Test]
-        public void SummaryRefsAreInLinkedCollection()
-        {
-            XmlDocument summary = new XmlDocument();
-            summary.LoadXml(@"
-<Summary id=""CDR000000002"" LegacyPDQID=""1279"">
-    <SummarySection id=""_1"">
-        <Para id = ""_100"">Paragraph 1.1 <SummaryRef href=""CDR0000000001#_1"" url=""/whatever/1"">SummaryRef 1</SummaryRef></Para>
-        <Para id = ""_200"">Paragraph 1.2 <SummaryRef href=""CDR0000000001#_2"" url=""/whatever/2"">SummaryRef 2</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_2"">
-        <Para id = ""_300"">Paragraph 1.3 <SummaryRef href=""CDR0000000001#_202"" url=""/whatever/3"">SummaryRef 3</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_AboutThis_1"">
-        <Title>About This PDQ Summary</Title>
-        <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
-    </SummarySection>
-</Summary>
-");
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
-        }
-
-        /// <summary>
-        /// Check that summary does not validate when a SummaryRef is not in the section list.
-        /// </summary>
-        [Test]
-        public void SummaryRefsAreMissingFromLinkedCollection()
-        {
-            XmlDocument summary = new XmlDocument();
-            summary.LoadXml(@"
-<Summary id=""CDR000000002"" LegacyPDQID=""1279"">
-    <SummarySection id=""_1"">
-        <Para id = ""_100"">Paragraph 1.1 <SummaryRef href=""CDR0000000001#_1"" url=""/whatever/1"">ValidRef 1</SummaryRef></Para>
-        <Para id = ""_200"">Paragraph 1.2 <SummaryRef href=""CDR0000000001#_2"" url=""/whatever/2"">ValidRef 2</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_2"">
-        <Para id = ""_300"">Paragraph 1.3 <SummaryRef href=""CDR0000000001#_7"" url=""/whatever/3"">INVALID REF!!!!!</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_AboutThis_1"">
-        <Title>About This PDQ Summary</Title>
-        <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
-    </SummarySection>
-</Summary>
-");
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.Throws<ValidationException>(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
-        }
-
-        /// <summary>
-        /// Check that summary is successfully validated when the SummaryRef doesn't include a section.
-        /// (Reference to the pilot summary itself.)
-        /// </summary>
-        [Test]
-        public void SummaryRefToSummaryOnly()
-        {
-            XmlDocument summary = new XmlDocument();
-            summary.LoadXml(@"
-<Summary id=""CDR000000002"" LegacyPDQID=""1279"">
-    <SummarySection id=""_1"">
-        <Para id = ""_100"">Paragraph 1.1 <SummaryRef href=""CDR0000000001"" url=""/whatever/1"">SummaryRef 1</SummaryRef></Para>
-        <Para id = ""_200"">Paragraph 1.2 <SummaryRef href=""CDR0000000001"" url=""/whatever/2"">SummaryRef 2</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_2"">
-        <Para id = ""_300"">Paragraph 1.3 <SummaryRef href=""CDR0000000001"" url=""/whatever/3"">SummaryRef 3</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_AboutThis_1"">
-        <Title>About This PDQ Summary</Title>
-        <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000001"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
-    </SummarySection>
-</Summary>
-");
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
-        }
-
-        /// <summary>
-        /// Check that summary is successfully validated when it has no references to piloted summaries.
-        /// </summary>
-        [Test]
-        public void SummaryRefToNonpilotSummaries()
-        {
-            XmlDocument summary = new XmlDocument();
-            summary.LoadXml(@"
-<Summary id=""CDR000000002"" LegacyPDQID=""1279"">
-    <SummarySection id=""_1"">
-        <Para id = ""_100"">Paragraph 1.1 <SummaryRef href=""CDR0000000010#_1"" url=""/whatever/1"">SummaryRef 1</SummaryRef></Para>
-        <Para id = ""_200"">Paragraph 1.2 <SummaryRef href=""CDR0000000010#_2"" url=""/whatever/2"">SummaryRef 2</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_2"">
-        <Para id = ""_300"">Paragraph 1.3 <SummaryRef href=""CDR0000000010#_202"" url=""/whatever/3"">SummaryRef 3</SummaryRef></Para>
-    </SummarySection>
-    <SummarySection id=""_AboutThis_1"">
-        <Title>About This PDQ Summary</Title>
-        <Para id = ""_400"">Paragraph 1.4 <SummaryRef href=""CDR0000000010#_203"" url=""/whatever/4"">SummaryRef 4</SummaryRef></Para>
-    </SummarySection>
-</Summary>
-");
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
-        }
-
-        /// <summary>
-        /// Check that summary is successfully validated when it has no summary refs.
-        /// </summary>
-        [Test]
-        public void SummaryWithoutSummaryRefs()
-        {
-            XmlDocument summary = new XmlDocument();
-            summary.LoadXml(@"
-<Summary id=""CDR000000002"" LegacyPDQID=""1279"">
-    <SummarySection id=""_1"">
-        <Para id = ""_100"">Paragraph 1.1</Para>
-        <Para id = ""_200"">Paragraph 1.2</Para>
-    </SummarySection>
-    <SummarySection id=""_2"">
-        <Para id = ""_300"">Paragraph 1.3</Para>
-    </SummarySection>
-    <SummarySection id=""_AboutThis_1"">
-        <Title>About This PDQ Summary</Title>
-        <Para id = ""_400"">Paragraph 1.4 </Para>
-    </SummarySection>
-</Summary>
-");
-            SummaryPreprocessor processor = new SummaryPreprocessor();
-            Assert.DoesNotThrow(() => { processor.ValidateOutgoingSummaryRefs(summary, SplitData); });
         }
 
     }
