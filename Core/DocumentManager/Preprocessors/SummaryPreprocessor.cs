@@ -18,6 +18,8 @@ namespace GKManagers.Preprocessors
         const string SUMMARY_TYPE = "Summary";
         const string CDRID_ATTRIBUTE = "id";
         const string PAGE_SECTION_SELECTOR = "/Summary/SummarySection";
+        const string SPECIFIC_PAGE_SECTION_SELECTOR_FMT = "/Summary/SummarySection[@id='{0}']";
+        const string SPECIFIC_SECTION_SELECTOR_FMT = "descendant-or-self::*[@id='{0}']";  // Any element at or below the current one with an ID attribute = the value of {0}
         const string SECTION_ID_ATTRIBUTE = "id";
         const string SUMMARY_REFERENCE_SELECTOR = "//SummaryRef";
         const string SUMMARY_REFERENCE_ID_ATTRIBUTE  = "href";
@@ -250,7 +252,38 @@ namespace GKManagers.Preprocessors
         /// <param name=""></param>
         public void ValidateSummaryRefs(XmlDocument summary, SplitData summaryData)
         {
-            throw new NotImplementedException();
+            XPathNavigator xNav = summary.CreateNavigator();
+
+            // Check each linked section item.
+            Array.ForEach(summaryData.LinkedSections, sectionID => {
+                bool sectionWasNotFound = true;
+
+                // Look for the section inside each of the General Information sections.
+                Array.ForEach(summaryData.GeneralSections, giSectionID => {
+                    string selector = String.Format(SPECIFIC_PAGE_SECTION_SELECTOR_FMT, giSectionID);
+                    XPathNodeIterator pageFinder = xNav.Select(selector);
+                    if (pageFinder.MoveNext())
+                    {
+                        // Go to the actual top-level section.
+                        XPathNavigator pageNav = pageFinder.Current;
+
+                        // Search within the current page.
+                        string sectionSelector = String.Format(SPECIFIC_SECTION_SELECTOR_FMT, sectionID);
+                        XPathNodeIterator sectionFinder = pageNav.Select(sectionSelector);
+                        if(sectionFinder.MoveNext())
+                        {
+                            // We found the section, set as found, exit the inner loop, go check the next one.
+                            sectionWasNotFound = false;
+                            return; // This loop is actually an anonymous function. To exit the loop, return from the function.
+                        }
+                    }
+                    else
+                        throw new ValidationException(String.Format("Section '{0}', is not a top-level section ID.", giSectionID));
+                });
+
+                if (sectionWasNotFound)
+                    throw new ValidationException(String.Format("Section '{0}' was not found in a General Information section.", sectionID));
+            });
         }
 
         /// <summary>
@@ -276,39 +309,6 @@ namespace GKManagers.Preprocessors
             }
 
             return foundSections;
-        }
-
-        /// <summary>
-        /// Verifies that if the Summary contains any SummaryRefs which refer to a summary in the pilot,
-        /// are those sections listed as part of the split data?
-        /// </summary>
-        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
-        /// <param name="summary">XML Document containing a PDQ Summary.</param>
-        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
-        public void ValidateOutgoingSummaryRefs(XmlDocument summary, ISplitDataManager splitData)
-        {
-            throw new NotImplementedException("DO NOT USE!!!!");
-
-            IEnumerable<string> references = GetSummaryRefList(summary);
-            foreach (string item in references)
-            {
-                // If the reference only has one segment, it's a reference to an entire summary and therefore valid.
-                // If there are two segments, the first is the summary's CDRID and the second is the specific section.
-                string[] segments = item.Split('#');
-                if(segments.Length == 2)
-                {
-                    int summaryid = CDRHelper.ExtractCDRIDAsInt(segments[0]);
-                    string sectionRef = segments[1];
-                    if (splitData.SummaryIsSplit(summaryid))
-                    {
-                        SplitData split = splitData.GetSplitData(summaryid);
-                        if (!Array.Exists(split.LinkedSections, section => section.Equals(sectionRef, StringComparison.InvariantCultureIgnoreCase)))
-                        {
-                            throw new ValidationException(String.Format("SummaryPreprocessor: Section '{1}' is not a known section for document '{0}'", summaryid, sectionRef));
-                        }
-                    }
-                }
-            }
         }
 
         /// <summary>
