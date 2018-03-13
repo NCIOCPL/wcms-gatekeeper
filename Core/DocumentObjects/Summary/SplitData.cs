@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GateKeeper.DocumentObjects.Summary
 {
     /// <summary>
-    /// Contains metadata for summaries included in the summary-split SEO pilot.
+    /// Contains metadata for a single summary which is included in the summary-split SEO pilot.
     /// </summary>
     [DataContract()]
     public class SplitData

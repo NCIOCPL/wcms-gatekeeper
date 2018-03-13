@@ -175,9 +175,13 @@ namespace GKManagers.Preprocessors
 
                 // Validate that sections ID'ed as general sections exist.
                 ValidateGeneralInformationSections(summary, split.GeneralSections);
+
+                // Validate list of summary references.
+                ValidateSummaryRefs(summary, split);
+
             }
 
-            // Validation that applies to any summary would go here.
+            // Validation that applies to any summary goes here.
 
             /// NOTE: We keep trying to validate all SummaryRefs, but that's not possible.
             /// The split data only contains SummaryRef targets which appear on one of the
@@ -239,6 +243,17 @@ namespace GKManagers.Preprocessors
         }
 
         /// <summary>
+        /// Verify that all summary references in the summary's linked section list occur within
+        /// one of the top-level sections identified as a general information page.
+        /// </summary>
+        /// <param name="summary"></param>
+        /// <param name=""></param>
+        public void ValidateSummaryRefs(XmlDocument summary, SplitData summaryData)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Helper method to find all of a summary's page-level section IDs.
         /// </summary>
         /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
@@ -261,6 +276,39 @@ namespace GKManagers.Preprocessors
             }
 
             return foundSections;
+        }
+
+        /// <summary>
+        /// Verifies that if the Summary contains any SummaryRefs which refer to a summary in the pilot,
+        /// are those sections listed as part of the split data?
+        /// </summary>
+        /// <remarks>Throws ValidationException in the case of validation errors.</remarks>
+        /// <param name="summary">XML Document containing a PDQ Summary.</param>
+        /// <param name="summaryData">Metadata describing summaries which appear in the pilot.</param>
+        public void ValidateOutgoingSummaryRefs(XmlDocument summary, ISplitDataManager splitData)
+        {
+            throw new NotImplementedException("DO NOT USE!!!!");
+
+            IEnumerable<string> references = GetSummaryRefList(summary);
+            foreach (string item in references)
+            {
+                // If the reference only has one segment, it's a reference to an entire summary and therefore valid.
+                // If there are two segments, the first is the summary's CDRID and the second is the specific section.
+                string[] segments = item.Split('#');
+                if(segments.Length == 2)
+                {
+                    int summaryid = CDRHelper.ExtractCDRIDAsInt(segments[0]);
+                    string sectionRef = segments[1];
+                    if (splitData.SummaryIsSplit(summaryid))
+                    {
+                        SplitData split = splitData.GetSplitData(summaryid);
+                        if (!Array.Exists(split.LinkedSections, section => section.Equals(sectionRef, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            throw new ValidationException(String.Format("SummaryPreprocessor: Section '{1}' is not a known section for document '{0}'", summaryid, sectionRef));
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
