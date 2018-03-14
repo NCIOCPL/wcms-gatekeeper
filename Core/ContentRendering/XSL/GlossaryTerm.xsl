@@ -590,7 +590,8 @@ source control.
  <xsl:template                    name = "RenderRelatedDrugSummaries">
   <xsl:text>    "drug_summary": [</xsl:text>
   <xsl:for-each                 select = "//RelatedInformation/
-                                            RelatedDrugSummaryRef"> 
+                                            RelatedDrugSummaryRef[
+											       @UseWith = $languageCode]"> 
    <xsl:text>{</xsl:text>
    <xsl:text>&#xa;</xsl:text>
    <xsl:text>        "url": "</xsl:text>
