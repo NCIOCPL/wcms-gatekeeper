@@ -605,30 +605,40 @@ Header
   Display the Keypoints as Titles within the text
   ================================================================ -->
   <xsl:template                  match = "KeyPoint">
-    <xsl:variable                  name = "nestedKp">
+    <xsl:variable                 name = "nestedKp">
       <xsl:choose>
         <xsl:when                 test = "count(ancestor::SummarySection) + 2 > 6">
           <xsl:text>h6</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of          select = "concat('h',
+          <xsl:value-of         select = "concat('h',
                                         count(ancestor::SummarySection) + 1)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:element                   name = "{$nestedKp}">
-      <xsl:attribute                name = "id">
-        <xsl:value-of              select = "@id"/>
+    <xsl:element                  name = "{$nestedKp}">
+      <xsl:attribute              name = "id">
+        <xsl:value-of           select = "@id"/>
       </xsl:attribute>
-      <xsl:attribute                name = "type">
+      <xsl:attribute              name = "type">
         <xsl:text>keypoint</xsl:text>
       </xsl:attribute>
-      <xsl:attribute                name="do-not-show">
+      <xsl:attribute              name = "do-not-show">
         <xsl:text>toc</xsl:text>
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+
+  <!--
+  Display the Keypoints in the KeyPointBox.  The text for these
+  should be displayed with markup but without header tags.
+  ================================================================ -->
+  <xsl:template                  match = "KeyPoint"
+                                  mode = "kpb">
+    <xsl:apply-templates/>
   </xsl:template>
 
 
@@ -2006,8 +2016,9 @@ Header
       <xsl:if                     test = "KeyPoint">
         <xsl:element              name = "li">
           <!-- NVCG Update to remove key point anchor links and only
-               select text -->
-          <xsl:apply-templates  select = "KeyPoint"/>
+               select text (but include markup) -->
+          <xsl:apply-templates  select = "KeyPoint"
+                                  mode = "kpb"/>
 
           <!--
           Nested Keypoint list
@@ -2023,6 +2034,7 @@ Header
     </xsl:for-each>
   </xsl:template>
 
+
   <!--
   Template to create the TOC for a page
   ================================================================ -->
@@ -2032,17 +2044,19 @@ Header
                                   mode = "toc">
     <li>
       <!-- A1  -->
-      <xsl:apply-templates select="Title"  mode="toc"/>
+      <xsl:apply-templates      select = "Title"  
+                                  mode = "toc"/>
 
-      <xsl:if test = "SummarySection[Title]">
+      <xsl:if                     test = "SummarySection[Title]">
         <ul>
           <!-- A2 -->
-          <xsl:apply-templates select="SummarySection[Title]"
-                                mode = "toc2"/>
+          <xsl:apply-templates  select = "SummarySection[Title]"
+                                  mode = "toc2"/>
         </ul>
       </xsl:if>
     </li>
   </xsl:template>
+
 
   <!--
   Template to create the TOC for a page
@@ -2050,7 +2064,8 @@ Header
   <xsl:template                  match = "SummarySection[Title]"
                                   mode = "toc2">
     <!-- B2 -->
-    <xsl:apply-templates select="Title"  mode="toc"/>
+    <xsl:apply-templates        select = "Title"  
+                                  mode = "toc"/>
   </xsl:template>
 
   <!-- <SummarySection> without <Title> children is not handled -->
@@ -2064,13 +2079,13 @@ Header
   ================================================================ -->
   <xsl:template                  match = "Title" mode = "toc">
     <!-- B1 -->
-    <xsl:element                name = "a">
-      <xsl:attribute             name = "href">
+    <xsl:element                  name = "a">
+      <xsl:attribute              name = "href">
         <xsl:text>#</xsl:text>
-        <xsl:value-of          select = "../@id"/>
+        <xsl:value-of           select = "../@id"/>
         <xsl:text>_toc</xsl:text>
       </xsl:attribute>
-      <xsl:value-of            select = "."/>
+      <xsl:value-of             select = "."/>
     </xsl:element>
   </xsl:template>
 
