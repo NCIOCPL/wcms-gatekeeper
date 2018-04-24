@@ -3,24 +3,24 @@
 <!--
 ==========================================================================
 This stylesheet creates the Dictionary JSON structure containing GlossaryTerm
-details for a single targeted Language, Audience and Dictionary.  Separate 
-transformations are required to generate the JSON structure for each 
+details for a single targeted Language, Audience and Dictionary.  Separate
+transformations are required to generate the JSON structure for each
 permutation of the three parameters.
 
-Correct function of these templates is VERY SENSITIVE TO EXTRA CARRIAGE 
-RETURNS.  Be very careful when using an editor (e.g. Visual Studio) which 
-automatically reformats text to a "suggested" format.  Consider using a 
-diff tool to check for unexpected formatting changes before committing to 
+Correct function of these templates is VERY SENSITIVE TO EXTRA CARRIAGE
+RETURNS.  Be very careful when using an editor (e.g. Visual Studio) which
+automatically reformats text to a "suggested" format.  Consider using a
+diff tool to check for unexpected formatting changes before committing to
 source control.
 ========================================================================== -->
-<xsl:stylesheet              xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet              xmlns:xsl = "http://www.w3.org/1999/XSL/Transform"
                                version = "1.0">
 
- <xsl:import href = "Common/JSON-common-templates.xsl"/>
+ <xsl:import                      href = "Common/JSON-common-templates.xsl"/>
 
- <xsl:output                    method = "text" 
+ <xsl:output                    method = "text"
                                 indent = "yes"/>
-  
+
  <!-- Default targets are English, Patient, Cancer.gov dictionary -->
  <xsl:param                       name = "targetLanguage"
                                 select = "'English'"/>
@@ -32,8 +32,8 @@ source control.
                                 select = "'Term'"/>
 
  <!--
- Set the audienceCode, languageCode, and dictionaryCode variables to use 
- the same values as the CDR. These variables provide a translation from 
+ Set the audienceCode, languageCode, and dictionaryCode variables to use
+ the same values as the CDR. These variables provide a translation from
  the constants used by GateKeeper.
  -->
  <!-- General Audience code. MediaLink images and related glossary terms uses different values. -->
@@ -42,44 +42,44 @@ source control.
    <xsl:when                      test = "$targetAudience = 'Patient'">
     <xsl:text>Patient</xsl:text>
    </xsl:when>
-   <xsl:when                      test = "$targetAudience = 
+   <xsl:when                      test = "$targetAudience =
                                                  'HealthProfessional'">
     <xsl:text>Health professional</xsl:text>
    </xsl:when>
   </xsl:choose>
  </xsl:variable>
 
- <!-- 
- MediaLink elements of type image/jpeg use a different string literal 
+ <!--
+ MediaLink elements of type image/jpeg use a different string literal
  for identifying the audience. -->
  <xsl:variable                    name = "imageLinkAudienceCode">
   <xsl:choose>
    <xsl:when                      test = "$targetAudience = 'Patient'">
     <xsl:text>Patients</xsl:text>
    </xsl:when>
-   <xsl:when                      test = "$targetAudience = 
+   <xsl:when                      test = "$targetAudience =
                                                  'HealthProfessional'">
     <xsl:text>Health_professionals</xsl:text>
    </xsl:when>
   </xsl:choose>
  </xsl:variable>
 
-  <!-- 
+  <!--
  RelatedGlossaryTermRef elements use a different string literal
  for identifying the audience. -->
-  <xsl:variable                    name = "relatedGlossaryTermRefLinkAudienceCode">
+  <xsl:variable                   name = "relatedGlossaryTermRefLinkAudienceCode">
     <xsl:choose>
-      <xsl:when                      test = "$targetAudience = 'Patient'">
+      <xsl:when                   test = "$targetAudience = 'Patient'">
         <xsl:text>Patients</xsl:text>
       </xsl:when>
-      <xsl:when                      test = "$targetAudience = 
+      <xsl:when                   test = "$targetAudience =
                                                  'HealthProfessional'">
         <xsl:text>Health_professionals</xsl:text>
       </xsl:when>
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:variable                    name = "languageCode">
+  <xsl:variable                   name = "languageCode">
   <xsl:choose>
    <xsl:when                      test = "$targetLanguage = 'English'">
     <xsl:text>en</xsl:text>
@@ -104,10 +104,10 @@ source control.
   </xsl:choose>
  </xsl:variable>
 
-  
+
  <!--
  =======================================================================
-  Match for the root (GlossaryTerm) element.  
+  Match for the root (GlossaryTerm) element.
   The entire JSON structure is created here.
  ======================================================================= -->
  <xsl:template                   match = "/GlossaryTerm">
@@ -135,13 +135,13 @@ source control.
  <xsl:template                    name = "RenderDocumentID">
   <xsl:text> "id": "</xsl:text>
   <xsl:call-template              name = "GetNumericID">
-   <xsl:with-param                name = "cdrid" 
+   <xsl:with-param                name = "cdrid"
                                 select = "/GlossaryTerm/@id"/>
   </xsl:call-template>
   <xsl:text>",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
  </xsl:template>
-  
+
 
  <!--
  =======================================================================
@@ -178,7 +178,7 @@ source control.
   <xsl:text> "alias": [],</xsl:text>
   <xsl:text>&#xa;</xsl:text>
  </xsl:template>
-  
+
 
  <!--
  =======================================================================
@@ -232,32 +232,32 @@ source control.
 
   <xsl:choose>
    <xsl:when                      test = "$targetLanguage = 'English'">
-    <xsl:value-of select = "$j-def-tag"/>
-    <xsl:value-of select = "$j-html-tag"/>
+    <xsl:value-of               select = "$j-def-tag"/>
+    <xsl:value-of               select = "$j-html-tag"/>
     <xsl:apply-templates        select = "//TermDefinition[
-                                              (Dictionary = $dictionaryCode 
-                                               or 
-                                               (not(Dictionary) 
-                                                and 
+                                              (Dictionary = $dictionaryCode
+                                               or
+                                               (not(Dictionary)
+                                                and
                                                 $targetDictionary = 'NotSet'
                                                )
-                                              ) 
-                                              and 
+                                              )
+                                              and
                                               Audience = $audienceCode
                                                          ]/DefinitionText" />
-    <xsl:value-of select = "$j-end-nl"/>
-    <xsl:value-of select = "$j-text-tag"/>
+    <xsl:value-of               select = "$j-end-nl"/>
+    <xsl:value-of               select = "$j-text-tag"/>
     <xsl:apply-templates        select = "//TermDefinition[
-                                              (Dictionary = $dictionaryCode 
-                                               or 
-                                               (not(Dictionary) 
-                                                and 
+                                              (Dictionary = $dictionaryCode
+                                               or
+                                               (not(Dictionary)
+                                                and
                                                 $targetDictionary = 'NotSet'
                                                )
-                                              ) 
-                                              and 
+                                              )
+                                              and
                                               Audience = $audienceCode
-                                                         ]/DefinitionText" 
+                                                         ]/DefinitionText"
                                   mode = "JSON" />
     <xsl:text>"</xsl:text>
     <xsl:text>&#xa;</xsl:text>
@@ -265,32 +265,32 @@ source control.
     <xsl:text>&#xa;</xsl:text>
    </xsl:when>
    <xsl:when                      test = "$targetLanguage = 'Spanish'">
-    <xsl:value-of select = "$j-def-tag"/>
-    <xsl:value-of select = "$j-html-tag"/>
+    <xsl:value-of               select = "$j-def-tag"/>
+    <xsl:value-of               select = "$j-html-tag"/>
     <xsl:apply-templates        select = "//SpanishTermDefinition[
-                                               (Dictionary = $dictionaryCode 
-                                                or 
-                                                (not(Dictionary) 
-                                                 and 
+                                               (Dictionary = $dictionaryCode
+                                                or
+                                                (not(Dictionary)
+                                                 and
                                                  $targetDictionary = 'NotSet'
                                                 )
-                                               ) 
-                                               and 
+                                               )
+                                               and
                                                Audience = $audienceCode
                                                           ]/DefinitionText" />
-    <xsl:value-of select = "$j-end-nl"/>
-    <xsl:value-of select = "$j-text-tag"/>
+    <xsl:value-of               select = "$j-end-nl"/>
+    <xsl:value-of               select = "$j-text-tag"/>
     <xsl:apply-templates        select = "//SpanishTermDefinition[
-                                               (Dictionary = $dictionaryCode 
-                                                or 
-                                                (not(Dictionary) 
-                                                 and 
+                                               (Dictionary = $dictionaryCode
+                                                or
+                                                (not(Dictionary)
+                                                 and
                                                  $targetDictionary = 'NotSet'
                                                 )
-                                               ) 
-                                               and 
+                                               )
+                                               and
                                                Audience = $audienceCode
-                                                          ]/DefinitionText" 
+                                                          ]/DefinitionText"
                                   mode = "JSON" />
     <xsl:text>"</xsl:text>
     <xsl:text>&#xa;</xsl:text>
@@ -306,22 +306,22 @@ source control.
  Template to create the definition JSON value
  ======================================================================= -->
  <xsl:template                    name = "RenderImageMediaLinks">
-  <xsl:if                         test = "//MediaLink[@type = 'image/jpeg' 
-                                                  and 
-                                                  @language = $languageCode 
-                                                  and 
-                                                  @audience = 
+  <xsl:if                         test = "//MediaLink[@type = 'image/jpeg'
+                                                  and
+                                                  @language = $languageCode
+                                                  and
+                                                  @audience =
                                                       $imageLinkAudienceCode]">
    <xsl:text> "images": [</xsl:text>
 
-   <xsl:for-each                select = "//MediaLink[string-length(@ref) > 0 
-                                          and 
-                                          @type = 'image/jpeg' 
-                                          and 
-                                          @language = $languageCode 
-                                          and 
+   <xsl:for-each                select = "//MediaLink[string-length(@ref) > 0
+                                          and
+                                          @type = 'image/jpeg'
+                                          and
+                                          @language = $languageCode
+                                          and
                                           @audience = $imageLinkAudienceCode]">
-    <xsl:apply-templates        select = "." 
+    <xsl:apply-templates        select = "."
                                   mode = "images"/>
      <!--
      Output a comma unless this is the last element of the set. -->
@@ -340,24 +340,24 @@ source control.
  =======================================================================
  Template to process MediaLink elements
  ======================================================================= -->
- <xsl:template                   match = "MediaLink" 
+ <xsl:template                   match = "MediaLink"
                                   mode = "images">
   <xsl:text>{</xsl:text>
   <xsl:text>&#xa;</xsl:text>
   <xsl:text>    "ref": "[__imagelocation]CDR</xsl:text>
 
   <xsl:call-template              name = "GetNumericID">
-   <xsl:with-param                name = "cdrid" 
+   <xsl:with-param                name = "cdrid"
                                 select = "@ref" />
   </xsl:call-template>
 
   <xsl:text>.jpg",</xsl:text>
   <xsl:text>&#xa;</xsl:text>
   <xsl:text>    "alt": "</xsl:text>
-  <xsl:apply-templates          select = "@alt" 
+  <xsl:apply-templates          select = "@alt"
                                   mode = "JSON" />
   <xsl:text>"</xsl:text>
-  <!-- 
+  <!--
   If caption is rendered, it includes a comma for alt.-->
   <xsl:if                         test = "Caption[@language = $languageCode]">
    <xsl:text>,</xsl:text>
@@ -381,7 +381,7 @@ source control.
    <xsl:for-each                select = "EmbeddedVideo[
                                               @language = $languageCode
                                               and
-                                              @audience = 
+                                              @audience =
                                                       $imageLinkAudienceCode]">
     <xsl:apply-templates        select = "."/>
      <!--
@@ -410,7 +410,7 @@ source control.
   <xsl:text>    "ref": "[__videolocation]CDR</xsl:text>
 
   <xsl:call-template              name = "GetNumericID">
-   <xsl:with-param                name = "cdrid" 
+   <xsl:with-param                name = "cdrid"
                                 select = "@ref" />
   </xsl:call-template>
 
@@ -460,7 +460,7 @@ source control.
   <xsl:apply-templates          select = "Caption"
                                   mode = "video"/>
 
-  <!-- 
+  <!--
   If caption is rendered, it includes a comma for alt.-->
   <!--
   <xsl:if                         test = "Caption[@language = $languageCode]">
@@ -506,27 +506,27 @@ source control.
  <!--
  =======================================================================
  Template to create the definition JSON value
- Render the pronunciation data structure with pronunciation key and 
+ Render the pronunciation data structure with pronunciation key and
  audio file.
  ======================================================================= -->
  <xsl:template                    name = "RenderPronunciation">
   <!-- Calculate media file name. -->
   <xsl:variable                   name = "mediaFile">
-   <xsl:if                        test = "//MediaLink[string-length(@ref) > 0 
-                                                      and 
-                                                      @type = 'audio/mpeg' 
-                                                      and 
-                                                      @language = 
+   <xsl:if                        test = "//MediaLink[string-length(@ref) > 0
+                                                      and
+                                                      @type = 'audio/mpeg'
+                                                      and
+                                                      @language =
                                                               $languageCode]">
     <xsl:text>[__audiolocation]</xsl:text>
     <xsl:call-template            name = "GetNumericID">
-     <xsl:with-param              name = "cdrid" 
-                                select = "//MediaLink[@type = 'audio/mpeg' 
-                                                      and 
-                                                      @language = 
+     <xsl:with-param              name = "cdrid"
+                                select = "//MediaLink[@type = 'audio/mpeg'
+                                                      and
+                                                      @language =
                                                          $languageCode]/@ref" />
     </xsl:call-template>
-    
+
     <xsl:text>.mp3</xsl:text>
    </xsl:if>
   </xsl:variable>
@@ -542,8 +542,8 @@ source control.
    </xsl:choose>
   </xsl:variable>
 
-  <xsl:if                         test = "string-length($mediaFile) > 0 
-                                          or 
+  <xsl:if                         test = "string-length($mediaFile) > 0
+                                          or
                                           string-length($pronunciationKey) > 0">
    <xsl:text> "pronunciation": {</xsl:text>
    <xsl:text>&#xa;</xsl:text>
@@ -565,8 +565,8 @@ source control.
  =======================================================================
  Template to create the definition JSON value
  Renders the Related Information structure.
-    
- NOTE: This is the last item in the output data structure and therefore 
+
+ NOTE: This is the last item in the output data structure and therefore
        does not render a comma at the end.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedInformation">
@@ -584,13 +584,14 @@ source control.
  <!--
  =======================================================================
  Template to create the definition JSON value
- Helper template to render the Drug Info Summary portion of the related 
+ Helper template to render the Drug Info Summary portion of the related
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedDrugSummaries">
   <xsl:text>    "drug_summary": [</xsl:text>
   <xsl:for-each                 select = "//RelatedInformation/
-                                            RelatedDrugSummaryRef"> 
+                                            RelatedDrugSummaryRef[
+                                                     @UseWith = $languageCode]">
    <xsl:text>{</xsl:text>
    <xsl:text>&#xa;</xsl:text>
    <xsl:text>        "url": "</xsl:text>
@@ -598,12 +599,12 @@ source control.
    <xsl:text>",</xsl:text>
    <xsl:text>&#xa;</xsl:text>
    <xsl:text>        "text" : "</xsl:text>
-   <xsl:apply-templates         select = "node()" 
+   <xsl:apply-templates         select = "node()"
                                   mode = "JSON" />
    <xsl:text>"</xsl:text>
    <xsl:text>}</xsl:text>
    <xsl:text>&#xa;</xsl:text>
-   
+
    <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
@@ -616,7 +617,7 @@ source control.
  <!--
  =======================================================================
  Template to create the definition JSON value
- Helper template to render the External reference portion of the related 
+ Helper template to render the External reference portion of the related
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedExternalRefs">
@@ -631,12 +632,12 @@ source control.
    <xsl:text>",</xsl:text>
    <xsl:text>&#xa;</xsl:text>
    <xsl:text>        "text": "</xsl:text>
-   <xsl:apply-templates         select = "node()" 
+   <xsl:apply-templates         select = "node()"
                                   mode = "JSON" />
    <xsl:text>"</xsl:text>
    <xsl:text>&#xa;</xsl:text>
    <xsl:text>    }</xsl:text>
-   
+
    <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
@@ -650,7 +651,7 @@ source control.
  <!--
  =======================================================================
  Template to create the definition JSON value
- Helper template to render the Summary reference portion of the related 
+ Helper template to render the Summary reference portion of the related
  information section.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedSummaryRefs">
@@ -663,12 +664,12 @@ source control.
    <xsl:value-of                select = "@url"/>
    <xsl:text>",</xsl:text>
    <xsl:text>"text": "</xsl:text>
-   <xsl:apply-templates         select = "node()" 
+   <xsl:apply-templates         select = "node()"
                                   mode = "JSON" />
    <xsl:text>"</xsl:text>
    <xsl:text>}</xsl:text>
-   
-   <xsl:if test = "position() != last()">
+
+   <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>
    </xsl:if>
   </xsl:for-each>
@@ -680,21 +681,21 @@ source control.
  <!--
  =======================================================================
  Template to create the definition JSON value
- Helper template to render the Glossary Term reference portion of the 
+ Helper template to render the Glossary Term reference portion of the
  related information section.
 
- ASSUMPTION: Terms in one dictionary will only reference terms in the 
+ ASSUMPTION: Terms in one dictionary will only reference terms in the
              same dictionary.
-    
- NOTE: RelatedGlossaryTermRef elements will *NOT* match the document which 
-       is sent from the CDR.  During Extract processing, the 
-       RelatedGlossaryTermRef elements are rewritten in 
-       GlossaryTermExtractor.RewriteRelatedGlossaryTerms() to replace 
-       any existing RelatedGlossaryTermRef elements with new elements 
-       containing UseWith= and audience= attributes reflecting the language 
-       and audiences for which the referenced GlossaryTerm is available.  
-       The GlossaryTerm XSL is then able to determine which JSON blocks 
-       should include references to the related term and those from which 
+
+ NOTE: RelatedGlossaryTermRef elements will *NOT* match the document which
+       is sent from the CDR.  During Extract processing, the
+       RelatedGlossaryTermRef elements are rewritten in
+       GlossaryTermExtractor.RewriteRelatedGlossaryTerms() to replace
+       any existing RelatedGlossaryTermRef elements with new elements
+       containing UseWith= and audience= attributes reflecting the language
+       and audiences for which the referenced GlossaryTerm is available.
+       The GlossaryTerm XSL is then able to determine which JSON blocks
+       should include references to the related term and those from which
        it should be omitted.
  ======================================================================= -->
  <xsl:template                    name = "RenderRelatedTermRefs">
@@ -702,8 +703,8 @@ source control.
 
   <xsl:for-each                 select = "//RelatedInformation
                                            /RelatedGlossaryTermRef
-                                                   [@UseWith = $languageCode 
-                                                    and 
+                                                   [@UseWith = $languageCode
+                                                    and
                                                     @audience = $relatedGlossaryTermRefLinkAudienceCode
                                                    ]">
    <xsl:text>{</xsl:text>
@@ -711,21 +712,21 @@ source control.
    <xsl:text> "id": </xsl:text>
 
    <xsl:call-template             name = "GetNumericID">
-    <xsl:with-param               name = "cdrid" 
+    <xsl:with-param               name = "cdrid"
                                 select = "@href"/>
    </xsl:call-template>
-   
+
    <xsl:text>,</xsl:text>
    <xsl:text> "dictionary": "</xsl:text>
    <xsl:value-of                select = "$targetDictionary" />
    <xsl:text>",</xsl:text>
    <xsl:text> "text": "</xsl:text>
-   <xsl:apply-templates         select = "node()" 
+   <xsl:apply-templates         select = "node()"
                                   mode = "JSON"/>
    <xsl:text>"</xsl:text>
    <xsl:text>}</xsl:text>
 
-   <!-- 
+   <!--
    No comma after the last sub-element in the releated items structure  -->
    <xsl:if                        test = "position() != last()">
     <xsl:text>,</xsl:text>

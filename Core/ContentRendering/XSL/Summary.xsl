@@ -1,7 +1,7 @@
 <!--
 Header
 ========================================================================= -->
-<xsl:stylesheet                version = "1.0" 
+<xsl:stylesheet                version = "1.0"
                              xmlns:xsl ="http://www.w3.org/1999/XSL/Transform">
  <xsl:output                    method = "xml"/>
  <xsl:param                       name = "section"/>
@@ -23,9 +23,9 @@ Header
   <xsl:choose>
    <xsl:when                      test = "/Summary/
                                            SummaryMetaData/
-                                           SummaryType = 
+                                           SummaryType =
                                              'Integrative, alternative, and complementary therapies'
-                                           or 
+                                           or
                                              'Complementary and alternative medicine'">
     <xsl:text>cam</xsl:text>
    </xsl:when>
@@ -42,7 +42,7 @@ Header
 
   <!-- Define a variable for the audience type -->
   <xsl:variable                   name = "audience">
-    <xsl:choose> 
+   <xsl:choose>
       <xsl:when                     test = "/Summary/
                                            SummaryMetaData/
                                            SummaryAudience = 'Patients'">
@@ -109,7 +109,8 @@ Header
           <xsl:value-of             select = "SummaryTitle"/>
         </title>
         <link   href="http://www.cancer.gov/PublishedContent/Styles/nvcg.css"
-                type="text/css" rel="StyleSheet" />
+             type="text/css" 
+              rel="StyleSheet" />
         <script type="text/javascript"
                  src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
         <script type="text/javascript">
@@ -133,7 +134,7 @@ Header
             <xsl:apply-templates         select = "SummaryMetaData"/>
             <xsl:apply-templates         select = "SummaryTitle"/>
 
-            
+
               <!-- create container to insert full document TOC -->
               <xsl:element                  name = "div">
                 <xsl:attribute               name = "id">
@@ -156,16 +157,17 @@ Header
                 <xsl:number/>
               </xsl:variable>
                 <xsl:element                 name = "div">
-                <!--OCE Project 3368 - Change <section class="pdq-sections"> to <div class="pdq-sections">  -->
+         <!--OCE Project 3368 - Change <section class="pdq-sections"> 
+             to <div class="pdq-sections">  -->
                   <xsl:attribute              name = "id">
                     <xsl:text>_section</xsl:text>
                     <xsl:value-of            select = "./@id"/>
                   </xsl:attribute>
-                  <xsl:attribute             name="class">
+         <xsl:attribute           name = "class">
                     <xsl:text>pdq-sections</xsl:text>
                   </xsl:attribute>
 
-                
+
                 <!--
                 Add the HP/Patient toggle to the top.
                 It will be moved using JS to be positioned underneath the
@@ -184,15 +186,15 @@ Header
                                              contains(preceding-sibling::*[1]/@IncludedDevices, 'general')
                                             )
                                            )">
-                 <xsl:call-template name="addHpPatientToggle"/>
+          <xsl:call-template      name = "addHpPatientToggle"/>
                 </xsl:if>
 
                       <xsl:call-template        name = "Title_TOC_KP">
                         <xsl:with-param          name = "topSection"
                                                select = "$topSection"/>
                       </xsl:call-template>
-                    
-                </xsl:element> 
+
+        </xsl:element>
             </xsl:for-each>
           </article>
         </div>
@@ -229,7 +231,7 @@ Header
   </xsl:template>
 
   <!--
-  Template to use jQuery to create Enlarge buttons for Tables and 
+  Template to use jQuery to create Enlarge buttons for Tables and
   Images
   =================================================================== -->
   <xsl:template                  name = "SuperSizeMe">
@@ -249,25 +251,25 @@ Header
   <!--
   Template to add the HP/Patient toggle to the page
   =================================================================== -->
-  <xsl:template                    name="addHpPatientToggle">
-   <xsl:element                    name="div">
-     <xsl:attribute                name="class">
+  <xsl:template                   name = "addHpPatientToggle">
+   <xsl:element                   name = "div">
+     <xsl:attribute               name = "class">
       <xsl:text>pdq-hp-patient-toggle</xsl:text>
      </xsl:attribute>
-     <xsl:element                  name="a">
-      <xsl:attribute               name="href">
-       <xsl:value-of             select="substring-after(/Summary/
+     <xsl:element                 name = "a">
+      <xsl:attribute              name = "href">
+       <xsl:value-of            select = "substring-after(/Summary/
                                                          SummaryMetaData/
                                                          SummaryToggleURL/
                                                          @xref, '.gov')"/>
       </xsl:attribute>
       <!--
-      <xsl:value-of              select="$strAudienceToggle"/>
+      <xsl:value-of             select = "$strAudienceToggle"/>
      -->
       <xsl:choose>
-       <xsl:when                   test="$language = 'en'">
+       <xsl:when                  test = "$language = 'en'">
         <xsl:choose>
-         <xsl:when                 test="$audience = 'healthprofessional'">
+         <xsl:when                test = "$audience = 'healthprofessional'">
           <xsl:text>Go to Patient Version</xsl:text>
          </xsl:when>
          <xsl:otherwise>
@@ -277,7 +279,7 @@ Header
        </xsl:when>
        <xsl:otherwise>
         <xsl:choose>
-         <xsl:when                 test="$audience = 'healthprofessional'">
+         <xsl:when                test = "$audience = 'healthprofessional'">
           <xsl:text>Vaya a la versi&#243;n para pacientes</xsl:text>
          </xsl:when>
          <xsl:otherwise>
@@ -353,7 +355,7 @@ Header
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <!-- 
+      <!--
       Create TOC for HP sections
       (but suppress TOC header if no subsections exist)
       ================================================================= -->
@@ -397,15 +399,15 @@ Header
   <xsl:template                  match = "SummaryMetaData">
     <div style="background-color: yellow;">
       <p>
-        <xsl:apply-templates     select="../@id"/>
+     <xsl:apply-templates       select = "../@id"/>
         <xsl:text>;</xsl:text>
-        <xsl:apply-templates     select="SummaryType"/>
+     <xsl:apply-templates       select = "SummaryType"/>
         <xsl:text>;</xsl:text>
-        <xsl:apply-templates     select="SummaryAudience"/>
+     <xsl:apply-templates       select = "SummaryAudience"/>
         <xsl:text>;</xsl:text>
-        <xsl:apply-templates     select="SummaryLanguage"/>
+     <xsl:apply-templates       select = "SummaryLanguage"/>
         <xsl:text>;pp=</xsl:text>
-        <xsl:value-of            select="$pp"/>
+     <xsl:value-of              select = "$pp"/>
       </p>
     </div>
   </xsl:template>
@@ -439,15 +441,21 @@ Header
                                  select = "'sub'"/>
         <!-- set up devices for sub-sections-->
         <xsl:choose>
-          <!--When both included and excluded devices are not set
+    <!-- When both included and excluded devices are not set
       draw the sub summary section as is-->
-          <xsl:when                  test="not(@IncludedDevices) and not(@ExcludedDevices)
-                                 and ($targetedDevice = 'screen' or $targetedDevice = 'syndication')">
+    <xsl:when                     test = "not(@IncludedDevices)
+                                          and
+                                          not(@ExcludedDevices)
+                                          and
+                                          ($targetedDevice = 'screen'
+                                           or
+                                           $targetedDevice = 'syndication')">
             <xsl:call-template        name = "SummarySections">
               <xsl:with-param             name = "topSection"
                                         select = "$topSection"/>
               <!-- device list is empty-->
-              <xsl:with-param name="deviceList" select = "''" />
+      <xsl:with-param             name = "deviceList"
+                                select = "''" />
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -455,24 +463,24 @@ Header
               <xsl:when                  test = "$targetedDevice = 'screen'">
                 <xsl:choose>
                   <!--When only included devices are set-->
-                  <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+        <xsl:when                 test = "@IncludedDevices
+                                          and
+                                          not(@ExcludedDevices)">
                     <xsl:choose>
                       <!--When included devices = screen-->
-                      <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+          <xsl:when               test = "contains(
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'screen', ' ')
                                             ) ">
                         <xsl:call-template        name = "SummarySections">
                           <xsl:with-param             name = "topSection"
                                                     select = "$topSection"/>
-                          <xsl:with-param name="deviceList">mobile</xsl:with-param>
+            <xsl:with-param       name = "deviceList">mobile</xsl:with-param>
                         </xsl:call-template>
-
-
                       </xsl:when>
                       <!--When included devices = mobile-->
-                      <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+          <xsl:when               test = "contains(
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'mobile', ' ')
                                             ) ">
 
@@ -484,28 +492,32 @@ Header
 
                       </xsl:when>
                       <!--When included devices = screen and mobile-->
-                      <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+          <xsl:when               test = "contains(
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'screen', ' ')
-                                            ) and 
+                                            ) and
                                             contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'mobile', ' ')
                                             )">
                         <xsl:call-template        name = "SummarySections">
                           <xsl:with-param             name = "topSection"
                                                     select = "$topSection"/>
-                          <xsl:with-param name="deviceList" select = "''" />
+            <xsl:with-param       name = "deviceList"
+                                select = "''" />
                         </xsl:call-template>
                       </xsl:when>
                     </xsl:choose>
                   </xsl:when>
                   <!--When only excluded devices are set-->
-                  <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
+        <xsl:when                  test="@ExcludedDevices
+                                         and
+                                         not(@IncludedDevices)">
                     <xsl:call-template        name = "SummarySections">
                       <xsl:with-param             name = "topSection"
                                                 select = "$topSection"/>
-                      <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+          <xsl:with-param         name = "deviceList"
+                                select = "@ExcludedDevices" />
                     </xsl:call-template>
                   </xsl:when>
                   <xsl:otherwise>
@@ -513,7 +525,8 @@ Header
                     <xsl:call-template        name = "SummarySections">
                       <xsl:with-param             name = "topSection"
                                                 select = "$topSection"/>
-                      <xsl:with-param name="deviceList" select = "@ExcludedDevices" />
+          <xsl:with-param         name = "deviceList"
+                                select = "@ExcludedDevices" />
                     </xsl:call-template>
                   </xsl:otherwise>
                 </xsl:choose>
@@ -521,40 +534,46 @@ Header
               <xsl:when                  test = "$targetedDevice = 'syndication'">
                 <xsl:choose>
                   <!--When only included devices are set-->
-                  <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
+        <xsl:when                 test = "@IncludedDevices
+                                          and
+                                          not(@ExcludedDevices)">
                     <!--When included devices = syndication-->
-                    <xsl:if                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+         <xsl:if                  test = "contains(
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                       <xsl:call-template        name = "SummarySections">
                         <xsl:with-param             name = "topSection"
                                                   select = "$topSection"/>
-                        <xsl:with-param name="deviceList" select = "''" />
+           <xsl:with-param        name = "deviceList"
+                                select = "''" />
                       </xsl:call-template>
                     </xsl:if>
                   </xsl:when>
                   <!--When only excluded devices are set-->
-                  <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
-                    <xsl:if                  test="contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
+        <xsl:when                 test = "@ExcludedDevices
+                                          and
+                                          not(@IncludedDevices)">
+         <xsl:if                  test = "contains(
+                                            concat(' ', @ExcludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
-                      <!--Don't draw the summary section element as it is excluded from syndication-->
+          <!-- Don't draw the summary section element as it is
+               excluded from syndication-->
                     </xsl:if>
                   </xsl:when>
                   <xsl:otherwise>
                     <!--When both included and excluded devices are set-->
                     <!--When included devices = syndication-->
-                    <xsl:if                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+         <xsl:if                  test = "contains(
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                       <xsl:call-template        name = "SummarySections">
                         <xsl:with-param             name = "topSection"
                                                   select = "$topSection"/>
-                        <xsl:with-param name
-                                        ="deviceList" select = "''" />
+           <xsl:with-param        name = "deviceList"
+                                select = "''" />
                       </xsl:call-template>
                     </xsl:if>
                   </xsl:otherwise>
@@ -565,6 +584,10 @@ Header
         </xsl:choose>
   </xsl:template>
 
+
+  <!--
+  Template for other SummarySections
+  ================================================================ -->
   <xsl:template                     name = "SummarySections">
     <xsl:param                      name = "topSection"/>
     <xsl:param                      name = "deviceList"/>
@@ -580,10 +603,12 @@ Header
       <xsl:apply-templates>
         <xsl:with-param             name = "topSection"
                                   select = "$topSection"/>
-       
+
       </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
+
+
   <!--
   Display the Keypoints as Titles within the text
   ================================================================ -->
@@ -607,11 +632,21 @@ Header
       <xsl:attribute                name = "type">
         <xsl:text>keypoint</xsl:text>
       </xsl:attribute>
-      <xsl:attribute                name="do-not-show">
+      <xsl:attribute              name = "do-not-show">
         <xsl:text>toc</xsl:text>
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+
+  <!--
+  Display the Keypoints in the KeyPointBox.  The text for these
+  should be displayed with markup but without header tags.
+  ================================================================ -->
+  <xsl:template                  match = "KeyPoint"
+                                  mode = "kpb">
+    <xsl:apply-templates/>
   </xsl:template>
 
 
@@ -631,7 +666,7 @@ Header
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
-      
+
       <xsl:otherwise>
         <!--
      Testing the level of nested sections to determine the H-tag
@@ -709,7 +744,7 @@ Header
   <!--
   An itemized list will be converted into a DD/DL if the style is
   simple
-  This has changed:  We're now keeping the list item and creating 
+  This has changed:  We're now keeping the list item and creating
   a new style 'no-bullets'.
   ================================================================ -->
   <xsl:template                  match = "XX_ItemizedList[@Style='simple']">
@@ -728,15 +763,15 @@ Header
 
   <!--
   Ordered lists will be displayed as is
-  Unordered lists will be displayed without style and without 
-  compact mode.  No 'dash', no 'bullet'.  
+  Unordered lists will be displayed without style and without
+  compact mode.  No 'dash', no 'bullet'.
   Style="simple" will be converted into class="no-bullets" (indentation?)
   and eventually converted to some sort of address block when available
   ================================================================ -->
   <xsl:template                  match = "@Style">
     <xsl:choose>
       <xsl:when                      test = ". = 'bullet'"/>
-      <!-- Arabic (i.e. class="decimal") is the default.  
+      <!-- Arabic (i.e. class="decimal") is the default.
          Don't need to include this in the HTML output -->
       <xsl:when                      test = ". = 'Arabic'"/>
       <xsl:otherwise>
@@ -862,7 +897,7 @@ Header
   Template to display the citations in the Reference Section
   Note: There used to be two types of references: PubMed citations
         and protocol citations.  The protocol citations (i.e.
-        @ProtocolID attributes) are not used anymore and therefore 
+        @ProtocolID attributes) are not used anymore and therefore
         not implemented here.
   ================================================================ -->
   <xsl:template                  match = "ReferenceSection">
@@ -1007,9 +1042,9 @@ Header
   <!--
   Elements that will by default be marked up for display in italics
   ================================================================ -->
-  <xsl:template                  match = "Emphasis | 
+  <xsl:template                  match = "Emphasis |
                                           ForeignWord |
-                                          GeneName | 
+                                          GeneName |
                                           ScientificName">
     <xsl:param                     name = "topSection"
                                  select = "'em'"/>
@@ -1064,7 +1099,7 @@ Header
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    
+
     <!-- Translate requested dictionary into value understood by the front end
          (mostly, handling genetics vs. genetic). -->
     <xsl:variable                  name = "glossDictionary">
@@ -1077,7 +1112,7 @@ Header
     </xsl:variable>
 
       <xsl:element                   name = "a">
-      <xsl:attribute                name = "class"> 
+      <xsl:attribute                name = "class">
         <xsl:text>definition</xsl:text>
       </xsl:attribute>
       <xsl:attribute                name = "type">
@@ -1085,7 +1120,7 @@ Header
       </xsl:attribute>
       <xsl:attribute                name = "href">
         <!--
-     Next Line For Testing on DEV only !!! 
+     Next Line For Testing on DEV only !!!
      ===================================== -->
         <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:text>/Common/PopUps/popDefinition.aspx?id=</xsl:text>
@@ -1148,7 +1183,7 @@ Header
     <xsl:element                   name = "a">
       <xsl:attribute                name = "href">
         <!--
-     Next Line For Testing on DEV only !!! 
+     Next Line For Testing on DEV only !!!
      ===================================== -->
         <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
         <xsl:text>/Common/PopUps/popDefinition.aspx?id=</xsl:text>
@@ -1175,7 +1210,7 @@ Header
   </xsl:template>
 
   <!--
-  Template to link to the Cancer.gov trials information of the 
+  Template to link to the Cancer.gov trials information of the
   protocol
   ================================================================ -->
   <xsl:template                  match = "ProtocolRef">
@@ -1224,7 +1259,7 @@ Header
     <xsl:element                   name = "a">
       <xsl:attribute                name = "href">
         <!--
-     Next Line For Testing on DEV only !!! 
+     Next Line For Testing on DEV only !!!
      ===================================== -->
         <xsl:value-of              select = "@xref"/>
       </xsl:attribute>
@@ -1242,26 +1277,26 @@ Header
     <xsl:choose>
       <!--When both included and excluded devices are not set
       draw the figure element as is-->
-      <xsl:when                   test = "not(@IncludedDevices) 
-                                          and 
+      <xsl:when                   test = "not(@IncludedDevices)
+                                          and
                                          not(@ExcludedDevices)
-                                         and ($targetedDevice = 'screen' 
-                                              or 
+                                         and ($targetedDevice = 'screen'
+                                              or
                                               $targetedDevice = 'syndication'
                                               )">
         <xsl:call-template        name = "mediaLinks">
           <!-- device list is empty-->
-          <xsl:with-param         name = "deviceList" 
+          <xsl:with-param         name = "deviceList"
                                 select = "''" />
-        </xsl:call-template>        
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
        <xsl:choose>
         <xsl:when                 test = "$targetedDevice = 'screen'">
          <xsl:choose>
           <!--When only included devices are set-->
-          <xsl:when               test = "@IncludedDevices 
-                                          and 
+          <xsl:when               test = "@IncludedDevices
+                                          and
                                           not(@ExcludedDevices)">
            <xsl:choose>
             <!--When included devices = screen-->
@@ -1287,31 +1322,31 @@ Header
             <xsl:when             test = "contains(
                                             concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'screen', ' ')
-                                            ) and 
+                                            ) and
                                             contains(
                                             concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'mobile', ' ')
                                             )">
              <xsl:call-template   name = "mediaLinks">
-              <xsl:with-param     name = "deviceList" 
+              <xsl:with-param     name = "deviceList"
                                 select = "''" />
              </xsl:call-template>
             </xsl:when>
            </xsl:choose>
           </xsl:when>
           <!--When only excluded devices are set-->
-          <xsl:when               test = "@ExcludedDevices 
-                                             and 
+          <xsl:when               test = "@ExcludedDevices
+                                             and
                                              not(@IncludedDevices)">
            <xsl:call-template     name = "mediaLinks">
-            <xsl:with-param       name = "deviceList" 
+            <xsl:with-param       name = "deviceList"
                                 select = "@ExcludedDevices" />
            </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
            <!--When both included and excluded devices are set-->
            <xsl:call-template     name = "mediaLinks">
-            <xsl:with-param       name = "deviceList" 
+            <xsl:with-param       name = "deviceList"
                                 select = "@ExcludedDevices" />
            </xsl:call-template>
           </xsl:otherwise>
@@ -1320,8 +1355,8 @@ Header
         <xsl:when                 test = "$targetedDevice = 'syndication'">
          <xsl:choose>
           <!--When only included devices are set-->
-          <xsl:when               test = "@IncludedDevices 
-                                          and 
+          <xsl:when               test = "@IncludedDevices
+                                          and
                                           not(@ExcludedDevices)">
               <!--When included devices = syndication-->
            <xsl:if                test = "contains(
@@ -1329,21 +1364,21 @@ Header
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
             <xsl:call-template    name = "mediaLinks">
-             <xsl:with-param      name = "deviceList" 
+             <xsl:with-param      name = "deviceList"
                                 select = "''" />
             </xsl:call-template>
            </xsl:if>
           </xsl:when>
           <!--When only excluded devices are set-->
-          <xsl:when               test = "@ExcludedDevices 
-                                          and 
+          <xsl:when               test = "@ExcludedDevices
+                                          and
                                           not(@IncludedDevices)">
            <xsl:if                test = "contains(
                                             concat(' ', @ExcludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                <!--
-               Don't draw the figure element as it is excluded 
+               Don't draw the figure element as it is excluded
                from syndication-->
            </xsl:if>
           </xsl:when>
@@ -1355,7 +1390,7 @@ Header
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
             <xsl:call-template    name = "mediaLinks">
-             <xsl:with-param      name = "deviceList" 
+             <xsl:with-param      name = "deviceList"
                                 select = "''" />
             </xsl:call-template>
            </xsl:if>
@@ -1380,7 +1415,7 @@ Header
      <xsl:value-of              select = "@id"/>
     </xsl:attribute>
 
-    <!-- Add expandable-container as a hook for the JavaScript 
+    <!-- Add expandable-container as a hook for the JavaScript
          enlarge/collapse generation -->
     <xsl:attribute                name = "class">
 	 <xsl:value-of              select = "@placement"/>
@@ -1434,7 +1469,7 @@ Header
         </xsl:attribute>
         <xsl:attribute            name = "src">
           <!--
-       Next Line For Testing on DEV only !!! 
+       Next Line For Testing on DEV only !!!
        ===================================== -->
           <!--<xsl:text>http://www.cancer.gov</xsl:text>-->
           <xsl:text>/images/cdr/live/CDR</xsl:text>
@@ -1500,7 +1535,7 @@ Header
      </xsl:element>
     </xsl:element>
 
-    <!-- 
+    <!--
     <xsl:element                  name = "figcaption">
      <xsl:attribute               name = "class">
       <xsl:text>caption-container no-resize</xsl:text>
@@ -1579,7 +1614,7 @@ Header
   =========================================================================
   Template to display the image caption element
 
-  JIRA Ticket 2832 - make sure figcaption tag is not rendered when no 
+  JIRA Ticket 2832 - make sure figcaption tag is not rendered when no
   caption exists
   ========================================================================= -->
   <xsl:template                  match = "Caption[not(.='')]">
@@ -1627,10 +1662,10 @@ Header
           <xsl:with-param              name = "topSection"
                                      select = "$topSection"/>
           <!-- device list is empty-->
-          <xsl:with-param               name = "deviceList" 
+          <xsl:with-param               name = "deviceList"
                                         select = "''" />
         </xsl:apply-templates>
-        
+
       </xsl:when>
       <xsl:otherwise>
         <xsl:choose>
@@ -1641,7 +1676,7 @@ Header
                 <xsl:choose>
                   <!--When included devices = screen-->
                   <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'screen', ' ')
                                             ) ">
                     <!-- Display the Table -->
@@ -1649,13 +1684,13 @@ Header
                       <xsl:with-param              name = "topSection"
                                                  select = "$topSection"/>
                       <xsl:with-param               name = "deviceList">mobile</xsl:with-param>
-                                                   
+
                     </xsl:apply-templates>
-               
+
                   </xsl:when>
                   <!--When included devices = mobile-->
                   <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'mobile', ' ')
                                             ) ">
 
@@ -1664,17 +1699,17 @@ Header
                       <xsl:with-param              name = "topSection"
                                                  select = "$topSection"/>
                       <xsl:with-param               name = "deviceList">screen</xsl:with-param>
-                                               
+
                     </xsl:apply-templates>
 
                   </xsl:when>
                   <!--When included devices = screen and mobile-->
                   <xsl:when                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'screen', ' ')
-                                            ) and 
+                                            ) and
                                             contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', 'mobile', ' ')
                                             )">
                     <!-- Display the Table -->
@@ -1713,7 +1748,7 @@ Header
               <xsl:when                  test="@IncludedDevices and not(@ExcludedDevices)">
                 <!--When included devices = syndication-->
                 <xsl:if                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                   <xsl:apply-templates        select = "TGroup">
@@ -1727,7 +1762,7 @@ Header
               <!--When only excluded devices are set-->
               <xsl:when                  test="@ExcludedDevices and not(@IncludedDevices)">
                 <xsl:if                  test="contains(
-                                            concat(' ', @ExcludedDevices, ' '), 
+                                            concat(' ', @ExcludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                   <!--Don't draw the table element as it is excluded from syndication-->
@@ -1737,7 +1772,7 @@ Header
                 <!--When both included and excluded devices are set-->
                 <!--When included devices = syndication-->
                 <xsl:if                  test="contains(
-                                            concat(' ', @IncludedDevices, ' '), 
+                                            concat(' ', @IncludedDevices, ' '),
                                             concat(' ', $targetedDevice, ' ')
                                             ) ">
                   <xsl:apply-templates        select = "TGroup">
@@ -1961,11 +1996,11 @@ Header
             <xsl:value-of            select = "./@id"/>
             <xsl:text>_</xsl:text>
             <xsl:value-of            select = "count(
-                                            preceding-sibling::SummarySection) 
+                                            preceding-sibling::SummarySection)
                                                                          + 1"/>
           </xsl:attribute>
 
-          <!-- 
+          <!--
       Creating the nested list containing the key point links
       ======================================================= -->
           <xsl:element                name = "ul">
@@ -1982,12 +2017,16 @@ Header
   ================================================================ -->
   <xsl:template                   name = "createKeyPointBox">
     <xsl:for-each                select = "SummarySection">
-      <!-- JIRA TICKET 2757 - Make sure the Keypoint element exists before adding <li>-->
-      <!-- NOTE: This does NOT address: keypoints in sub summary sections where the parent section does not have keypoints-->
-      <xsl:if                    test="KeyPoint">
+      <!-- JIRA TICKET 2757 - Make sure the Keypoint element exists before
+           adding <li>-->
+      <!-- NOTE: This does NOT address: keypoints in sub summary sections
+           where the parent section does not have keypoints-->
+      <xsl:if                     test = "KeyPoint">
         <xsl:element                  name = "li">
-          <!-- NVCG Update to remove key point anchor links and only select text -->
-          <xsl:value-of               select = "KeyPoint"/>
+          <!-- NVCG Update to remove key point anchor links and only
+               select text (but include markup) -->
+          <xsl:apply-templates  select = "KeyPoint"
+                                  mode = "kpb"/>
 
           <!--
        Nested Keypoint list
@@ -2003,6 +2042,7 @@ Header
     </xsl:for-each>
   </xsl:template>
 
+
   <!--
   Template to create the TOC for a page
   ================================================================ -->
@@ -2012,17 +2052,19 @@ Header
                                   mode = "toc">
     <li>
       <!-- A1  -->
-      <xsl:apply-templates select="Title"  mode="toc"/>
+      <xsl:apply-templates      select = "Title"  
+                                  mode = "toc"/>
 
       <xsl:if test = "SummarySection[Title]">
         <ul>
           <!-- A2 -->
-          <xsl:apply-templates select="SummarySection[Title]"
+          <xsl:apply-templates  select = "SummarySection[Title]"
                                 mode = "toc2"/>
         </ul>
       </xsl:if>
     </li>
   </xsl:template>
+
 
   <!--
   Template to create the TOC for a page
@@ -2030,7 +2072,8 @@ Header
   <xsl:template                  match = "SummarySection[Title]"
                                   mode = "toc2">
     <!-- B2 -->
-    <xsl:apply-templates select="Title"  mode="toc"/>
+    <xsl:apply-templates        select = "Title"  
+                                  mode = "toc"/>
   </xsl:template>
 
   <!-- <SummarySection> without <Title> children is not handled -->
@@ -2080,8 +2123,8 @@ Header
 
   <!--
 ========================================================================
-    Template for CALS to HTML Conversion 
-    (code adapted from 
+    Template for CALS to HTML Conversion
+    (code adapted from
     http://www.biglist.com/lists/xsl-list/archives/200202/msg00666.html)
 ======================================================================== -->
   <!--
@@ -2105,7 +2148,7 @@ Template for Creating a table (from CALS)
           <xsl:value-of select="$deviceList" />
         </xsl:attribute>
       </xsl:if>
-      
+
       <xsl:if                       test = "@PgWide=1">
         <xsl:attribute              name = "width">100%</xsl:attribute>
       </xsl:if>
@@ -2114,18 +2157,18 @@ Template for Creating a table (from CALS)
           <xsl:value-of           select = "TGroup/@Align"/>
         </xsl:attribute>
       </xsl:if>
-      <!-- Should be coming from CSS 
+      <!-- Should be coming from CSS
     <xsl:choose>
       <xsl:when test="@Frame='TOPBOT'">
         <xsl:attribute name="style">border-top:thin solid black; border-bottom:thin solid black;</xsl:attribute>
       </xsl:when>
       -->
-      <!-- Should be coming from CSS 
+      <!-- Should be coming from CSS
       <xsl:when test="@Frame='None'">
         <xsl:attribute name="border">0</xsl:attribute>
       </xsl:when>
       -->
-      <!-- Should be coming from CSS 
+      <!-- Should be coming from CSS
       <xsl:otherwise>
         <xsl:attribute name="border">0</xsl:attribute>
       </xsl:otherwise>
@@ -2177,7 +2220,7 @@ Template for Creating a table (from CALS)
 
   <xsl:template                    match = "SpanSpec"></xsl:template>
 
-  <!-- 
+  <!--
 =====================================================================
 ===================================================================== -->
   <xsl:template                    match = "THead | TFoot">
@@ -2223,7 +2266,7 @@ Template for Creating a table (from CALS)
   </xsl:template>
 
 
-  <!-- 
+  <!--
 =====================================================================
 ===================================================================== -->
   <xsl:template                    match = "TBody">
@@ -2358,8 +2401,8 @@ Template for Creating a table (from CALS)
     <xsl:variable                   name = "empty.cell"
                                   select = "count(node()) = 0"/>
 
-    <xsl:variable                   name= "entry.colnum">
-      <xsl:call-template            name= "entry.colnum"/>
+   <xsl:variable                  name = "entry.colnum">
+    <xsl:call-template            name = "entry.colnum"/>
     </xsl:variable>
 
     <!--
@@ -2376,13 +2419,13 @@ Template for Creating a table (from CALS)
     <!--
   <xsl:if                         test = "$entry.colnum != ''">
   XXX
-    <xsl:variable                 name = "prev.entry" 
+    <xsl:variable                 name = "prev.entry"
                                 select = "preceding-sibling::*[1]"/>
     <xsl:variable                 name = "prev.ending.colnum">
       <xsl:choose>
         <xsl:when                 test = "$prev.entry">
           <xsl:call-template      name = "entry.ending.colnum">
-            <xsl:with-param       name = "entry" 
+            <xsl:with-param       name = "entry"
                                 select = "$prev.entry"/>
           </xsl:call-template>
         </xsl:when>
@@ -2447,6 +2490,10 @@ Template for Creating a table (from CALS)
       </xsl:if>
 
       <xsl:if                       test = "@Align">
+     <xsl:attribute               name = "align">
+      <xsl:value-of             select = "@Align"/>
+     </xsl:attribute>
+     <!--
         <xsl:choose>
           <xsl:when                  test = "not(@Align = 'Center')">
             <xsl:attribute            name = "align">
@@ -2454,6 +2501,7 @@ Template for Creating a table (from CALS)
             </xsl:attribute>
           </xsl:when>
         </xsl:choose>
+     -->
         <xsl:attribute              name = "scope">
           <xsl:value-of           select = "'col'"/>
         </xsl:attribute>
@@ -2481,7 +2529,8 @@ Template for Creating a table (from CALS)
     -->
 
       <xsl:if                       test = "not(preceding-sibling::*)
-                  and ancestor::Row/@id">
+                                          and
+                                          ancestor::Row/@id">
         <a                          name = "{ancestor::Row/@id}"/>
       </xsl:if>
 
