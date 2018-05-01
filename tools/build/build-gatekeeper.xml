@@ -134,13 +134,13 @@
 		<Copy	SourceFiles="$(SourceLocation)\tools\build\resources\gkBackup.ps1"		DestinationFolder="$(StagingLocation)"		OverwriteReadOnlyFiles="true" />
 
 		<Message Text="Creating $(TempBase)\$(BuildName).zip from $(StagingLocation)" />
-		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\create-zip.ps1 -sourcePath &quot;$(StagingLocation)\*&quot;  -destinationPath &quot;$(TempBase)\$(BuildName).zip&quot;" />
+		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive build-tools\zip-tools\create-zip.ps1 -sourcePath &quot;$(StagingLocation)\*&quot;  -destinationPath &quot;$(TempBase)\$(BuildName).zip&quot;" />
 
 		<Message Text="Creating tag $(BuildName)." />
 		<Exec Command="git tag $(BuildName) $(COMMIT_ID)" />
 
 		<Message Text="Uploading $(BuildName).zip to GitHub" />
-		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive scripts\github-release.ps1 -tagname $(BuildName) -releaseName $(BuildName) -commitId $(COMMIT_ID) -IsPreRelease -releaseNotes \&quot;Automated build $(BuildName)\&quot; -artifactDirectory &quot;$(TempBase)&quot; -artifactFileName &quot;$(BuildName).zip&quot; -gitHubUsername $(GH_ORGANIZATION_NAME) -gitHubRepository $(GH_REPO_NAME)" />
+		<Exec Command="powershell -ExecutionPolicy RemoteSigned -NonInteractive build-tools\github-tools\github-release.ps1 -tagname $(BuildName) -releaseName $(BuildName) -commitId $(COMMIT_ID) -IsPreRelease -releaseNotes \&quot;Automated build $(BuildName)\&quot; -artifactDirectory &quot;$(TempBase)&quot; -artifactFileName &quot;$(BuildName).zip&quot; -gitHubUsername $(GH_ORGANIZATION_NAME) -gitHubRepository $(GH_REPO_NAME)" />
 	</Target>
 
 
