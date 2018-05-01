@@ -1,4 +1,4 @@
-[submodule "build-tools"]
-	path = tools/build/cancergov-build-tools
-	url = https://github.com/nciocpl/cancergov-build-tools
+[submodule "tools/build/build-tools"]
+	path = tools/build/build-tools
+	url = https://github.com/NCIOCPL/cancergov-build-tools
 	branch = gatekeeper
