@@ -10,6 +10,13 @@ copy "%placeholder%" "App\CDRPreviewWS\web.config"
 copy "%placeholder%" "App\WebSvc\web.config"
 copy "%placeholder%" "App\ProcMgr\app.config"
 
+REM Core projects
+copy "%placeholder%" "Core\DocumentObjects\app.config"
+copy "%placeholder%" "Core\CMSDocumentProcessing\app.config"
+copy "%placeholder%" "Core\ContentRendering\app.config"
+copy "%placeholder%" "Core\DataAccess\app.config"
+copy "%placeholder%" "Core\DocumentManager\app.config"
+
 REM Test Harnesses
 copy "%placeholder%" "Test Harnesses\PromotionTester\app.config"
 copy "%placeholder%" "Test Harnesses\UnitTest\UnitTest.dll.config"
