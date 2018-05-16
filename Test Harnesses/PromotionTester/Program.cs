@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using GKManagers;
-using GKManagers.BusinessObjects;
-using NCI.WCM.CMSManager.CMS;
-using GateKeeper.Common;
-using GateKeeper.DataAccess.GateKeeper;
 using System.Threading;
 using System.Configuration;
+using System.Xml.Serialization;
+
+using GKManagers;
+using GKManagers.BusinessObjects;
+using GateKeeper.Common;
+using GateKeeper.DataAccess.GateKeeper;
+using GateKeeper.DocumentObjects.Summary;
+using NCI.WCM.CMSManager.CMS;
+
 namespace PromotionTester
 {
     public class Program
@@ -30,12 +30,12 @@ where:
         {
             try
             {
-                if (ConfigurationSettings.AppSettings["MultiThread"] == "True")
+                if (ConfigurationManager.AppSettings["MultiThread"] == "True")
                 {
                     //Process documents using multi thread.
                     RunUsingThreads(args);
                 }
-                else if (ConfigurationSettings.AppSettings["SingleThread"] == "True")
+                else if (ConfigurationManager.AppSettings["SingleThread"] == "True")
                 {
 
                     //Document processing as a single thread
@@ -83,16 +83,22 @@ where:
 
                 RequestData data = DeserializeData(args[0]);
 
-                foreach (ProcessActionType processActionType in promotions)
+
+                string splitDataFile = ConfigurationManager.AppSettings["summary-split-file-location"];
+                using (SplitDataManager splitData = SplitDataManager.Create(splitDataFile))
                 {
-                    ProcessActionType processAction = processActionType;
 
-                    DocumentXPathManager xPathManager = new DocumentXPathManager();
+                    foreach (ProcessActionType processActionType in promotions)
+                    {
+                        ProcessActionType processAction = processActionType;
 
-                    // Instantiate a promoter and go to town.
-                    DocumentPromoterBase promoter =
-                        DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
-                    promoter.Promote(xPathManager);
+                        DocumentXPathManager xPathManager = new DocumentXPathManager();
+
+                        // Instantiate a promoter and go to town.
+                        DocumentPromoterBase promoter =
+                            DocumentPromoterFactory.Create(data, 18, processAction, "PromotionTester");
+                        promoter.Promote(xPathManager);
+                    }
                 }
 
                 CMSController.CMSPublishingTarget? publishingFlag = null;

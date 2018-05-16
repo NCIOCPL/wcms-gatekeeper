@@ -988,6 +988,30 @@ namespace GKManagers.CMSDocumentProcessing
             // HACK: This relies on Percussion not setting anything else in the login session.
             fields.Add("sys_lang", GetLanguageCode(summary.Language));
 
+
+            // Metadata for the summary split pilot.
+            if (summary.IsPartOfTheSplitPilot)
+            {
+                SplitData data = summary.SplitPilotMetadata;
+
+                fields.Add("pilot_summary", "1");
+                fields.Add("pilot_long_title", data.LongTitle);
+                fields.Add("pilot_short_title", data.ShortTitle);
+                fields.Add("pilot_long_description", data.LongDescription);
+                fields.Add("pilot_meta_keywords", data.MetaKeywords);
+                fields.Add("pilot_page_path", data.Url);
+            }
+            else
+            {
+                fields.Add("pilot_summary", "0");
+                fields.Add("pilot_long_title", string.Empty);
+                fields.Add("pilot_short_title", string.Empty);
+                fields.Add("pilot_long_description", string.Empty);
+                fields.Add("pilot_meta_keywords", string.Empty);
+                fields.Add("pilot_page_path", string.Empty);
+            }
+            
+
             return fields;
         }
 

@@ -286,40 +286,6 @@ namespace GateKeeper.DocumentObjects.Summary
             }
         }
 
-        /*
-        private List<PermanentLink> _permanentLinkCreateList;
-        public List<PermanentLink> PermanentLinkCreateList
-        {
-            get
-            {
-                if (_permanentLinkCreateList == null)
-                    _permanentLinkCreateList = new List<PermanentLink>();
-                return _permanentLinkCreateList;
-            }
-        }
-
-        private List<PermanentLink> _permanentLinkUpdateList;
-        public List<PermanentLink> PermanentLinkUpdateList
-        {
-            get
-            {
-                if (_permanentLinkUpdateList == null)
-                    _permanentLinkUpdateList = new List<PermanentLink>();
-                return _permanentLinkUpdateList;
-            }
-        }
-
-        private List<PermanentLink> _permanentLinkDeleteList;
-        public List<PermanentLink> PermanentLinkDeleteList
-        {
-            get
-            {
-                if (_permanentLinkDeleteList == null)
-                    _permanentLinkDeleteList = new List<PermanentLink>();
-                return _permanentLinkDeleteList;
-            }
-        }
-        */
         /// <summary>
         /// Gets, sets summary ID of the document this summary replaces.
         /// Note: May be empty string if this is not a replace.
@@ -362,6 +328,23 @@ namespace GateKeeper.DocumentObjects.Summary
             get { return _summaryKeyWords; }
             internal set { _summaryKeyWords = value; }
         }
+
+        /// <summary>
+        /// Metadata for the summary split pilot. If NULL, the summary is not part of the pilot.
+        /// </summary>
+        public SplitData SplitPilotMetadata { get; set; }
+
+        /// <summary>
+        /// Read-only convenience property for determining whether the summary is part of the summary split pilot.
+        /// </summary>
+        public bool IsPartOfTheSplitPilot
+        {
+            get
+            {
+                return SplitPilotMetadata != null;
+            }
+        }
+
         #endregion Public Properties
 
         #region Public Methods

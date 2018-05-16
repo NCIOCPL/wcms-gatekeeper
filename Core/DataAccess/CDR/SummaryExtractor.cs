@@ -216,11 +216,27 @@ namespace GateKeeper.DataAccess.CDR
                     }
 
                 } // This bracket ends the Permanent Link section
+
+                ExtractSplitPilotMetadata(summary);
             }
             catch (Exception e)
             {
                 throw new Exception("Extraction Error: Extracting " + path + " failed.  Document CDRID=" + _documentID.ToString(), e);
             }
+        }
+
+        /// <summary>
+        /// Sets summary's metadata for the summary split pilot
+        /// </summary>
+        /// <param name="summary">The summary document metadata object.</param>
+        private void ExtractSplitPilotMetadata(SummaryDocument summary)
+        {
+            SplitDataManager pilotData = SplitDataManager.Instance;
+
+            if (pilotData.SummaryIsSplit(summary.DocumentID))
+                summary.SplitPilotMetadata = pilotData.GetSplitData(summary.DocumentID);
+            else
+                summary.SplitPilotMetadata = null;
         }
 
         /// <summary>
@@ -370,7 +386,7 @@ namespace GateKeeper.DataAccess.CDR
         /// <param name="summary"></param>
         private void ExtractTopLevelSections(XPathNavigator xNav, SummaryDocument summary, DocumentXPathManager xPathManager, TargetedDevice device)
         {
-            string path = xPathManager.GetXPath(SummaryXPath.TopSection, device);
+            string path = "//Summary/SummarySection"; // xPathManager.GetXPath(SummaryXPath.TopSection, device);
 
             try
             {
@@ -437,7 +453,10 @@ namespace GateKeeper.DataAccess.CDR
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.mobile);
                                 else if (deviceToInlcude.Equals(SummarySectionDeviceType.syndication.ToString()))
                                     topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.syndication);
-
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.general.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.general);
+                                else if (deviceToInlcude.Equals(SummarySectionDeviceType.main.ToString()))
+                                    topLevelSection.IncludedDeviceTypes.Add(SummarySectionDeviceType.main);
                             }
 
                         }

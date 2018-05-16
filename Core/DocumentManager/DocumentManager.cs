@@ -15,6 +15,7 @@ using GKManagers.BusinessObjects;
 
 using NCI.WCM.CMSManager.CMS;
 using GKManagers.DataAccess;
+using GateKeeper.DocumentObjects.Summary;
 
 namespace GKManagers
 {
@@ -95,175 +96,183 @@ namespace GKManagers
             object suppressSetting = ConfigurationManager.AppSettings["suppressMultiThreading"];
             bool suppressMultiThreading = (suppressSetting != null) ? Strings.ToBoolean(suppressSetting) : false;
 
-            try
+            // Load Summary split metadata object.
+            string splitDataFile = ConfigurationManager.AppSettings["summary-split-file-location"];
+            using (SplitDataManager splitData = SplitDataManager.Create(splitDataFile))
             {
-                foreach (ProcessActionType action in actionList)
+
+                try
                 {
-                    // Determine whether multi-threading is allowed in this pass.
-                    // Only promotion to staging is ever multi-threaded. Everything else is multi-threaded.
-                    bool useMultiThreading;
-                    if (action == ProcessActionType.PromoteToStaging && !suppressMultiThreading)
-                        useMultiThreading = true;
-                    else
-                        useMultiThreading = false;
-
-                    // Get a new type tracker for each promotion action.
-                    documentTypeTracker = new DocumentTypeTracker();
-
-                    BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
-                        string.Format("Start promotion to {0}", ActionToLocation(action)));
-
-                    SynchronizedIDQueue queueForRegularDocs = new SynchronizedIDQueue();
-                    SynchronizedIDQueue queueForCmsDocs = new SynchronizedIDQueue();
-                    List<int> delayedSummaryIDList = new List<int>();
-                    List<int> mediaDocumentIDList = new List<int>();
-
-                    for (int docIndex = 0; docIndex < requestDataIDList.Count; ++docIndex)
+                    foreach (ProcessActionType action in actionList)
                     {
-                        /// The _processingIsAllowed flag goes to false if an attempt is made 
-                        /// to shut the system down during a series of promotions.
-                        if (!_processingIsAllowed)
+                        // Determine whether multi-threading is allowed in this pass.
+                        // Only promotion to staging is ever multi-threaded. Everything else is multi-threaded.
+                        bool useMultiThreading;
+                        if (action == ProcessActionType.PromoteToStaging && !suppressMultiThreading)
+                            useMultiThreading = true;
+                        else
+                            useMultiThreading = false;
+
+                        // Get a new type tracker for each promotion action.
+                        documentTypeTracker = new DocumentTypeTracker();
+
+                        BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
+                            string.Format("Start promotion to {0}", ActionToLocation(action)));
+
+                        SynchronizedIDQueue queueForRegularDocs = new SynchronizedIDQueue();
+                        SynchronizedIDQueue queueForCmsDocs = new SynchronizedIDQueue();
+                        List<int> delayedSummaryIDList = new List<int>();
+                        List<int> mediaDocumentIDList = new List<int>();
+
+                        for (int docIndex = 0; docIndex < requestDataIDList.Count; ++docIndex)
                         {
-                            BatchManager.AddBatchHistoryEntry(batchID, userName,
-                                "DocumentManager: Promotion System is being shut down.");
-                            throw new Exception("DocumentManager: Promotion Halted.");
-                        }
-
-                        docData = RequestManager.LoadRequestDataInfo(requestDataIDList[docIndex]);
-
-                        /// We need to load the first RequestData object before we can load the location map
-                        /// or the request object.  These operations only occur on the first pass through the
-                        /// innermost loop.
-                        if (isFirstPass)
-                        {
-                            locationMap = RequestManager.LoadDocumentLocationMap(docData.RequestID);
-                            theRequest = RequestManager.LoadRequestByID(docData.RequestID);
-                            validationRequired = MustValidate(theRequest.DtdVersion);
-                            isFirstPass = false;
-                        }
-
-                        // Keep track of what type of document is being promoted.
-                        documentTypeTracker.AddDocumentType(docData.CDRDocType);
-
-                        // Status map must be reloaded for each iteration through the list of
-                        // promotion levels.
-                        if (statusMap == null)
-                            statusMap = RequestManager.LoadDocumentStatusMap(docData.RequestID);
-
-                        // Is it OK to promote the document?
-                        if (IsDocumentOKToPromote(action, batchID, docData, locationMap, statusMap))
-                        {
-                            DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
-
-                            // Summary translations need to be scheduled after their
-                            // original versions. But do not check for existence of translation when
-                            // the document is being remove, since during remove there is no translation
-                            // language information due to the absence of document data. 
-                            if ( docData.ActionType != RequestDataActionType.Remove &&
-                                 docTypeFlag == DocumentTypeFlag.Summary && 
-                                 SummaryIsATranslation(docData))
+                            /// The _processingIsAllowed flag goes to false if an attempt is made 
+                            /// to shut the system down during a series of promotions.
+                            if (!_processingIsAllowed)
                             {
-                                delayedSummaryIDList.Add(requestDataIDList[docIndex]);
+                                BatchManager.AddBatchHistoryEntry(batchID, userName,
+                                    "DocumentManager: Promotion System is being shut down.");
+                                throw new Exception("DocumentManager: Promotion Halted.");
                             }
-                            // Media documents require special scheduling so they go in ahead of
-                            // anything which might reference them.
-                            else if (docTypeFlag == DocumentTypeFlag.Media)
+
+                            docData = RequestManager.LoadRequestDataInfo(requestDataIDList[docIndex]);
+
+                            /// We need to load the first RequestData object before we can load the location map
+                            /// or the request object.  These operations only occur on the first pass through the
+                            /// innermost loop.
+                            if (isFirstPass)
                             {
-                                mediaDocumentIDList.Add(requestDataIDList[docIndex]);
+                                locationMap = RequestManager.LoadDocumentLocationMap(docData.RequestID);
+                                theRequest = RequestManager.LoadRequestByID(docData.RequestID);
+                                validationRequired = MustValidate(theRequest.DtdVersion);
+                                isFirstPass = false;
                             }
-                            else if (useMultiThreading)
+
+                            // Keep track of what type of document is being promoted.
+                            documentTypeTracker.AddDocumentType(docData.CDRDocType);
+
+                            // Status map must be reloaded for each iteration through the list of
+                            // promotion levels.
+                            if (statusMap == null)
+                                statusMap = RequestManager.LoadDocumentStatusMap(docData.RequestID);
+
+                            // Is it OK to promote the document?
+                            if (IsDocumentOKToPromote(action, batchID, docData, locationMap, statusMap))
                             {
-                                // Place documents in the appropriate queue.
-                                if (DocumentTypeFlagUtil.FlagsOverlap(docTypeFlag, CmsManagedTypes))
-                                    queueForCmsDocs.Enqueue(requestDataIDList[docIndex]);
+                                DocumentTypeFlag docTypeFlag = DocumentTypeFlagUtil.MapDocumentType(docData.CDRDocType);
+
+                                // Summary translations need to be scheduled after their
+                                // original versions. But do not check for existence of translation when
+                                // the document is being remove, since during remove there is no translation
+                                // language information due to the absence of document data. 
+                                if (docData.ActionType != RequestDataActionType.Remove &&
+                                     docTypeFlag == DocumentTypeFlag.Summary &&
+                                     SummaryIsATranslation(docData))
+                                {
+                                    delayedSummaryIDList.Add(requestDataIDList[docIndex]);
+                                }
+                                // Media documents require special scheduling so they go in ahead of
+                                // anything which might reference them.
+                                else if (docTypeFlag == DocumentTypeFlag.Media)
+                                {
+                                    mediaDocumentIDList.Add(requestDataIDList[docIndex]);
+                                }
+                                else if (useMultiThreading)
+                                {
+                                    // Place documents in the appropriate queue.
+                                    if (DocumentTypeFlagUtil.FlagsOverlap(docTypeFlag, CmsManagedTypes))
+                                        queueForCmsDocs.Enqueue(requestDataIDList[docIndex]);
+                                    else
+                                        queueForRegularDocs.Enqueue(requestDataIDList[docIndex]);
+                                }
                                 else
+                                {
+                                    // For single threading, use one queue.
                                     queueForRegularDocs.Enqueue(requestDataIDList[docIndex]);
+                                }
                             }
                             else
                             {
-                                // For single threading, use one queue.
-                                queueForRegularDocs.Enqueue(requestDataIDList[docIndex]);
+                                // Errors are logged and the document is marked as having errors
+                                // during the call to IsDocumentOKToPromote.
+                                promotionWasSuccessful = false;
                             }
+                        }
+
+                        // Merge delayed summaries back into the appropriate queue.
+                        if (useMultiThreading)
+                        {
+                            // All of the document types with scheduling depependencies are
+                            // controlled by the CMS.
+
+                            // Rebuild the list of IDs.  First the media documents,
+                            // Second the items without scheduling dependencies.
+                            // Third the summary translations.
+                            List<int> tempList = new List<int>();
+                            tempList.AddRange(mediaDocumentIDList);
+                            tempList.AddRange(queueForCmsDocs.ToArray());
+                            tempList.AddRange(delayedSummaryIDList);
+
+                            // Reload the CMS queue.
+                            queueForCmsDocs.Clear();
+                            tempList.ForEach(queueItem => queueForCmsDocs.Enqueue(queueItem));
                         }
                         else
                         {
-                            // Errors are logged and the document is marked as having errors
-                            // during the call to IsDocumentOKToPromote.
-                            promotionWasSuccessful = false;
+                            // All of the document types with scheduling depependencies are
+                            // controlled by the CMS, but because this is single threaded,
+                            // they all end up in the regular item queue.  We still
+                            // have to resort them though.
+
+                            //delayedSummaryIDList.ForEach(summaryID => queueForRegularDocs.Enqueue(summaryID));
+                            // Rebuild the list of IDs.  First the media documents,
+                            // Second the items without scheduling dependencies.
+                            // Third the summary translations.
+                            List<int> tempList = new List<int>();
+                            tempList.AddRange(mediaDocumentIDList);
+                            tempList.AddRange(queueForRegularDocs.ToArray());
+                            tempList.AddRange(delayedSummaryIDList);
+
+                            // Reload the CMS queue.
+                            queueForRegularDocs.Clear();
+                            tempList.ForEach(queueItem => queueForRegularDocs.Enqueue(queueItem));
                         }
+
+
+                        // Run the individual promotions.
+                        PromoteQueuedDocuments(batchID, action, validationRequired, currentBatch.UserName, xPathManager,
+                            locationMap, statusMap, useMultiThreading, queueForRegularDocs, queueForCmsDocs,
+                            out promotionWasSuccessful);
+
+                        // Update the document location map's group list to reflect promotions.
+                        locationMap.RefreshGroupPresence();
+
+                        // Update caches
+                        UpdateDocumentCache(documentTypeTracker, action, currentBatch);
+
+                        LaunchCMSPublishing(documentTypeTracker, action, currentBatch);
+
+                        BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
+                            string.Format("Finish promotion to {0}", ActionToLocation(action)));
+                        BatchManager.CompletePromotionStep(batchID, action);
+
+                        // Status map must be reloaded for each promotion level.
+                        statusMap = null;
                     }
-
-                    // Merge delayed summaries back into the appropriate queue.
-                    if (useMultiThreading)
-                    {
-                        // All of the document types with scheduling depependencies are
-                        // controlled by the CMS.
-
-                        // Rebuild the list of IDs.  First the media documents,
-                        // Second the items without scheduling dependencies.
-                        // Third the summary translations.
-                        List<int> tempList = new List<int>();
-                        tempList.AddRange(mediaDocumentIDList);
-                        tempList.AddRange(queueForCmsDocs.ToArray());
-                        tempList.AddRange(delayedSummaryIDList);
-
-                        // Reload the CMS queue.
-                        queueForCmsDocs.Clear();
-                        tempList.ForEach(queueItem => queueForCmsDocs.Enqueue(queueItem));
-                    }
-                    else
-                    {
-                        // All of the document types with scheduling depependencies are
-                        // controlled by the CMS, but because this is single threaded,
-                        // they all end up in the regular item queue.  We still
-                        // have to resort them though.
-
-                        //delayedSummaryIDList.ForEach(summaryID => queueForRegularDocs.Enqueue(summaryID));
-                        // Rebuild the list of IDs.  First the media documents,
-                        // Second the items without scheduling dependencies.
-                        // Third the summary translations.
-                        List<int> tempList = new List<int>();
-                        tempList.AddRange(mediaDocumentIDList);
-                        tempList.AddRange(queueForRegularDocs.ToArray());
-                        tempList.AddRange(delayedSummaryIDList);
-
-                        // Reload the CMS queue.
-                        queueForRegularDocs.Clear();
-                        tempList.ForEach(queueItem => queueForRegularDocs.Enqueue(queueItem));
-                    }
-
-
-                    // Run the individual promotions.
-                    PromoteQueuedDocuments(batchID, action, validationRequired, currentBatch.UserName, xPathManager,
-                        locationMap, statusMap, useMultiThreading, queueForRegularDocs, queueForCmsDocs,
-                        out promotionWasSuccessful);
-
-                    // Update the document location map's group list to reflect promotions.
-                    locationMap.RefreshGroupPresence();
-
-                    // Update caches
-                    UpdateDocumentCache(documentTypeTracker, action, currentBatch);
-
-                    LaunchCMSPublishing(documentTypeTracker, action, currentBatch);
-
-                    BatchManager.AddBatchHistoryEntry(batchID, currentBatch.UserName,
-                        string.Format("Finish promotion to {0}", ActionToLocation(action)));
-                    BatchManager.CompletePromotionStep(batchID, action);
-
-                   // Status map must be reloaded for each promotion level.
-                    statusMap = null;
+                }
+                // Catch exceptions at the batch level.  If this catch is ever triggered, something
+                // is very wrong.
+                catch (Exception ex)
+                {
+                    promotionWasSuccessful = false;
+                    DocMgrLogBuilder.Instance.CreateError(typeof(DocumentManager), "PromoteBatch", ex);
+                    BatchManager.AddBatchHistoryEntry(currentBatch.BatchID, currentBatch.UserName,
+                        string.Format("An error occurred during processing. Message text: {0} Stack: {1}",
+                            ExceptionHelper.RetrieveMessage(ex), ex.StackTrace));
                 }
             }
-            // Catch exceptions at the batch level.  If this catch is ever triggered, something
-            // is very wrong.
-            catch (Exception ex)
-            {
-                promotionWasSuccessful = false;
-                DocMgrLogBuilder.Instance.CreateError(typeof(DocumentManager), "PromoteBatch", ex);
-                BatchManager.AddBatchHistoryEntry(currentBatch.BatchID, currentBatch.UserName,
-                    string.Format("An error occurred during processing. Message text: {0} Stack: {1}",
-                        ExceptionHelper.RetrieveMessage(ex), ex.StackTrace));
-            }
+
+
 
             // 3. Was the entire batch promoted successfully?
             if (promotionWasSuccessful)

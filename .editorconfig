@@ -3,7 +3,7 @@
 # This is the top of the directory tree
 root = true
 
-[*]
+[*.{cs,xsl,bat,ps1,txt}]
 trim_trailing_whitespace = true
 
 

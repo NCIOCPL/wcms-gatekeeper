@@ -9,7 +9,7 @@ def sourceRepository = "$GH_ORGANIZATION_NAME/$GH_REPO_NAME"
 /*
     Definition for a job to check out and build a specific branch.
 */
-job("${FOLDER_NAME}/_lower/Build for $BRANCH on $ENVIRONMENT") {
+job("Build for $BRANCH on $ENVIRONMENT") {
 
   wrappers {
     credentialsBinding {

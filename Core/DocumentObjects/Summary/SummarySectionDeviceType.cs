@@ -34,6 +34,16 @@ namespace GateKeeper.DocumentObjects.Summary
         /// <summary>
         /// Summary section hidden on All devices
         /// </summary>
-        none
+        none,
+
+        /// <summary>
+        /// Summary section appears as part of the "overview" page.
+        /// </summary>
+        general,
+
+        /// <summary>
+        /// Summary section appears as part of the "main" page.
+        /// </summary>
+        main
     }
 }

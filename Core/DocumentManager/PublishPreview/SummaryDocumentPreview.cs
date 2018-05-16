@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using System.Xml;
+
 using GateKeeper.Common;
 using GateKeeper.DocumentObjects;
 using GateKeeper.DocumentObjects.Summary;
@@ -33,53 +35,59 @@ namespace GKPreviews
         {
             contentHtml = string.Empty;
 
-            SummaryDocument summary = new SummaryDocument();
-
-            SummaryPreviewExtractor extractor = new SummaryPreviewExtractor();
-            extractor.Extract(DocumentData, summary, DocXPathManager, TargetedDevice.screen);
-
-            SummaryRenderer render = new SummaryRenderer();
-            render.Render(summary);
-
-            PercussionGuid contentItemGuid = null;
-
-            // Save summary data into the Percussion CMS.
-            using (CancerInfoSummaryPreviewProcessor processor = new CancerInfoSummaryPreviewProcessor(WriteHistoryWarningEntry, WriteHistoryInformationEntry))
+                        // Load Summary split metadata object.
+            string splitDataFile = ConfigurationManager.AppSettings["summary-split-file-location"];
+            using (SplitDataManager splitData = SplitDataManager.Create(splitDataFile))
             {
-                try
+
+                SummaryDocument summary = new SummaryDocument();
+
+                SummaryPreviewExtractor extractor = new SummaryPreviewExtractor();
+                extractor.Extract(DocumentData, summary, DocXPathManager, TargetedDevice.screen);
+
+                SummaryRenderer render = new SummaryRenderer();
+                render.Render(summary);
+
+                PercussionGuid contentItemGuid = null;
+
+                // Save summary data into the Percussion CMS.
+                using (CancerInfoSummaryPreviewProcessor processor = new CancerInfoSummaryPreviewProcessor(WriteHistoryWarningEntry, WriteHistoryInformationEntry))
                 {
-                    processor.ProcessDocument(summary, ref contentItemGuid);
-
-                    // Generate the CMS HTML rendering of the content item
-                    contentHtml = processor.ProcessCMSPreview(summary, contentItemGuid);
-
-                    //NVCG update- Add dates to the bottom of the page and remove them from the header content
-                    string updatedText = "Updated";
-                    string date = String.Format("{0:MMMM dd, yyyy}", summary.LastModifiedDate);
-
-                    if (summary.Language == Language.Spanish)
+                    try
                     {
-                        updatedText = "Actualización";
-                        date = String.Format("{0:MMMM dd, yyyy}", CovertToSpanishFormat(summary.LastModifiedDate));
+                        processor.ProcessDocument(summary, ref contentItemGuid);
+
+                        // Generate the CMS HTML rendering of the content item
+                        contentHtml = processor.ProcessCMSPreview(summary, contentItemGuid);
+
+                        //NVCG update- Add dates to the bottom of the page and remove them from the header content
+                        string updatedText = "Updated";
+                        string date = String.Format("{0:MMMM dd, yyyy}", summary.LastModifiedDate);
+
+                        if (summary.Language == Language.Spanish)
+                        {
+                            updatedText = "Actualización";
+                            date = String.Format("{0:MMMM dd, yyyy}", CovertToSpanishFormat(summary.LastModifiedDate));
+                        }
+
+                        contentHtml += "<div id=\"cgvDate\"><div class=\"document-dates horizontal\"><div class=\"document-dates horizontal\"><ul class=\"clearfix\">";
+                        if (summary.LastModifiedDate != DateTime.MinValue && summary.LastModifiedDate != null)
+                            contentHtml += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
+                        contentHtml += "</ul></div></div></div>";
+
+                        headerContent = createHeaderZoneContent(summary);
+
                     }
-
-                    contentHtml += "<div id=\"cgvDate\"><div class=\"document-dates horizontal\"><div class=\"document-dates horizontal\"><ul class=\"clearfix\">";
-                    if (summary.LastModifiedDate != DateTime.MinValue && summary.LastModifiedDate != null)
-                        contentHtml += string.Format("<li><strong>{0}:</strong> {1}</li>", updatedText, date);
-                    contentHtml += "</ul></div></div></div>";
-
-                    headerContent = createHeaderZoneContent(summary);
-
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(" Preview generation failed for document Id:" + summary.DocumentID.ToString(), ex);                
-                }
-                finally 
-                {
-                    //// For Pub Preview the document will be removed from CMS once 
-                    //// the job of generating the preview html is complete.
-                    processor.DeleteContentItem(contentItemGuid);
+                    catch (Exception ex)
+                    {
+                        throw new Exception(" Preview generation failed for document Id:" + summary.DocumentID.ToString(), ex);
+                    }
+                    finally
+                    {
+                        //// For Pub Preview the document will be removed from CMS once 
+                        //// the job of generating the preview html is complete.
+                        processor.DeleteContentItem(contentItemGuid);
+                    }
                 }
             }
 
