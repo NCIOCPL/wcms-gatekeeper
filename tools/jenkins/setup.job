@@ -4,8 +4,6 @@
     belong in this file.
 */
 
-def FOLDER_NAME  = 'wcms-gatekeeper'    // Jenkins folder where the jbos will be placed.
-
 def GH_REPO_NAME = 'wcms-gatekeeper'     // The project's repository name (as used in the URL).
 def TARGET_BRANCH = 'master'            // Branch to run against.
 def GH_ORGANIZATION_NAME = 'NCIOCPL'   // GitHub Organization name (as used in the URL/userid).
@@ -13,14 +11,20 @@ def GH_USER_TOKEN_KEY = 'NCIOCPL-GitHub-Token'  // Jenkins ID of the credential 
 
 def sourceRepository = "$GH_ORGANIZATION_NAME/$GH_REPO_NAME"
 
-job("${FOLDER_NAME}/Create build job for a branch") {
+// Calculate the current folder path so the seed job is able to create jobs in the
+// current folder without the user remembering to set the context manually.
+// (Nested seed jobs - e.g. Create build job - do so by calling lookupStrategy.)
+def NAME_LENGTH = JOB_BASE_NAME.length()
+def FOLDER_PATH = JOB_NAME[0..((JOB_NAME.length() - NAME_LENGTH) - 2)] // Zero-based and remove trailing slash.
+
+job("${FOLDER_PATH}/Create build job for a branch") {
   description("Creates the jobs that build individual branches.\n\nTo modify this job, see the contents of setup.job and create-branch-skeleton.job.")
 
   wrappers {
     environmentVariables {
       envs (
         // Values common to the setup and job creation scripts that we don't want to maintain in two places.
-        FOLDER_NAME : FOLDER_NAME,
+        FOLDER_PATH : FOLDER_PATH,
         GH_REPO_NAME : GH_REPO_NAME,
         TARGET_BRANCH : TARGET_BRANCH,
         GH_ORGANIZATION_NAME : GH_ORGANIZATION_NAME,
@@ -38,9 +42,12 @@ job("${FOLDER_NAME}/Create build job for a branch") {
     github(sourceRepository, "*/$TARGET_BRANCH")
   }
 
+  label("!master") // Run anywhere except master.
+
   steps {
     dsl {
       external("tools/jenkins/create_branch_skeleton.job")
+      lookupStrategy('SEED_JOB')
     }
   }
 }
