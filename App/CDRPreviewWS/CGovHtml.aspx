@@ -43,7 +43,7 @@
       </script>
       <link href="<%=serverUrl%>/PublishedContent/Styles/PDQPage.css" rel="stylesheet" />
       <link href="<%=serverUrl%>/PublishedContent/Styles/InnerPage.css" rel="stylesheet" />
-      <!-- 
+      <!--
         Temporary overwrite to prevent PP report for glossaries with
         images from floating text of the Spanish definition
       -->
