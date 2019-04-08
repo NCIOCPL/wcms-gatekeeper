@@ -17,6 +17,8 @@
       <meta name="espanol-linking-policy" content="<%=serverUrl%>/espanol/global/politicas/salda">
       <meta name="publishpreview" content="undefined">
       <link href="<%=serverUrl%>/PublishedContent/Styles/nvcg.css" rel="stylesheet">
+      <link href="<%=serverUrl%>/PublishedContent/Styles/PDQPage.css" rel="stylesheet" />
+      <link href="<%=serverUrl%>/PublishedContent/Styles/InnerPage.css" rel="stylesheet" />
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
               type="text/javascript"></script>
@@ -27,13 +29,11 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"
               type="text/javascript"></script>
       <script src="<%=serverUrl%>/PublishedContent/js/Common.js"
-              type="text/javascript"></script>
-      <script src="<%=serverUrl%>/PublishedContent/js/ContentPage.js"
-              type="text/javascript"></script>
+              type="text/javascript" defer></script>
       <script src="<%=serverUrl%>/PublishedContent/js/PDQPage.js"
-              type="text/javascript"></script>
+              type="text/javascript" defer></script>
       <script src="<% =currentHost %>/CDRPreviewWS/common/popevents.js"
-              type="text/javascript"></script>
+              type="text/javascript" defer></script>
       <script type="text/javascript">
         var NCIAnalytics = {
                 displayAlerts: false,
@@ -41,8 +41,7 @@
                 fieldDelimiter: '~'
                 };
       </script>
-      <link href="<%=serverUrl%>/PublishedContent/Styles/PDQPage.css" rel="stylesheet" />
-      <link href="<%=serverUrl%>/PublishedContent/Styles/InnerPage.css" rel="stylesheet" />
+
       <!--
         Temporary overwrite to prevent PP report for glossaries with
         images from floating text of the Spanish definition
