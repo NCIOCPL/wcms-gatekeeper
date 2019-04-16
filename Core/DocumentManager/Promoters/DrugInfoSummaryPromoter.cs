@@ -56,16 +56,6 @@ namespace GKManagers
                 DrugInfoSummaryExtractor extractor = new DrugInfoSummaryExtractor();
                 extractor.Extract(DataBlock.DocumentData, drugInfoSummary, xPathManager);
 
-                // Rendering drug info summary data
-                DrugInfoSummaryRenderer drugRender = new DrugInfoSummaryRenderer();
-                drugRender.Render(drugInfoSummary);
-
-                // Save drug info summary data into the Percussion CMS.
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.ProcessDocument(drugInfoSummary);
-                }
-
                 // Save drug info summary data into database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
@@ -111,16 +101,6 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                //the Percussion call is skipped for the Preview step for PromoteToLiveFast
-                if (!_isPromoteToLiveFast)
-                {
-                    // Promote the document to Preview into the Percussion CMS.
-                    using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                    {
-                        processor.PromoteToPreview(drugInfoSummary.DocumentID);
-                    }
-                }
-
                 // Push drug info summary document to the preview database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
@@ -164,12 +144,6 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Promote the document to Live into the Percussion CMS.
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.PromoteToLive(drugInfoSummary.DocumentID);
-                }
-
                 // Push drug info summary document to the live database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
@@ -178,11 +152,6 @@ namespace GKManagers
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.DeleteContentItem(drugInfoSummary.DocumentID);
-                }
-
                 // Remove drug info summary data from database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
@@ -221,12 +190,6 @@ namespace GKManagers
             drugInfoSummary.DocumentID = DataBlock.CdrID;
             if (DataBlock.ActionType == RequestDataActionType.Export)
             {
-                // Promote the document to Live into the Percussion CMS.
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.PromoteToLiveFast(drugInfoSummary.DocumentID);
-                }
-
                 // Push drug info summary document to the live database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {
@@ -235,11 +198,6 @@ namespace GKManagers
             }
             else if (DataBlock.ActionType == RequestDataActionType.Remove)
             {
-                using (DrugInfoSummaryProcessor processor = new DrugInfoSummaryProcessor(warningWriter, informationWriter))
-                {
-                    processor.DeleteContentItem(drugInfoSummary.DocumentID);
-                }
-
                 // Remove drug info summary data from database
                 using (DrugInfoSummaryQuery drugQuery = new DrugInfoSummaryQuery())
                 {

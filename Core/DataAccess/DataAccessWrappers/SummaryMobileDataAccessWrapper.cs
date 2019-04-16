@@ -22,11 +22,6 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
         /// catching the exception and recording it.</remarks>
         public override void SaveDocument(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
-            // Save summary data into the Percussion CMS.
-            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
-            {
-                processor.ProcessDocument(document, SitePathOverride);
-            }
 
             // Save summary metadata into database
             using (SummaryQuery summaryQuery = new SummaryQuery())
@@ -68,16 +63,6 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
         /// catching the exception and recording it.</remarks>
         public override void PromoteToPreview(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {   
-            //skip CMS call if PromoteToLiveFast
-            if (!_isPromoteToLiveFast)
-            {
-                // Save summary data into the Percussion CMS.
-                using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
-                {
-                    processor.PromoteToPreview(document.DocumentID, SitePathOverride);
-                }
-            }
-
             // Push summary metadata to the preview database
             using (SummaryQuery summaryQuery = new SummaryQuery())
             {
@@ -117,11 +102,6 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
         /// catching the exception and recording it.</remarks>
         public override void PromoteToLive(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
-            // Save summary data into the Percussion CMS.
-            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
-            {
-                processor.PromoteToLive(document.DocumentID, SitePathOverride);
-            }
             // Push summary metadata to the live database
             using (SummaryQuery summaryQuery = new SummaryQuery())
             {
@@ -140,11 +120,6 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
         /// catching the exception and recording it.</remarks>
         public override void RemoveFromLive(Document document, string username, HistoryEntryWriter warningWriter, HistoryEntryWriter informationWriter)
         {
-            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
-            {
-                processor.DeleteContentItem(document.DocumentID, SitePathOverride);
-            }
-
             // Remove summary data from database
             using (SummaryQuery summaryQuery = new SummaryQuery())
             {
@@ -167,12 +142,6 @@ namespace GateKeeper.DataAccess.DataAccessWrappers
             _isPromoteToLiveFast = true;
 
             this.PromoteToPreview(document, username, warningWriter, informationWriter);
-
-            // Save summary data into the Percussion CMS.
-            using (CancerInfoSummaryProcessorMobile processor = new CancerInfoSummaryProcessorMobile(warningWriter, informationWriter))
-            {
-                processor.PromoteToLiveFast(document.DocumentID, SitePathOverride);
-            }
 
             // Push summary metadata to the live database
             using (SummaryQuery summaryQuery = new SummaryQuery())

@@ -116,8 +116,8 @@
     <Compile Include="CDR\SummaryExtractor.cs" />
     <Compile Include="CDR\TerminologyExtractor.cs" />
     <Compile Include="DataAccessManager.cs" />
-    <Compile Include="DataAccessWrappers\SummaryMobileDataAccessWrapper.cs" />
     <Compile Include="DataAccessWrappers\DocumentDataAccess.cs" />
+    <Compile Include="DataAccessWrappers\SummaryMobileDataAccessWrapper.cs" />
     <Compile Include="DataAccessWrappers\SummaryStandardDataAccessWrapper.cs" />
     <Compile Include="DbBaseQuery.cs" />
     <Compile Include="DbWrapper.cs" />

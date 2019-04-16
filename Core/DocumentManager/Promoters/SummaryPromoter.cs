@@ -71,13 +71,6 @@ namespace GKManagers
                     // Extract summary data
                     target.DocumentExtractor.Extract(DataBlock.DocumentData, summary, xPathManager, target.TargetedDevice);
 
-                    // Only render and save if the Summary supports the current target.
-                    if (summary.ValidOutputDevices.Contains(target.TargetedDevice))
-                    {
-                        // Rendering summary data
-                        target.DocumentRenderer.Render(summary, target.TargetedDevice);
-
-                    }
                     // Save summary data
                     target.DocumentDataAccess.SaveDocument(summary, UserName, warningWriter, informationWriter);
 
