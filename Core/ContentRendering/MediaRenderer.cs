@@ -26,6 +26,8 @@ namespace GateKeeper.ContentRendering
         {
             //  Get image path on staging machine
             imagePath = ConfigurationManager.AppSettings["ImageStaging"];
+            if (imagePath == null)
+                throw new ConfigurationErrorsException("ImageStaging not set.");
         }
 
         public override void Render(Document document)
@@ -36,6 +38,10 @@ namespace GateKeeper.ContentRendering
             { }
             else
                 throw new Exception("Rendering Error: Unknown EncodingType:" + encodingType + " for document id " + document.DocumentID.ToString());
+
+            // Create destination directory if it does not exist.
+            if (!Directory.Exists(imagePath))
+                Directory.CreateDirectory(imagePath);
 
             // Different processing needed for document object based on the 
             // MimeType.
@@ -58,7 +64,11 @@ namespace GateKeeper.ContentRendering
 
         private void RenderAudio(Document document)
         {
-            // Does not do anything for audio document.
+            // Convert binary data to a file.
+            MediaDocument media = (MediaDocument)document;
+            byte[] binaryData = System.Convert.FromBase64String(media.EncodedData);
+            String destination = Path.Combine(imagePath, media.DocumentID.ToString() + ".mp3");
+            File.WriteAllBytes(destination, binaryData);
         }
 
         private void RenderImage(Document document)
@@ -81,18 +91,14 @@ namespace GateKeeper.ContentRendering
                 heightRatio = (double)origImage.Height / origImage.Width;
 
 
-                // Create destination directory if it is not exist
-                if (!Directory.Exists(imagePath))
-                    Directory.CreateDirectory(imagePath);
-
                 // Loop through the size scales to resize image
                 for (int i = 0; i < arrImageWidth.Length; i++)
                 {
                     // Set the image destination locations
                     if (i == 0)
-                        destination = imagePath + "CDR" + media.DocumentID.ToString() + ".jpg";
+                        destination = Path.Combine(imagePath, "CDR" + media.DocumentID.ToString() + ".jpg");
                     else
-                        destination = imagePath + "CDR" + media.DocumentID.ToString() + "-" + arrImageWidth[i] + ".jpg";
+                        destination = Path.Combine(imagePath, "CDR" + media.DocumentID.ToString() + "-" + arrImageWidth[i] + ".jpg");
 
                     // Set the new image's width and height
                     Size imageSize = new Size();
