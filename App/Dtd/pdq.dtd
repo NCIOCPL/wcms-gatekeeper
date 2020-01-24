@@ -12,6 +12,7 @@
    OCEPROJECT-3147 - Remove Protocol document type
    OCECDR-3903: Cancer.gov displaying Patient definitions for terms
                 in HP Summaries
+   OCECDR-4511: remove href attribute from ProtocolRef element
 
 -->
 
@@ -726,7 +727,8 @@
                 RelatedWebsites*,
                 MenuInformation?,
                 DateFirstPublished?,
-                DateLastModified?
+                DateLastModified?,
+                CGovInfo?
                )>
 <!ATTLIST Term id CDATA #REQUIRED>
 <!ATTLIST Term LegacyPDQID CDATA #IMPLIED>
@@ -753,9 +755,19 @@
 <!ELEMENT SemanticType (#PCDATA)>
 <!ATTLIST SemanticType ref CDATA #IMPLIED>
 
+
 <!-- [@@INTERNAL] For Internal Use Only -->
 <!ELEMENT CTGovInterventionType (#PCDATA)>
+
+<!ELEMENT CGovInfo (DISUrl?, DISTitle?, NCITName?)>
+
+<!ELEMENT DISUrl (#PCDATA)>
+
+<!ELEMENT DISTitle (#PCDATA)>
+
+<!ELEMENT NCITName (#PCDATA)>
 <!-- End: For Internal Use Only [INTERNAL@@] -->
+
 
 <!ELEMENT TermRelationship (ParentTerm | RelatedTerm)+>
 
